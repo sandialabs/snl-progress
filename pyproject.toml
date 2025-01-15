@@ -24,8 +24,9 @@ kneed = "0.8.5"
 requests = "2.32.3"
 pvlib = "0.11.0"
 NREL-rex = "0.2.86"
-PySide6 = "6.5.2"
+PySide6 = "6.8.1.1"
 plotly = "5.24.1"
+kaleido = "0.2.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"

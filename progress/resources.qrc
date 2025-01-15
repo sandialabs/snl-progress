@@ -10,9 +10,6 @@
   </qresource>
   <qresource prefix="icons">
     <file>Images/icons/qmark.png</file>
-  </qresource>
-  <qresource prefix="ornamental">
-    <file>Images/ornamental/cover_2.webp</file>
-    <file>Images/ornamental/cover.webp</file>
+    <file>Images/icons/more_vert_24dp_C8C8C8_FILL0_wght200_GRAD0_opsz24.png</file>
   </qresource>
 </RCC>

@@ -26,7 +26,8 @@ class RAPlotTools:
         plt.ylabel("Output (MW)")
         plt.plot(wind_rec.T, label = bus_name)
         plt.legend()
-        plt.savefig(f'{self.main_folder}/Results/wind_generation.pdf')
+        #plt.savefig(f'{self.main_folder}/Results/wind_generation.pdf')
+        plt.savefig(f'{self.main_folder}/Results/wind_generation.png')
         plt.close()
 
     def PlotSolarGen(self, solar_rec, bus_name):
@@ -43,7 +44,8 @@ class RAPlotTools:
         plt.ylabel("Output (MW)")
         plt.plot(solar_rec.T, label = bus_name)
         plt.legend()
-        plt.savefig(f'{self.main_folder}/Results/solar_generation.pdf')
+        #plt.savefig(f'{self.main_folder}/Results/solar_generation.pdf')
+        plt.savefig(f'{self.main_folder}/Results/solar_generation.png')
         plt.close()
 
     def PlotSOC(self, SOC_rec, essname):
@@ -60,7 +62,8 @@ class RAPlotTools:
         plt.ylabel("SOC (MWh)")
         plt.plot(SOC_rec.T, label = essname)
         plt.legend(loc = 'upper right')
-        plt.savefig(f'{self.main_folder}/Results/SOC.pdf')
+        #plt.savefig(f'{self.main_folder}/Results/SOC.pdf')
+        plt.savefig(f'{self.main_folder}/Results/SOC.png')
         plt.close()
 
     def PlotLoadCurt(self, curt_rec):
@@ -76,7 +79,8 @@ class RAPlotTools:
         plt.ylabel("MW")
         plt.plot(curt_rec)
         # plt.legend(loc = 'upper right')
-        plt.savefig(f'{self.main_folder}/Results/loadcurt.pdf')
+        #plt.savefig(f'{self.main_folder}/Results/loadcurt.pdf')
+        plt.savefig(f'{self.main_folder}/Results/loadcurt.png')
         plt.close()
 
     def OutageMap(self, outage_data):
@@ -108,7 +112,8 @@ class RAPlotTools:
         cbar.set_label('Outage %', rotation=270, labelpad=15, fontsize = 8)
         cbar.ax.tick_params(labelsize=5)
         
-        plt.savefig(f"{self.main_folder}/Results/heatmap.pdf", bbox_inches='tight')
+       # plt.savefig(f"{self.main_folder}/Results/heatmap.pdf", bbox_inches='tight')
+        plt.savefig(f"{self.main_folder}/Results/heatmap.png", bbox_inches='tight')
         plt.close()
 
     def PlotLOLP(self, mLOLP_rec, samples, size):
@@ -117,7 +122,8 @@ class RAPlotTools:
         plt.xticks(np.arange(1, samples+1, 1), size*np.arange(1, samples+1, 1))
         plt.xlabel('Samples')
         plt.ylabel('LOLP')
-        plt.savefig(f'{self.main_folder}/Results/LOLP_track.pdf')
+        #plt.savefig(f'{self.main_folder}/Results/LOLP_track.pdf')
+        plt.savefig(f'{self.main_folder}/Results/LOLP_track.png')
         plt.close()
 
     def PlotCOV(self, COV_rec, samples, size):
@@ -126,7 +132,8 @@ class RAPlotTools:
         plt.xticks(np.arange(1, samples+1, 1), size*np.arange(1, samples+1, 1))
         plt.xlabel('Samples')
         plt.ylabel('Coefficient of Variation')
-        plt.savefig(f'{self.main_folder}/Results/COV_track.pdf')
+        #plt.savefig(f'{self.main_folder}/Results/COV_track.pdf')
+        plt.savefig(f'{self.main_folder}/Results/COV_track.png')
         plt.close()
 
 ############ EXTRA VISUALIZATION CODE ######################

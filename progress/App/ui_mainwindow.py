@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowzRYGkq.ui'
+## Form generated from reading UI file 'mainwindowjLTUOw.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.5.2
 ##
@@ -20,13 +20,13 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
     QHBoxLayout, QLabel, QLineEdit, QMainWindow,
     QPushButton, QSizePolicy, QSpacerItem, QStackedWidget,
     QTabWidget, QTextBrowser, QVBoxLayout, QWidget)
-import progress.resources_rc
+import resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1160, 627)
+        MainWindow.resize(1154, 643)
         palette = QPalette()
         MainWindow.setPalette(palette)
         MainWindow.setStyleSheet(u"QLineEdit {\n"
@@ -280,7 +280,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3 = QHBoxLayout(self.frame_16)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_5 = QSpacerItem(330, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_5 = QSpacerItem(327, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer_5)
 
@@ -1380,9 +1380,106 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.sim_tab, "")
         self.results_tab = QWidget()
         self.results_tab.setObjectName(u"results_tab")
-        self.verticalLayout_3 = QVBoxLayout(self.results_tab)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_45 = QVBoxLayout(self.results_tab)
+        self.verticalLayout_45.setObjectName(u"verticalLayout_45")
+        self.verticalLayout_45.setContentsMargins(0, 0, 0, 0)
+        self.tabWidget_2 = QTabWidget(self.results_tab)
+        self.tabWidget_2.setObjectName(u"tabWidget_2")
+        self.tabWidget_2.setTabPosition(QTabWidget.TabPosition.South)
+        self.tabWidget_2.setElideMode(Qt.TextElideMode.ElideNone)
+        self.tabWidget_2.setUsesScrollButtons(True)
+        self.tabWidget_2.setDocumentMode(False)
+        self.tabWidget_2.setTabsClosable(False)
+        self.tabWidget_2.setMovable(False)
+        self.tabWidget_2.setTabBarAutoHide(False)
+        self.COV_tab = QWidget()
+        self.COV_tab.setObjectName(u"COV_tab")
+        self.horizontalLayout_16 = QHBoxLayout(self.COV_tab)
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.horizontalLayout_16.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_46 = QVBoxLayout()
+        self.verticalLayout_46.setObjectName(u"verticalLayout_46")
+
+        self.horizontalLayout_16.addLayout(self.verticalLayout_46)
+
+        self.tabWidget_2.addTab(self.COV_tab, "")
+        self.tab_3 = QWidget()
+        self.tab_3.setObjectName(u"tab_3")
+        self.verticalLayout_50 = QVBoxLayout(self.tab_3)
+        self.verticalLayout_50.setObjectName(u"verticalLayout_50")
+        self.verticalLayout_50.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_49 = QVBoxLayout()
+        self.verticalLayout_49.setObjectName(u"verticalLayout_49")
+
+        self.verticalLayout_50.addLayout(self.verticalLayout_49)
+
+        self.tabWidget_2.addTab(self.tab_3, "")
+        self.tab_4 = QWidget()
+        self.tab_4.setObjectName(u"tab_4")
+        self.verticalLayout_52 = QVBoxLayout(self.tab_4)
+        self.verticalLayout_52.setObjectName(u"verticalLayout_52")
+        self.verticalLayout_52.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_51 = QVBoxLayout()
+        self.verticalLayout_51.setObjectName(u"verticalLayout_51")
+
+        self.verticalLayout_52.addLayout(self.verticalLayout_51)
+
+        self.tabWidget_2.addTab(self.tab_4, "")
+        self.tab_5 = QWidget()
+        self.tab_5.setObjectName(u"tab_5")
+        self.verticalLayout_54 = QVBoxLayout(self.tab_5)
+        self.verticalLayout_54.setObjectName(u"verticalLayout_54")
+        self.verticalLayout_54.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_53 = QVBoxLayout()
+        self.verticalLayout_53.setObjectName(u"verticalLayout_53")
+
+        self.verticalLayout_54.addLayout(self.verticalLayout_53)
+
+        self.tabWidget_2.addTab(self.tab_5, "")
+        self.tab_6 = QWidget()
+        self.tab_6.setObjectName(u"tab_6")
+        self.verticalLayout_56 = QVBoxLayout(self.tab_6)
+        self.verticalLayout_56.setObjectName(u"verticalLayout_56")
+        self.verticalLayout_55 = QVBoxLayout()
+        self.verticalLayout_55.setObjectName(u"verticalLayout_55")
+
+        self.verticalLayout_56.addLayout(self.verticalLayout_55)
+
+        self.tabWidget_2.addTab(self.tab_6, "")
+        self.tab_8 = QWidget()
+        self.tab_8.setObjectName(u"tab_8")
+        self.verticalLayout_60 = QVBoxLayout(self.tab_8)
+        self.verticalLayout_60.setObjectName(u"verticalLayout_60")
+        self.verticalLayout_59 = QVBoxLayout()
+        self.verticalLayout_59.setObjectName(u"verticalLayout_59")
+
+        self.verticalLayout_60.addLayout(self.verticalLayout_59)
+
+        self.tabWidget_2.addTab(self.tab_8, "")
+        self.tab_2 = QWidget()
+        self.tab_2.setObjectName(u"tab_2")
+        self.verticalLayout_48 = QVBoxLayout(self.tab_2)
+        self.verticalLayout_48.setObjectName(u"verticalLayout_48")
+        self.verticalLayout_48.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_47 = QVBoxLayout()
+        self.verticalLayout_47.setObjectName(u"verticalLayout_47")
+
+        self.verticalLayout_48.addLayout(self.verticalLayout_47)
+
+        self.tabWidget_2.addTab(self.tab_2, "")
+        self.tab_9 = QWidget()
+        self.tab_9.setObjectName(u"tab_9")
+        self.verticalLayout_62 = QVBoxLayout(self.tab_9)
+        self.verticalLayout_62.setObjectName(u"verticalLayout_62")
+        self.verticalLayout_61 = QVBoxLayout()
+        self.verticalLayout_61.setObjectName(u"verticalLayout_61")
+
+        self.verticalLayout_62.addLayout(self.verticalLayout_61)
+
+        self.tabWidget_2.addTab(self.tab_9, "")
+
+        self.verticalLayout_45.addWidget(self.tabWidget_2)
+
         self.tabWidget.addTab(self.results_tab, "")
         self.about_tab = QWidget()
         self.about_tab.setObjectName(u"about_tab")
@@ -1417,8 +1514,9 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.stackedWidget.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(5)
+        self.tabWidget.setCurrentIndex(0)
         self.stackedWidget_2.setCurrentIndex(0)
+        self.tabWidget_2.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -1500,6 +1598,14 @@ class Ui_MainWindow(object):
         self.pushButton_sim_previous.setText(QCoreApplication.translate("MainWindow", u"Previous", None))
         self.pushButton_6.setText(QCoreApplication.translate("MainWindow", u"Next", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.sim_tab), QCoreApplication.translate("MainWindow", u"Simulation", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.COV_tab), QCoreApplication.translate("MainWindow", u"COV", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_3), QCoreApplication.translate("MainWindow", u"Loadcurt", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_4), QCoreApplication.translate("MainWindow", u"LOLP", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_5), QCoreApplication.translate("MainWindow", u"SOC", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_6), QCoreApplication.translate("MainWindow", u"Solar", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_8), QCoreApplication.translate("MainWindow", u"Wind", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"Heatmap", None))
+        self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_9), QCoreApplication.translate("MainWindow", u"Indices", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.results_tab), QCoreApplication.translate("MainWindow", u"Results", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"This page is under construction.", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.about_tab), QCoreApplication.translate("MainWindow", u"About", None))

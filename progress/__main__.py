@@ -5,9 +5,10 @@ import copy
 import numpy as np
 import pandas as pd
 
-from PySide6.QtWidgets import QWidget, QApplication, QMainWindow, QFileDialog, QMessageBox, QTextEdit, QVBoxLayout, QDialog, QSplashScreen, QTableWidget, QTableWidgetItem
-from PySide6.QtCore import Signal, QThread, QUrl
+from PySide6.QtWidgets import QWidget, QApplication, QMainWindow, QFileDialog, QMessageBox, QTextEdit, QVBoxLayout, QDialog, QSplashScreen, QTableWidget, QTableWidgetItem, QScrollArea, QLabel, QSizePolicy
+from PySide6.QtCore import Signal, QThread, QUrl, Qt
 from progress.App.MainWindow import Ui_MainWindow
+from PySide6.QtGui import QPixmap
 
 from progress.mod_sysdata import RASystemData
 from progress.mod_utilities import RAUtilities
@@ -17,80 +18,82 @@ from progress.mod_wind import Wind
 from progress.mod_matrices import RAMatrices
 from progress.mod_plot import RAPlotTools
 from progress.paths import get_path
+from progress.App.landing.land import LeafAnimation
 base_dir = get_path()
+from progress.App.results.results_view import results_form
 
 
 from PySide6.QtPdf import QPdfDocument
 from PySide6.QtPdfWidgets import QPdfView
 
-class PDFViewer(QWidget):
-    def __init__(self, pdf_path=None):
-        super().__init__()
+# class PDFViewer(QWidget):
+#     def __init__(self, pdf_path=None):
+#         super().__init__()
 
-        # Create a QPdfView instance
-        self.pdf_view = QPdfView(self)
+#         # Create a QPdfView instance
+#         self.pdf_view = QPdfView(self)
 
-        # Create a layout and add the QPdfView to it
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.pdf_view)
-        self.setLayout(layout)
+#         # Create a layout and add the QPdfView to it
+#         layout = QVBoxLayout(self)
+#         layout.addWidget(self.pdf_view)
+#         self.setLayout(layout)
 
-        # Load the PDF file if a path is provided
-        if pdf_path:
-            self.load_pdf(pdf_path)
+#         # Load the PDF file if a path is provided
+#         if pdf_path:
+#             self.load_pdf(pdf_path)
 
-    def load_pdf(self, pdf_path):
-        # Print the provided path for debugging
-        #print(f"Provided PDF path: {pdf_path}")
+#     def load_pdf(self, pdf_path):
+#         # Print the provided path for debugging
+#         #print(f"Provided PDF path: {pdf_path}")
 
-        # Get the absolute path and print it for debugging
-        abs_path = os.path.abspath(pdf_path)
-        #print(f"Absolute PDF path: {abs_path}")
+#         # Get the absolute path and print it for debugging
+#         abs_path = os.path.abspath(pdf_path)
+#         #print(f"Absolute PDF path: {abs_path}")
 
-        # Check if the PDF file exists
-        if not os.path.exists(abs_path):
-            print("The specified PDF file does not exist.")
-            return
+#         # Check if the PDF file exists
+#         if not os.path.exists(abs_path):
+#             print("The specified PDF file does not exist.")
+#             return
 
-        #print(f"Attempting to load PDF from: {abs_path}")  # Debugging output
+#         #print(f"Attempting to load PDF from: {abs_path}")  # Debugging output
 
-        # Create a QPdfDocument instance
-        self.pdf_document = QPdfDocument()
-        load_error = self.pdf_document.load(abs_path)  # Load the PDF document
-        self.pdf_view.setDocument(self.pdf_document)
-        # # Check if the PDF loaded successfully
-        # if load_error == QPdfDocument.NoError:  # NoError indicates success
-        #     self.pdf_view.setDocument(self.pdf_document)
-        # else:
-        #     print("Failed to load PDF document. Error code:", load_error)
+#         # Create a QPdfDocument instance
+#         self.pdf_document = QPdfDocument()
+#         load_error = self.pdf_document.load(abs_path)  # Load the PDF document
+#         self.pdf_view.setDocument(self.pdf_document)
+#         # # Check if the PDF loaded successfully
+#         # if load_error == QPdfDocument.NoError:  # NoError indicates success
+#         #     self.pdf_view.setDocument(self.pdf_document)
+#         # else:
+#         #     print("Failed to load PDF document. Error code:", load_error)
 
-    def get_pdf_view(self):
-        """Returns the QPdfView instance for adding to other layouts."""
-        return self.pdf_view
+#     def get_pdf_view(self):
+#         """Returns the QPdfView instance for adding to other layouts."""
+#         return self.pdf_view
 
-class OutputWindow(QDialog):
-    """
-    A dialog window for displaying output text.
+# class OutputWindow(QDialog):
+#     """
+#     A dialog window for displaying output text.
 
-    Methods:
-    - __init__(self, parent=None): Initializes the output window.
-    - update_output(self, text): Appends text to the output display.
-    """
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("QuESt Reliability Processes")
+#     Methods:
+#     - __init__(self, parent=None): Initializes the output window.
+#     - update_output(self, text): Appends text to the output display.
+#     """
+#     def __init__(self, parent=None):
+#         super().__init__(parent)
+#         self.setWindowTitle("QuESt Reliability Processes")
 
-        self.output_text = QTextEdit()
-        self.output_text.setMinimumSize(700, 600)
-        self.output_text.setReadOnly(True)
+#         self.output_text = QTextEdit()
+#         self.output_text.setMinimumSize(700, 600)
+#         self.output_text.setReadOnly(True)
 
-        layout = QVBoxLayout()
-        layout.addWidget(self.output_text)
+#         layout = QVBoxLayout()
+#         layout.addWidget(self.output_text)
 
-        self.setLayout(layout)
+#         self.setLayout(layout)
 
-    def update_output(self, text):
-        self.output_text.append(text)
+#     def update_output(self, text):
+#         self.output_text.append(text)
 
 class WorkerThread(QThread):
     """
@@ -188,11 +191,18 @@ class MainAppWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainAppWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)  # Setup the UI using the imported class
-        self.output_window = OutputWindow()
+        self.ui.setupUi(self)
+          # Setup the UI using the imported class
 
+        self.ui.tabWidget.setCurrentWidget(self.ui.tab_7)
+        #self.output_window = OutputWindow()
+        self.landing_page = LeafAnimation()
+        self.ui.verticalLayout_7.addWidget(self.landing_page)
+        self.results_page = results_form()
+        self.ui.verticalLayout_3.addWidget(self.results_page)
         # button connections in the landing page (stacked widget #1)
         # self.ui.pushButton_getStarted.clicked.connect(self.switch_to_DI_page)
+        self.landing_page.page_changer.connect(lambda: self.ui.tabWidget.setCurrentWidget(self.ui.api_tab))
         self.ui.actionHome_Page.triggered.connect(self.switch_to_home_page)
         self.ui.stackedWidget.setCurrentIndex(1)
 
@@ -245,7 +255,7 @@ class MainAppWindow(QMainWindow):
         self.cluster_results = os.path.join(base_dir, "Data", "Solar", "clustering_results.txt")
         self.pdf_path = os.path.join(base_dir, "Data", "Solar", "SSE_Curve.png")
 
-        self.ui.pushButton_getStarted.clicked.connect(lambda: self.ui.tabWidget.setCurrentWidget(self.ui.api_tab))
+        #self.ui.pushButton_getStarted.clicked.connect(lambda: self.ui.tabWidget.setCurrentWidget(self.ui.api_tab))
         self.ui.pushButton_skip_API.clicked.connect(lambda: self.ui.tabWidget.setCurrentWidget(self.ui.solar_tab))
         self.ui.pushButton_DI_next_4.clicked.connect(lambda: self.ui.tabWidget.setCurrentWidget(self.ui.solar_tab))
         self.ui.pushButton_DI_previous_2.clicked.connect(lambda: self.ui.tabWidget.setCurrentWidget(self.ui.api_tab))
@@ -262,12 +272,13 @@ class MainAppWindow(QMainWindow):
 
         self.ui.pushButton_sim_previous.clicked.connect(lambda: self.ui.tabWidget.setCurrentWidget(self.ui.wind_tab))
         self.ui.pushButton_6.clicked.connect(lambda: self.ui.tabWidget.setCurrentWidget(self.ui.results_tab))
-        #self.ui.pushButton_6.clicked.connect(self.plot)
+        self.ui.pushButton_6.clicked.connect(self.results_page.set_results_path)
 
 
         self.counter = 0
         self.plot_count = 0
         self.tester=0
+        self.png_count = 0
 
     def switch_to_home_page(self):
         self.ui.stackedWidget.setCurrentIndex(0)
@@ -426,6 +437,9 @@ class MainAppWindow(QMainWindow):
 
     def kmeans_eval(self):
 
+        if hasattr(self, 'label_sse'):
+            self.label_sse.setVisible(False)
+            self.ui.horizontalLayout_23.removeWidget(self.label_sse)
         self.ui.textBrowser_6.setVisible(True)
         self.ui.textBrowser_5.setVisible(True)
         self.solar_site_data = self.solar_directory + "/solar_sites.csv"
@@ -489,15 +503,50 @@ class MainAppWindow(QMainWindow):
         except Exception as e:
             self.ui.textBrowser_5.append(f"Error loading file: {e}")
 
+
     def display_png(self, file_path):
         if os.path.isfile(file_path):  # Check if the file exists
-            url = QUrl.fromLocalFile(file_path)  # Convert the file path to a URL
-            html_content = f'<img src="{url.toString()}" />'
-            self.ui.textBrowser_6.setHtml(html_content)  # Load the image in the QTextBrowser
-            print('Image displayed successfully.')
+            pixmap = QPixmap(file_path)
+
+            if not pixmap.isNull():
+                # Hide the QTextBrowser
+                if self.png_count == 0:
+                    self.png_count = 1
+                elif self.png_count ==1 :
+                    self.ui.textBrowser_6.hide()
+
+                    # Create a QLabel to display the image
+                    self.label_sse = QLabel()
+                    self.label_sse.setPixmap(pixmap)
+                    self.label_sse.setPixmap(pixmap.scaled(self.ui.textBrowser_6.width(), self.ui.textBrowser_6.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                    self.label_sse.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+                    self.ui.horizontalLayout_23.insertWidget(0, self.label_sse)
+                    self.png_count = 0
+
+                    # label.setAlignment(Qt.AlignCenter)
+                    # label.setGeometry(self.ui.textBrowser_6.geometry())
+                    # label.show()
+
+                #print('Image displayed successfully.')
+            else:
+                self.ui.textBrowser_6.setText("Failed to load image.")
+                self.ui.textBrowser_6.show()
+                print("Failed to load image.")
         else:
             self.ui.textBrowser_6.setText("File does not exist.")
+            self.ui.textBrowser_6.show()
             print("File does not exist.")
+
+    # def display_png(self, file_path):
+    #     if os.path.isfile(file_path):  # Check if the file exists
+    #         url = QUrl.fromLocalFile(file_path)  # Convert the file path to a URL
+    #         html_content = f'<img src="{url.toString()}" />'
+    #         self.ui.textBrowser_6.setHtml(html_content)  # Load the image in the QTextBrowser
+    #         print('Image displayed successfully.')
+    #     else:
+    #         self.ui.textBrowser_6.setText("File does not exist.")
+    #         print("File does not exist.")
 
     def on_workers_finished(self):
         # QMessageBox.information(self, "Clustering Metrics", "Please look at SSE curve and silhouette score results to make an informed choice on the number of clusters.")
@@ -976,92 +1025,92 @@ class MainAppWindow(QMainWindow):
             #self.ui.textBrowser_2.append("Plotting complete, view plots by clicking next. Plots are also saved in the Results folder.")
             #QMessageBox.information(self, "Plots", "Plotting complete, view plots in the Results folder.")
             #self.open_folder_in_explorer(self.results_dir)
-            self.load_plots()
-            self.load_csv_files()
+            # self.load_plots()
+            # self.load_csv_files()
             self.plot_count = 0
 
-    def load_plots(self):
-        # List of test graphs and their corresponding layout
-        graphs = [
-            ("solar_generation.pdf", self.ui.verticalLayout_55),
-            ("COV_track.pdf", self.ui.verticalLayout_46),
-            ("loadcurt.pdf", self.ui.verticalLayout_49),
-            ("LOLP_track.pdf", self.ui.verticalLayout_51),
-            ("SOC.pdf", self.ui.verticalLayout_53),
-            ("wind_generation.pdf", self.ui.verticalLayout_59),
-            ("heatmap.pdf", self.ui.verticalLayout_47),
-        ]
-        # Remove existing PDF viewers if they exist
-        for graph_name, layout in graphs:
-            viewer_attr_name = f"pdf_viewer_{graph_name.split('.')[0]}"
-            if hasattr(self, viewer_attr_name):
-                viewer = getattr(self, viewer_attr_name)
-                layout.removeWidget(viewer.get_pdf_view())  
+    # def load_plots(self):
+    #     # List of test graphs and their corresponding layout
+    #     graphs = [
+    #         ("solar_generation.pdf", self.ui.verticalLayout_55),
+    #         ("COV_track.pdf", self.ui.verticalLayout_46),
+    #         ("loadcurt.pdf", self.ui.verticalLayout_49),
+    #         ("LOLP_track.pdf", self.ui.verticalLayout_51),
+    #         ("SOC.pdf", self.ui.verticalLayout_53),
+    #         ("wind_generation.pdf", self.ui.verticalLayout_59),
+    #         ("heatmap.pdf", self.ui.verticalLayout_47),
+    #     ]
+    #     # Remove existing PDF viewers if they exist
+    #     for graph_name, layout in graphs:
+    #         viewer_attr_name = f"pdf_viewer_{graph_name.split('.')[0]}"
+    #         if hasattr(self, viewer_attr_name):
+    #             viewer = getattr(self, viewer_attr_name)
+    #             layout.removeWidget(viewer.get_pdf_view())
 
-        # Load new plots
-        for graph_name, layout in graphs:
-            test_graph = os.path.join(base_dir, "Results", graph_name)
+    #     # Load new plots
+    #     for graph_name, layout in graphs:
+    #         test_graph = os.path.join(base_dir, "Results", graph_name)
 
-            try:
-                # Create a new PDFViewer instance and add it to the layout
-                viewer = PDFViewer(test_graph)
-                layout.addWidget(viewer.get_pdf_view())
-                setattr(self, f"pdf_viewer_{graph_name.split('.')[0]}", viewer)
-            except Exception as e:
-                print(f"Failed to load {graph_name}: {e}")
+    #         try:
+    #             # Create a new PDFViewer instance and add it to the layout
+    #             viewer = PDFViewer(test_graph)
+    #             layout.addWidget(viewer.get_pdf_view())
+    #             setattr(self, f"pdf_viewer_{graph_name.split('.')[0]}", viewer)
+    #         except Exception as e:
+    #             print(f"Failed to load {graph_name}: {e}")
 
 
-    def load_csv_files(self):
+    # def load_csv_files(self):
 
-        csv_files = [
-            os.path.join(base_dir, "Results", "indices.csv")
-            # os.path.join(base_dir, "Results", "LOL_perc_prob.csv"),
-        ]
+    #     csv_files = [
+    #         os.path.join(base_dir, "Results", "indices.csv")
+    #         # os.path.join(base_dir, "Results", "LOL_perc_prob.csv"),
+    #     ]
 
-        for file_path in csv_files:
-            try:
-                if os.path.exists(file_path):
-                    self.load_csv_to_table(file_path)
-                else:
-                    print(f"Warning: {file_path} does not exist.")  # Log the warning
-                    #QMessageBox.warning(self, "File Not Found", f"{file_path} does not exist.")
-            except Exception as e:
-                print(f"Error loading {file_path}: {e}")
-                #QMessageBox.critical(self, "Error", f"Failed to load {file_path}: {e}")
+    #     for file_path in csv_files:
+    #         try:
+    #             if os.path.exists(file_path):
+    #                 self.load_csv_to_table(file_path)
+    #             else:
+    #                 print(f"Warning: {file_path} does not exist.")  # Log the warning
+    #                 #QMessageBox.warning(self, "File Not Found", f"{file_path} does not exist.")
+    #         except Exception as e:
+    #             print(f"Error loading {file_path}: {e}")
+    #             #QMessageBox.critical(self, "Error", f"Failed to load {file_path}: {e}")
 
-    def load_csv_to_table(self, file_path):
-        # Generate a dynamic attribute name based on the file name
-        table_attr_name = f"table_{os.path.basename(file_path).split('.')[0]}"
+    # def load_csv_to_table(self, file_path):
+    #     # Generate a dynamic attribute name based on the file name
+    #     table_attr_name = f"table_{os.path.basename(file_path).split('.')[0]}"
 
-        # Check if the table already exists and remove it if it does
-        if hasattr(self, table_attr_name):
-            existing_table = getattr(self, table_attr_name)
-            self.ui.verticalLayout_61.removeWidget(existing_table)
+    #     # Check if the table already exists and remove it if it does
+    #     if hasattr(self, table_attr_name):
+    #         existing_table = getattr(self, table_attr_name)
+    #         self.ui.verticalLayout_61.removeWidget(existing_table)
 
-        # Create a new table for the CSV file
-        table = QTableWidget()
+    #     # Create a new table for the CSV file
+    #     table = QTableWidget()
 
-        # Load the CSV file into a pandas DataFrame
-        df = pd.read_csv(file_path)
+    #     # Load the CSV file into a pandas DataFrame
+    #     df = pd.read_csv(file_path)
 
-        # Set the table row and column count
-        table.setRowCount(df.shape[0])
-        table.setColumnCount(df.shape[1])
+    #     # Set the table row and column count
+    #     table.setRowCount(df.shape[0])
+    #     table.setColumnCount(df.shape[1])
 
-        # Set the table headers
-        table.setHorizontalHeaderLabels(df.columns.tolist())
+    #     # Set the table headers
+    #     table.setHorizontalHeaderLabels(df.columns.tolist())
 
-        # Populate the table with data
-        for row in range(df.shape[0]):
-            for col in range(df.shape[1]):
-                item = QTableWidgetItem(str(df.iat[row, col]))
-                table.setItem(row, col, item)
+    #     # Populate the table with data
+    #     for row in range(df.shape[0]):
+    #         for col in range(df.shape[1]):
+    #             item = QTableWidgetItem(str(df.iat[row, col]))
+    #             table.setItem(row, col, item)
 
-        # Add the new table to the layout
-        self.ui.verticalLayout_61.addWidget(table)
+    #     # Add the new table to the layout
+    #     self.ui.verticalLayout_61.addWidget(table)
 
-        # Store the new table in the instance for future reference
-        setattr(self, table_attr_name, table)
+    #     # Store the new table in the instance for future reference
+    #     setattr(self, table_attr_name, table)
 
     # def load_csv_to_table(self, file_path):
     #     # Create a new table for each CSV file
