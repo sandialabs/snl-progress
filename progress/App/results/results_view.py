@@ -17,14 +17,10 @@ class results_form(QWidget, Ui_results_widget):
         """Sets up the UI file to show in the application"""
         super(results_form, self).__init__(parent)
         self.setupUi(self)
-        self.image_grid1 = ImageGrid()
-        self.image_grid2 = ImageGrid()
-        self.image_grid3 = ImageGrid()
+        self.image_grid = ImageGrid()
         self.file_browser = FileBrowser()
         self.verticalLayout.addWidget(self.file_browser)
-        self.verticalLayout_2.addWidget(self.image_grid1)
-        self.verticalLayout_3.addWidget(self.image_grid2)
-        self.verticalLayout_4.addWidget(self.image_grid3)
+        self.verticalLayout_2.addWidget(self.image_grid)
         self.png_counter = 0
         self.file_min.clicked.connect(self.png_toggle)
 

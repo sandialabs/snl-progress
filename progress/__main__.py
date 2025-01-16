@@ -18,7 +18,7 @@ from progress.mod_wind import Wind
 from progress.mod_matrices import RAMatrices
 from progress.mod_plot import RAPlotTools
 from progress.paths import get_path
-from progress.App.landing.land import LeafAnimation
+from progress.App.landing.landing_page import land_form
 base_dir = get_path()
 from progress.App.results.results_view import results_form
 
@@ -196,7 +196,7 @@ class MainAppWindow(QMainWindow):
 
         self.ui.tabWidget.setCurrentWidget(self.ui.tab_7)
         #self.output_window = OutputWindow()
-        self.landing_page = LeafAnimation()
+        self.landing_page = land_form()
         self.ui.verticalLayout_7.addWidget(self.landing_page)
         self.results_page = results_form()
         self.ui.verticalLayout_3.addWidget(self.results_page)
