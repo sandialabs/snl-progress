@@ -21,6 +21,7 @@ from progress.paths import get_path
 from progress.App.landing.landing_page import land_form
 base_dir = get_path()
 from progress.App.results.results_view import results_form
+from progress.App.about.about_md import MarkdownWidget
 
 
 from PySide6.QtPdf import QPdfDocument
@@ -193,6 +194,10 @@ class MainAppWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
           # Setup the UI using the imported class
+        md_path = os.path.join(base_dir, '..', 'README.md')
+
+        self.about_page_widget = MarkdownWidget(md_path)
+        self.ui.verticalLayout_63.addWidget(self.about_page_widget)
 
         self.ui.tabWidget.setCurrentWidget(self.ui.tab_7)
         #self.output_window = OutputWindow()
@@ -313,7 +318,7 @@ class MainAppWindow(QMainWindow):
             os.system(f"xdg-open {path}")
 
     def open_sys_directory(self):
-        sys_directory = QFileDialog.getExistingDirectory(self, "Select Directory", "")
+        sys_directory = QFileDialog.getExistingDirectory(self, "Select Directory", base_dir)
         if sys_directory:
             self.ui.lineEdit_3.setText(sys_directory)
             self.sys_directory = sys_directory
@@ -386,7 +391,7 @@ class MainAppWindow(QMainWindow):
 
     def upload_solar_data(self):
 
-        self.solar_directory = QFileDialog.getExistingDirectory(self, "Select Directory", "")
+        self.solar_directory = QFileDialog.getExistingDirectory(self, "Select Directory", base_dir)
 
         QMessageBox.information(self, "Solar Upload", "Solar data uploaded and saved!")
 
@@ -588,7 +593,7 @@ class MainAppWindow(QMainWindow):
 
     def upload_wind_data(self):
 
-        self.wind_directory = QFileDialog.getExistingDirectory(self, "Select Directory", "")
+        self.wind_directory = QFileDialog.getExistingDirectory(self, "Select Directory", base_dir)
         self.wind_site_data = self.wind_directory+"/wind_sites.csv"
         self.pcurve_data = self.wind_directory+"/w_power_curves.csv"
         wind = Wind()
@@ -843,7 +848,7 @@ class MainAppWindow(QMainWindow):
         print("Simulation complete! You can view the results now by clicking next! Plots are also saved to the results folder.")
         self.ui.pushButton_6.setVisible(True)
 
-        self.main_folder = os.path.dirname(os.path.abspath(__file__))
+        self.main_folder = base_dir
         self.results_dir = os.path.join(self.main_folder, 'Results')
 
         if not os.path.exists(f"{self.main_folder}/Results"):
@@ -996,7 +1001,7 @@ class MainAppWindow(QMainWindow):
         print("Simulation complete! You can view the results now by clicking next! Plots are also saved to the results folder.")
         self.ui.pushButton_6.setVisible(True)
 
-        self.main_folder = os.path.dirname(os.path.abspath(__file__))
+        self.main_folder = base_dir
         self.results_dir = os.path.join(self.main_folder, 'Results')
 
         if not os.path.exists(f"{self.main_folder}/Results"):

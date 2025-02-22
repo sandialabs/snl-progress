@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1160</width>
-    <height>627</height>
+    <width>1142</width>
+    <height>588</height>
    </rect>
   </property>
   <property name="palette">
@@ -328,7 +328,7 @@ QComboBox QAbstractItemView::item:selected {
            <enum>QTabWidget::TabPosition::North</enum>
           </property>
           <property name="currentIndex">
-           <number>5</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -461,7 +461,7 @@ QComboBox QAbstractItemView::item:selected {
                        </property>
                        <property name="sizeHint" stdset="0">
                         <size>
-                         <width>330</width>
+                         <width>327</width>
                          <height>20</height>
                         </size>
                        </property>
@@ -3057,18 +3057,6 @@ font: 18pt &quot;Arial&quot;;</string>
             <property name="bottomMargin">
              <number>0</number>
             </property>
-            <item>
-             <widget class="QLabel" name="label">
-              <property name="font">
-               <font>
-                <pointsize>20</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>This page is under construction.</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </widget>
          </widget>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowzRYGkq.ui'
+## Form generated from reading UI file 'mainwindowvPBilc.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.5.2
 ##
@@ -26,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1160, 627)
+        MainWindow.resize(1142, 588)
         palette = QPalette()
         MainWindow.setPalette(palette)
         MainWindow.setStyleSheet(u"QLineEdit {\n"
@@ -280,7 +280,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3 = QHBoxLayout(self.frame_16)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_5 = QSpacerItem(330, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_5 = QSpacerItem(327, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_3.addItem(self.horizontalSpacer_5)
 
@@ -1390,14 +1390,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_63 = QVBoxLayout(self.about_tab)
         self.verticalLayout_63.setObjectName(u"verticalLayout_63")
         self.verticalLayout_63.setContentsMargins(0, 0, 0, 0)
-        self.label = QLabel(self.about_tab)
-        self.label.setObjectName(u"label")
-        font3 = QFont()
-        font3.setPointSize(20)
-        self.label.setFont(font3)
-
-        self.verticalLayout_63.addWidget(self.label)
-
         self.tabWidget.addTab(self.about_tab, "")
 
         self.gridLayout_3.addWidget(self.tabWidget, 0, 0, 1, 1)
@@ -1417,7 +1409,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.stackedWidget.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(5)
+        self.tabWidget.setCurrentIndex(0)
         self.stackedWidget_2.setCurrentIndex(0)
 
 
@@ -1501,7 +1493,6 @@ class Ui_MainWindow(object):
         self.pushButton_6.setText(QCoreApplication.translate("MainWindow", u"Next", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.sim_tab), QCoreApplication.translate("MainWindow", u"Simulation", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.results_tab), QCoreApplication.translate("MainWindow", u"Results", None))
-        self.label.setText(QCoreApplication.translate("MainWindow", u"This page is under construction.", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.about_tab), QCoreApplication.translate("MainWindow", u"About", None))
     # retranslateUi
 
