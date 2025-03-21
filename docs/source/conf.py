@@ -2,15 +2,33 @@ import os
 import sys
 from unittest.mock import MagicMock
 
-# Function to simulate the MPI module
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
+# conf.py
 
-# List of modules to mock
-MOCK_MODULES = ['mpi4py', 'mpi4py.MPI']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+# List the names exactly as they are imported in your code.
+autodoc_mock_imports = [
+    # "mod_wind",
+    "pyomo",
+    "plotly",
+    "pvlib",
+    "rex",
+    "mpi4py",
+    "mpi4py.MPI",
+    "pyomo.environ",
+    "plotly.offline",
+    "plotly.graph_objects",  # if needed
+    "pvlib.location",
+    "pvlib.system",
+    "pvlib.modelchain",
+    "PySide6.QtCore",
+    "PySide6.QtGui",
+    "PySide6",
+    "sklearn",
+    "kneed",
+    "mod_sysdata",
+    "mod_wind"
+    
+]
+
 
 # Get the absolute path to the directory containing conf.py
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -28,12 +46,13 @@ print(f"Project root: {project_root}")
 project = 'ProGRESS'
 copyright = '2024, Atri Bera'
 author = 'Atri Bera'
-release = '0.1.0'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
+    "myst_parser",
 ]
 
 templates_path = ['_templates']
@@ -46,7 +65,12 @@ autodoc_default_options = {
     'private-members': True,
     'show-inheritance': True,
 }
+html_theme_options = {
+    'collapse_navigation': False,
+    'navigation_depth': 4,
+}
+master_doc = 'index'
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = 'alabaster'
-html_static_path = ['_static']
+# html_static_path = ['_static']

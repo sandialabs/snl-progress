@@ -1,7 +1,0 @@
-snl_progress
-============
-
-.. toctree::
-   :maxdepth: 4
-
-   snl_progress
