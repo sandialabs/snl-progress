@@ -5,7 +5,7 @@ from PySide6.QtCore import Signal
 from progress.App.results.ui.ui_results_viewer import Ui_results_widget
 from progress.App.results.drag_widget import FileBrowser, ImageGrid
 from progress.paths import get_path
-base = get_path()
+base_dir = get_path()
 import os
 
 class results_form(QWidget, Ui_results_widget):
@@ -35,10 +35,10 @@ class results_form(QWidget, Ui_results_widget):
             self.frame.setMinimumWidth(230)
             self.frame.setMaximumWidth(230)
             self.png_counter = 0
-
+    
     def set_results_path(self):
         try:
-            results_folder = os.path.join(base, "Results")
+            results_folder = os.path.join(base_dir, "Results")
             self.file_browser.setRootPath(results_folder)
         except:
             pass

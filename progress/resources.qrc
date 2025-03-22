@@ -9,6 +9,7 @@
     <file>Images/logos/Sandia_National_Laboratories_logo.svg</file>
   </qresource>
   <qresource prefix="icons">
+    <file>Images/icons/more_vert_24dp_666666_FILL0_wght200_GRAD0_opsz24.png</file>
     <file>Images/icons/qmark.png</file>
     <file>Images/icons/more_vert_24dp_C8C8C8_FILL0_wght200_GRAD0_opsz24.png</file>
   </qresource>

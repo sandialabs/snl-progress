@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'results_viewerAUwOgY.ui'
+## Form generated from reading UI file 'results_viewerLwitdm.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.5.2
 ##
@@ -23,7 +23,8 @@ class Ui_results_widget(object):
     def setupUi(self, results_widget):
         if not results_widget.objectName():
             results_widget.setObjectName(u"results_widget")
-        results_widget.resize(1068, 708)
+        results_widget.resize(1062, 695)
+        results_widget.setStyleSheet(u"")
         self.horizontalLayout = QHBoxLayout(results_widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -31,6 +32,7 @@ class Ui_results_widget(object):
         self.frame.setObjectName(u"frame")
         self.frame.setMinimumSize(QSize(230, 0))
         self.frame.setMaximumSize(QSize(230, 16777215))
+        self.frame.setStyleSheet(u"")
         self.frame.setFrameShape(QFrame.Shape.NoFrame)
         self.frame.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout = QVBoxLayout(self.frame)
@@ -42,7 +44,7 @@ class Ui_results_widget(object):
         self.file_min = QPushButton(results_widget)
         self.file_min.setObjectName(u"file_min")
         icon = QIcon()
-        icon.addFile(u":/icons/Images/icons/more_vert_24dp_C8C8C8_FILL0_wght200_GRAD0_opsz24.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/icons/Images/icons/more_vert_24dp_666666_FILL0_wght200_GRAD0_opsz24.png", QSize(), QIcon.Normal, QIcon.Off)
         self.file_min.setIcon(icon)
         self.file_min.setIconSize(QSize(16, 24))
         self.file_min.setFlat(True)
@@ -51,11 +53,7 @@ class Ui_results_widget(object):
 
         self.frame_2 = QFrame(results_widget)
         self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setStyleSheet(u"\n"
-"\n"
-"    background-color: rgb(40, 40, 40); /* Dark background color */\n"
-"    color: rgb(200, 200, 200); /* Light text color */\n"
-"")
+        self.frame_2.setStyleSheet(u"")
         self.frame_2.setFrameShape(QFrame.Shape.NoFrame)
         self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_2 = QVBoxLayout(self.frame_2)

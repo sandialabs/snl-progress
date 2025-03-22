@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1068</width>
-    <height>708</height>
+    <width>1062</width>
+    <height>695</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
    <property name="leftMargin">
@@ -39,6 +42,9 @@
        <width>230</width>
        <height>16777215</height>
       </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="frameShape">
       <enum>QFrame::Shape::NoFrame</enum>
@@ -69,7 +75,7 @@
      </property>
      <property name="icon">
       <iconset resource="../../../resources.qrc">
-       <normaloff>:/icons/Images/icons/more_vert_24dp_C8C8C8_FILL0_wght200_GRAD0_opsz24.png</normaloff>:/icons/Images/icons/more_vert_24dp_C8C8C8_FILL0_wght200_GRAD0_opsz24.png</iconset>
+       <normaloff>:/icons/Images/icons/more_vert_24dp_666666_FILL0_wght200_GRAD0_opsz24.png</normaloff>:/icons/Images/icons/more_vert_24dp_666666_FILL0_wght200_GRAD0_opsz24.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -85,11 +91,7 @@
    <item>
     <widget class="QFrame" name="frame_2">
      <property name="styleSheet">
-      <string notr="true">
-
-    background-color: rgb(40, 40, 40); /* Dark background color */
-    color: rgb(200, 200, 200); /* Light text color */
-</string>
+      <string notr="true"/>
      </property>
      <property name="frameShape">
       <enum>QFrame::Shape::NoFrame</enum>
