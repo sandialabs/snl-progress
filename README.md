@@ -372,6 +372,23 @@ A test case is included with this tool. The test system is the [IEEE RTS-GMLC](h
 
 All test system data provided with the tool has been taken from the [RTS-GMLC GitHub repository](<https://github.com/GridMod/RTS-GMLC>).
 
+## Citing ProGRESS
+
+If you use ProGRESS in your research, please cite the following paper:
+
+A. Bera, C. J. Newlun, A. Lopez, Y. -J. Pomeroy, T. Nguyen and R. Byrne, "Probabilistic Grid Reliability Analysis with Energy Storage System (ProGRESS): An Open-Source Tool for Assessing the Reliability of Power Systems," 2025 IEEE Electrical Energy Storage Applications and Technologies Conference (EESAT), Charlotte, NC, USA, 2025, pp. 1-5, doi: 10.1109/EESAT62935.2025.10891214.
+
+Bibtex Entry:
+
+@inproceedings{bera2025probabilistic, <br>
+  title={Probabilistic Grid Reliability Analysis with Energy Storage System (ProGRESS): An Open-Source Tool for Assessing the Reliability of Power Systems}, <br>
+  author={Bera, Atri and Newlun, Cody J and Lopez, Andres and Pomeroy, Yung-Jai and Nguyen, Tu and Byrne, Ray}, <br>
+  booktitle={2025 IEEE Electrical Energy Storage Applications and Technologies Conference (EESAT)}, <br>
+  pages={1--5}, <br>
+  year={2025}, <br>
+  organization={IEEE} <br>
+}
+
 ## Acknowledgment
 <a id="acknowledgement"></a>
 The ProGRESS tool is developed and maintained by the [Energy Storage Analytics Group](<https://energy.sandia.gov/programs/energy-storage/analytics/>) at [Sandia National Laboratories](<https://www.sandia.gov/>). This material is based upon work supported by the **U.S. Department of Energy, Office of Electricity (OE), Energy Storage Division**.
