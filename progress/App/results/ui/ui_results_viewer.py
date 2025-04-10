@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'results_viewerLwitdm.ui'
+## Form generated from reading UI file 'results_viewerggbxQm.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,7 +27,7 @@ class Ui_results_widget(object):
         results_widget.setStyleSheet(u"")
         self.horizontalLayout = QHBoxLayout(results_widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setContentsMargins(9, 0, 9, 0)
         self.frame = QFrame(results_widget)
         self.frame.setObjectName(u"frame")
         self.frame.setMinimumSize(QSize(230, 0))
@@ -44,7 +44,7 @@ class Ui_results_widget(object):
         self.file_min = QPushButton(results_widget)
         self.file_min.setObjectName(u"file_min")
         icon = QIcon()
-        icon.addFile(u":/icons/Images/icons/more_vert_24dp_666666_FILL0_wght200_GRAD0_opsz24.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/icons/Images/icons/more_vert_24dp_666666_FILL0_wght200_GRAD0_opsz24.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.file_min.setIcon(icon)
         self.file_min.setIconSize(QSize(16, 24))
         self.file_min.setFlat(True)

@@ -51,6 +51,9 @@ class wind_form(QWidget, Ui_wind_widget):
             self.widget_9.setVisible(False)
             self.pushButton_4.setVisible(False)
             self.pushButton_wind_upload.setVisible(True)
+        elif index == 3:
+            self.data_handler.set_wind_directory(False)
+            self.pushButton_DI_next_3.setVisible(True)
 
     def upload_wind_data(self):
 

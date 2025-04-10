@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'sim_guiNETJrY.ui'
+## Form generated from reading UI file 'sim_guiVTyYwp.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -27,7 +27,7 @@ class Ui_sim_widget(object):
         self.verticalLayout = QVBoxLayout(sim_widget)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setContentsMargins(9, 0, 9, 0)
         self.widget_7 = QWidget(sim_widget)
         self.widget_7.setObjectName(u"widget_7")
         self.widget_7.setStyleSheet(u"")
@@ -159,7 +159,7 @@ class Ui_sim_widget(object):
         self.horizontalLayout_35.setSpacing(0)
         self.horizontalLayout_35.setObjectName(u"horizontalLayout_35")
         self.horizontalLayout_35.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_19 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_19 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_35.addItem(self.horizontalSpacer_19)
 
@@ -175,7 +175,7 @@ class Ui_sim_widget(object):
 
         self.horizontalLayout_35.addWidget(self.pushButton_5)
 
-        self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_35.addItem(self.horizontalSpacer_12)
 
@@ -185,7 +185,7 @@ class Ui_sim_widget(object):
 
         self.horizontalLayout_36.addWidget(self.frame_43)
 
-        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_36.addItem(self.horizontalSpacer_24)
 
@@ -216,7 +216,7 @@ class Ui_sim_widget(object):
 
         self.horizontalLayout_37.addWidget(self.pushButton_sim_previous)
 
-        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_37.addItem(self.horizontalSpacer_10)
 

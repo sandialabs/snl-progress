@@ -70,6 +70,9 @@ class solar_form(QWidget, Ui_solar_widget):
             self.widget_5.setVisible(False)
             self.pushButton_solar_dl.setVisible(False)
             # self.pushButton_DI_next_2.setVisible(True)
+        elif index == 3:
+            self.data_handler.set_solar_directory(False)
+            self.pushButton_DI_next_2.setVisible(True)
 
     def upload_solar_data(self):
 

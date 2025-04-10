@@ -182,7 +182,7 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="0" column="0">
+         <item row="0" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
           <widget class="QLabel" name="label_31">
            <property name="text">
             <string>Start Year:</string>
@@ -199,7 +199,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="2" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
           <widget class="QLabel" name="label_32">
            <property name="text">
             <string>End Year:</string>
@@ -246,7 +246,7 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
+         <item alignment="Qt::AlignmentFlag::AlignHCenter">
           <widget class="QLabel" name="label_27">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -298,6 +298,11 @@
            <item>
             <property name="text">
              <string>Use Own Data</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>No Wind</string>
             </property>
            </item>
           </widget>

@@ -2,6 +2,11 @@ QWidget{
 	background-color: rgb(240, 240, 240);
 }
 
+QLabel {
+    font: 12pt "Arial";
+    color: rgb(80, 80, 80);
+}
+
 QTabWidget::pane {
     border: 0px;
 }

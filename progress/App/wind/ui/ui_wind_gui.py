@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'wind_guiSvVpLs.ui'
+## Form generated from reading UI file 'wind_guibqczNp.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -24,7 +24,7 @@ class Ui_wind_widget(object):
     def setupUi(self, wind_widget):
         if not wind_widget.objectName():
             wind_widget.setObjectName(u"wind_widget")
-        wind_widget.resize(1321, 920)
+        wind_widget.resize(1406, 876)
         self.verticalLayout = QVBoxLayout(wind_widget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.frame_55 = QFrame(wind_widget)
@@ -64,7 +64,7 @@ class Ui_wind_widget(object):
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.pushButton_7 = QPushButton(self.widget_12)
         self.pushButton_7.setObjectName(u"pushButton_7")
-        sizePolicy = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Preferred)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.pushButton_7.sizePolicy().hasHeightForWidth())
@@ -77,7 +77,7 @@ class Ui_wind_widget(object):
 
         self.pushButton_help_wind = QPushButton(self.widget_12)
         self.pushButton_help_wind.setObjectName(u"pushButton_help_wind")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Minimum)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.pushButton_help_wind.sizePolicy().hasHeightForWidth())
@@ -86,13 +86,13 @@ class Ui_wind_widget(object):
         font1 = QFont()
         font1.setPointSize(12)
         self.pushButton_help_wind.setFont(font1)
-        self.pushButton_help_wind.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButton_help_wind.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.pushButton_help_wind.setStyleSheet(u"")
         self.pushButton_help_wind.setFlat(True)
 
         self.horizontalLayout_2.addWidget(self.pushButton_help_wind)
 
-        self.horizontalSpacer_13 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_13 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_13)
 
@@ -111,7 +111,7 @@ class Ui_wind_widget(object):
         self.label_31 = QLabel(self.widget_9)
         self.label_31.setObjectName(u"label_31")
 
-        self.gridLayout_10.addWidget(self.label_31, 0, 0, 1, 1)
+        self.gridLayout_10.addWidget(self.label_31, 0, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.lineEdit_22 = QLineEdit(self.widget_9)
         self.lineEdit_22.setObjectName(u"lineEdit_22")
@@ -122,7 +122,7 @@ class Ui_wind_widget(object):
         self.label_32 = QLabel(self.widget_9)
         self.label_32.setObjectName(u"label_32")
 
-        self.gridLayout_10.addWidget(self.label_32, 2, 0, 1, 1)
+        self.gridLayout_10.addWidget(self.label_32, 2, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
 
         self.lineEdit_23 = QLineEdit(self.widget_9)
         self.lineEdit_23.setObjectName(u"lineEdit_23")
@@ -136,7 +136,7 @@ class Ui_wind_widget(object):
 
         self.widget_8 = QWidget(self.frame_55)
         self.widget_8.setObjectName(u"widget_8")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.widget_8.sizePolicy().hasHeightForWidth())
@@ -147,7 +147,7 @@ class Ui_wind_widget(object):
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
         self.label_27 = QLabel(self.widget_8)
         self.label_27.setObjectName(u"label_27")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Minimum)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.label_27.sizePolicy().hasHeightForWidth())
@@ -155,9 +155,10 @@ class Ui_wind_widget(object):
         self.label_27.setMaximumSize(QSize(100, 100))
         self.label_27.setStyleSheet(u"")
 
-        self.verticalLayout_2.addWidget(self.label_27)
+        self.verticalLayout_2.addWidget(self.label_27, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.comboBox_3 = QComboBox(self.widget_8)
+        self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
@@ -178,7 +179,7 @@ class Ui_wind_widget(object):
 
         self.gridLayout_12.addWidget(self.widget_8, 0, 0, 1, 1)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
         self.gridLayout_12.addItem(self.verticalSpacer, 1, 0, 1, 1)
 
@@ -200,7 +201,7 @@ class Ui_wind_widget(object):
 
         self.horizontalLayout_7.addWidget(self.pushButton_DI_previous_3)
 
-        self.horizontalSpacer_11 = QSpacerItem(1023, 45, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_11 = QSpacerItem(1023, 45, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_7.addItem(self.horizontalSpacer_11)
 
@@ -232,6 +233,7 @@ class Ui_wind_widget(object):
         self.comboBox_3.setItemText(0, QCoreApplication.translate("wind_widget", u"--Select Option--", None))
         self.comboBox_3.setItemText(1, QCoreApplication.translate("wind_widget", u"Download Wind Data from WIND Toolkit", None))
         self.comboBox_3.setItemText(2, QCoreApplication.translate("wind_widget", u"Use Own Data", None))
+        self.comboBox_3.setItemText(3, QCoreApplication.translate("wind_widget", u"No Wind", None))
 
         self.pushButton_wind_upload.setText(QCoreApplication.translate("wind_widget", u"Upload Data", None))
         self.pushButton_DI_previous_3.setText(QCoreApplication.translate("wind_widget", u"Previous", None))

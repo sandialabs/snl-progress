@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'solar_guiXRNKhk.ui'
+## Form generated from reading UI file 'solar_guigavnki.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -28,10 +28,10 @@ class Ui_solar_widget(object):
         self.verticalLayout_2 = QVBoxLayout(solar_widget)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2.setContentsMargins(9, 0, 9, 0)
         self.stackedWidget_2 = QStackedWidget(solar_widget)
         self.stackedWidget_2.setObjectName(u"stackedWidget_2")
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.stackedWidget_2.sizePolicy().hasHeightForWidth())
@@ -69,7 +69,7 @@ class Ui_solar_widget(object):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.widget_4 = QWidget(self.widget_6)
         self.widget_4.setObjectName(u"widget_4")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.widget_4.sizePolicy().hasHeightForWidth())
@@ -84,14 +84,15 @@ class Ui_solar_widget(object):
         self.label_20.setSizePolicy(sizePolicy1)
         self.label_20.setStyleSheet(u"")
 
-        self.verticalLayout.addWidget(self.label_20)
+        self.verticalLayout.addWidget(self.label_20, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.comboBox_2 = QComboBox(self.widget_4)
         self.comboBox_2.addItem("")
         self.comboBox_2.addItem("")
         self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
         self.comboBox_2.setObjectName(u"comboBox_2")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
         sizePolicy2.setHeightForWidth(self.comboBox_2.sizePolicy().hasHeightForWidth())
@@ -123,7 +124,7 @@ class Ui_solar_widget(object):
         font1.setBold(False)
         font1.setItalic(False)
         self.pushButton_solar_dl.setFont(font1)
-        self.pushButton_solar_dl.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButton_solar_dl.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.pushButton_solar_dl.setStyleSheet(u"")
 
         self.gridLayout.addWidget(self.pushButton_solar_dl, 3, 0, 1, 1, Qt.AlignmentFlag.AlignHCenter)
@@ -146,7 +147,7 @@ class Ui_solar_widget(object):
         self.label_3 = QLabel(self.widget_5)
         self.label_3.setObjectName(u"label_3")
 
-        self.verticalLayout_9.addWidget(self.label_3)
+        self.verticalLayout_9.addWidget(self.label_3, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.lineEdit_starty = QLineEdit(self.widget_5)
         self.lineEdit_starty.setObjectName(u"lineEdit_starty")
@@ -159,7 +160,7 @@ class Ui_solar_widget(object):
         self.label_26.setObjectName(u"label_26")
         self.label_26.setEnabled(True)
 
-        self.verticalLayout_9.addWidget(self.label_26)
+        self.verticalLayout_9.addWidget(self.label_26, 0, Qt.AlignmentFlag.AlignHCenter)
 
         self.lineEdit_endy = QLineEdit(self.widget_5)
         self.lineEdit_endy.setObjectName(u"lineEdit_endy")
@@ -175,7 +176,7 @@ class Ui_solar_widget(object):
 
         self.widget_10 = QWidget(self.frame_4)
         self.widget_10.setObjectName(u"widget_10")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
@@ -192,7 +193,7 @@ class Ui_solar_widget(object):
 
         self.horizontalLayout.addWidget(self.pushButton_DI_previous_2)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
@@ -272,13 +273,13 @@ class Ui_solar_widget(object):
         font2 = QFont()
         font2.setPointSize(12)
         self.pushButton_help_solar.setFont(font2)
-        self.pushButton_help_solar.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButton_help_solar.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.pushButton_help_solar.setStyleSheet(u"")
         self.pushButton_help_solar.setFlat(True)
 
         self.gridLayout_8.addWidget(self.pushButton_help_solar, 0, 1, 1, 1)
 
-        self.horizontalSpacer_9 = QSpacerItem(158, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_9 = QSpacerItem(158, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.gridLayout_8.addItem(self.horizontalSpacer_9, 0, 2, 1, 1)
 
@@ -305,7 +306,7 @@ class Ui_solar_widget(object):
         self.horizontalLayout_22.setSpacing(0)
         self.horizontalLayout_22.setObjectName(u"horizontalLayout_22")
         self.horizontalLayout_22.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_16 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_16 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_22.addItem(self.horizontalSpacer_16)
 
@@ -322,13 +323,13 @@ class Ui_solar_widget(object):
         self.pushButton_api_8.setObjectName(u"pushButton_api_8")
         self.pushButton_api_8.setMinimumSize(QSize(25, 23))
         self.pushButton_api_8.setFont(font2)
-        self.pushButton_api_8.setCursor(QCursor(Qt.PointingHandCursor))
+        self.pushButton_api_8.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         self.pushButton_api_8.setStyleSheet(u"")
         self.pushButton_api_8.setFlat(True)
 
         self.horizontalLayout_22.addWidget(self.pushButton_api_8)
 
-        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_22.addItem(self.horizontalSpacer_8)
 
@@ -393,7 +394,7 @@ class Ui_solar_widget(object):
         self.horizontalLayout_25.setSpacing(0)
         self.horizontalLayout_25.setObjectName(u"horizontalLayout_25")
         self.horizontalLayout_25.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_17 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_17 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_25.addItem(self.horizontalSpacer_17)
 
@@ -405,7 +406,7 @@ class Ui_solar_widget(object):
 
         self.horizontalLayout_25.addWidget(self.pushButton_3)
 
-        self.horizontalSpacer_18 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_18 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_25.addItem(self.horizontalSpacer_18)
 
@@ -466,7 +467,7 @@ class Ui_solar_widget(object):
 
         self.horizontalLayout_26.addWidget(self.pushButton_DI_previous_5)
 
-        self.horizontalSpacer_15 = QSpacerItem(1023, 45, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_15 = QSpacerItem(1023, 45, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_26.addItem(self.horizontalSpacer_15)
 
@@ -501,6 +502,7 @@ class Ui_solar_widget(object):
         self.comboBox_2.setItemText(0, QCoreApplication.translate("solar_widget", u"--Select Option--", None))
         self.comboBox_2.setItemText(1, QCoreApplication.translate("solar_widget", u"Download Solar Data from NSRDB", None))
         self.comboBox_2.setItemText(2, QCoreApplication.translate("solar_widget", u"Use Own Data", None))
+        self.comboBox_2.setItemText(3, QCoreApplication.translate("solar_widget", u"No Solar", None))
 
         self.pushButton_solar_dl.setText(QCoreApplication.translate("solar_widget", u"Download Solar Data", None))
         self.pushButton_solar_upload.setText(QCoreApplication.translate("solar_widget", u"Upload Data", None))
