@@ -1,5 +1,5 @@
 
-<img src = "progress/Images/logos/progress-bold.png" width="1300" height="280" alt="API" />
+<img src = "progress/Images/logos/progress-bold.png" width="1400" height="250" alt="API" />
 
 # <ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)
 
