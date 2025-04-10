@@ -382,7 +382,6 @@ The ProGRESS tool is developed and maintained by the [Energy Storage Analytics G
 - Yung-Jai Pomeroy
 - Cody Newlun
 - Tu Nguyen
-- Dilip Pandit
 
 | <img src = "progress/Images/logos/Sandia_National_Laboratories_logo.svg" width="260" height="80" alt="SNL" /> |  <img src = "progress/Images/logos/New_DOE_Logo_Color.jpg" width="300" height="80" alt="DOE" />|
 |-------------------------|-------------------------|
