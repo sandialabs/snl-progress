@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1254</width>
-    <height>694</height>
+    <width>1248</width>
+    <height>681</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -155,7 +155,7 @@
                 <item alignment="Qt::AlignmentFlag::AlignHCenter">
                  <widget class="QLabel" name="label_20">
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
@@ -164,7 +164,7 @@
                    <string notr="true"/>
                   </property>
                   <property name="text">
-                   <string>Datal input:</string>
+                   <string>Data input:</string>
                   </property>
                  </widget>
                 </item>

@@ -3,7 +3,7 @@ QWidget{
 }
 
 QLabel {
-    font: 12pt "Arial";
+    font: 18pt "Arial";
     color: rgb(80, 80, 80);
 }
 

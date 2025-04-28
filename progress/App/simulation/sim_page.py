@@ -11,6 +11,7 @@ from progress.mod_plot import RAPlotTools
 import numpy as np
 import pandas as pd
 import copy
+from datetime import datetime
 
 class sim_form(QWidget, Ui_sim_widget):
     """Landing page widget."""
@@ -381,18 +382,45 @@ class sim_form(QWidget, Ui_sim_widget):
         if self.plot_count == 0:
             self.plot_count = 1
         else:
+            # Create a timestamp-based directory
+            timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            results_subdir = os.path.join(self.main_folder, 'Results', timestamp)
+            os.makedirs(results_subdir, exist_ok=True)
+
+            # Initialize RAPlotTools
             rapt = RAPlotTools(self.main_folder)
-            rapt.PlotSolarGen(self.renewable_rec["solar_rec"], self.data_handler.bus_name)
-            rapt.PlotWindGen(self.renewable_rec["wind_rec"], self.data_handler.bus_name)
-            rapt.PlotSOC(self.SOC_rec, self.data_handler.essname)
-            rapt.PlotLoadCurt(self.curt_rec)
-            rapt.PlotLOLP(self.mLOLP_rec, self.samples, 1)
-            rapt.PlotCOV(self.COV_rec, self.samples, 1)
+
+            # Call plotting functions, passing the results_subdir
+            rapt.PlotSolarGen(self.renewable_rec["solar_rec"], self.data_handler.bus_name, results_subdir)
+            rapt.PlotWindGen(self.renewable_rec["wind_rec"], self.data_handler.bus_name, results_subdir)
+            rapt.PlotSOC(self.SOC_rec, self.data_handler.essname, results_subdir)
+            rapt.PlotLoadCurt(self.curt_rec, results_subdir)
+            rapt.PlotLOLP(self.mLOLP_rec, self.samples, 1, results_subdir)
+            rapt.PlotCOV(self.COV_rec, self.samples, 1, results_subdir)
+
             if self.sim_hours == 8760:
-                rapt.OutageMap(f"{self.main_folder}/Results/LOL_perc_prob.csv")
-            #self.ui.textBrowser_2.append("Plotting complete, view plots by clicking next. Plots are also saved in the Results folder.")
-            #QMessageBox.information(self, "Plots", "Plotting complete, view plots in the Results folder.")
-            #self.open_folder_in_explorer(self.results_dir)
-            # self.load_plots()
-            # self.load_csv_files()
+                rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
+
+            # Update plot count
             self.plot_count = 0
+
+
+    # def plot(self):
+    #     if self.plot_count == 0:
+    #         self.plot_count = 1
+    #     else:
+    #         rapt = RAPlotTools(self.main_folder)
+    #         rapt.PlotSolarGen(self.renewable_rec["solar_rec"], self.data_handler.bus_name)
+    #         rapt.PlotWindGen(self.renewable_rec["wind_rec"], self.data_handler.bus_name)
+    #         rapt.PlotSOC(self.SOC_rec, self.data_handler.essname)
+    #         rapt.PlotLoadCurt(self.curt_rec)
+    #         rapt.PlotLOLP(self.mLOLP_rec, self.samples, 1)
+    #         rapt.PlotCOV(self.COV_rec, self.samples, 1)
+    #         if self.sim_hours == 8760:
+    #             rapt.OutageMap(f"{self.main_folder}/Results/LOL_perc_prob.csv")
+    #         #self.ui.textBrowser_2.append("Plotting complete, view plots by clicking next. Plots are also saved in the Results folder.")
+    #         #QMessageBox.information(self, "Plots", "Plotting complete, view plots in the Results folder.")
+    #         #self.open_folder_in_explorer(self.results_dir)
+    #         # self.load_plots()
+    #         # self.load_csv_files()
+    #         self.plot_count = 0
