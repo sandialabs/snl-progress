@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'wind_guibqczNp.ui'
+## Form generated from reading UI file 'wind_guiGECybO.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -145,17 +145,36 @@ class Ui_wind_widget(object):
         self.verticalLayout_2 = QVBoxLayout(self.widget_8)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.label_27 = QLabel(self.widget_8)
+        self.frame = QFrame(self.widget_8)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame.setFrameShadow(QFrame.Shadow.Plain)
+        self.horizontalLayout = QHBoxLayout(self.frame)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.label_27 = QLabel(self.frame)
         self.label_27.setObjectName(u"label_27")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
         sizePolicy3.setHorizontalStretch(0)
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.label_27.sizePolicy().hasHeightForWidth())
         self.label_27.setSizePolicy(sizePolicy3)
+        self.label_27.setMinimumSize(QSize(200, 0))
         self.label_27.setMaximumSize(QSize(100, 100))
         self.label_27.setStyleSheet(u"")
+        self.label_27.setWordWrap(False)
 
-        self.verticalLayout_2.addWidget(self.label_27, 0, Qt.AlignmentFlag.AlignHCenter)
+        self.horizontalLayout.addWidget(self.label_27)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer_2)
+
+
+        self.verticalLayout_2.addWidget(self.frame)
 
         self.comboBox_3 = QComboBox(self.widget_8)
         self.comboBox_3.addItem("")
@@ -229,7 +248,7 @@ class Ui_wind_widget(object):
         self.pushButton_help_wind.setText(QCoreApplication.translate("wind_widget", u"?", None))
         self.label_31.setText(QCoreApplication.translate("wind_widget", u"Start Year:", None))
         self.label_32.setText(QCoreApplication.translate("wind_widget", u"End Year:", None))
-        self.label_27.setText(QCoreApplication.translate("wind_widget", u"Datal input:", None))
+        self.label_27.setText(QCoreApplication.translate("wind_widget", u"Data input:         ", None))
         self.comboBox_3.setItemText(0, QCoreApplication.translate("wind_widget", u"--Select Option--", None))
         self.comboBox_3.setItemText(1, QCoreApplication.translate("wind_widget", u"Download Wind Data from WIND Toolkit", None))
         self.comboBox_3.setItemText(2, QCoreApplication.translate("wind_widget", u"Use Own Data", None))

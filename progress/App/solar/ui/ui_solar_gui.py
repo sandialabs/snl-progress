@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'solar_guigavnki.ui'
+## Form generated from reading UI file 'solar_guikLGStX.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -24,7 +24,7 @@ class Ui_solar_widget(object):
     def setupUi(self, solar_widget):
         if not solar_widget.objectName():
             solar_widget.setObjectName(u"solar_widget")
-        solar_widget.resize(1254, 694)
+        solar_widget.resize(1248, 681)
         self.verticalLayout_2 = QVBoxLayout(solar_widget)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -80,8 +80,11 @@ class Ui_solar_widget(object):
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.label_20 = QLabel(self.widget_4)
         self.label_20.setObjectName(u"label_20")
-        sizePolicy1.setHeightForWidth(self.label_20.sizePolicy().hasHeightForWidth())
-        self.label_20.setSizePolicy(sizePolicy1)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.label_20.sizePolicy().hasHeightForWidth())
+        self.label_20.setSizePolicy(sizePolicy2)
         self.label_20.setStyleSheet(u"")
 
         self.verticalLayout.addWidget(self.label_20, 0, Qt.AlignmentFlag.AlignHCenter)
@@ -92,11 +95,11 @@ class Ui_solar_widget(object):
         self.comboBox_2.addItem("")
         self.comboBox_2.addItem("")
         self.comboBox_2.setObjectName(u"comboBox_2")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.comboBox_2.sizePolicy().hasHeightForWidth())
-        self.comboBox_2.setSizePolicy(sizePolicy2)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.comboBox_2.sizePolicy().hasHeightForWidth())
+        self.comboBox_2.setSizePolicy(sizePolicy3)
         self.comboBox_2.setMinimumSize(QSize(0, 30))
         self.comboBox_2.setStyleSheet(u"")
         self.comboBox_2.setEditable(False)
@@ -176,11 +179,11 @@ class Ui_solar_widget(object):
 
         self.widget_10 = QWidget(self.frame_4)
         self.widget_10.setObjectName(u"widget_10")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
-        self.widget_10.setSizePolicy(sizePolicy3)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
+        self.widget_10.setSizePolicy(sizePolicy4)
         self.widget_10.setStyleSheet(u"")
         self.horizontalLayout = QHBoxLayout(self.widget_10)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -459,8 +462,8 @@ class Ui_solar_widget(object):
         self.horizontalLayout_26.setContentsMargins(0, 0, 0, 0)
         self.pushButton_DI_previous_5 = QPushButton(self.widget_17)
         self.pushButton_DI_previous_5.setObjectName(u"pushButton_DI_previous_5")
-        sizePolicy2.setHeightForWidth(self.pushButton_DI_previous_5.sizePolicy().hasHeightForWidth())
-        self.pushButton_DI_previous_5.setSizePolicy(sizePolicy2)
+        sizePolicy3.setHeightForWidth(self.pushButton_DI_previous_5.sizePolicy().hasHeightForWidth())
+        self.pushButton_DI_previous_5.setSizePolicy(sizePolicy3)
         self.pushButton_DI_previous_5.setMinimumSize(QSize(55, 25))
         self.pushButton_DI_previous_5.setFont(font1)
         self.pushButton_DI_previous_5.setStyleSheet(u"")
@@ -498,7 +501,7 @@ class Ui_solar_widget(object):
 
     def retranslateUi(self, solar_widget):
         solar_widget.setWindowTitle(QCoreApplication.translate("solar_widget", u"Form", None))
-        self.label_20.setText(QCoreApplication.translate("solar_widget", u"Datal input:", None))
+        self.label_20.setText(QCoreApplication.translate("solar_widget", u"Data input:", None))
         self.comboBox_2.setItemText(0, QCoreApplication.translate("solar_widget", u"--Select Option--", None))
         self.comboBox_2.setItemText(1, QCoreApplication.translate("solar_widget", u"Download Solar Data from NSRDB", None))
         self.comboBox_2.setItemText(2, QCoreApplication.translate("solar_widget", u"Use Own Data", None))
