@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import calendar
 import os
-import matplotlib.pyplot as plt
+from datetime import datetime
 
 class RAUtilities:
     '''
@@ -564,8 +564,10 @@ class RAUtilities:
                 start_index = end_index
 
             LOL_prob = LOL_prob/(size*samples)
-            
-            pd.DataFrame((LOL_prob)*100/days_in_month[:, np.newaxis]).to_csv(f"{main_folder}/Results/LOL_perc_prob.csv")
+
+            timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            results_subdir = os.path.join(main_folder, 'Results', timestamp)
+            pd.DataFrame((LOL_prob)*100/days_in_month[:, np.newaxis]).to_csv(f"{results_subdir}/LOL_perc_prob.csv")
 
     def ParallelProcessing(self, indices, LOL_track, comm, rank, size, samples, sim_hours):
         """

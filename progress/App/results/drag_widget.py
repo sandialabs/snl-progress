@@ -1,7 +1,8 @@
+import os
 import sys
 from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QScrollArea, QSizePolicy, QMenu, QTableWidget, QTableWidgetItem, QTreeView, QFileSystemModel
 from PySide6.QtGui import QPixmap, QDragEnterEvent, QDropEvent, QMouseEvent, QCursor, QAction
-from PySide6.QtCore import Qt, QUrl, QPoint, QMimeData
+from PySide6.QtCore import Qt, QUrl, QPoint, QMimeData, Signal, QModelIndex
 import csv
 
 class DraggableResizableWidget(QWidget):
@@ -224,11 +225,26 @@ class ImageGrid(QWidget):
         widget.show()
 
 class FileBrowser(QTreeView):
+
+    file_selected = Signal(str)
+
     def __init__(self):
         super().__init__()
+
+        # Setup file system model
         self.model = QFileSystemModel()
-        self.model.setRootPath('')
+        self.model.setRootPath('')  # Accept all roots
         self.setModel(self.model)
+
+        # View configuration (applied to 'self')
+        self.setRootIndex(self.model.index(os.path.expanduser("~")))
+        self.setAnimated(True)
+        self.setSortingEnabled(True)
+
+        # connect click signal
+        self.clicked.connect(self.on_file_clicked)
+
+        # Enable drag-and-drop
         self.setDragEnabled(True)
         self.setAcceptDrops(True)
 
@@ -241,7 +257,11 @@ class FileBrowser(QTreeView):
         file_paths = [self.model.filePath(index) for index in indexes]
         mime_data.setUrls([QUrl.fromLocalFile(path) for path in file_paths])
         return mime_data
-
+    
+    def on_file_clicked(self, index: QModelIndex):
+        file_path = self.model.filePath(index)
+        if os.path.isfile(file_path):
+            self.file_selected.emit(file_path) 
 
 
 # class WebEngineView(QWebEngineView):

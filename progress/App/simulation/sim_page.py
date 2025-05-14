@@ -219,10 +219,13 @@ class sim_form(QWidget, Ui_sim_widget):
             os.makedirs(f"{self.main_folder}/Results")
 
         df = pd.DataFrame([indices])
-        df.to_csv(f"{self.main_folder}/Results/indices.csv", index=False)
+        timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        results_subdir = os.path.join(self.main_folder, 'Results', timestamp)
+        os.makedirs(results_subdir, exist_ok=True)
+        df.to_csv(f"{results_subdir}/indices.csv", index=False)
+
         if self.sim_hours == 8760:
             self.data_handler.raut.OutageHeatMap(LOL_track, 1, self.samples, self.main_folder)
-
 
     def MCS_cs(self):
 
@@ -373,7 +376,10 @@ class sim_form(QWidget, Ui_sim_widget):
             os.makedirs(f"{self.main_folder}/Results")
 
         df = pd.DataFrame([indices])
-        df.to_csv(f"{self.main_folder}/Results/indices.csv", index=False)
+        timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        results_subdir = os.path.join(self.main_folder, 'Results', timestamp)
+        os.makedirs(results_subdir, exist_ok=True)
+        df.to_csv(f"{results_subdir}/indices.csv", index=False)
 
         if self.sim_hours == 8760:
             self.data_handler.raut.OutageHeatMap(LOL_track, 1, self.samples, self.main_folder)
@@ -399,11 +405,10 @@ class sim_form(QWidget, Ui_sim_widget):
             rapt.PlotCOV(self.COV_rec, self.samples, 1, results_subdir)
 
             if self.sim_hours == 8760:
-                rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
+                rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv", results_subdir)
 
             # Update plot count
             self.plot_count = 0
-
 
     # def plot(self):
     #     if self.plot_count == 0:
