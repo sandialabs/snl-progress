@@ -29,9 +29,6 @@ class sim_form(QWidget, Ui_sim_widget):
         self.pushButton_sim_previous.clicked.connect(lambda: self.page_changer_previous.emit())
         self.pushButton_6.clicked.connect(lambda: self.page_changer_next.emit())
         self.pushButton_5.clicked.connect(self.run)
-        # self.sys_directory = os.path.join(base_dir, "Data", "System")
-        # self.solar_directory = os.path.join(base_dir, "Data", "Solar")
-        # self.wind_directory = os.path.join(base_dir, "Data", "Wind")
 
         self.plot_count = 0
 
