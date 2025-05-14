@@ -327,7 +327,7 @@ class sim_form(QWidget, Ui_sim_widget):
                     self.renewable_rec["solar_rec"][:, n] = s_zones_t[:, n%24]
 
                 # recalculate net load (for distribution side resources, optional)
-                part_netload = 1.25*self.data_handler.load_all_regions
+                part_netload = self.load_factor*self.data_handler.load_all_regions
 
                 if self.data_handler.solar_directory and self.data_handler.wind_directory:
                     net_load =  part_netload[n] - w_zones - s_zones[n%24]
