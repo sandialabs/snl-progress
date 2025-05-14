@@ -161,11 +161,19 @@ class solar_form(QWidget, Ui_solar_widget):
     def create_pipeline(self):
         self.pipeline = KMeans_Pipeline(self.solar_directory, self.solar_site_data)
 
+    # creating dummy method for Worker 1 to bypass threading issue for M-chip macbooks
+    def dummy_func(self):
+        pass
+
     def start_test_metrics(self):
         # Check if worker_pipeline has completed
         if hasattr(self, 'worker_pipeline') and self.worker_pipeline.isFinished():
+            
+            # directly calling test_metrics instead of using worker thread to bypass threading issue for M-chip macbooks
+            self.pipeline.test_metrics(int(self.clust_eval)) 
             # Create worker threads for the pipeline methods
-            self.worker1 = WorkerThread(self.pipeline.test_metrics, int(self.clust_eval))
+            # self.worker1 = WorkerThread(self.pipeline.test_metrics, int(self.clust_eval)) # this is causing Bus 10 error for M-chip macbooks (threading issue)
+            self.worker1 = WorkerThread(self.dummy_func)        
             self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
 
             # Connect signals
