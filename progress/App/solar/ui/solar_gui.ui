@@ -83,10 +83,7 @@
           <string notr="true"/>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Shape::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Shadow::Raised</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <layout class="QGridLayout" name="gridLayout_4">
           <property name="leftMargin">
@@ -152,7 +149,7 @@
                 <property name="bottomMargin">
                  <number>0</number>
                 </property>
-                <item alignment="Qt::AlignmentFlag::AlignHCenter">
+                <item>
                  <widget class="QLabel" name="label_20">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
@@ -181,6 +178,11 @@
                     <width>0</width>
                     <height>30</height>
                    </size>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <pointsize>11</pointsize>
+                   </font>
                   </property>
                   <property name="styleSheet">
                    <string notr="true"/>
@@ -222,11 +224,11 @@
                 <string notr="true"/>
                </property>
                <property name="frameShape">
-                <enum>QFrame::Shape::NoFrame</enum>
+                <enum>QFrame::NoFrame</enum>
                </property>
               </widget>
              </item>
-             <item row="3" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
+             <item row="3" column="0">
               <widget class="QPushButton" name="pushButton_solar_dl">
                <property name="enabled">
                 <bool>true</bool>
@@ -256,7 +258,7 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0" alignment="Qt::AlignmentFlag::AlignHCenter">
+             <item row="1" column="0">
               <widget class="QPushButton" name="pushButton_solar_upload">
                <property name="styleSheet">
                 <string notr="true"/>
@@ -293,7 +295,7 @@
                 <property name="bottomMargin">
                  <number>0</number>
                 </property>
-                <item alignment="Qt::AlignmentFlag::AlignHCenter">
+                <item>
                  <widget class="QLabel" name="label_3">
                   <property name="text">
                    <string>Start Year:</string>
@@ -316,7 +318,7 @@
                   </property>
                  </widget>
                 </item>
-                <item alignment="Qt::AlignmentFlag::AlignHCenter">
+                <item>
                  <widget class="QLabel" name="label_26">
                   <property name="enabled">
                    <bool>true</bool>
@@ -393,9 +395,6 @@
              </item>
              <item>
               <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Orientation::Horizontal</enum>
-               </property>
                <property name="sizeHint" stdset="0">
                 <size>
                  <width>40</width>
@@ -457,10 +456,7 @@
           <string notr="true"/>
          </property>
          <property name="frameShape">
-          <enum>QFrame::Shape::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Shadow::Raised</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_27" stretch="0,1">
           <property name="spacing">
@@ -484,10 +480,7 @@
              <string notr="true"/>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Shape::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Shadow::Raised</enum>
+             <enum>QFrame::NoFrame</enum>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_22">
              <property name="spacing">
@@ -532,10 +525,7 @@
                    <string notr="true"/>
                   </property>
                   <property name="frameShape">
-                   <enum>QFrame::Shape::NoFrame</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Shadow::Raised</enum>
+                   <enum>QFrame::NoFrame</enum>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_20">
                    <property name="spacing">
@@ -559,10 +549,7 @@
                       <string notr="true"/>
                      </property>
                      <property name="frameShape">
-                      <enum>QFrame::Shape::NoFrame</enum>
-                     </property>
-                     <property name="frameShadow">
-                      <enum>QFrame::Shadow::Raised</enum>
+                      <enum>QFrame::NoFrame</enum>
                      </property>
                      <layout class="QGridLayout" name="gridLayout_8">
                       <property name="leftMargin">
@@ -616,9 +603,6 @@
                       </item>
                       <item row="0" column="2">
                        <spacer name="horizontalSpacer_9">
-                        <property name="orientation">
-                         <enum>Qt::Orientation::Horizontal</enum>
-                        </property>
                         <property name="sizeHint" stdset="0">
                          <size>
                           <width>158</width>
@@ -653,10 +637,7 @@
                    <item>
                     <widget class="QFrame" name="frame_27">
                      <property name="frameShape">
-                      <enum>QFrame::Shape::NoFrame</enum>
-                     </property>
-                     <property name="frameShadow">
-                      <enum>QFrame::Shadow::Raised</enum>
+                      <enum>QFrame::NoFrame</enum>
                      </property>
                      <layout class="QHBoxLayout" name="horizontalLayout_22">
                       <property name="spacing">
@@ -676,9 +657,6 @@
                       </property>
                       <item>
                        <spacer name="horizontalSpacer_16">
-                        <property name="orientation">
-                         <enum>Qt::Orientation::Horizontal</enum>
-                        </property>
                         <property name="sizeHint" stdset="0">
                          <size>
                           <width>40</width>
@@ -746,9 +724,6 @@
                       </item>
                       <item>
                        <spacer name="horizontalSpacer_8">
-                        <property name="orientation">
-                         <enum>Qt::Orientation::Horizontal</enum>
-                        </property>
                         <property name="sizeHint" stdset="0">
                          <size>
                           <width>40</width>
@@ -793,10 +768,7 @@
                    <string notr="true"/>
                   </property>
                   <property name="frameShape">
-                   <enum>QFrame::Shape::NoFrame</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Shadow::Raised</enum>
+                   <enum>QFrame::NoFrame</enum>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_43">
                    <property name="spacing">
@@ -820,10 +792,7 @@
                       <string notr="true"/>
                      </property>
                      <property name="frameShape">
-                      <enum>QFrame::Shape::NoFrame</enum>
-                     </property>
-                     <property name="frameShadow">
-                      <enum>QFrame::Shadow::Raised</enum>
+                      <enum>QFrame::NoFrame</enum>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_38">
                       <property name="spacing">
@@ -873,10 +842,7 @@
                    <string notr="true"/>
                   </property>
                   <property name="frameShape">
-                   <enum>QFrame::Shape::NoFrame</enum>
-                  </property>
-                  <property name="frameShadow">
-                   <enum>QFrame::Shadow::Raised</enum>
+                   <enum>QFrame::NoFrame</enum>
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_25">
                    <property name="spacing">
@@ -896,9 +862,6 @@
                    </property>
                    <item>
                     <spacer name="horizontalSpacer_17">
-                     <property name="orientation">
-                      <enum>Qt::Orientation::Horizontal</enum>
-                     </property>
                      <property name="sizeHint" stdset="0">
                       <size>
                        <width>40</width>
@@ -933,9 +896,6 @@
                    </item>
                    <item>
                     <spacer name="horizontalSpacer_18">
-                     <property name="orientation">
-                      <enum>Qt::Orientation::Horizontal</enum>
-                     </property>
                      <property name="sizeHint" stdset="0">
                       <size>
                        <width>40</width>
@@ -959,10 +919,7 @@
              <string notr="true"/>
             </property>
             <property name="frameShape">
-             <enum>QFrame::Shape::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Shadow::Raised</enum>
+             <enum>QFrame::NoFrame</enum>
             </property>
             <layout class="QHBoxLayout" name="horizontalLayout_23" stretch="2,1">
              <property name="spacing">
@@ -993,7 +950,7 @@
                 <string notr="true"/>
                </property>
                <property name="frameShape">
-                <enum>QFrame::Shape::Box</enum>
+                <enum>QFrame::NoFrame</enum>
                </property>
               </widget>
              </item>
@@ -1056,9 +1013,6 @@
           </item>
           <item>
            <spacer name="horizontalSpacer_15">
-            <property name="orientation">
-             <enum>Qt::Orientation::Horizontal</enum>
-            </property>
             <property name="sizeHint" stdset="0">
              <size>
               <width>1023</width>

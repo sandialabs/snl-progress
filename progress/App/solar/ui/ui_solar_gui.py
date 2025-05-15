@@ -37,7 +37,7 @@ class Ui_solar_widget(object):
         sizePolicy.setHeightForWidth(self.stackedWidget_2.sizePolicy().hasHeightForWidth())
         self.stackedWidget_2.setSizePolicy(sizePolicy)
         font = QFont()
-        font.setPointSize(9)
+        font.setPointSize(13)
         self.stackedWidget_2.setFont(font)
         self.stackedWidget_2.setStyleSheet(u"")
         self.page_4 = QWidget()
