@@ -12,17 +12,27 @@ import pvlib
 
 class Solar:
     """
-    A class to handle solar generation data, downloading weather data, calculating solar generation using PVLib,
-    and processing the data for Monte Carlo Simulation (MCS).
+    A class to handle solar generation data by downloading weather data from the NSRDB, 
+    calculating solar generation using PVLib, and preparing data for Monte Carlo Simulation (MCS).
+
+    :param site_data: Path to the CSV file containing site data (site name, latitude, longitude, etc.).
+    :type site_data: str
+    :param directory: Directory for saving and reading solar-related data files.
+    :type directory: str
     """
 
     def __init__(self, site_data, directory):
         """
-        Initializes the Solar class with site data and directory.
+        Initializes the Solar class with site data and working directory.
 
-        Parameters:
-            site_data (str): Path to the CSV file containing site data.
-            directory (str): Directory to save the data.
+        :param site_data: Path to the CSV file containing site data. This file should have columns 
+                          such as 'site_name', 'lat', 'long', 'zone', 'tracking', and 'MW'.
+        :type site_data: str
+        :param directory: Path to the directory where data will be downloaded and stored.
+        :type directory: str
+
+        :raises FileNotFoundError: If the provided ``site_data`` file does not exist.
+        :raises pd.errors.EmptyDataError: If the CSV file is empty or improperly formatted.
         """
 
         self.sites_df = pd.read_csv(site_data)
@@ -38,15 +48,33 @@ class Solar:
 
     def SolarGen(self, api_key, your_name, your_affiliation, your_email, year_start, year_end):
         """
-        Downloads weather data from NREL NSRDB and calculates solar generation using PVLib.
+        Downloads weather data from NREL NSRDB and calculates solar generation using PVLib for each site.
 
-        Parameters:
-            api_key (str): API key for NREL NSRDB.
-            your_name (str): Your full name.
-            your_affiliation (str): Your affiliation.
-            your_email (str): Your email address.
-            year_start (int): Start year for data download.
-            year_end (int): End year for data download.
+        This method:
+          1. Iterates through each site and year in the specified range.
+          2. Downloads weather data (DNI, GHI, DHI, etc.) from the NSRDB using HTTP requests.
+          3. Uses PVLib's ModelChain with a simple PVWatts-based system to convert the weather data 
+             into AC power output.
+          4. Writes both the satellite-based and clearsky-based generation profiles to CSV files.
+
+        :param api_key: Your personal API key for the NREL NSRDB.
+        :type api_key: str
+        :param your_name: Your full name (required by the NSRDB API).
+        :type your_name: str
+        :param your_affiliation: Your organizational affiliation (required by the NSRDB API).
+        :type your_affiliation: str
+        :param your_email: Your email address (required by the NSRDB API).
+        :type your_email: str
+        :param year_start: Start year for data downloads.
+        :type year_start: int
+        :param year_end: End year (inclusive) for data downloads.
+        :type year_end: int
+
+        :return: None
+        :rtype: None
+
+        :raises requests.exceptions.RequestException: If there is a network-related error during the download.
+        :raises OSError: If writing to the local file system fails for any reason.
         """
         interval = '60'; utc = 'false'; reason = 'beta+testing'; mailing_list = 'false'
 
@@ -119,11 +147,20 @@ class Solar:
 
     def SolarGenGather(self, year_start, year_end):
         """
-        Gathers solar generation data from all sites and years, processes it, and saves it to CSV files.
+        Gathers and processes solar generation data from all sites and years, concatenating 
+        each site's satellite-based and clearsky-based generation files into single CSVs. 
+        It then computes a clearsky index (CSI) and stores the final data in an Excel file.
 
-        Parameters:
-            year_start (int): Start year for data gathering.
-            year_end (int): End year for data gathering.
+        :param year_start: Start year (inclusive) for gathering solar generation data.
+        :type year_start: int
+        :param year_end: End year (inclusive) for gathering solar generation data.
+        :type year_end: int
+
+        :return: None
+        :rtype: None
+
+        :raises FileNotFoundError: If expected CSV files do not exist in the specified directory.
+        :raises OSError: If any file operation (read/write/remove) fails.
         """
 
         solar_directory = f'{self.directory}/solardata/'
@@ -217,16 +254,29 @@ class Solar:
 
 
     def GetSolarProfiles(self, solar_prob_data):
-        '''
-        This function extracts the solar data from clusters and modifies it for the MCS. The solar data is stored in a 4D ndarray where the dimensions are: [cluster, day, hour, site]. The clusters are created using the K-means clustering algorithm. Similar days of solar generation are put in the same cluster.
+        """
+        Extracts and organizes solar data from clustered CSVs for use in Monte Carlo Simulation (MCS). 
+        Each cluster directory contains daily solar generation profiles for all sites; these are stacked 
+        into a 4D array of shape (cluster, day, hour, site). Probability data for each cluster is also read 
+        from the given CSV.
 
-        Parameters:
-            solar_prob_data (str): Path to the CSV file containing solar probability data.
+        :param solar_prob_data: Path to the CSV file containing solar probability data (cluster probabilities).
+        :type solar_prob_data: str
 
-        Returns:
-            tuple: Number of sites, zone numbers, MW capacity, solar profiles, and solar probability.
+        :return:
+            A 5-element tuple containing:
 
-        '''
+            * **n_sites** (*int*): Number of solar sites.
+            * **s_zone_no** (*pd.Series*): Zone numbers corresponding to each site.
+            * **MW** (*pd.Series*): Rated capacity (in MW) for each site.
+            * **s_profiles** (*list[np.ndarray]*): A list of 3D NumPy arrays, one per cluster, 
+              with shape (days, hours, sites).
+            * **solar_prob** (*np.ndarray*): Probability values for each cluster.
+
+        :rtype: tuple
+
+        :raises FileNotFoundError: If cluster directories or CSV files are missing.
+        """
         clusters = glob.glob(os.path.join(self.directory + "/Clusters/", '*/'))
         n_clust = len(clusters) # no. of clusters created (depends on user and data)
 

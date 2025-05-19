@@ -262,42 +262,50 @@ python -m progress
 
 When the application is first launched, users will see the home page:
 
-<img src = "progress/Images/workflow/home_page.png" width="660" height="440" alt="Home" />
+![Home Page](Images/workflow/home_page.png)
+<!-- <img src = "Images/workflow/home_page.png" width="660" height="440" alt="Home" /> -->
 
 **Step 1.** After pressing the `Get Started` button, users will be prompted to enter API information. Ensure that you have signed up at the [NREL Developer Network](https://developer.nrel.gov/) beforehand using your details and obtained the required api key. You may skip this step if you plan on using your own data. 
 
-<img src = "progress/Images/workflow/API.png" width="660" height="440" alt="API" />
+![API](Images/workflow/API.png)
+<!-- <img src = "Images/workflow/API.png" width="660" height="440" alt="API" /> -->
 
 Once the API information is saved, users can move on to the `Solar` tab. 
 
 **Step 2a.** Users may upload their own solar power generation data using the format specified in this [file](./progress/Data/Solar/solar_data.xlsx) or download solar weather data from [NSRDB](https://nsrdb.nrel.gov/) and convert to solar power generation data using the tool. If downloading data, please check for the data availability at the website since the range of years for which data is available is updated periodically. ProGRESS uses [pvlib](https://pvlib-python.readthedocs.io/en/stable/) to convert the downloaded solar weather data to solar power generation data.
 
-|<img src = "progress/Images/workflow/solar_1.png" width="480" height="320" alt="Solar" /> | <img src = "progress/Images/workflow/solar_2.png" width="480" height="320" alt="Solar" /> |
+|![solar1](Images/workflow/solar_1.png)| ![solar2](Images/workflow/solar_2.png) |
 |-------------------------|-------------------------|
 
 **Step 2b.** The next step involves clustering the solar power generation data. A k-means clustering algorithm is utilized to cluster the data into days with similar solar power generation patterns and values. These clusters are later utilized by the MCS to randomly select days based on the month of the year. Users are able to choose the optimum number of clusters by evaluating the performance of different cluster values. For example, if the user inputs `10` in the `No. of Clusters to Evaluate` field, the tool will evaluate the performance of clusters starting from `2` to `10`. The SSE and silhouette scores will be displayed on the GUI once the evaluation is complete and can be used to make informed decision on the optimal number of clusters. 
 
-<img src = "progress/Images/workflow/solar_3.png" width="660" height="440" alt="Solar" />
+![solar3](Images/workflow/solar_3.png)
+<!-- <img src = "Images/workflow/solar_3.png" width="660" height="440" alt="Solar" /> -->
 
 **Step 3.** The next step involves adding wind data. Users may choose to upload their own wind speed data using the format specified in this [file](./progress/Data/Wind/windspeed_data.csv) or download the same from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). The windspeed data can then be used to generate a transition rate matrix using the `Process Wind Speed Data` button. The transition rate matrix will eventually be used by the MCS to estimate the wind power generation for each hour. 
 
-|<img src = "progress/Images/workflow/wind_1.png" width="480" height="320" alt="Wind" />| <img src = "progress/Images/workflow/wind_2.png" width="480" height="320" alt="Wind" />|
+
+|![wind1](Images/workflow/wind_1.png) |![wind2](Images/workflow/wind_2.png)|
 |-------------------------|-------------------------|
 
 **Step 4.** Once all data has been added, the user can now run the simulation. Guidelines for adjusting the parameters on this page can be found [here](#2step1). Press the `Run Simulation` button once all the information is entered. The simulation progress will be displayed on the right side of the page.  
 
-<img src = "progress/Images/workflow/sim.png" width="660" height="440" alt="Sim" />
+![sim](Images/workflow/sim.png)
+
+<!-- <img src = "progress/Images/workflow/sim.png" width="660" height="440" alt="Sim" /> -->
 
 <a id="results"></a>
-**Step 5.** Users can view the results within the application once the simulation is complete. 
+**Step 5.** Users can view the results within the application once the simulation is complete.
 
-<img src = "progress/Images/workflow/results.png" width="660" height="440" alt="Results" />
+![results](Images/workflow/results.png)
+
+<!-- <img src = "progress/Images/workflow/results.png" width="660" height="440" alt="Results" /> -->
 
 Results include reliability indices, plots of hourly load curtailment, hourly solar and wind power generation, hourly energy storage state-of-charge, heat maps of outages across different months of the year and hours of the day. The results will also be available in the `Results` folder. Some example results are shown below. 
 
-|<img src = "progress/Images/workflow/res_heatmap.png" width="500" height="300" alt="Results" /> | <img src = "progress/Images/workflow/res_ess.png" width="500" height="300" alt="Results" /> |
+|![heatmap](Images/workflow/res_heatmap.png) | ![ess](Images/workflow/res_ess.png) |
 |-------------------------|-------------------------|
-|<img src = "progress/Images/workflow/res_loadcurt.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/res_wind.png" width="500" height="300" alt="Results" />|
+|![load_curt](Images/workflow/res_loadcurt.png) |![res_wind](Images/workflow/res_wind.png)|
 
 
 ### B. Instructions for Running Simulations using the Command-Line on Local or Remote Computers/Servers
@@ -368,7 +376,9 @@ The job will run when it reaches the top of the queue.
 
 A test case is included with this tool. The test system is the [IEEE RTS-GMLC](https://ieeexplore.ieee.org/abstract/document/8753693), which is a modernized version of the [IEEE RTS-96](https://ieeexplore.ieee.org/abstract/document/780914). A zonal model of the test system is illustrated as follows:
 
-<img src = "progress/Images/workflow/RTS_GMLC.png" width="600" height="500" alt="RTS" /> 
+![rts_gmlc](Images/workflow/RTS_GMLC.png)
+
+<!-- <img src = "Images/workflow/RTS_GMLC.png" width="600" height="500" alt="RTS" />  -->
 
 All test system data provided with the tool has been taken from the [RTS-GMLC GitHub repository](<https://github.com/GridMod/RTS-GMLC>).
 
@@ -384,7 +394,7 @@ The ProGRESS tool is developed and maintained by the [Energy Storage Analytics G
 - Tu Nguyen
 - Dilip Pandit
 
-| <img src = "progress/Images/logos/Sandia_National_Laboratories_logo.svg" width="260" height="80" alt="SNL" /> |  <img src = "progress/Images/logos/New_DOE_Logo_Color.jpg" width="300" height="80" alt="DOE" />|
+| ![logo2](Images/logos/Sandia_National_Laboratories_logo.svg) |  ![new_doe](Images/logos/New_DOE_Logo_Color.jpg)|
 |-------------------------|-------------------------|
    
 

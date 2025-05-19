@@ -4,10 +4,19 @@ import pandas as pd
 import numpy as np
 
 class RAPlotTools:
-    '''Provides plotting tools for visualizing simulation results.'''
+    """
+    Provides plotting tools for visualizing simulation results, including wind and solar generation, 
+    state-of-charge (SOC) of ESS, load curtailment, and outage heat maps.
+
+    :param main_folder: The primary directory where plot outputs will be saved.
+    :type main_folder: str
+    """
     def __init__(self, main_folder):
         """
-        Initializes the RAPlotTools class and creates a directory for storing results.
+        Initializes the RAPlotTools class and prepares the directory for storing results.
+
+        :param main_folder: The primary directory where plot outputs will be saved.
+        :type main_folder: str
         """
         self.main_folder = main_folder
         pass
@@ -16,9 +25,14 @@ class RAPlotTools:
         """
         Plots wind power generation over time.
 
-        Parameters:
-            wind_rec (numpy.ndarray): Wind power generation records.
-            bus_name (list): List of bus names.
+        :param wind_rec: A 2D NumPy array (shape: ``(number_of_zones, hours)``) 
+                         of wind power generation values over time.
+        :type wind_rec: numpy.ndarray
+        :param bus_name: A list of bus names corresponding to each row (zone) in ``wind_rec``.
+        :type bus_name: list[str]
+
+        :return: None
+        :rtype: None
         """
 
         plt.title("Wind Power Generation")
@@ -33,9 +47,14 @@ class RAPlotTools:
         """
         Plots solar power generation over time.
 
-        Parameters:
-            solar_rec (numpy.ndarray): Solar power generation records.
-            bus_name (list): List of bus names.
+        :param solar_rec: A 2D NumPy array (shape: ``(number_of_zones, hours)``) 
+                          of solar power generation values over time.
+        :type solar_rec: numpy.ndarray
+        :param bus_name: A list of bus names corresponding to each row (zone) in ``solar_rec``.
+        :type bus_name: list[str]
+
+        :return: None
+        :rtype: None
         """
 
         plt.title("Solar Power Generation")
@@ -50,9 +69,14 @@ class RAPlotTools:
         """
         Plots state of charge (SOC) of energy storage systems (ESS) over time.
 
-        Parameters:
-            SOC_rec (numpy.ndarray): SOC records.
-            essname (list): List of ESS names.
+        :param SOC_rec: A 2D NumPy array (shape: ``(number_of_ESS, hours)``) representing 
+                        the state of charge of each ESS over time.
+        :type SOC_rec: numpy.ndarray
+        :param essname: A list of ESS names corresponding to each row in ``SOC_rec``.
+        :type essname: list[str]
+
+        :return: None
+        :rtype: None
         """
 
         plt.title("ESS SOC")
@@ -67,8 +91,11 @@ class RAPlotTools:
         """
         Plots load curtailment over time.
 
-        Parameters:
-            curt_rec (numpy.ndarray): Load curtailment records.
+        :param curt_rec: A 1D NumPy array (length = hours) of load curtailment values (in MW).
+        :type curt_rec: numpy.ndarray
+
+        :return: None
+        :rtype: None
         """
 
         plt.title("Load Curtailment")
@@ -82,10 +109,17 @@ class RAPlotTools:
     def OutageMap(self, outage_data):
 
         """
-        Plots a heatmap of outage data.
+        Plots a heatmap of outage data, typically representing the percentage of 
+        load loss across months and hours.
 
-        Parameters:
-            outage_data (str): Path to the Excel file containing outage data.
+        :param outage_data: Path to a CSV file containing outage percentages, 
+                            with rows corresponding to months and columns corresponding to hours.
+        :type outage_data: str
+
+        :return: None
+        :rtype: None
+
+        :raises FileNotFoundError: If the specified CSV file does not exist.
         """
 
         outage_data = pd.read_csv(outage_data, header=0, index_col=0).values
@@ -112,6 +146,19 @@ class RAPlotTools:
         plt.close()
 
     def PlotLOLP(self, mLOLP_rec, samples, size):
+        """
+        Plots the running average of the Loss of Load Probability (LOLP) across samples.
+
+        :param mLOLP_rec: A 1D NumPy array (length = samples) of running mean LOLP values.
+        :type mLOLP_rec: numpy.ndarray
+        :param samples: Number of Monte Carlo samples.
+        :type samples: int
+        :param size: The total number of MPI processes (or 1 if serial execution).
+        :type size: int
+
+        :return: None
+        :rtype: None
+        """
 
         plt.plot(np.arange(1, samples+1), mLOLP_rec)
         plt.xticks(np.arange(1, samples+1, 1), size*np.arange(1, samples+1, 1))
@@ -121,6 +168,19 @@ class RAPlotTools:
         plt.close()
 
     def PlotCOV(self, COV_rec, samples, size):
+        """
+        Plots the Coefficient of Variation (COV) of LOLP across samples.
+
+        :param COV_rec: A 1D NumPy array (length = samples) of COV values computed at each sample.
+        :type COV_rec: numpy.ndarray
+        :param samples: Number of Monte Carlo samples.
+        :type samples: int
+        :param size: The total number of MPI processes (or 1 if serial execution).
+        :type size: int
+
+        :return: None
+        :rtype: None
+        """
 
         plt.plot(np.arange(1, samples+1), COV_rec)
         plt.xticks(np.arange(1, samples+1, 1), size*np.arange(1, samples+1, 1))

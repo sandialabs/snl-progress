@@ -7,25 +7,115 @@ import os
 from mpi4py import MPI
 import yaml
 
-from mod_sysdata import RASystemData
-from mod_solar import Solar
-from mod_wind import Wind
-from mod_utilities import RAUtilities
-from mod_matrices import RAMatrices
-from mod_plot import RAPlotTools
-from mod_kmeans import KMeans_Pipeline
+from progress.mod_sysdata import RASystemData
+from progress.mod_solar import Solar
+from progress.mod_wind import Wind
+from progress.mod_utilities import RAUtilities
+from progress.mod_matrices import RAMatrices
+from progress.mod_plot import RAPlotTools
+from progress.mod_kmeans import KMeans_Pipeline
 
 class ProgressMultiProcess:
+    """
+    Handles multi-process execution (via ``mpi4py``) of a Mixed Time Sequential 
+    Monte Carlo Simulation (MCS) for reliability analysis.
+
+    This class sets up MPI parameters and provides methods to perform 
+    system reliability simulations. It leverages parallel processing 
+    to distribute Monte Carlo samples across multiple ranks.
+    """
 
     def __init__(self):
+        """
+        Initializes MPI communication and retrieves the rank and size of the process.
+
+        :ivar comm: The MPI communicator object.
+        :vartype comm: mpi4py.MPI.Comm
+        :ivar rank: The MPI rank (i.e., the process ID).
+        :vartype rank: int
+        :ivar size: The total number of MPI processes used.
+        :vartype size: int
+        """
+
 
         # for parallel processing
         self.comm = MPI.COMM_WORLD
         self.rank = self.comm.Get_rank()
         self.size = self.comm.Get_size()
 
-    def MCS(self, input_file) :   
-        '''This function performs mixed time sequential MCS using methods from the different RA modules'''
+    def MCS(self, input_file):
+        """
+        Performs a Mixed Time Sequential Monte Carlo Simulation for system reliability assessment.
+
+        **High-level Steps**:
+
+        1. **Read Configuration**:
+        Loads user settings (file paths, simulation hours, etc.) from ``input_file``.
+
+        2. **Data Import & Pre-Processing**:
+        - Reads system data (generators, branches, buses, loads, storage) using 
+            :class:`RASystemData <progress.mod_sysdata.RASystemData>`.
+        - Prepares reliability- and capacity-related variables (e.g., MTTF, MTTR, capacities).
+        - Conditionally loads and processes wind data (if ``wind_directory`` is defined).
+        - Conditionally loads and processes solar data (if ``solar_directory`` is defined).
+        - Builds matrices required for optimization using :class:`RAMatrices <progress.mod_matrices.RAMatrices>`.
+
+        3. **Monte Carlo Loop**:
+        Repeats the following for each sample:
+        - Initializes each component in an up state or random initial state (e.g., wind class).
+        - Iterates through the specified simulation hours (``sim_hours``):
+            * Updates next states (up/down) via random draws from reliability transition rates.
+            * Adjusts ESS states of charge to account for potential failures.
+            * Retrieves wind and solar power outputs (if configured).
+            * Performs an optimization-based dispatch (zonal or copper-sheet) to meet load 
+            while minimizing generation costs and curtailment.
+            * Tracks Loss of Load (LOL) occurrences for reliability indices.
+
+        4. **Convergence Checks**:
+        Tracks reliability indices such as LOLP and EUE, and evaluates partial 
+        convergence at each sample (using rank 0 to aggregate data across processes).
+
+        5. **Final Aggregation**:
+        - Uses MPI to combine results across ranks.
+        - Returns final reliability indices, record arrays, and references for plotting.
+
+        :param input_file: Path to the YAML configuration file containing simulation parameters.
+        :type input_file: str
+
+        :return:
+            A tuple containing:
+
+            * **rank** (*int*): Rank of the current MPI process.
+
+            * **SOC_rec** (*numpy.ndarray*): State of charge records for storage units across simulation.
+
+            * **curt_rec** (*numpy.ndarray*): Load curtailment records over simulation hours.
+
+            * **renewable_rec** (*dict*): Recorded wind & solar power generation for visualization.
+
+            * **bus_name** (*list[str]*): List of bus names from system data.
+
+            * **essname** (*list[str]*): List of storage device names.
+
+            * **main_folder** (*str*): Path to the folder containing the running script.
+
+            * **sim_hours** (*int*): Number of hours simulated.
+
+            * **mLOLP_rec** (*numpy.ndarray*): Running average of LOLP values across samples.
+
+            * **COV_rec** (*numpy.ndarray*): Coefficient of Variation array for checking convergence.
+
+            * **samples** (*int*): Number of Monte Carlo samples.
+
+            * **size** (*int*): Total number of MPI processes.
+
+        :rtype: tuple
+
+        :raises FileNotFoundError: If input files (configuration, CSV, Excel) cannot be located.
+        :raises ValueError: If any required key/parameter is missing or invalid in the config.
+        :raises RuntimeError: If optimization constraints fail or cannot converge.
+        """
+
 
         # open configuration file
         with open(input_file, 'r') as f:

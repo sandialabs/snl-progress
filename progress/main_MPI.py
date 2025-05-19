@@ -6,27 +6,78 @@ import pandas as pd
 from mpi4py import MPI
 # import os
 
-from snl_progress.mod_sysdata import RASystemData
-from snl_progress.mod_solar import Solar
-from snl_progress.mod_wind import Wind
-from snl_progress.mod_utilities import RAUtilities
-from snl_progress.mod_matrices import RAMatrices
-from snl_progress.mod_plot import RAPlotTools
+from progress.mod_sysdata import RASystemData
+from progress.mod_solar import Solar
+from progress.mod_wind import Wind
+from progress.mod_utilities import RAUtilities
+from progress.mod_matrices import RAMatrices
+from progress.mod_plot import RAPlotTools
 
 def MCS(samples, sim_hours, system_directory, solar_directory = True, wind_directory = True) :
     """
-    Performs mixed time sequential Monte Carlo Simulation (MCS) to evaluate the reliability of a power system.
+    Performs a Mixed Time Sequential Monte Carlo Simulation (MCS) to evaluate the reliability of a power system.
 
-    Parameters:
-        samples (int): Number of samples to simulate.
-        sim_hours (int): Number of hours to simulate.
-        system_directory (str): Path to the directory containing system data files.
-        solar_directory (str or bool): Path to the directory containing solar data files or False if not used.
-        wind_directory (str or bool): Path to the directory containing wind data files or False if not used.
+    This function iterates over a specified number of Monte Carlo samples (``samples``) and simulates 
+    each sample for ``sim_hours`` hours. It then records load curtailment, state-of-charge (SOC) for 
+    storage, and renewable generation (wind and solar) outcomes, combining them into reliability indices. 
+    Parallel execution is handled via ``mpi4py``.
 
-    Returns:
-        tuple: A tuple containing indices, rank, SOC records, curtailment records, renewable records, bus names, and ESS names.
+    :param samples: Number of Monte Carlo samples to run.
+    :type samples: int
+    :param sim_hours: Number of hours to simulate within each sample.
+    :type sim_hours: int
+    :param system_directory: Path to the directory containing system data (e.g., generator, branch, bus, load, storage).
+    :type system_directory: str
+    :param solar_directory: Path to the directory containing solar data files, or ``False`` if solar data is not used.
+    :type solar_directory: str or bool
+    :param wind_directory: Path to the directory containing wind data files, or ``False`` if wind data is not used.
+    :type wind_directory: str or 
+    
+    some change
+
+    :return:
+       A tuple containing:
+
+       * **index_all** (*dict*):
+         Dictionary of reliability indices aggregated from all MPI processes.
+         Typically includes final LOLP, EUE, LOLE, and other reliability metrics.
+
+       * **rank** (*int*):
+         The MPI rank (process ID). For single-process runs, this is 0.
+
+       * **SOC_rec** (*np.ndarray*):
+         2D array with shape ``(number_of_storage_units, sim_hours)`` 
+         tracking the state-of-charge for each storage device over time.
+
+       * **curt_rec** (*np.ndarray*):
+         1D array (length = ``sim_hours``) of load curtailment values 
+         (in MW or a per-unit equivalent).
+
+       * **renewable_rec** (*dict*):
+         Dictionary containing wind and solar generation records for visualization. 
+         Keys include:
+         
+         - ``"wind_rec"`` – 2D array of wind generation by zone vs. hour
+         - ``"solar_rec"`` – 2D array of solar generation by zone vs. hour
+
+       * **bus_name** (*list[str]*):
+         List of bus names from the system model.
+
+       * **essname** (*list[str]*):
+         List of energy storage system (ESS) names.
+
+    :rtype: tuple
+
+    :raises FileNotFoundError:
+        If one of the required data files (e.g., system or renewable data) is missing.
+
+    :raises ValueError:
+        If the input parameters or data structures contain invalid entries.
+
+    :raises RuntimeError:
+        If the underlying optimization solver fails or cannot converge to a solution.
     """
+
 
     # system data
     data_gen = system_directory + '/gen.csv'

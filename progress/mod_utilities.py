@@ -7,9 +7,19 @@ import os
 import matplotlib.pyplot as plt
 
 class RAUtilities:
-    '''
-    This class contains the different methods required for performing mixed time sequential Monte Carlo simulation and evaluate the reliability indices of a power system.
-    '''
+    """
+    Contains utility methods required for performing mixed time sequential 
+    Monte Carlo (MCS) simulations and evaluating reliability indices 
+    in power systems.
+
+    This class offers functions to:
+      - Compute reliability transition rates for various components (generators, transmission lines, ESS).
+      - Track and update component states (fail/repair) over simulated time.
+      - Aggregate or compute net capacities, state of charge, and wind/solar generation.
+      - Perform optimization-based dispatch (economic dispatch) in either a zonal or 
+        copper-sheet model.
+      - Compute final reliability indices (e.g., LOLP, EUE, LOLE) and handle parallel (MPI) processing steps.
+    """
     def __init__(self):
         """
         Initializes the RAUtilities class.
@@ -18,19 +28,30 @@ class RAUtilities:
 
     def reltrates(self, MTTF_gen, MTTF_trans, MTTR_gen, MTTR_trans, MTTF_ess, MTTR_ess):
         """
-        Calculates failure and repair rates for all conventional generators and transmission lines.
+        Computes repair and failure rates for generators, transmission lines, and ESS.
 
-        Parameters:
-            MTTF_gen (array): Mean time to failure for generators.
-            MTTF_trans (array): Mean time to failure for transmission lines.
-            MTTR_gen (array): Mean time to repair for generators.
-            MTTR_trans (array): Mean time to repair for transmission lines.
-            MTTF_ess (array): Mean time to failure for energy storage systems.
-            MTTR_ess (array): Mean time to repair for energy storage systems.
+        :param MTTF_gen: Mean time to failure for generators (hours).
+        :type MTTF_gen: np.ndarray
+        :param MTTF_trans: Mean time to failure for transmission lines (hours).
+        :type MTTF_trans: np.ndarray
+        :param MTTR_gen: Mean time to repair for generators (hours).
+        :type MTTR_gen: np.ndarray
+        :param MTTR_trans: Mean time to repair for transmission lines (hours).
+        :type MTTR_trans: np.ndarray
+        :param MTTF_ess: Mean time to failure for energy storage systems (hours).
+        :type MTTF_ess: np.ndarray
+        :param MTTR_ess: Mean time to repair for energy storage systems (hours).
+        :type MTTR_ess: np.ndarray
 
-        Returns:
-            tuple: Repair rates and failure rates for all components.
+        :return:
+            A 2-element tuple containing:
+
+            * **mu_tot** (*np.ndarray*): Repair rates (1/MTTR) for all components (gen, trans, ESS).
+            * **lambda_tot** (*np.ndarray*): Failure rates (1/MTTF) for all components.
+
+        :rtype: tuple
         """
+
 
         self.MTTF_all = np.concatenate((MTTF_gen, MTTF_trans, MTTF_ess))
         self.MTTR_all = np.concatenate((MTTR_gen, MTTR_trans, MTTR_ess ))
@@ -41,19 +62,31 @@ class RAUtilities:
 
     def capacities(self, nl, pmax, pmin, ess_pmax, ess_pmin, cap_trans):
         """
-        Concatenates capacities of generators and transmission lines for use in the MCS.
+        Constructs arrays of maximum and minimum capacities for generators, lines, and ESS 
+        for use in the MCS.
 
-        Parameters:
-            nl (int): Number of lines.
-            pmax (array): Maximum capacities of generators.
-            pmin (array): Minimum capacities of generators.
-            ess_pmax (array): Maximum capacities of energy storage systems.
-            ess_pmin (array): Minimum capacities of energy storage systems.
-            cap_trans (array): Transmission capacities.
+        :param nl: Number of transmission lines.
+        :type nl: int
+        :param pmax: Maximum capacities (MW) of each generator.
+        :type pmax: np.ndarray
+        :param pmin: Minimum capacities (MW) of each generator.
+        :type pmin: np.ndarray
+        :param ess_pmax: Maximum power outputs (MW) for each ESS.
+        :type ess_pmax: np.ndarray
+        :param ess_pmin: Minimum power outputs (MW) for each ESS.
+        :type ess_pmin: np.ndarray
+        :param cap_trans: Transmission capacities (MW) for each line.
+        :type cap_trans: np.ndarray
 
-        Returns:
-            tuple: Maximum and minimum capacities of all components.
+        :return:
+            A 2-element tuple containing:
+
+            * **cap_max** (*np.ndarray*): Concatenated maximum capacities (generators + lines + ESS).
+            * **cap_min** (*np.ndarray*): Concatenated minimum capacities (generators + lines + ESS).
+
+        :rtype: tuple
         """
+
 
         self.cap_max = np.concatenate((pmax, cap_trans, ess_pmax))
         self.cap_min = np.concatenate((pmin, np.zeros(nl), ess_pmin))
@@ -62,22 +95,39 @@ class RAUtilities:
 
     def NextState(self, t_min, ng, ness, nl, lambda_tot, mu_tot, current_state, cap_max, cap_min, ess_units):
         """
-        Generates random numbers to calculate the time to the next state for generators and transmission lines.
+        Determines which component (gen/trans/ESS) transitions (fails or repairs) next 
+        using exponential random draws, then updates system states and capacities.
 
-        Parameters:
-            t_min (float): Minimum time.
-            ng (int): Number of generators.
-            ness (int): Number of energy storage systems.
-            nl (int): Number of lines.
-            lambda_tot (array): Failure rates.
-            mu_tot (array): Repair rates.
-            current_state (array): Current states of components.
-            cap_max (array): Maximum capacities of components.
-            cap_min (array): Minimum capacities of components.
-            ess_units (array): Units of energy storage systems.
+        :param t_min: Time (hours) remaining until the next state transition event occurs.
+        :type t_min: float
+        :param ng: Number of conventional generators.
+        :type ng: int
+        :param ness: Number of energy storage systems.
+        :type ness: int
+        :param nl: Number of transmission lines.
+        :type nl: int
+        :param lambda_tot: Failure rates for all components (ordered: gen, lines, ESS).
+        :type lambda_tot: np.ndarray
+        :param mu_tot: Repair rates for all components (ordered: gen, lines, ESS).
+        :type mu_tot: np.ndarray
+        :param current_state: Current binary states of each component (1 = up, 0 = down). 
+                             For ESS, each integer denotes how many are up among identical units.
+        :type current_state: np.ndarray
+        :param cap_max: Maximum capacities for each component type.
+        :type cap_max: np.ndarray
+        :param cap_min: Minimum capacities for each component type.
+        :type cap_min: np.ndarray
+        :param ess_units: Number of identical units for each ESS installation.
+        :type ess_units: np.ndarray
 
-        Returns:
-            tuple: Current state, current capacity, and minimum time.
+        :return:
+            A 3-element tuple containing:
+
+            * **current_state** (*np.ndarray*): Updated states after one component fails/repairs.
+            * **current_cap** (*dict*): Current maximum and minimum capacity arrays (accounting for the updated state).
+            * **t_min** (*float*): Updated time to the next state transition.
+
+        :rtype: tuple
         """
         self.t_min = t_min
         if self.t_min <= 0:
@@ -133,20 +183,34 @@ class RAUtilities:
 
     def updateSOC(self, ng, nl, current_cap, ess_pmax, ess_duration, ess_socmax, ess_socmin, SOC_old):
         """
-        Updates the state of charge (SOC) based on failures in energy storage systems.
+        Adjusts the state-of-charge (SOC) for storage units to reflect any 
+        failures/repairs that reduce or restore capacity.
 
-        Parameters:
-            ng (int): Number of generators.
-            nl (int): Number of lines.
-            current_cap (dict): Current capacities of components.
-            ess_pmax (array): Maximum power outputs of energy storage systems.
-            ess_duration (array): Durations of energy storage systems.
-            ess_socmax (array): Maximum state of charge of energy storage systems.
-            ess_socmin (array): Minimum state of charge of energy storage systems.
-            SOC_old (array): Previous state of charge.
+        :param ng: Number of generators.
+        :type ng: int
+        :param nl: Number of lines.
+        :type nl: int
+        :param current_cap: Dictionary of current max and min capacities (from :meth:`NextState`).
+        :type current_cap: dict
+        :param ess_pmax: Original maximum power outputs for ESS (MW).
+        :type ess_pmax: np.ndarray
+        :param ess_duration: Duration (hours) of each ESS at rated power.
+        :type ess_duration: np.ndarray
+        :param ess_socmax: Maximum SOC fraction for each ESS.
+        :type ess_socmax: np.ndarray
+        :param ess_socmin: Minimum SOC fraction for each ESS.
+        :type ess_socmin: np.ndarray
+        :param SOC_old: Previous SOC values (in MWh).
+        :type SOC_old: np.ndarray
 
-        Returns:
-            tuple: Maximum and minimum SOC, and updated SOC.
+        :return:
+            A 3-element tuple containing:
+
+            * **ess_smax** (*np.ndarray*): Maximum allowable SOC (in MWh) after accounting for failures/repairs.
+            * **ess_smin** (*np.ndarray*): Minimum allowable SOC (in MWh).
+            * **SOC_old** (*np.ndarray*): Updated SOC for each ESS.
+
+        :rtype: tuple
         """
 
         self.ess_emax = np.multiply(current_cap["max"][ng + nl::], ess_duration) # maximum ess energy capacity
@@ -159,24 +223,41 @@ class RAUtilities:
 
     def WindPower(self, nz, w_sites, zone_no, w_classes, r_cap, current_w_class, tr_mats, p_class, w_turbines, out_curve2, out_curve3):
         """
-        Calculates the wind power generation for each hour at each site.
+        Computes wind power generation by randomly transitioning wind speed classes, 
+        then mapping each class to a turbine power output.
 
-        Parameters:
-            nz (int): Number of zones.
-            w_sites (int): Number of wind sites.
-            zone_no (array): Zone numbers.
-            w_classes (int): Number of wind speed classes.
-            r_cap (array): Rated capacities of wind turbines.
-            current_w_class (array): Current wind speed classes.
-            tr_mats (array): Transition matrices.
-            p_class (array): Power classes.
-            w_turbines (array): Number of wind turbines.
-            out_curve2 (array): Output curve for class 2 turbines.
-            out_curve3 (array): Output curve for class 3 turbines.
+        :param nz: Number of zones in the system.
+        :type nz: int
+        :param w_sites: Number of wind farm sites.
+        :type w_sites: int
+        :param zone_no: Zone indices for each wind site.
+        :type zone_no: np.ndarray
+        :param w_classes: Total number of wind speed classes used.
+        :type w_classes: int
+        :param r_cap: Rated capacities (MW) of wind turbines at each site.
+        :type r_cap: np.ndarray
+        :param current_w_class: Current wind speed class for each site (1D array).
+        :type current_w_class: np.ndarray
+        :param tr_mats: 3D array of transition rate matrices for each site (dimensions: [site, w_classes, w_classes]).
+        :type tr_mats: np.ndarray
+        :param p_class: Array specifying the power curve classification type (e.g., 2 or 3) for each site.
+        :type p_class: np.ndarray
+        :param w_turbines: Number of turbines at each site.
+        :type w_turbines: np.ndarray
+        :param out_curve2: Power output curve for class 2 turbines (indexed by wind speed class).
+        :type out_curve2: np.ndarray
+        :param out_curve3: Power output curve for class 3 turbines (indexed by wind speed class).
+        :type out_curve3: np.ndarray
 
-        Returns:
-            tuple: Wind power generation at each zone and updated wind speed classes.
+        :return:
+            A 2-element tuple containing:
+
+            * **w_zones** (*np.ndarray*): Wind generation in each zone (size = nz).
+            * **current_w_class** (*np.ndarray*): Updated wind speed classes for the next hour.
+
+        :rtype: tuple
         """
+
 
         # generate random numbers for each class in each site
         self.W = np.random.uniform(0, 1, (w_sites, w_classes))
@@ -216,19 +297,30 @@ class RAUtilities:
 
     def SolarPower(self, n, nz, s_zone_no, solar_prob, s_profiles, s_sites, s_max):
         """
-        Calculates solar power generation for each hour at each site.
+        Determines solar power output for each zone based on a randomly selected cluster/day/hour profile.
 
-        Parameters:
-            n (int): Current hour.
-            nz (int): Number of zones.
-            s_zone_no (array): Zone numbers for solar sites.
-            solar_prob (array): Solar probability data.
-            s_profiles (array): Solar profiles.
-            s_sites (int): Number of solar sites.
-            s_max (array): Maximum capacities of solar sites.
+        :param n: Current hour in the overall MCS simulation.
+        :type n: int
+        :param nz: Number of zones.
+        :type nz: int
+        :param s_zone_no: Zone indices for each solar site.
+        :type s_zone_no: np.ndarray
+        :param solar_prob: Array of cluster probabilities (rows = clusters, columns = months).
+        :type solar_prob: np.ndarray
+        :param s_profiles: List of 3D arrays, each containing daily solar profiles for a cluster 
+                           (dimensions: [days, 24 hours, sites]).
+        :type s_profiles: list[np.ndarray]
+        :param s_sites: Number of solar sites.
+        :type s_sites: int
+        :param s_max: Maximum capacity (MW) of each solar site.
+        :type s_max: np.ndarray
 
-        Returns:
-            numpy.ndarray: Solar power generation at each zone.
+        :return:
+            A 2D NumPy array of shape (24, nz), giving solar generation (MW) for each zone over 24 hours. 
+            Only the row corresponding to hour n%24 is relevant at time n, but the entire 2D block 
+            is returned for convenience.
+
+        :rtype: np.ndarray
         """
 
         if n%24 == 0:
@@ -273,32 +365,58 @@ class RAUtilities:
     def OptDispatch(self, ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                     gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost):
         """
-        Achieves economic dispatch for a particular hour using optimization. Transportation model is used.
+        Formulates and solves an economic dispatch (transportation model) optimization 
+        for a single hour, including line flow constraints, generation dispatch, 
+        storage charging/discharging, and load curtailment.
 
-        Parameters:
-            ng (int): Number of generators.
-            nz (int): Number of zones.
-            nl (int): Number of lines.
-            ness (int): Number of energy storage systems.
-            fb_ess (function): Function for bounds of ESS variables.
-            fb_soc (function): Function for bounds of SOC variables.
-            BMva (float): Base power in MVA.
-            fb_Pg (function): Function for bounds of generation variables.
-            fb_flow (function): Function for bounds of flow variables.
-            A_inc (array): Incidence matrix.
-            gen_mat (array): Generation matrix.
-            curt_mat (array): Curtailment matrix.
-            ch_mat (array): Charging matrix.
-            gencost (array): Generation costs.
-            net_load (array): Net load.
-            SOC_old (array): Previous state of charge.
-            ess_pmax (array): Maximum power outputs of energy storage systems.
-            ess_eff (array): Efficiencies of energy storage systems.
-            disch_cost (array): Discharge costs.
-            ch_cost (array): Charge costs.
+        :param ng: Number of conventional generators.
+        :type ng: int
+        :param nz: Number of zones.
+        :type nz: int
+        :param nl: Number of lines.
+        :type nl: int
+        :param ness: Number of energy storage systems.
+        :type ness: int
+        :param fb_ess: Function specifying variable bounds for ESS charging power.
+        :type fb_ess: function
+        :param fb_soc: Function specifying variable bounds for ESS state of charge.
+        :type fb_soc: function
+        :param BMva: System base power (MVA).
+        :type BMva: float
+        :param fb_Pg: Function specifying variable bounds for generator and ESS discharge power.
+        :type fb_Pg: function
+        :param fb_flow: Function specifying variable bounds for line flow.
+        :type fb_flow: function
+        :param A_inc: Incidence matrix for lines.
+        :type A_inc: np.ndarray
+        :param gen_mat: Generation matrix indicating which bus/zone each generator belongs to.
+        :type gen_mat: np.ndarray
+        :param curt_mat: Matrix used for load curtailment variables (identity mapping to each zone).
+        :type curt_mat: np.ndarray
+        :param ch_mat: Matrix used for storage charging variables (which bus/zone each ESS belongs to).
+        :type ch_mat: np.ndarray
+        :param gencost: Per-unit fuel costs for conventional generators.
+        :type gencost: np.ndarray
+        :param net_load: Net load array (MW) per zone.
+        :type net_load: np.ndarray
+        :param SOC_old: Previous hour’s state-of-charge for each ESS (MWh).
+        :type SOC_old: np.ndarray
+        :param ess_pmax: Maximum power output (MW) for each ESS.
+        :type ess_pmax: np.ndarray
+        :param ess_eff: Round-trip efficiency (fraction) for each ESS.
+        :type ess_eff: np.ndarray
+        :param disch_cost: Discharge cost for each ESS.
+        :type disch_cost: np.ndarray
+        :param ch_cost: Charge cost for each ESS.
+        :type ch_cost: np.ndarray
 
-        Returns:
-            tuple: Load curtailment and updated state of charge.
+        :return:
+            A 2-element tuple containing:
+
+            * **load_curt** (*float*): Total load curtailment (MW) in this hour.
+            * **SOC_old** (*np.ndarray*): Updated state-of-charge for each ESS after dispatch.
+
+        :rtype: tuple
         """
 
         model = ConcreteModel() # declaring the model
@@ -357,33 +475,49 @@ class RAUtilities:
     def OptDispatchLite(self, ng, nz, ness, fb_ess, fb_soc, BMva, fb_Pg, A_inc, \
                     gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost):
         """
-        Achieves economic dispatch for a particular hour using optimization. Copper sheet model is used, i.e., flow constraints are ignored.
+        Solves an economic dispatch problem ignoring line flow constraints (copper-sheet model). 
+        This method is a simplified version of :meth:`OptDispatch`.
 
-        Parameters:
-            ng (int): Number of generators.
-            nz (int): Number of zones.
-            nl (int): Number of lines.
-            ness (int): Number of energy storage systems.
-            fb_ess (function): Function for bounds of ESS variables.
-            fb_soc (function): Function for bounds of SOC variables.
-            BMva (float): Base power in MVA.
-            fb_Pg (function): Function for bounds of generation variables.
-            fb_flow (function): Function for bounds of flow variables.
-            A_inc (array): Incidence matrix.
-            gen_mat (array): Generation matrix.
-            curt_mat (array): Curtailment matrix.
-            ch_mat (array): Charging matrix.
-            gencost (array): Generation costs.
-            net_load (array): Net load.
-            SOC_old (array): Previous state of charge.
-            ess_pmax (array): Maximum power outputs of energy storage systems.
-            ess_eff (array): Efficiencies of energy storage systems.
-            disch_cost (array): Discharge costs.
-            ch_cost (array): Charge costs.
+        :param ng: Number of conventional generators.
+        :type ng: int
+        :param nz: Number of zones.
+        :type nz: int
+        :param ness: Number of energy storage systems.
+        :type ness: int
+        :param fb_ess: Function specifying variable bounds for ESS charging power.
+        :type fb_ess: function
+        :param fb_soc: Function specifying variable bounds for ESS state-of-charge.
+        :type fb_soc: function
+        :param BMva: System base power (MVA).
+        :type BMva: float
+        :param fb_Pg: Function specifying variable bounds for generator and ESS discharge power.
+        :type fb_Pg: function
+        :param A_inc: Incidence matrix (not strictly used, but included for consistency).
+        :type A_inc: np.ndarray
+        :param gencost: Per-unit costs for conventional generators.
+        :type gencost: np.ndarray
+        :param net_load: Net load (MW) for the entire system (summed over all zones).
+        :type net_load: np.ndarray
+        :param SOC_old: Previous hour’s state-of-charge for each ESS (MWh).
+        :type SOC_old: np.ndarray
+        :param ess_pmax: Maximum power output for each ESS.
+        :type ess_pmax: np.ndarray
+        :param ess_eff: Round-trip efficiency for each ESS.
+        :type ess_eff: np.ndarray
+        :param disch_cost: Discharge cost for each ESS.
+        :type disch_cost: np.ndarray
+        :param ch_cost: Charge cost for each ESS.
+        :type ch_cost: np.ndarray
 
-        Returns:
-            tuple: Load curtailment and updated state of charge.
+        :return:
+            A 2-element tuple containing:
+
+            * **load_curt** (*float*): Total load curtailment (MW).
+            * **SOC_old** (*np.ndarray*): Updated state-of-charge for each ESS.
+
+        :rtype: tuple
         """
+
 
         model = ConcreteModel() # declaring the model
 
@@ -435,18 +569,30 @@ class RAUtilities:
 
     def TrackLOLStates(self, load_curt, BMva, var_s, LOL_track, s, n):
         """
-        Tracks the loss of load states.
+        Records whether load was curtailed at the current hour, and logs 
+        loss-of-load days, frequencies, etc.
 
-        Parameters:
-            load_curt (float): Load curtailment.
-            BMva (float): Base power in MVA.
-            var_s (dict): Dictionary of temporary variables.
-            LOL_track (array): Array to track loss of load.
-            s (int): Current sample.
-            n (int): Current hour.
+        :param load_curt: The amount of load curtailment (MW).
+        :type load_curt: float
+        :param BMva: System base power (MVA) for consistent unit conversions.
+        :type BMva: float
+        :param var_s: Dictionary of temporary simulation variables (e.g., 
+                      curtailment array, LOL day counts).
+        :type var_s: dict
+        :param LOL_track: 2D array (shape: [samples, hours]) tracking which hours had loss of load.
+        :type LOL_track: np.ndarray
+        :param s: Current Monte Carlo sample index.
+        :type s: int
+        :param n: Current hour index.
+        :type n: int
 
-        Returns:
-            tuple: Updated variables and loss of load tracker.
+        :return:
+            A 2-element tuple containing:
+
+            * **var_s** (*dict*): Updated dictionary of simulation variables.
+            * **LOL_track** (*np.ndarray*): Updated array marking loss-of-load hours.
+
+        :rtype: tuple
         """
         if load_curt > 0:
             var_s["LLD"] += 1 # starts at 0 for each year, adds 1 whenever there is a loss of load hour
@@ -464,7 +610,34 @@ class RAUtilities:
         return(var_s, LOL_track)
     
     def CheckConvergence(self, s, LOLP_rec, comm, rank, size, mLOLP_rec, COV_rec):
+        """
+        Gathers partial results from all MPI processes and updates the 
+        running mean and coefficient of variation (COV) for LOLP. 
+        Used to track convergence during MCS.
 
+        :param s: Current sample index.
+        :type s: int
+        :param LOLP_rec: Array of LOLP values recorded by the local process for each sample so far.
+        :type LOLP_rec: np.ndarray
+        :param comm: MPI communicator object.
+        :type comm: mpi4py.MPI.Comm
+        :param rank: MPI rank of this process.
+        :type rank: int
+        :param size: Total number of MPI processes.
+        :type size: int
+        :param mLOLP_rec: Array for storing the running mean of LOLP across samples.
+        :type mLOLP_rec: np.ndarray
+        :param COV_rec: Array for storing the coefficient of variation (COV) at each sample.
+        :type COV_rec: np.ndarray
+
+        :return:
+            A 2-element tuple containing:
+
+            * **mLOLP_rec** (*np.ndarray*): Updated array of mean LOLP values across processes.
+            * **COV_rec** (*np.ndarray*): Updated array of COV values, checking for convergence.
+
+        :rtype: tuple
+        """
         self.LOLP_len = np.size(LOLP_rec)
 
         self.sendbuf_LOLP = LOLP_rec
@@ -486,16 +659,24 @@ class RAUtilities:
 
     def UpdateIndexArrays(self, indices_rec, var_s, sim_hours, s):
         """
-        Stores the index values for all samples.
+        Updates reliability index accumulators (LOLP, EUE, EPNS, LOLE, etc.) 
+        after each sample is completed.
 
-        Parameters:
-            indices_rec (dict): Dictionary of indices to be recorded.
-            var_s (dict): Dictionary of temporary variables.
-            sim_hours (int): Number of simulation hours.
-            s (int): Current sample.
+        :param indices_rec: Dictionary that stores reliability indices across samples.
+        :type indices_rec: dict
+        :param var_s: Dictionary of sample-specific tracking variables 
+                      (curtailment array, LOL states, etc.).
+        :type var_s: dict
+        :param sim_hours: Number of hours in the current simulation (e.g., 8760 for a year).
+        :type sim_hours: int
+        :param s: Current sample index.
+        :type s: int
 
-        Returns:
-            dict: Updated indices recorder.
+        :return:
+            **indices_rec** (*dict*): Updated dictionary containing reliability 
+            index arrays for all samples.
+
+        :rtype: dict
         """
         indices_rec["LOLP_rec"][s] = var_s["LLD"]/sim_hours
         indices_rec["EUE_rec"][s] = sum(var_s["curtailment"])
@@ -511,13 +692,16 @@ class RAUtilities:
 
     def OutageAnalysis(self, var_s):
         """
-        Analyzes outages based on loss of load states.
+        Identifies the start and end of each outage (load-curtailed period) 
+        from the binary LOL array and calculates their durations.
 
-        Parameters:
-            var_s (dict): Dictionary of temporary variables.
+        :param var_s: Dictionary of sample-specific tracking variables (e.g., "label_LOLF").
+        :type var_s: dict
 
-        Returns:
-            numpy.ndarray: Array of outage durations.
+        :return:
+            1D array of outage durations (in hours).
+
+        :rtype: np.ndarray
         """
         start_outages = np.where(np.diff(np.concatenate(([0], var_s["label_LOLF"], [0]))) == 1)[0]
         end_outages = np.where(np.diff(np.concatenate(([0], var_s["label_LOLF"], [0]))) == -1)[0]
@@ -527,15 +711,21 @@ class RAUtilities:
 
     def GetReliabilityIndices(self, indices_rec, sim_hours, samples):
         """
-        Calculates the reliability indices.
+        Computes final reliability indices (LOLP, EUE, EPNS, LOLE, etc.) 
+        by averaging over the recorded arrays.
 
-        Parameters:
-            indices_rec (dict): Dictionary of indices to be recorded.
-            sim_hours (int): Number of simulation hours.
-            samples (int): Number of samples.
+        :param indices_rec: Dictionary with arrays of reliability indices 
+                            (one entry per sample).
+        :type indices_rec: dict
+        :param sim_hours: Total number of hours (e.g., 8760) in the simulation horizon.
+        :type sim_hours: int
+        :param samples: Number of Monte Carlo samples performed.
+        :type samples: int
 
-        Returns:
-            dict: Dictionary of calculated reliability indices.
+        :return:
+            A dictionary containing final reliability metrics such as LOLP, LOLH, EUE, EPNS, LOLE, etc.
+
+        :rtype: dict
         """
         self.LOLP = np.mean(indices_rec["LOLP_rec"])
         self.LOLH = self.LOLP*sim_hours
@@ -551,36 +741,64 @@ class RAUtilities:
         return(self.indices)
 
     def OutageHeatMap(self, LOL_track, size, samples, main_folder):
-            
-            LOL_temp  = np.reshape(LOL_track, (size*samples, 365, 24))
-            LOL_temp = np.sum(LOL_temp, axis=0)
-            days_in_month = np.array([calendar.monthrange(2022, month)[1] for month in range(1, 13)])
-            LOL_prob = np.zeros((12, 24))
-            start_index = 0
+        """
+        Aggregates hourly loss-of-load data into a monthly/hourly matrix and writes 
+        the percentage of load-loss hours by month/hour to a CSV file. 
+        Can be used later for creating heatmaps.
 
-            for month, month_days in enumerate(days_in_month):
-                end_index = start_index + month_days
-                LOL_prob[month, :] = LOL_temp[start_index:end_index, :].sum(axis = 0)
-                start_index = end_index
+        :param LOL_track: 4D array of shape (size, samples, 365, 24) representing the LOL states.
+        :type LOL_track: np.ndarray
+        :param size: Total number of MPI processes.
+        :type size: int
+        :param samples: Number of Monte Carlo samples.
+        :type samples: int
+        :param main_folder: Directory path where results (CSV/plots) are saved.
+        :type main_folder: str
 
-            LOL_prob = LOL_prob/(size*samples)
-            
-            pd.DataFrame((LOL_prob)*100/days_in_month[:, np.newaxis]).to_csv(f"{main_folder}/Results/LOL_perc_prob.csv")
+        :return: None
+        :rtype: None
+        """
+        LOL_temp  = np.reshape(LOL_track, (size*samples, 365, 24))
+        LOL_temp = np.sum(LOL_temp, axis=0)
+        days_in_month = np.array([calendar.monthrange(2022, month)[1] for month in range(1, 13)])
+        LOL_prob = np.zeros((12, 24))
+        start_index = 0
+
+        for month, month_days in enumerate(days_in_month):
+            end_index = start_index + month_days
+            LOL_prob[month, :] = LOL_temp[start_index:end_index, :].sum(axis = 0)
+            start_index = end_index
+
+        LOL_prob = LOL_prob/(size*samples)
+        
+        pd.DataFrame((LOL_prob)*100/days_in_month[:, np.newaxis]).to_csv(f"{main_folder}/Results/LOL_perc_prob.csv")
 
     def ParallelProcessing(self, indices, LOL_track, comm, rank, size, samples, sim_hours):
         """
-        Performs parallel processing to gather results from different processes.
+        Gathers reliability indices and the LOL tracker from all MPI processes to compute
+        average indices over all ranks. Optionally saves final results and calls 
+        :meth:`OutageHeatMap` if a full-year simulation is run.
 
-        Parameters:
-            indices (dict): Dictionary of calculated reliability indices.
-            LOL_track (array): Array to track loss of load.
-            comm (MPI.Comm): MPI communicator.
-            rank (int): Rank of the current process.
-            size (int): Total number of processes.
-            samples (int): Number of samples.
+        :param indices: Dictionary of reliability indices for the local rank.
+        :type indices: dict
+        :param LOL_track: 2D array of shape (samples, hours) tracking LOL states for the local rank.
+        :type LOL_track: np.ndarray
+        :param comm: MPI communicator object.
+        :type comm: mpi4py.MPI.Comm
+        :param rank: MPI rank of this process.
+        :type rank: int
+        :param size: Total number of MPI processes.
+        :type size: int
+        :param samples: Number of Monte Carlo samples performed.
+        :type samples: int
+        :param sim_hours: Number of hours in each sample (e.g., 8760).
+        :type sim_hours: int
 
-        Returns:
-            dict: Dictionary of aggregated reliability indices for all processes or a rank message.
+        :return:
+            If rank=0, a dictionary containing aggregated reliability indices 
+            (LOLP, EUE, etc.) across all ranks, else returns None.
+
+        :rtype: dict or None
         """
         self.indices_np = np.array([indices["LOLP"], indices["LOLH"], indices["EUE"], indices["EPNS"], indices["LOLF"], indices["MDT"], indices["LOLE"]])
         self.ind_len = np.size(self.indices_np)

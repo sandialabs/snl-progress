@@ -2,21 +2,45 @@ import pandas as pd
 import numpy as np
 
 class RASystemData:
-    '''This class extracts, modifies and returns the system data required for resource adequacy assessment'''
+    """
+    Manages and processes the core system data needed for resource adequacy (RA) assessments.
 
+    This class provides methods to read and extract power system information from CSV files:
+      - **Branch data** (e.g., line capacities, MTTF/MTTR)
+      - **Bus data** (bus names, bus numbers)
+      - **Generator data** (pmax, pmin, forced outage rates, maintenance times, costs)
+      - **Storage data** (ESS ratings, SOC constraints, costs, reliability parameters)
+      - **Load data** (regional load profiles)
+
+    These methods facilitate easy import and organization of data so that reliability 
+    or adequacy simulations can be conducted downstream (e.g., Monte Carlo simulations).
+    """
     # def __init__(self, nh):
     #     '''Hours of data available'''
     #     self.nh = nh
 
     def branch(self, data_branch):
         """
-        Extracts and returns all system branch data.
+        Loads branch (transmission line) data and extracts key attributes for RA analysis.
 
-        Parameters:
-            data_branch (str): Path to the CSV file containing branch data.
+        :param data_branch: Path to the CSV file containing branch data, typically including 
+                            columns like "From Bus", "To Bus", "Rating", "MTTF", "MTTR", etc.
+        :type data_branch: str
 
-        Returns:
-            tuple: A tuple containing the number of lines, from buses, to buses, transmission capacities, MTTF, and MTTR.
+        :return:
+            A tuple containing:
+
+            * **nl** (*int*): Number of transmission lines (rows in the CSV).
+            * **fb** (*np.ndarray*): 1D array of "From Bus" indices for each line.
+            * **tb** (*np.ndarray*): 1D array of "To Bus" indices for each line.
+            * **cap_trans** (*np.ndarray*): 1D array of transmission line ratings (MW).
+            * **MTTF_trans** (*np.ndarray*): Mean time to failure for each line (hours).
+            * **MTTR_trans** (*np.ndarray*): Mean time to repair for each line (hours).
+
+        :rtype: tuple
+
+        :raises FileNotFoundError: If ``data_branch`` does not point to a valid file.
+        :raises pd.errors.EmptyDataError: If the CSV file is empty or badly formatted.
         """
 
         self.branch = pd.read_csv(data_branch)
@@ -34,13 +58,23 @@ class RASystemData:
 
     def bus(self, data_bus):
         """
-        Extracts and returns all system bus data.
+        Loads bus data and extracts bus names and numbers.
 
-        Parameters:
-            data_bus (str): Path to the CSV file containing bus data.
+        :param data_bus: Path to the CSV file containing bus data, often with columns 
+                         "Bus Name" and "Bus No.".
+        :type data_bus: str
 
-        Returns:
-            tuple: A tuple containing bus names, bus numbers, and the number of buses.
+        :return:
+            A tuple containing:
+
+            * **bus_name** (*pd.Series*): Series of bus names.
+            * **bus_no** (*np.ndarray*): 1D array of bus indices.
+            * **nz** (*int*): Number of buses (length of ``bus_no``).
+
+        :rtype: tuple
+
+        :raises FileNotFoundError: If ``data_bus`` is not found.
+        :raises pd.errors.EmptyDataError: If the CSV is empty or invalid.
         """
 
         self.bus = pd.read_csv(data_bus)
@@ -52,14 +86,28 @@ class RASystemData:
 
     def gen(self, data_gen):
         """
-        Extracts and returns all system conventional generator data.
+        Loads conventional generator data, including capacities and reliability parameters.
 
-        Parameters:
-            data_gen (str): Path to the CSV file containing generator data.
+        :param data_gen: Path to the CSV file containing generator info (e.g., "Bus No.", 
+                         "Max Cap", "Min Cap", "FOR", "MTTF", "MTTR", "Cost").
+        :type data_gen: str
 
-        Returns:
-            tuple: A tuple containing generator buses, number of generators, maximum and minimum capacities,
-            forced outage rates, MTTF, MTTR, and generation costs.
+        :return:
+            A tuple containing:
+
+            * **genbus** (*np.ndarray*): Bus indices (1D) for each generator.
+            * **ng** (*int*): Number of generators in the system.
+            * **pmax** (*np.ndarray*): Max capacity (MW) of each generator.
+            * **pmin** (*np.ndarray*): Min capacity (MW) of each generator.
+            * **FOR_gen** (*np.ndarray*): Forced outage rate of each generator.
+            * **MTTF_gen** (*np.ndarray*): Mean time to failure (hours).
+            * **MTTR_gen** (*np.ndarray*): Mean time to repair (hours).
+            * **gencost** (*np.ndarray*): Generation cost for each generator.
+
+        :rtype: tuple
+
+        :raises FileNotFoundError: If ``data_gen`` file is not found.
+        :raises pd.errors.EmptyDataError: If the CSV is empty or malformed.
         """
 
         self.gen = pd.read_csv(data_gen) # all coventional generator data
@@ -76,14 +124,34 @@ class RASystemData:
 
     def storage(self, data_storage):
         """
-        Extracts and returns all system energy storage data.
+        Loads and returns data on energy storage systems (ESS), including power ratings and SOC limits.
 
-        Parameters:
-            data_storage (str): Path to the CSV file containing storage data.
+        :param data_storage: Path to the CSV file containing ESS data (e.g., "Pmax", "Pmin", 
+                             "Duration", "max_SOC", "min_SOC", "MTTF", "MTTR", etc.).
+        :type data_storage: str
 
-        Returns:
-            tuple: A tuple containing ESS names, ESS buses, number of ESS, maximum and minimum power output,
-            duration, maximum and minimum SOC, efficiency, discharge and charge costs, MTTF, MTTR, and units.
+        :return:
+            A tuple containing:
+
+            * **essname** (*pd.Series*): Names/IDs for each ESS unit.
+            * **essbus** (*np.ndarray*): Bus indices corresponding to each ESS.
+            * **ness** (*int*): Number of ESS units.
+            * **ess_pmax** (*np.ndarray*): Maximum power output (MW) for each ESS.
+            * **ess_pmin** (*np.ndarray*): Minimum power output (MW) for each ESS.
+            * **ess_duration** (*np.ndarray*): Duration (hours) of each ESS at rated power.
+            * **ess_socmax** (*np.ndarray*): Max SOC fraction for each ESS (0-1).
+            * **ess_socmin** (*np.ndarray*): Min SOC fraction for each ESS (0-1).
+            * **ess_eff** (*np.ndarray*): Round-trip efficiency of each ESS.
+            * **disch_cost** (*np.ndarray*): Discharge cost for each ESS.
+            * **ch_cost** (*np.ndarray*): Charge cost for each ESS.
+            * **MTTF_ess** (*np.ndarray*): Mean time to failure (hours) for each ESS.
+            * **MTTR_ess** (*np.ndarray*): Mean time to repair (hours) for each ESS.
+            * **ess_units** (*np.ndarray*): Multiplicities or number of identical ESS units.
+
+        :rtype: tuple
+
+        :raises FileNotFoundError: If ``data_storage`` file does not exist.
+        :raises pd.errors.EmptyDataError: If the CSV is empty or malformed.
         """
 
         self.storage = pd.read_csv(data_storage)
@@ -107,14 +175,22 @@ class RASystemData:
 
     def load(self, bus_name, data_load):
         """
-        Extracts and returns all system load data.
+        Loads and returns time-series load data (demand) for specified bus(es).
 
-        Parameters:
-            bus_name (str): Name of the bus.
-            data_load (str): Path to the CSV file containing load data.
+        :param bus_name: Column label(s) in the load CSV corresponding to each region's load. 
+                         Can be a string for a single bus or a list of strings for multiple buses.
+        :type bus_name: str or list[str]
+        :param data_load: Path to the CSV file containing hourly or sub-hourly load data.
+        :type data_load: str
 
-        Returns:
-            numpy.ndarray: Array containing load data for all regions.
+        :return:
+            A NumPy array containing load values. Its shape depends on whether ``bus_name`` 
+            references one or multiple columns.
+
+        :rtype: np.ndarray
+
+        :raises FileNotFoundError: If ``data_load`` is not found.
+        :raises pd.errors.EmptyDataError: If the CSV is empty or invalid.
         """
         self.load = pd.read_csv(data_load)
         self.load_all_regions = self.load[bus_name].values

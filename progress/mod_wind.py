@@ -6,20 +6,54 @@ from rex import WindResource as WR
 
 class Wind:
 
-    '''This class contains the methods required for downloading and processing wind data.'''
+    """
+    Handles downloading, assembling, and analyzing wind data from the NREL Wind Toolkit for 
+    resource adequacy or other power system studies.
 
+    This class provides methods to:
+
+    1. **DownloadWindData**: Fetch and parse wind speed data (at specified heights) 
+       from NREL's Wind Toolkit for each wind site/year.
+    2. **WindFarmsData**: Read and organize farm-level metadata (capacity, turbine rating, etc.) 
+       along with power curve information.
+    3. **CalWindTrRates**: Compute transition rate matrices for wind speed classes based on 
+       time series data, useful in Markov chain-based reliability or adequacy models.
+    """
     def DownloadWindData(self, directory, site_data, api_key, email, affiliation, year_start, year_end):
         """
-        Downloads wind speed data from the NREL wind toolkit.
+        Downloads wind speed data from the NREL Wind Toolkit for the given sites and years, 
+        then consolidates it into a single CSV file.
 
-        Parameters:
-            directory (str): Directory to save the data.
-            site_data (str): Path to the CSV file containing site data.
-            api_key (str): API key for NREL.
-            email (str): Your email address.
-            affiliation (str): Your affiliation.
-            year_start (int): Start year for data download.
-            year_end (int): End year for data download.
+        **Process Summary**:
+          1. Reads site metadata (longitude, latitude, hub height) from the specified CSV.
+          2. Iterates through each site and year to request wind speed data at 80m and 100m heights 
+             from the NREL API.
+          3. Applies power-law interpolation if a site's hub height differs from 80m and 100m.
+          4. Merges all sites (for each year) into a single DataFrame, adjusting timestamps, and 
+             finally writes a combined CSV of wind speeds at each site.
+
+        :param directory: Directory where downloaded data and final merged CSV will be saved.
+        :type directory: str
+        :param site_data: Path to the CSV file containing site metadata (Farm Name, Longitude, Latitude, Hub Height, etc.).
+        :type site_data: str
+        :param api_key: Your personal API key for accessing the NREL Wind Toolkit.
+        :type api_key: str
+        :param email: Your email address (required by the NREL API).
+        :type email: str
+        :param affiliation: Your organization or affiliation (required by the NREL API).
+        :type affiliation: str
+        :param year_start: The first (earliest) year of data to download.
+        :type year_start: int
+        :param year_end: The last (latest) year of data to download.
+        :type year_end: int
+
+        :return:
+            None
+
+        :rtype: None
+
+        :raises FileNotFoundError: If the site CSV file is missing or unreachable.
+        :raises requests.exceptions.RequestException: For network or API-related failures during data download.
         """
 
         year_list = range(year_start, year_end + 1)
@@ -85,14 +119,39 @@ class Wind:
 
     def WindFarmsData(self, site_data, pcurve_data):
         """
-        Collects wind farm data from user input.
+        Reads and organizes wind farm metadata and power curve data to facilitate 
+        wind power output calculations in subsequent modeling.
 
-        Parameters:
-            site_data (str): Path to the CSV file containing site data.
-            pcurve_data (str): Path to the CSV file containing power curve data.
+        **Process Summary**:
+          1. Reads the wind farm CSV to extract site/farm identifiers, zone numbers, 
+             and capacities (MW).
+          2. Computes the number of turbines per farm based on rated capacity and turbine rating.
+          3. Reads the power curve CSV to identify wind speed class thresholds 
+             and power output curves for Classes 2 and 3.
 
-        Returns:
-            tuple: Wind farm data including number of sites, farm names, zone numbers, wind classes, turbines, turbine ratings, power classes, output curves, and start speeds.
+        :param site_data: Path to the CSV containing wind farm data (Farm No., Farm Name, Zone No., Max Cap, Turbine Rating, etc.).
+        :type site_data: str
+        :param pcurve_data: Path to the CSV containing power curve data (Start/End speeds, Class 2 curve, Class 3 curve, etc.).
+        :type pcurve_data: str
+
+        :return:
+            A 10-element tuple containing:
+
+            * **w_sites** (*int*): Number of wind farm sites.
+            * **farm_name** (*pd.Series*): Names of each wind farm.
+            * **zone_no** (*np.ndarray*): Zone indices corresponding to each wind farm.
+            * **w_classes** (*int*): Number of discrete wind speed classes.
+            * **w_turbines** (*np.ndarray*): Number of turbines at each site.
+            * **turbine_rating** (*np.ndarray*): Rated power (MW) of each turbine.
+            * **p_class** (*np.ndarray*): Array indicating which power curve class (2 or 3) each site uses.
+            * **out_curve2** (*np.ndarray*): Power output curve for Class 2 turbines (indexed by wind speed class).
+            * **out_curve3** (*np.ndarray*): Power output curve for Class 3 turbines (indexed by wind speed class).
+            * **start_speed** (*np.ndarray*): Lower bounds of wind speed classes (m/s).
+
+        :rtype: tuple
+
+        :raises FileNotFoundError: If either CSV (site_data or pcurve_data) is not found.
+        :raises pd.errors.EmptyDataError: If either CSV file is empty or cannot be parsed.
         """
         self.wind = pd.read_csv(site_data) # read file for wind farm data
         self.farm_no = self.wind['Farm No.'].values # wind farm numbers
@@ -116,16 +175,40 @@ class Wind:
 
     def CalWindTrRates(self, directory, windspeed_data, site_data, pcurve_data):
         """
-        Calculates transition rate matrices for the wind farms using wind speed data downloaded from the wind toolkit.
+        Computes and stores transition rate matrices for wind speed classes 
+        using Markov chain assumptions. Each site's wind speed time series 
+        is discretized into classes, and a transition probability matrix 
+        is computed.
 
-        Parameters:
-            directory (str): Directory to save the transition rates.
-            windspeed_data (str): Path to the CSV file containing wind speed data.
-            site_data (str): Path to the CSV file containing site data.
-            pcurve_data (str): Path to the CSV file containing power curve data.
+        **Process Summary**:
+          1. Reads wind speed data from the merged CSV created by :meth:`DownloadWindData`.
+          2. Bins wind speed observations into classes based on the start speeds 
+             defined in the power curve CSV.
+          3. Increments counts for transitions between consecutive hours 
+             (e.g., from class j to class k).
+          4. Converts transition counts to probabilities and writes each site's 
+             transition matrix to an Excel file.
 
-        Returns:
-            numpy.ndarray: Transition rate matrices.
+        :param directory: Directory to save the resulting transition rate Excel file.
+        :type directory: str
+        :param windspeed_data: Path to the CSV file containing wind speed time series 
+                               for all sites (output of :meth:`DownloadWindData`).
+        :type windspeed_data: str
+        :param site_data: Path to the CSV containing wind farm data 
+                          (Farm No., Farm Name, etc.).
+        :type site_data: str
+        :param pcurve_data: Path to the CSV containing power curve data (defining wind speed classes).
+        :type pcurve_data: str
+
+        :return:
+            A 3D NumPy array of shape ``(sites, classes, classes)`` representing 
+            transition probability matrices for each site. Each [i, j, k] 
+            entry is the probability of moving from class j to class k at site i.
+
+        :rtype: np.ndarray
+
+        :raises FileNotFoundError: If any of the CSV files (windspeed_data, site_data, pcurve_data) are missing.
+        :raises pd.errors.EmptyDataError: If any CSV is empty or cannot be parsed.
         """
         wind = pd.read_csv(site_data) # read file for wind farm data
         farm_no = wind['Farm No.'].values # wind farm numbers

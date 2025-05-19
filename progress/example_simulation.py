@@ -6,17 +6,93 @@ import pandas as pd
 import os
 import yaml
 
-from mod_sysdata import RASystemData
-from mod_solar import Solar
-from mod_wind import Wind
-from mod_utilities import RAUtilities
-from mod_matrices import RAMatrices
-from mod_plot import RAPlotTools
-from mod_kmeans import KMeans_Pipeline
+from .mod_sysdata import RASystemData
+from .mod_solar import Solar
+from .mod_wind import Wind
+from .mod_utilities import RAUtilities
+from .mod_matrices import RAMatrices
+from .mod_plot import RAPlotTools
+from .mod_kmeans import KMeans_Pipeline
 
-def MCS(input_file) :   
-    '''This function performs mixed time sequential MCS using methods from the different RA modules'''
- 
+def MCS(input_file):
+    """
+    Executes a Mixed Time Sequential Monte Carlo Simulation (MCS) for reliability analysis 
+    using data from various RA modules.
+
+    **Overview of the Process**:
+
+    1. **Configuration & Setup**:
+       - Reads simulation parameters (e.g., number of samples, simulation hours, file locations) 
+         from a YAML file.
+       - Initializes paths for system data, wind data, and solar data.
+    
+    2. **System Data & Preprocessing**:
+       - Creates instances of :class:`RASystemData <.mod_sysdata.RASystemData>` and 
+         :class:`RAUtilities <.mod_utilities.RAUtilities>` to read generator, branch, 
+         bus, load, and storage data, along with their reliability parameters 
+         (Mean Time To Failure, Mean Time To Repair, etc.).
+       - Computes total transition rates and capacities for generation and transmission.
+
+    3. **Wind & Solar Integration** (if specified):
+       - Invokes :class:`Wind <.mod_wind.Wind>` and :class:`Solar <.mod_solar.Solar>` classes 
+         to download/process wind or solar data, build transition rate matrices, 
+         and retrieve probability distributions or generation profiles.
+
+    4. **Matrices & Optimization Setup**:
+       - Uses :class:`RAMatrices <.mod_matrices.RAMatrices>` to construct key model matrices 
+         (generator matrix, charging matrix, incidence matrix, curtailment matrix).
+       - Defines internal bounds and callbacks for optimization variables.
+
+    5. **Monte Carlo Simulation**:
+       - For each sample (from 1 to ``samples``), simulates a full year (``sim_hours`` hours), 
+         updating component states (up/down) based on reliability transitions.
+       - Recalculates available capacities, updates energy storage states, 
+         and computes net load after accounting for wind/solar generation.
+       - Performs an optimization-based economic dispatch (Zonal or Copper Sheet approach) 
+         to serve load while minimizing curtailment, capturing load loss events as needed.
+       - Tracks reliability indices, state-of-charge, and curtailment for output.
+
+    6. **Index Calculation & Convergence**:
+       - Accumulates reliability indices (e.g., LOLP, EUE) and checks partial convergence 
+         by computing the Coefficient of Variation (COV) of LOLP across samples.
+       - Writes final reliability metrics to a CSV file and optionally produces 
+         an outage heat map if a full-year simulation (8760 hours) is performed.
+
+    :param input_file: Path to the YAML configuration file that provides simulation settings.
+    :type input_file: str
+
+    :return:
+        A tuple containing:
+
+        * **indices** (*dict*): Final dictionary of reliability indices for the entire simulation.
+
+        * **SOC_rec** (*np.ndarray*): Hourly state-of-charge records for each storage unit.
+
+        * **curt_rec** (*np.ndarray*): Hourly load curtailment records for the system.
+
+        * **renewable_rec** (*dict*): Wind and solar generation records for visualization.
+
+        * **bus_name** (*list[str]*): Names of each bus in the system model.
+
+        * **essname** (*list[str]*): Names of each energy storage unit.
+
+        * **main_folder** (*str*): Absolute path to the directory containing this script.
+
+        * **sim_hours** (*int*): Number of hours in the simulated year (e.g., 8760).
+
+        * **samples** (*int*): Number of Monte Carlo samples iterated over.
+
+        * **mLOLP_rec** (*np.ndarray*): Running mean of Loss of Load Probability across samples.
+
+        * **COV_rec** (*np.ndarray*): Coefficient of Variation array used to check convergence.
+
+    :rtype: tuple
+
+    :raises FileNotFoundError: If the YAML config file or any required data file is not found.
+    :raises ValueError: If the YAML config data has invalid or missing fields.
+    :raises RuntimeError: If optimization fails or the underlying solver cannot converge.
+    """
+
     # open configuration file
     with open(input_file, 'r') as f:
         config = yaml.safe_load(f)

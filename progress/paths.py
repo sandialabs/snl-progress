@@ -6,10 +6,12 @@ def get_path():
     Determines the base path of the application.
 
     If the application is running in a frozen state (e.g., packaged with PyInstaller),
-    it returns the directory containing the executable. Otherwise, it returns the
-    directory containing the current script.
+    this function returns the directory containing the executable. Otherwise, it 
+    returns the directory containing the current script.
 
-    :return: The base path of the application.
+    :return:
+        The absolute path to the application's base directory.
+
     :rtype: str
     """
     if getattr(sys, 'frozen', False):
