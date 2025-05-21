@@ -3,7 +3,6 @@ from progress.App.simulation.ui.ui_sim_gui import Ui_sim_widget
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
 from progress.paths import get_path
-base_dir = get_path()
 import os
 from progress.App.gui_tools.tools import WorkerThread
 from progress.mod_matrices import RAMatrices
@@ -12,6 +11,8 @@ import numpy as np
 import pandas as pd
 import copy
 from datetime import datetime
+
+base_dir = get_path()
 
 class sim_form(QWidget, Ui_sim_widget):
     """Landing page widget."""
@@ -231,18 +232,18 @@ class sim_form(QWidget, Ui_sim_widget):
             os.makedirs(results_subdir, exist_ok=True)
 
             # Initialize RAPlotTools
-            rapt = RAPlotTools(self.main_folder)
+            rapt = RAPlotTools(results_subdir)
 
             # Call plotting functions, passing the results_subdir
-            rapt.PlotSolarGen(self.renewable_rec["solar_rec"], self.data_handler.bus_name, results_subdir)
-            rapt.PlotWindGen(self.renewable_rec["wind_rec"], self.data_handler.bus_name, results_subdir)
-            rapt.PlotSOC(self.SOC_rec, self.data_handler.essname, results_subdir)
-            rapt.PlotLoadCurt(self.curt_rec, results_subdir)
-            rapt.PlotLOLP(self.mLOLP_rec, self.samples, 1, results_subdir)
-            rapt.PlotCOV(self.COV_rec, self.samples, 1, results_subdir)
+            rapt.PlotSolarGen(self.renewable_rec["solar_rec"], self.data_handler.bus_name)
+            rapt.PlotWindGen(self.renewable_rec["wind_rec"], self.data_handler.bus_name)
+            rapt.PlotSOC(self.SOC_rec, self.data_handler.essname)
+            rapt.PlotLoadCurt(self.curt_rec)
+            rapt.PlotLOLP(self.mLOLP_rec, self.samples, 1)
+            rapt.PlotCOV(self.COV_rec, self.samples, 1)
 
             if self.sim_hours == 8760:
-                rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv", results_subdir)
+                rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
 
             # Update plot count
             self.plot_count = 0
