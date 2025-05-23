@@ -594,14 +594,14 @@ class KMeans_Pipeline:
             range(1, clust_eval+1), sse, curve="convex", direction="decreasing"
         )
 
-        # plot SSE vs clusters
-        fig = go.Figure(data=[go.Scatter(x = list(range(1, clust_eval+1)), y = sse, mode = 'lines' )])
-        fig.update_layout(
-            xaxis_title="No. of Clusters", 
-            yaxis_title="Sum of Squared Errors",
-        )
-        sseplot_name = "SSE_Curve.png"
-        fig.write_image(f"{self.directory}/{sseplot_name}")
+        # # plot SSE vs clusters
+        # fig = go.Figure(data=[go.Scatter(x = list(range(1, clust_eval+1)), y = sse, mode = 'lines' )])
+        # fig.update_layout(
+        #     xaxis_title="No. of Clusters", 
+        #     yaxis_title="Sum of Squared Errors",
+        # )
+        # sseplot_name = "SSE_Curve.png"
+        # fig.write_image(f"{self.directory}/{sseplot_name}")
 
         return kl.elbow, sse, silhouette_scores
 
@@ -751,39 +751,20 @@ class KMeans_Pipeline:
                 df_cluster.to_csv(f'{self.directory}/Clusters/{label + 1}/{column}.csv', index=False)
                 # df_cluster.to_csv(f'clusters/cluster_{label}/{column}.csv', index=False)
         print("\n")
-
-
+ 
     def test_metrics(self, clust_eval):
         """
         Calculates and writes K-means clustering metrics to a text file.
 
-        This method evaluates the clustering performance using the elbow method and silhouette scores,
-        and writes the detailed results to a file named 'clustering_results.txt'.
-
-        The method outputs a detailed explanation of the elbow method and silhouette scores, and
-        it identifies the optimal number of clusters based on the provided dataset. It also captures
-        the sum of squared errors (SSE) for different numbers of clusters, along with their respective
-        silhouette scores.
-
         Parameters:
-            clust_eval (int): The maximum number of clusters to evaluate, which determines the range
-                            of clusters to consider for finding the elbow point.
-
-        Side Effects:
-            - Writes to a file 'clustering_results.txt' in the specified directory.
-            - Temporarily redirects stdout to this file to capture print statements.
+            clust_eval (int): The max number of clusters to evaluate.
 
         Returns:
-            None: This method does not return a value but writes output to a file.
-
-        Example of File Output:
-            The optimal number of clusters in a dataset is the number that...
-            Optimal Number of Clusters: X
-            SSE for Y Clusters: Z
-            Silhouette Score for Y Clusters: W
+            tuple: (elbow, sse) — used for plotting in the main thread.
         """
+        elbow, sse, silhouette_scores = self.find_elbow(self.kmeans_df, clust_eval)
 
-        text = (
+        results_text = (
             "The optimal number of clusters in a dataset is the number that\n"
             "best captures the underlying structure of the data.\n\n"
             "Elbow Method: This method involves plotting the explained variation\n"
@@ -801,32 +782,99 @@ class KMeans_Pipeline:
             "assigned to the wrong cluster. Samples with a score below 0 are closer to the\n"
             "neighboring clusters than to their own cluster.\n\n"
             "A higher silhouette score indicates better clustering quality, with well-separated\n"
-            "clusters that are dense internally.\n"
+            "clusters that are dense internally.\n\n"
+            f"Optimal Number of Clusters: {elbow}\n\n"
         )
-        # Call the find_elbow method to get the elbow point and SSE
-        elbow, sse, silhouette_scores = self.find_elbow(self.kmeans_df, clust_eval)
 
-        # Open 'results.txt' for writing
+        for i, (sse_value, sil_score) in enumerate(zip(sse, silhouette_scores), start=1):
+            results_text += f"SSE for {i} Clusters: {sse_value}\n"
+            results_text += f"Silhouette Score for {i} Clusters: {sil_score}\n"
+
+        # Write to file
         with open(f"{self.directory}/clustering_results.txt", "w") as f:
+            f.write(results_text)
 
-            # Save the current stdout so that it can be restored later
-            original_stdout = sys.stdout
+        return elbow, sse
 
-            # Redirect stdout to the file, so print statements write to the file
-            sys.stdout = f
 
-            # Write the best number of clusters to the file
-            print(f"{text}Optimal Number of Clusters: {elbow}")
-            print(f"{text}")
 
-            # Write the SSE for different numbers of clusters to the file.
-            # Start the numbering from 2 as specified.
-            for i, (sse_value, silhouette_score) in enumerate(zip(sse, silhouette_scores), start=2):
-                print(f"SSE for {i-1} Clusters: {sse_value}")
-                print(f"Silhouette Score for {i-1} Clusters: {silhouette_score}")
 
-            # Restore the original stdout
-            sys.stdout = original_stdout
+
+
+    # def test_metrics(self, clust_eval):
+    #     """
+    #     Calculates and writes K-means clustering metrics to a text file.
+
+    #     This method evaluates the clustering performance using the elbow method and silhouette scores,
+    #     and writes the detailed results to a file named 'clustering_results.txt'.
+
+    #     The method outputs a detailed explanation of the elbow method and silhouette scores, and
+    #     it identifies the optimal number of clusters based on the provided dataset. It also captures
+    #     the sum of squared errors (SSE) for different numbers of clusters, along with their respective
+    #     silhouette scores.
+
+    #     Parameters:
+    #         clust_eval (int): The maximum number of clusters to evaluate, which determines the range
+    #                         of clusters to consider for finding the elbow point.
+
+    #     Side Effects:
+    #         - Writes to a file 'clustering_results.txt' in the specified directory.
+    #         - Temporarily redirects stdout to this file to capture print statements.
+
+    #     Returns:
+    #         None: This method does not return a value but writes output to a file.
+
+    #     Example of File Output:
+    #         The optimal number of clusters in a dataset is the number that...
+    #         Optimal Number of Clusters: X
+    #         SSE for Y Clusters: Z
+    #         Silhouette Score for Y Clusters: W
+    #     """
+
+    #     text = (
+    #         "The optimal number of clusters in a dataset is the number that\n"
+    #         "best captures the underlying structure of the data.\n\n"
+    #         "Elbow Method: This method involves plotting the explained variation\n"
+    #         "(e.g., within-cluster sum of squares) against the number of clusters\n"
+    #         "and looking for an 'elbow' point where the rate of decrease sharply changes.\n"
+    #         "This point is considered to be the optimal number of clusters.\n\n"
+    #         "Silhouette score:\n\n"
+    #         "Near +1: A silhouette score near +1 indicates that the sample is far away\n"
+    #         "from the neighboring clusters. This means that the sample is very well clustered\n"
+    #         "and clearly distinguishable from other clusters.\n\n"
+    #         "Near 0: A silhouette score near 0 indicates that the sample is on or very close\n"
+    #         "to the decision boundary between two neighboring clusters. This means that the\n"
+    #         "sample could potentially be assigned to either cluster.\n\n"
+    #         "Below 0: A silhouette score below 0 indicates that the sample might have been\n"
+    #         "assigned to the wrong cluster. Samples with a score below 0 are closer to the\n"
+    #         "neighboring clusters than to their own cluster.\n\n"
+    #         "A higher silhouette score indicates better clustering quality, with well-separated\n"
+    #         "clusters that are dense internally.\n"
+    #     )
+    #     # Call the find_elbow method to get the elbow point and SSE
+    #     elbow, sse, silhouette_scores = self.find_elbow(self.kmeans_df, clust_eval)
+
+    #     # Open 'results.txt' for writing
+    #     with open(f"{self.directory}/clustering_results.txt", "w") as f:
+
+    #         # Save the current stdout so that it can be restored later
+    #         original_stdout = sys.stdout
+
+    #         # Redirect stdout to the file, so print statements write to the file
+    #         sys.stdout = f
+
+    #         # Write the best number of clusters to the file
+    #         print(f"{text}Optimal Number of Clusters: {elbow}")
+    #         print(f"{text}")
+
+    #         # Write the SSE for different numbers of clusters to the file.
+    #         # Start the numbering from 2 as specified.
+    #         for i, (sse_value, silhouette_score) in enumerate(zip(sse, silhouette_scores), start=2):
+    #             print(f"SSE for {i-1} Clusters: {sse_value}")
+    #             print(f"Silhouette Score for {i-1} Clusters: {silhouette_score}")
+
+    #         # Restore the original stdout
+    #         sys.stdout = original_stdout
 
 # if __name__ == "__main__":
 

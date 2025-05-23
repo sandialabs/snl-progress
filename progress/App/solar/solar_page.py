@@ -8,6 +8,7 @@ from progress.paths import get_path
 base_dir = get_path()
 import os
 from PySide6.QtGui import QPixmap
+import plotly.graph_objects as go
 
 class solar_form(QWidget, Ui_solar_widget):
     """Landing page widget."""
@@ -166,26 +167,57 @@ class solar_form(QWidget, Ui_solar_widget):
         pass
 
     def start_test_metrics(self):
-        # Check if worker_pipeline has completed
         if hasattr(self, 'worker_pipeline') and self.worker_pipeline.isFinished():
-            
-            # directly calling test_metrics instead of using worker thread to bypass threading issue for M-chip macbooks
-            self.pipeline.test_metrics(int(self.clust_eval)) 
-            # Create worker threads for the pipeline methods
-            # self.worker1 = WorkerThread(self.pipeline.test_metrics, int(self.clust_eval)) # this is causing Bus 10 error for M-chip macbooks (threading issue)
-            self.worker1 = WorkerThread(self.dummy_func)        
-            self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
+            elbow, sse = self.pipeline.test_metrics(int(self.clust_eval))
 
-            # Connect signals
-            self.worker1.output_updated.connect(lambda text: self.handle_output(self.textBrowser_6, text))
-            self.worker1.finished.connect(self.start_worker2)
+            # Plot the SSE curve safely in the main thread
+            self.render_sse_plot(elbow, sse)
+
+            # Start worker to show the text file
+            self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
             self.worker2.output_updated.connect(lambda text: self.handle_output(self.textBrowser_5, text))
             self.worker2.finished.connect(self.on_workers_finished)
-
-            # Start the first worker
-            self.worker1.start()
+            self.worker2.start()
         else:
             print("worker_pipeline has not finished yet.")
+
+    def render_sse_plot(self, elbow, sse):
+
+        fig = go.Figure(data=[go.Scatter(x=list(range(1, len(sse)+1)), y=sse, mode='lines')])
+        fig.update_layout(
+            xaxis_title="No. of Clusters",
+            yaxis_title="Sum of Squared Errors"
+        )
+        sseplot_name = os.path.join(self.solar_directory, "SSE_Curve.png")
+        fig.write_image(sseplot_name)
+        self.pdf_path = sseplot_name
+
+
+
+
+
+
+    # def start_test_metrics(self):
+    #     # Check if worker_pipeline has completed
+    #     if hasattr(self, 'worker_pipeline') and self.worker_pipeline.isFinished():
+            
+    #         # directly calling test_metrics instead of using worker thread to bypass threading issue for M-chip macbooks
+    #         self.pipeline.test_metrics(int(self.clust_eval)) 
+    #         # Create worker threads for the pipeline methods
+    #         # self.worker1 = WorkerThread(self.pipeline.test_metrics, int(self.clust_eval)) # this is causing Bus 10 error for M-chip macbooks (threading issue)
+    #         self.worker1 = WorkerThread(self.dummy_func)        
+    #         self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
+
+    #         # Connect signals
+    #         self.worker1.output_updated.connect(lambda text: self.handle_output(self.textBrowser_6, text))
+    #         self.worker1.finished.connect(self.start_worker2)
+    #         self.worker2.output_updated.connect(lambda text: self.handle_output(self.textBrowser_5, text))
+    #         self.worker2.finished.connect(self.on_workers_finished)
+
+    #         # Start the first worker
+    #         self.worker1.start()
+    #     else:
+    #         print("worker_pipeline has not finished yet.")
 
     def start_worker2(self):
         if self.tester==0:
