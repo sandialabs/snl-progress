@@ -12,27 +12,7 @@ class RAPlotTools:
         self.results_subdir = results_subdir
         pass
 
-    def PlotWindGen(self, wind_rec, bus_name):
-        """
-        Plots wind power generation over time.
-
-        Parameters:
-            wind_rec (numpy.ndarray): Wind power generation records.
-            bus_name (list): List of bus names.
-        """
-
-        plt.title("Wind Power Generation")
-        plt.xlabel("Hours")
-        plt.ylabel("Output (MW)")
-        plt.plot(wind_rec.T, label = bus_name)
-        plt.legend()
-
-        pdf_path = os.path.join(self.results_subdir, 'wind_generation.pdf')
-
-        plt.savefig(pdf_path)
-        plt.close()
-
-    def PlotSolarGen(self, solar_rec, bus_name):
+    def PlotSolarGen(self, solar_rec, bus_name, s):
         """
         Plots solar power generation over time.
 
@@ -46,12 +26,31 @@ class RAPlotTools:
         plt.plot(solar_rec.T, label = bus_name)
         plt.legend()
 
-        pdf_path = os.path.join(self.results_subdir, 'solar_generation.pdf')
+        pdf_path = os.path.join(self.results_subdir, f'solar_generation_sample_{s+1}.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
 
-    def PlotSOC(self, SOC_rec, essname):
+    def PlotWindGen(self, wind_rec, bus_name, s):
+        """
+        Plots wind power generation over time.
+
+        Parameters:
+            wind_rec (numpy.ndarray): Wind power generation records.
+            bus_name (list): List of bus names.
+        """
+        plt.title("Wind Power Generation")
+        plt.xlabel("Hours")
+        plt.ylabel("Output (MW)")
+        plt.plot(wind_rec.T, label = bus_name)
+        plt.legend()
+
+        pdf_path = os.path.join(self.results_subdir, f'wind_generation_sample_{s+1}.pdf')
+
+        plt.savefig(pdf_path)
+        plt.close()
+
+    def PlotSOC(self, SOC_rec, essname, s):
         """
         Plots state of charge (SOC) of energy storage systems (ESS) over time.
 
@@ -66,12 +65,12 @@ class RAPlotTools:
         plt.plot(SOC_rec.T, label = essname)
         plt.legend(loc = 'upper right')
 
-        pdf_path = os.path.join(self.results_subdir, 'SOC.pdf')
+        pdf_path = os.path.join(self.results_subdir, f'SOC_sample_{s+1}.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
 
-    def PlotLoadCurt(self, curt_rec):
+    def PlotLoadCurt(self, curt_rec, s):
         """
         Plots load curtailment over time.
 
@@ -83,10 +82,8 @@ class RAPlotTools:
         plt.xlabel("Hours")
         plt.ylabel("MW")
         plt.plot(curt_rec)
-        # plt.legend(loc = 'upper right')
-        # plt.savefig(f'{self.main_folder}/Results/loadcurt.pdf')
 
-        pdf_path = os.path.join(self.results_subdir, 'loadcurt.pdf')
+        pdf_path = os.path.join(self.results_subdir, f'loadcurt_sample_{s+1}.pdf')
 
         plt.savefig(pdf_path)
         plt.close()

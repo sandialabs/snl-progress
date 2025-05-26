@@ -550,7 +550,7 @@ class RAUtilities:
 
         return(self.indices)
 
-    def OutageHeatMap(self, LOL_track, size, samples, main_folder):
+    def OutageHeatMap(self, LOL_track, size, samples, all_subdir):
             
             LOL_temp  = np.reshape(LOL_track, (size*samples, 365, 24))
             LOL_temp = np.sum(LOL_temp, axis=0)
@@ -565,9 +565,9 @@ class RAUtilities:
 
             LOL_prob = LOL_prob/(size*samples)
 
-            timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-            results_subdir = os.path.join(main_folder, 'Results', timestamp)
-            pd.DataFrame((LOL_prob)*100/days_in_month[:, np.newaxis]).to_csv(f"{results_subdir}/LOL_perc_prob.csv")
+            # timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            # results_subdir = os.path.join(main_folder, 'Results', timestamp)
+            pd.DataFrame((LOL_prob)*100/days_in_month[:, np.newaxis]).to_csv(f"{all_subdir}/LOL_perc_prob.csv")
 
     def ParallelProcessing(self, indices, LOL_track, comm, rank, size, samples, sim_hours):
         """

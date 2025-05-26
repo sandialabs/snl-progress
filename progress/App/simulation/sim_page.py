@@ -19,6 +19,7 @@ class sim_form(QWidget, Ui_sim_widget):
 
     page_changer_next = Signal()
     page_changer_previous = Signal()
+    plotting_data = Signal(object)
 
     def __init__(self, data_handler, parent=None):
         """Sets up the UI file to show in the application"""
@@ -46,7 +47,6 @@ class sim_form(QWidget, Ui_sim_widget):
         QMessageBox.information(self, "Sim Input", "Input Saved!")
 
     def run(self, ):
-
         # save input on simulation page
         self.save_mcsinput()
 
@@ -54,9 +54,10 @@ class sim_form(QWidget, Ui_sim_widget):
         self.worker_model = WorkerThread(self.MCS, self.current_text)
         self.worker_model.output_updated.connect(lambda text: self.handle_output(self.textBrowser_2, text))
         self.worker_model.start()
+        self.plotting_data.connect(self.plot_per_iter) # plot for each sample in the main thread
 
-        # plot results after MCS is finished
-        self.worker_model.finished.connect(self.plot)
+        # plot results after all samples of MCS completed
+        self.worker_model.finished.connect(self.plot_indices)
 
     def MCS(self, model):
 
@@ -196,7 +197,28 @@ class sim_form(QWidget, Ui_sim_widget):
             var_LOLP = np.var(indices_rec["LOLP_rec"][0:s+1])
             indices_rec["COV_rec"][s] = np.sqrt(var_LOLP)/indices_rec["mLOLP_rec"][s]
 
-        # calculate reliability indices for the MCS
+            # setting up folder for saving results
+            if s == 0:
+                main_folder = base_dir
+                timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+                results_subdir = os.path.join(main_folder, 'Results', timestamp)
+                os.makedirs(results_subdir, exist_ok=True)
+            
+            sample_subdir = os.path.join(results_subdir, f'Sample {s + 1}')
+            os.makedirs(sample_subdir, exist_ok=True)
+
+            data = {
+                "sample_subdir": sample_subdir,
+                "solar": (self.renewable_rec["solar_rec"], self.data_handler.bus_name, s),
+                "wind": (self.renewable_rec["wind_rec"], self.data_handler.bus_name, s),
+                "soc": (self.SOC_rec, self.data_handler.essname, s),
+                "curt": (self.curt_rec, s),
+            }
+
+            # emit data for plotting in the main thread (outside the worker thread)
+            self.plotting_data.emit(data)
+
+        # calculate reliability indices for the MCS 
         indices = self.data_handler.raut.GetReliabilityIndices(indices_rec, self.sim_hours, self.samples)
         self.mLOLP_rec = indices_rec["mLOLP_rec"]
         self.COV_rec = indices_rec["COV_rec"]
@@ -204,46 +226,40 @@ class sim_form(QWidget, Ui_sim_widget):
         print("Simulation complete! You can view the results now by clicking next! Plots are also saved to the results folder.")
         self.pushButton_6.setVisible(True)
 
-        # setting up folder for saving results
-        self.main_folder = base_dir
-        self.results_dir = os.path.join(self.main_folder, 'Results')
-        if not os.path.exists(f"{self.main_folder}/Results"):
-            os.makedirs(f"{self.main_folder}/Results")
-
-        timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        results_subdir = os.path.join(self.main_folder, 'Results', timestamp)
-        os.makedirs(results_subdir, exist_ok=True)
+        # create folder for saving results for all samples
+        self.all_subdir = os.path.join(results_subdir, 'Indices')
+        os.makedirs(self.all_subdir, exist_ok=True)
 
         # save indices calculated in csv file
         df = pd.DataFrame([indices])
-        df.to_csv(f"{results_subdir}/indices.csv", index=False)
+        df.to_csv(f"{self.all_subdir}/indices.csv", index=False)
 
         # if simulating at least one full year, generate data required for plotting heat map
         if self.sim_hours == 8760:
-            self.data_handler.raut.OutageHeatMap(LOL_track, 1, self.samples, self.main_folder)
+            self.data_handler.raut.OutageHeatMap(LOL_track, 1, self.samples, self.all_subdir)
 
-    def plot(self):
+    def plot_per_iter(self, data):
+        # plot results for the sample
+        rapt = RAPlotTools(data["sample_subdir"])
+        rapt.PlotSolarGen(*data["solar"])
+        rapt.PlotWindGen(*data["wind"])
+        rapt.PlotSOC(*data["soc"])
+        rapt.PlotLoadCurt(*data["curt"])
+
+    def plot_indices(self):
         if self.plot_count == 0:
             self.plot_count = 1
         else:
-            # Create a timestamp-based directory
-            timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-            results_subdir = os.path.join(self.main_folder, 'Results', timestamp)
-            os.makedirs(results_subdir, exist_ok=True)
-
             # Initialize RAPlotTools
-            rapt = RAPlotTools(results_subdir)
+            rapt = RAPlotTools(self.all_subdir)
 
-            # Call plotting functions, passing the results_subdir
-            rapt.PlotSolarGen(self.renewable_rec["solar_rec"], self.data_handler.bus_name)
-            rapt.PlotWindGen(self.renewable_rec["wind_rec"], self.data_handler.bus_name)
-            rapt.PlotSOC(self.SOC_rec, self.data_handler.essname)
-            rapt.PlotLoadCurt(self.curt_rec)
+            # Plot LOLP and COV over all samples
             rapt.PlotLOLP(self.mLOLP_rec, self.samples, 1)
             rapt.PlotCOV(self.COV_rec, self.samples, 1)
 
+            # plot heatmap for all samples
             if self.sim_hours == 8760:
-                rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
+                rapt.OutageMap(f"{self.all_subdir}/LOL_perc_prob.csv")
 
             # Update plot count
             self.plot_count = 0
