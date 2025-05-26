@@ -13,6 +13,7 @@ from mod_utilities import RAUtilities
 from mod_matrices import RAMatrices
 from mod_plot import RAPlotTools
 from mod_kmeans import KMeans_Pipeline
+from datetime import datetime
 
 def MCS(input_file) :   
     '''This function performs mixed time sequential MCS using methods from the different RA modules'''
@@ -79,7 +80,7 @@ def MCS(input_file) :
         
         s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
 
-        print("Solar data processing complete!")
+        # print("Solar data processing complete!")
 
     # matrices required for optimization
     ramat = RAMatrices(nz)
@@ -202,27 +203,41 @@ def MCS(input_file) :
         var_LOLP = np.var(indices_rec["LOLP_rec"][0:s+1])
         indices_rec["COV_rec"][s] = np.sqrt(var_LOLP)/indices_rec["mLOLP_rec"][s]
 
-        print(indices_rec["COV_rec"])
+        # setting up folder for saving results for each sample
+        if s == 0:
+            main_folder = os.path.dirname(os.path.abspath(__file__))
+            timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            results_subdir = os.path.join(main_folder, 'Results', timestamp)
+            os.makedirs(results_subdir, exist_ok=True)
+        
+        sample_subdir = os.path.join(results_subdir, f'Sample {s + 1}')
+        os.makedirs(sample_subdir, exist_ok=True)
+
+        # plot results for each sample
+        rapt = RAPlotTools(sample_subdir)
+        rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_name, s)
+        rapt.PlotWindGen(renewable_rec["wind_rec"], bus_name, s)
+        rapt.PlotSOC(SOC_rec, essname, s)
+        rapt.PlotLoadCurt(curt_rec, s)
 
     # calculate reliability indices for the MCS
     indices = raut.GetReliabilityIndices(indices_rec, sim_hours, samples)
 
+    # create folder for saving results for all samples
+    all_subdir = os.path.join(results_subdir, 'Indices')
+    os.makedirs(all_subdir, exist_ok=True)
+
+    # save indices calculated in csv file
+    df = pd.DataFrame([indices])
+    df.to_csv(f"{all_subdir}/indices.csv", index=False)
+
+    if sim_hours == 8760:
+        raut.OutageHeatMap(LOL_track, 1, samples, all_subdir)
+
     toc = perf_counter()
     print(f"Codes finished in {toc-tic} seconds")
 
-    main_folder = os.path.dirname(os.path.abspath(__file__))
-
-    if not os.path.exists(f"{main_folder}/Results"):
-        os.makedirs(f"{main_folder}/Results")
-
-    df = pd.DataFrame([indices])
-    df.to_csv(f"{main_folder}/Results/indices.csv", index=False)
-
-    if sim_hours == 8760:
-
-        raut.OutageHeatMap(LOL_track, 1, samples, main_folder)
-
-    return(indices, SOC_rec, curt_rec, renewable_rec, bus_name, essname, main_folder, sim_hours, \
+    return(indices, SOC_rec, curt_rec, renewable_rec, bus_name, essname, results_subdir, all_subdir, sim_hours, \
            samples, indices_rec["mLOLP_rec"], indices_rec["COV_rec"])
 
 # =========================================================================================
@@ -232,17 +247,13 @@ def MCS(input_file) :
 if __name__ == "__main__":
     
     # run MCS
-    indices, SOC_rec, curt_rec, renewable_rec, bus_name, essname, main_folder, sim_hours, \
+    indices, SOC_rec, curt_rec, renewable_rec, bus_name, essname, results_subdir, all_subdir, sim_hours, \
         samples, mLOLP_rec, COV_rec = MCS('input.yaml')
     
-    # plot results
-    rapt = RAPlotTools(main_folder)
-    rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_name)
-    rapt.PlotWindGen(renewable_rec["wind_rec"], bus_name)
-    rapt.PlotSOC(SOC_rec, essname)
-    rapt.PlotLoadCurt(curt_rec)
+    # plot indices for all samples after MCS is complete
+    rapt = RAPlotTools(all_subdir)
     rapt.PlotLOLP(mLOLP_rec, samples, 1)
     rapt.PlotCOV(COV_rec, samples, 1)
     if sim_hours == 8760:
-        rapt.OutageMap(f"{main_folder}/Results/LOL_perc_prob.csv")
+        rapt.OutageMap(f"{all_subdir}/LOL_perc_prob.csv")
 

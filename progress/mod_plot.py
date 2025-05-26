@@ -5,38 +5,14 @@ import numpy as np
 
 class RAPlotTools:
     '''Provides plotting tools for visualizing simulation results.'''
-    def __init__(self, main_folder):
+    def __init__(self, results_subdir):
         """
         Initializes the RAPlotTools class and creates a directory for storing results.
         """
-        self.main_folder = main_folder
+        self.results_subdir = results_subdir
         pass
 
-    def PlotWindGen(self, wind_rec, bus_name, results_subdir=None):
-        """
-        Plots wind power generation over time.
-
-        Parameters:
-            wind_rec (numpy.ndarray): Wind power generation records.
-            bus_name (list): List of bus names.
-        """
-
-        plt.title("Wind Power Generation")
-        plt.xlabel("Hours")
-        plt.ylabel("Output (MW)")
-        plt.plot(wind_rec.T, label = bus_name)
-        plt.legend()
-        # plt.savefig(f'{self.main_folder}/Results/wind_generation.pdf')
-
-        if results_subdir is None:
-            pdf_path = os.path.join(self.main_folder, 'Results', 'wind_generation.pdf')
-        else:
-            pdf_path = os.path.join(results_subdir, 'wind_generation.pdf')
-
-        plt.savefig(pdf_path)
-        plt.close()
-
-    def PlotSolarGen(self, solar_rec, bus_name, results_subdir=None):
+    def PlotSolarGen(self, solar_rec, bus_name, s):
         """
         Plots solar power generation over time.
 
@@ -49,17 +25,32 @@ class RAPlotTools:
         plt.ylabel("Output (MW)")
         plt.plot(solar_rec.T, label = bus_name)
         plt.legend()
-        # plt.savefig(f'{self.main_folder}/Results/solar_generation.pdf')
 
-        if results_subdir is None:
-            pdf_path = os.path.join(self.main_folder, 'Results', 'solar_generation.pdf')
-        else:
-            pdf_path = os.path.join(results_subdir, 'solar_generation.pdf')
+        pdf_path = os.path.join(self.results_subdir, f'solar_generation_sample_{s+1}.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
 
-    def PlotSOC(self, SOC_rec, essname, results_subdir=None):
+    def PlotWindGen(self, wind_rec, bus_name, s):
+        """
+        Plots wind power generation over time.
+
+        Parameters:
+            wind_rec (numpy.ndarray): Wind power generation records.
+            bus_name (list): List of bus names.
+        """
+        plt.title("Wind Power Generation")
+        plt.xlabel("Hours")
+        plt.ylabel("Output (MW)")
+        plt.plot(wind_rec.T, label = bus_name)
+        plt.legend()
+
+        pdf_path = os.path.join(self.results_subdir, f'wind_generation_sample_{s+1}.pdf')
+
+        plt.savefig(pdf_path)
+        plt.close()
+
+    def PlotSOC(self, SOC_rec, essname, s):
         """
         Plots state of charge (SOC) of energy storage systems (ESS) over time.
 
@@ -73,17 +64,13 @@ class RAPlotTools:
         plt.ylabel("SOC (MWh)")
         plt.plot(SOC_rec.T, label = essname)
         plt.legend(loc = 'upper right')
-        # plt.savefig(f'{self.main_folder}/Results/SOC.pdf')
 
-        if results_subdir is None:
-            pdf_path = os.path.join(self.main_folder, 'Results', 'SOC.pdf')
-        else:
-            pdf_path = os.path.join(results_subdir, 'SOC.pdf')
+        pdf_path = os.path.join(self.results_subdir, f'SOC_sample_{s+1}.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
 
-    def PlotLoadCurt(self, curt_rec, results_subdir=None):
+    def PlotLoadCurt(self, curt_rec, s):
         """
         Plots load curtailment over time.
 
@@ -95,19 +82,13 @@ class RAPlotTools:
         plt.xlabel("Hours")
         plt.ylabel("MW")
         plt.plot(curt_rec)
-        # plt.legend(loc = 'upper right')
-        # plt.savefig(f'{self.main_folder}/Results/loadcurt.pdf')
 
-        if results_subdir is None:
-            pdf_path = os.path.join(self.main_folder, 'Results', 'loadcurt.pdf')
-        else:
-
-            pdf_path = os.path.join(results_subdir, 'loadcurt.pdf')
+        pdf_path = os.path.join(self.results_subdir, f'loadcurt_sample_{s+1}.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
 
-    def OutageMap(self, outage_data, results_subdir=None):
+    def OutageMap(self, outage_data):
 
         """
         Plots a heatmap of outage data.
@@ -136,44 +117,31 @@ class RAPlotTools:
         cbar.set_label('Outage %', rotation=270, labelpad=15, fontsize = 8)
         cbar.ax.tick_params(labelsize=5)
         
-       # plt.savefig(f"{self.main_folder}/Results/heatmap.pdf", bbox_inches='tight')
-
-        if results_subdir is None:
-            pdf_path = os.path.join(self.main_folder, 'Results', 'heatmap.pdf')
-        else:
-            pdf_path = os.path.join(results_subdir, 'heatmap.pdf')
+        pdf_path = os.path.join(self.results_subdir, 'heatmap.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
 
-    def PlotLOLP(self, mLOLP_rec, samples, size, results_subdir=None):
+    def PlotLOLP(self, mLOLP_rec, samples, size):
 
         plt.plot(np.arange(1, samples+1), mLOLP_rec)
         plt.xticks(np.arange(1, samples+1, 1), size*np.arange(1, samples+1, 1))
         plt.xlabel('Samples')
         plt.ylabel('LOLP')
-        # plt.savefig(f'{self.main_folder}/Results/LOLP_track.pdf')
 
-        if results_subdir is None:
-            pdf_path = os.path.join(self.main_folder, 'Results', 'LOLP_track.pdf')
-        else:
-            pdf_path = os.path.join(results_subdir, 'LOLP_track.pdf')
+        pdf_path = os.path.join(self.results_subdir, 'LOLP_track.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
 
-    def PlotCOV(self, COV_rec, samples, size, results_subdir=None):
+    def PlotCOV(self, COV_rec, samples, size):
 
         plt.plot(np.arange(1, samples+1), COV_rec)
         plt.xticks(np.arange(1, samples+1, 1), size*np.arange(1, samples+1, 1))
         plt.xlabel('Samples')
         plt.ylabel('Coefficient of Variation')
-        # plt.savefig(f'{self.main_folder}/Results/COV_track.pdf')
 
-        if results_subdir is None:
-            pdf_path = os.path.join(self.main_folder, 'Results', 'COV_track.pdf')
-        else:
-            pdf_path = os.path.join(results_subdir, 'COV_track.pdf')
+        pdf_path = os.path.join(self.results_subdir, 'COV_track.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
