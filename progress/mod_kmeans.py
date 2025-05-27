@@ -118,7 +118,7 @@ class KMeans_Pipeline:
         else:
             self.selected_sites = self.site_info_df['site_name'].tolist()
 
-        # Preprocess data for KMeans clustering
+
         self.first_light, self.last_light = self.process_flh_and_llh(self.solar_gen_df, self.selected_sites)
         self.sg_mean_am, self.sg_mean_pm = self.process_solar_data(self.solar_gen_df, self.site_info_df, self.selected_sites)
         self.csi_sd_am, self.csi_sd_pm = self.process_csi_data(self.csi_df, self.selected_sites)

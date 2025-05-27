@@ -281,22 +281,39 @@ class WorkerThread(QThread):
 class StdoutBuffer:
     """
     A buffer for capturing and emitting stdout text.
-
-    Methods:
-    - __init__(self, worker_thread): Initializes the buffer with a worker thread.
-    - write(self, text): Captures and emits text.
-    - flush(self): No-op for compatibility.
+    Optionally emits via a custom signal (e.g. from a custom thread).
     """
-    def __init__(self, worker_thread):
+    def __init__(self, worker_thread, output_signal=None):
         self.worker_thread = worker_thread
+        self.output_signal = output_signal or worker_thread.output_updated
         self.buffer = ""
 
     def write(self, text):
         self.buffer += text
         lines = self.buffer.split("\n")
         for line in lines[:-1]:
-            self.worker_thread.output_updated.emit(line)
+            self.output_signal.emit(line)
         self.buffer = lines[-1]
 
     def flush(self):
         pass
+
+
+class MetricsWorker(QThread):
+    result_ready = Signal(object, object)
+    output_updated = Signal(str)
+
+    def __init__(self, pipeline, clust_eval):
+        super().__init__()
+        self.pipeline = pipeline
+        self.clust_eval = clust_eval
+
+    def run(self):
+        try:
+            sys.stdout = StdoutBuffer(self, self.output_updated)
+            elbow, sse = self.pipeline.test_metrics(int(self.clust_eval))
+            self.result_ready.emit(elbow, sse)
+        except Exception as e:
+            self.output_updated.emit(f"[Error] {e}")
+        finally:
+            sys.stdout = sys.__stdout__

@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QLabel, QSizePo
 from progress.App.solar.ui.ui_solar_gui import Ui_solar_widget
 from PySide6.QtCore import Signal, Qt
 from progress.mod_solar import Solar
-from progress.App.gui_tools.tools import WorkerThread, StdoutBuffer
+from progress.App.gui_tools.tools import WorkerThread, StdoutBuffer, MetricsWorker
 from progress.mod_kmeans import KMeans_Pipeline
 from progress.paths import get_path
 base_dir = get_path()
@@ -165,21 +165,43 @@ class solar_form(QWidget, Ui_solar_widget):
     # creating dummy method for Worker 1 to bypass threading issue for M-chip macbooks
     def dummy_func(self):
         pass
-
+    
     def start_test_metrics(self):
         if hasattr(self, 'worker_pipeline') and self.worker_pipeline.isFinished():
-            elbow, sse = self.pipeline.test_metrics(int(self.clust_eval))
-
-            # Plot the SSE curve safely in the main thread
-            self.render_sse_plot(elbow, sse)
-
-            # Start worker to show the text file
-            self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
-            self.worker2.output_updated.connect(lambda text: self.handle_output(self.textBrowser_5, text))
-            self.worker2.finished.connect(self.on_workers_finished)
-            self.worker2.start()
+            self.metrics_worker = MetricsWorker(self.pipeline, self.clust_eval)
+            self.metrics_worker.output_updated.connect(lambda text: self.handle_output(self.textBrowser_6, text))
+            self.metrics_worker.result_ready.connect(self.handle_metrics_result)
+            self.metrics_worker.start()
         else:
             print("worker_pipeline has not finished yet.")
+
+
+    def handle_metrics_result(self, elbow, sse):
+        self.render_sse_plot(elbow, sse)
+
+        self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
+        self.worker2.output_updated.connect(lambda text: self.handle_output(self.textBrowser_5, text))
+        self.worker2.finished.connect(self.on_workers_finished)
+        self.worker2.start()
+
+
+
+
+
+    # def start_test_metrics(self):
+    #     if hasattr(self, 'worker_pipeline') and self.worker_pipeline.isFinished():
+    #         elbow, sse = self.pipeline.test_metrics(int(self.clust_eval))
+
+    #         # Plot the SSE curve safely in the main thread
+    #         self.render_sse_plot(elbow, sse)
+
+    #         # Start worker to show the text file
+    #         self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
+    #         self.worker2.output_updated.connect(lambda text: self.handle_output(self.textBrowser_5, text))
+    #         self.worker2.finished.connect(self.on_workers_finished)
+    #         self.worker2.start()
+    #     else:
+    #         print("worker_pipeline has not finished yet.")
 
     def render_sse_plot(self, elbow, sse):
 

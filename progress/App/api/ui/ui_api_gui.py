@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'api_guiWWpqPU.ui'
+## Form generated from reading UI file 'api_guiRttRfa.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.5.2
 ##
@@ -45,8 +45,7 @@ class Ui_api_widget(object):
         self.frame_16 = QFrame(self.widget_3)
         self.frame_16.setObjectName(u"frame_16")
         self.frame_16.setStyleSheet(u"")
-        self.frame_16.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_16.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_16.setFrameShape(QFrame.NoFrame)
         self.horizontalLayout_3 = QHBoxLayout(self.frame_16)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
@@ -57,8 +56,7 @@ class Ui_api_widget(object):
         self.frame_15 = QFrame(self.frame_16)
         self.frame_15.setObjectName(u"frame_15")
         self.frame_15.setStyleSheet(u"")
-        self.frame_15.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_15.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_15.setFrameShape(QFrame.NoFrame)
         self.verticalLayout_14 = QVBoxLayout(self.frame_15)
         self.verticalLayout_14.setSpacing(0)
         self.verticalLayout_14.setObjectName(u"verticalLayout_14")
@@ -66,8 +64,7 @@ class Ui_api_widget(object):
         self.frame_10 = QFrame(self.frame_15)
         self.frame_10.setObjectName(u"frame_10")
         self.frame_10.setStyleSheet(u"")
-        self.frame_10.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_10.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_10.setFrameShape(QFrame.NoFrame)
         self.horizontalLayout_17 = QHBoxLayout(self.frame_10)
         self.horizontalLayout_17.setSpacing(0)
         self.horizontalLayout_17.setObjectName(u"horizontalLayout_17")
@@ -75,8 +72,7 @@ class Ui_api_widget(object):
         self.frame_8 = QFrame(self.frame_10)
         self.frame_8.setObjectName(u"frame_8")
         self.frame_8.setStyleSheet(u"")
-        self.frame_8.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_8.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_8.setFrameShape(QFrame.NoFrame)
         self.verticalLayout_8 = QVBoxLayout(self.frame_8)
         self.verticalLayout_8.setSpacing(0)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
@@ -84,17 +80,23 @@ class Ui_api_widget(object):
         self.frame_17 = QFrame(self.frame_8)
         self.frame_17.setObjectName(u"frame_17")
         self.frame_17.setStyleSheet(u"")
-        self.frame_17.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_17.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_17.setFrameShape(QFrame.NoFrame)
         self.verticalLayout_15 = QVBoxLayout(self.frame_17)
-        self.verticalLayout_15.setSpacing(0)
+        self.verticalLayout_15.setSpacing(12)
         self.verticalLayout_15.setObjectName(u"verticalLayout_15")
         self.verticalLayout_15.setContentsMargins(0, 0, 0, 0)
         self.frame_21 = QFrame(self.frame_17)
         self.frame_21.setObjectName(u"frame_21")
-        self.frame_21.setStyleSheet(u"")
-        self.frame_21.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_21.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_21.setStyleSheet(u"QFrame {\n"
+"    background-color: #f5f5f5;\n"
+"    border: 1px solid #cccccc;\n"
+"    border-radius: 8px;\n"
+"    padding: 10px;\n"
+"}\n"
+"\n"
+"\n"
+"")
+        self.frame_21.setFrameShape(QFrame.NoFrame)
         self.gridLayout_6 = QGridLayout(self.frame_21)
         self.gridLayout_6.setObjectName(u"gridLayout_6")
         self.gridLayout_6.setContentsMargins(0, 0, 0, 0)
@@ -136,9 +138,16 @@ class Ui_api_widget(object):
 
         self.frame_18 = QFrame(self.frame_17)
         self.frame_18.setObjectName(u"frame_18")
-        self.frame_18.setStyleSheet(u"")
-        self.frame_18.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_18.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_18.setStyleSheet(u"QFrame {\n"
+"    background-color: #f5f5f5;\n"
+"    border: 1px solid #cccccc;\n"
+"    border-radius: 8px;\n"
+"    padding: 10px;\n"
+"}\n"
+"\n"
+"\n"
+"")
+        self.frame_18.setFrameShape(QFrame.NoFrame)
         self.gridLayout_7 = QGridLayout(self.frame_18)
         self.gridLayout_7.setObjectName(u"gridLayout_7")
         self.gridLayout_7.setContentsMargins(0, 0, 0, 0)
@@ -175,16 +184,23 @@ class Ui_api_widget(object):
 
         self.frame_19 = QFrame(self.frame_17)
         self.frame_19.setObjectName(u"frame_19")
-        self.frame_19.setStyleSheet(u"")
-        self.frame_19.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_19.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_19.setStyleSheet(u"QFrame {\n"
+"    background-color: #f5f5f5;\n"
+"    border: 1px solid #cccccc;\n"
+"    border-radius: 8px;\n"
+"    padding: 10px;\n"
+"}\n"
+"\n"
+"\n"
+"")
+        self.frame_19.setFrameShape(QFrame.NoFrame)
         self.verticalLayout_41 = QVBoxLayout(self.frame_19)
         self.verticalLayout_41.setObjectName(u"verticalLayout_41")
         self.verticalLayout_41.setContentsMargins(0, 0, 0, 0)
         self.label_23 = QLabel(self.frame_19)
         self.label_23.setObjectName(u"label_23")
 
-        self.verticalLayout_41.addWidget(self.label_23)
+        self.verticalLayout_41.addWidget(self.label_23, 0, Qt.AlignLeft|Qt.AlignVCenter)
 
         self.lineEdit_email = QLineEdit(self.frame_19)
         self.lineEdit_email.setObjectName(u"lineEdit_email")
@@ -197,15 +213,23 @@ class Ui_api_widget(object):
 
         self.frame_20 = QFrame(self.frame_17)
         self.frame_20.setObjectName(u"frame_20")
-        self.frame_20.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_20.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_20.setStyleSheet(u"QFrame {\n"
+"    background-color: #f5f5f5;\n"
+"    border: 1px solid #cccccc;\n"
+"    border-radius: 8px;\n"
+"    padding: 10px;\n"
+"}\n"
+"\n"
+"\n"
+"")
+        self.frame_20.setFrameShape(QFrame.NoFrame)
         self.verticalLayout_42 = QVBoxLayout(self.frame_20)
         self.verticalLayout_42.setObjectName(u"verticalLayout_42")
         self.verticalLayout_42.setContentsMargins(0, 0, 0, 0)
         self.label_24 = QLabel(self.frame_20)
         self.label_24.setObjectName(u"label_24")
 
-        self.verticalLayout_42.addWidget(self.label_24)
+        self.verticalLayout_42.addWidget(self.label_24, 0, Qt.AlignLeft|Qt.AlignVCenter)
 
         self.lineEdit_aff = QLineEdit(self.frame_20)
         self.lineEdit_aff.setObjectName(u"lineEdit_aff")
@@ -228,8 +252,7 @@ class Ui_api_widget(object):
         self.frame_22 = QFrame(self.frame_15)
         self.frame_22.setObjectName(u"frame_22")
         self.frame_22.setStyleSheet(u"")
-        self.frame_22.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_22.setFrameShadow(QFrame.Shadow.Raised)
+        self.frame_22.setFrameShape(QFrame.NoFrame)
         self.horizontalLayout_5 = QHBoxLayout(self.frame_22)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
