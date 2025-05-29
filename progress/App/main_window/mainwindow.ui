@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1142</width>
-    <height>588</height>
+    <width>1136</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="palette">
@@ -342,107 +342,34 @@
            <attribute name="title">
             <string>Themes</string>
            </attribute>
-           <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
-            <property name="spacing">
-             <number>25</number>
-            </property>
-            <property name="leftMargin">
-             <number>9</number>
-            </property>
-            <property name="topMargin">
-             <number>9</number>
-            </property>
-            <property name="rightMargin">
-             <number>9</number>
-            </property>
-            <property name="bottomMargin">
-             <number>9</number>
-            </property>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QFrame" name="theme_frame">
-              <property name="frameShape">
-               <enum>QFrame::Shape::NoFrame</enum>
+             <widget class="QPushButton" name="light_button">
+              <property name="text">
+               <string>Light Theme</string>
               </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
+              <property name="checkable">
+               <bool>true</bool>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_6">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item alignment="Qt::AlignmentFlag::AlignVCenter">
-                <widget class="QLabel" name="theme_label">
-                 <property name="text">
-                  <string>Display Options</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+              <property name="autoExclusive">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_2">
-              <property name="frameShape">
-               <enum>QFrame::Shape::NoFrame</enum>
+             <widget class="QPushButton" name="dark_button">
+              <property name="text">
+               <string>Dark Theme</string>
               </property>
-              <property name="frameShadow">
-               <enum>QFrame::Shadow::Raised</enum>
+              <property name="checkable">
+               <bool>true</bool>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_4">
-               <property name="spacing">
-                <number>25</number>
-               </property>
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QPushButton" name="light_button">
-                 <property name="text">
-                  <string>Light Mode</string>
-                 </property>
-                 <property name="checkable">
-                  <bool>true</bool>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                 <property name="autoExclusive">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="dark_button">
-                 <property name="text">
-                  <string>Dark Mode</string>
-                 </property>
-                 <property name="checkable">
-                  <bool>true</bool>
-                 </property>
-                 <property name="autoExclusive">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
+              <property name="autoExclusive">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
            </layout>
