@@ -189,3 +189,22 @@ QLineEdit:focus {
 #get_started_button:pressed {
     background-color: rgba(0, 0, 0, 0.2);
 }
+
+#api_frame_21, #api_frame_20, #api_frame_19, #api_frame_18, #solar_frame, #solar_frame_2, #solar_frame_3, #solar2_frame_54, #solar2_frame_2, #wind_frame_2, #wind_frame_3, #wind_frame_4{
+    background-color: rgba(245, 245, 245, 0.2); 
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+ #sim_frame_37, #sim_frame_38, #sim_frame_39, #sim_frame_40, #theme_frame {
+    background-color: rgba(245, 245, 245, 0.2); 
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 10px;
+}
+#theme_label{
+    font: 32pt "Arial";
+
+    color:rgb(80, 80, 80);
+}
