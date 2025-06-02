@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowqmNMuZ.ui'
+## Form generated from reading UI file 'mainwindowJVojMk.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -16,16 +16,16 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
-    QLabel, QMainWindow, QPushButton, QSizePolicy,
-    QStackedWidget, QTabWidget, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QGridLayout, QMainWindow, QPushButton,
+    QSizePolicy, QStackedWidget, QTabWidget, QVBoxLayout,
+    QWidget)
 import progress.resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1142, 588)
+        MainWindow.resize(1136, 575)
         palette = QPalette()
         MainWindow.setPalette(palette)
         MainWindow.setStyleSheet(u"")
@@ -142,34 +142,9 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.results_tab, "")
         self.tab = QWidget()
         self.tab.setObjectName(u"tab")
-        self.horizontalLayout = QHBoxLayout(self.tab)
-        self.horizontalLayout.setSpacing(25)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(9, 9, 9, 9)
-        self.theme_frame = QFrame(self.tab)
-        self.theme_frame.setObjectName(u"theme_frame")
-        self.theme_frame.setFrameShape(QFrame.Shape.NoFrame)
-        self.theme_frame.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_6 = QVBoxLayout(self.theme_frame)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.theme_label = QLabel(self.theme_frame)
-        self.theme_label.setObjectName(u"theme_label")
-
-        self.verticalLayout_6.addWidget(self.theme_label, 0, Qt.AlignmentFlag.AlignVCenter)
-
-
-        self.horizontalLayout.addWidget(self.theme_frame)
-
-        self.frame_2 = QFrame(self.tab)
-        self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_4 = QVBoxLayout(self.frame_2)
-        self.verticalLayout_4.setSpacing(25)
+        self.verticalLayout_4 = QVBoxLayout(self.tab)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.light_button = QPushButton(self.frame_2)
+        self.light_button = QPushButton(self.tab)
         self.light_button.setObjectName(u"light_button")
         self.light_button.setCheckable(True)
         self.light_button.setChecked(True)
@@ -177,17 +152,13 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_4.addWidget(self.light_button)
 
-        self.dark_button = QPushButton(self.frame_2)
+        self.dark_button = QPushButton(self.tab)
         self.dark_button.setObjectName(u"dark_button")
         self.dark_button.setCheckable(True)
         self.dark_button.setAutoExclusive(True)
 
         self.verticalLayout_4.addWidget(self.dark_button)
 
-
-        self.horizontalLayout.addWidget(self.frame_2)
-
-        self.horizontalLayout.setStretch(1, 1)
         self.tabWidget.addTab(self.tab, "")
         self.about_tab = QWidget()
         self.about_tab.setObjectName(u"about_tab")
@@ -236,9 +207,8 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.wind_tab), QCoreApplication.translate("MainWindow", u"Wind", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.sim_tab), QCoreApplication.translate("MainWindow", u"Simulation", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.results_tab), QCoreApplication.translate("MainWindow", u"Results", None))
-        self.theme_label.setText(QCoreApplication.translate("MainWindow", u"Display Options", None))
-        self.light_button.setText(QCoreApplication.translate("MainWindow", u"Light Mode", None))
-        self.dark_button.setText(QCoreApplication.translate("MainWindow", u"Dark Mode", None))
+        self.light_button.setText(QCoreApplication.translate("MainWindow", u"Light Theme", None))
+        self.dark_button.setText(QCoreApplication.translate("MainWindow", u"Dark Theme", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Themes", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.about_tab), QCoreApplication.translate("MainWindow", u"About", None))
     # retranslateUi
