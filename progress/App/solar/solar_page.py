@@ -274,19 +274,23 @@ class solar_form(QWidget, Ui_solar_widget):
         self.pushButton_DI_next_5.setVisible(True)
 
     def save_solar_data(self):
-        solar_site_data = self.solar_directory+"/solar_sites.csv"
-        solar_prob_data = self.solar_directory+"/solar_probs.csv"
 
-        solar = Solar(solar_site_data, self.solar_directory)
+        if self.data_handler.solar_directory:
 
-        self.s_sites, self.s_zone_no, self.s_max, self.s_profiles, self.solar_prob = solar.GetSolarProfiles(solar_prob_data)
+            solar_site_data = self.solar_directory+"/solar_sites.csv"
+            solar_prob_data = self.solar_directory+"/solar_probs.csv"
 
-        # Set solar data in DataHandler
-        self.data_handler.set_s_sites(self.s_sites)
-        self.data_handler.set_s_zone_no(self.s_zone_no)
-        self.data_handler.set_s_max(self.s_max)
-        self.data_handler.set_s_profiles(self.s_profiles)
-        self.data_handler.set_solar_prob(self.solar_prob)
+            solar = Solar(solar_site_data, self.solar_directory)
+
+            self.s_sites, self.s_zone_no, self.s_max, self.s_profiles, self.solar_prob = \
+                solar.GetSolarProfiles(solar_prob_data)
+
+            # Set solar data in DataHandler
+            self.data_handler.set_s_sites(self.s_sites)
+            self.data_handler.set_s_zone_no(self.s_zone_no)
+            self.data_handler.set_s_max(self.s_max)
+            self.data_handler.set_s_profiles(self.s_profiles)
+            self.data_handler.set_solar_prob(self.solar_prob)
 
     def handle_output(self, text_browser, text):
         # Update the GUI with the output text

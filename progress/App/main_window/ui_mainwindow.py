@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowAcxXxf.ui'
+## Form generated from reading UI file 'mainwindowJVojMk.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.2
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1142, 588)
+        MainWindow.resize(1136, 575)
         palette = QPalette()
         MainWindow.setPalette(palette)
         MainWindow.setStyleSheet(u"")
@@ -92,7 +92,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
         self.verticalLayout_7.setContentsMargins(0, 0, 0, 20)
         icon = QIcon()
-        icon.addFile(u":/logos/Images/logos/progress_transparent_alt.png", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/logos/Images/logos/progress_transparent_alt.png", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.tabWidget.addTab(self.tab_7, icon, "")
         self.api_tab = QWidget()
         self.api_tab.setObjectName(u"api_tab")
@@ -150,14 +150,14 @@ class Ui_MainWindow(object):
         self.light_button.setChecked(True)
         self.light_button.setAutoExclusive(True)
 
-        self.verticalLayout_4.addWidget(self.light_button, 0, Qt.AlignmentFlag.AlignHCenter)
+        self.verticalLayout_4.addWidget(self.light_button)
 
         self.dark_button = QPushButton(self.tab)
         self.dark_button.setObjectName(u"dark_button")
         self.dark_button.setCheckable(True)
         self.dark_button.setAutoExclusive(True)
 
-        self.verticalLayout_4.addWidget(self.dark_button, 0, Qt.AlignmentFlag.AlignHCenter)
+        self.verticalLayout_4.addWidget(self.dark_button)
 
         self.tabWidget.addTab(self.tab, "")
         self.about_tab = QWidget()
@@ -171,13 +171,13 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.tabWidget, 0, 0, 1, 1)
 
         self.stackedWidget.addWidget(self.page_2)
-        self.page_3 = QWidget()
-        self.page_3.setObjectName(u"page_3")
-        self.page_3.setStyleSheet(u"")
-        self.gridLayout_13 = QGridLayout(self.page_3)
+        self.widget = QWidget()
+        self.widget.setObjectName(u"widget")
+        self.widget.setStyleSheet(u"")
+        self.gridLayout_13 = QGridLayout(self.widget)
         self.gridLayout_13.setObjectName(u"gridLayout_13")
         self.gridLayout_13.setContentsMargins(-1, -1, 7, -1)
-        self.stackedWidget.addWidget(self.page_3)
+        self.stackedWidget.addWidget(self.widget)
 
         self.verticalLayout_5.addWidget(self.stackedWidget)
 

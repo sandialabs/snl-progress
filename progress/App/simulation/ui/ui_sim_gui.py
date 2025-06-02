@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'sim_guiVTyYwp.ui'
+## Form generated from reading UI file 'sim_guigNDqJf.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -24,6 +24,7 @@ class Ui_sim_widget(object):
         if not sim_widget.objectName():
             sim_widget.setObjectName(u"sim_widget")
         sim_widget.resize(1355, 736)
+        sim_widget.setStyleSheet(u"")
         self.verticalLayout = QVBoxLayout(sim_widget)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -50,93 +51,93 @@ class Ui_sim_widget(object):
         self.frame_43.setFrameShape(QFrame.Shape.NoFrame)
         self.frame_43.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_26 = QVBoxLayout(self.frame_43)
-        self.verticalLayout_26.setSpacing(0)
+        self.verticalLayout_26.setSpacing(15)
         self.verticalLayout_26.setObjectName(u"verticalLayout_26")
         self.verticalLayout_26.setContentsMargins(0, 0, 0, 0)
-        self.frame_37 = QFrame(self.frame_43)
-        self.frame_37.setObjectName(u"frame_37")
-        self.frame_37.setMinimumSize(QSize(0, 30))
-        self.frame_37.setStyleSheet(u"")
-        self.frame_37.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_37.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_13 = QVBoxLayout(self.frame_37)
+        self.sim_frame_37 = QFrame(self.frame_43)
+        self.sim_frame_37.setObjectName(u"sim_frame_37")
+        self.sim_frame_37.setMinimumSize(QSize(0, 30))
+        self.sim_frame_37.setStyleSheet(u"")
+        self.sim_frame_37.setFrameShape(QFrame.Shape.NoFrame)
+        self.sim_frame_37.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_13 = QVBoxLayout(self.sim_frame_37)
         self.verticalLayout_13.setSpacing(0)
         self.verticalLayout_13.setObjectName(u"verticalLayout_13")
         self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
-        self.label_12 = QLabel(self.frame_37)
+        self.label_12 = QLabel(self.sim_frame_37)
         self.label_12.setObjectName(u"label_12")
 
         self.verticalLayout_13.addWidget(self.label_12)
 
-        self.lineEdit_4 = QLineEdit(self.frame_37)
+        self.lineEdit_4 = QLineEdit(self.sim_frame_37)
         self.lineEdit_4.setObjectName(u"lineEdit_4")
 
         self.verticalLayout_13.addWidget(self.lineEdit_4)
 
 
-        self.verticalLayout_26.addWidget(self.frame_37)
+        self.verticalLayout_26.addWidget(self.sim_frame_37)
 
-        self.frame_38 = QFrame(self.frame_43)
-        self.frame_38.setObjectName(u"frame_38")
-        self.frame_38.setStyleSheet(u"")
-        self.frame_38.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_38.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_28 = QVBoxLayout(self.frame_38)
+        self.sim_frame_38 = QFrame(self.frame_43)
+        self.sim_frame_38.setObjectName(u"sim_frame_38")
+        self.sim_frame_38.setStyleSheet(u"")
+        self.sim_frame_38.setFrameShape(QFrame.Shape.NoFrame)
+        self.sim_frame_38.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_28 = QVBoxLayout(self.sim_frame_38)
         self.verticalLayout_28.setSpacing(0)
         self.verticalLayout_28.setObjectName(u"verticalLayout_28")
         self.verticalLayout_28.setContentsMargins(0, 0, 0, 0)
-        self.label_17 = QLabel(self.frame_38)
+        self.label_17 = QLabel(self.sim_frame_38)
         self.label_17.setObjectName(u"label_17")
 
         self.verticalLayout_28.addWidget(self.label_17)
 
-        self.lineEdit_5 = QLineEdit(self.frame_38)
+        self.lineEdit_5 = QLineEdit(self.sim_frame_38)
         self.lineEdit_5.setObjectName(u"lineEdit_5")
         self.lineEdit_5.setMinimumSize(QSize(0, 30))
 
         self.verticalLayout_28.addWidget(self.lineEdit_5)
 
 
-        self.verticalLayout_26.addWidget(self.frame_38)
+        self.verticalLayout_26.addWidget(self.sim_frame_38)
 
-        self.frame_39 = QFrame(self.frame_43)
-        self.frame_39.setObjectName(u"frame_39")
-        self.frame_39.setStyleSheet(u"")
-        self.frame_39.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_39.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_29 = QVBoxLayout(self.frame_39)
+        self.sim_frame_39 = QFrame(self.frame_43)
+        self.sim_frame_39.setObjectName(u"sim_frame_39")
+        self.sim_frame_39.setStyleSheet(u"")
+        self.sim_frame_39.setFrameShape(QFrame.Shape.NoFrame)
+        self.sim_frame_39.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_29 = QVBoxLayout(self.sim_frame_39)
         self.verticalLayout_29.setSpacing(0)
         self.verticalLayout_29.setObjectName(u"verticalLayout_29")
         self.verticalLayout_29.setContentsMargins(0, 0, 0, 0)
-        self.label_19 = QLabel(self.frame_39)
+        self.label_19 = QLabel(self.sim_frame_39)
         self.label_19.setObjectName(u"label_19")
 
         self.verticalLayout_29.addWidget(self.label_19)
 
-        self.lineEdit_6 = QLineEdit(self.frame_39)
+        self.lineEdit_6 = QLineEdit(self.sim_frame_39)
         self.lineEdit_6.setObjectName(u"lineEdit_6")
         self.lineEdit_6.setMinimumSize(QSize(0, 30))
 
         self.verticalLayout_29.addWidget(self.lineEdit_6)
 
 
-        self.verticalLayout_26.addWidget(self.frame_39)
+        self.verticalLayout_26.addWidget(self.sim_frame_39)
 
-        self.frame_40 = QFrame(self.frame_43)
-        self.frame_40.setObjectName(u"frame_40")
-        self.frame_40.setStyleSheet(u"")
-        self.frame_40.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_40.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_30 = QVBoxLayout(self.frame_40)
+        self.sim_frame_40 = QFrame(self.frame_43)
+        self.sim_frame_40.setObjectName(u"sim_frame_40")
+        self.sim_frame_40.setStyleSheet(u"")
+        self.sim_frame_40.setFrameShape(QFrame.Shape.NoFrame)
+        self.sim_frame_40.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_30 = QVBoxLayout(self.sim_frame_40)
         self.verticalLayout_30.setSpacing(0)
         self.verticalLayout_30.setObjectName(u"verticalLayout_30")
         self.verticalLayout_30.setContentsMargins(0, 0, 0, 0)
-        self.label_18 = QLabel(self.frame_40)
+        self.label_18 = QLabel(self.sim_frame_40)
         self.label_18.setObjectName(u"label_18")
 
         self.verticalLayout_30.addWidget(self.label_18)
 
-        self.comboBox = QComboBox(self.frame_40)
+        self.comboBox = QComboBox(self.sim_frame_40)
         self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.setObjectName(u"comboBox")
@@ -148,7 +149,7 @@ class Ui_sim_widget(object):
         self.verticalLayout_30.addWidget(self.comboBox)
 
 
-        self.verticalLayout_26.addWidget(self.frame_40)
+        self.verticalLayout_26.addWidget(self.sim_frame_40)
 
         self.frame_41 = QFrame(self.frame_43)
         self.frame_41.setObjectName(u"frame_41")

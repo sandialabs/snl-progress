@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1142</width>
-    <height>588</height>
+    <width>1136</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="palette">
@@ -343,7 +343,7 @@
             <string>Themes</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
-            <item alignment="Qt::AlignmentFlag::AlignHCenter">
+            <item>
              <widget class="QPushButton" name="light_button">
               <property name="text">
                <string>Light Theme</string>
@@ -359,7 +359,7 @@
               </property>
              </widget>
             </item>
-            <item alignment="Qt::AlignmentFlag::AlignHCenter">
+            <item>
              <widget class="QPushButton" name="dark_button">
               <property name="text">
                <string>Dark Theme</string>

@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
     <number>0</number>
@@ -90,7 +93,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_26">
             <property name="spacing">
-             <number>0</number>
+             <number>15</number>
             </property>
             <property name="leftMargin">
              <number>0</number>
@@ -105,7 +108,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QFrame" name="frame_37">
+             <widget class="QFrame" name="sim_frame_37">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -151,7 +154,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_38">
+             <widget class="QFrame" name="sim_frame_38">
               <property name="styleSheet">
                <string notr="true"/>
               </property>
@@ -201,7 +204,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_39">
+             <widget class="QFrame" name="sim_frame_39">
               <property name="styleSheet">
                <string notr="true"/>
               </property>
@@ -251,7 +254,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_40">
+             <widget class="QFrame" name="sim_frame_40">
               <property name="styleSheet">
                <string notr="true"/>
               </property>

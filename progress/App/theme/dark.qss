@@ -235,3 +235,16 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
 
     color:white;
 }
+
+#theme_label {
+    font: 32pt "Arial";
+
+    color:white;
+}
+
+#api_frame_21, #api_frame_20, #api_frame_19, #api_frame_18, #solar_frame, #solar_frame_2, #solar_frame_3, #solar2_frame_54, #solar2_frame_2, #wind_frame_2, #wind_frame_3, #wind_frame_4, #sim_frame_37, #sim_frame_38, #sim_frame_39, #sim_frame_40, #theme_frame {
+    background-color: #2b2b2b;
+    border: 1px solid #444444;
+    border-radius: 8px;
+    padding: 10px;
+}
