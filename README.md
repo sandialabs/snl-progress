@@ -96,6 +96,32 @@ Key features of ProGRESS include:
     ```bash
     python -m pip install -r requirements.txt
     
+### Easy Installation (Windows Executable)
+
+Follow these steps to install and run the Progress executable on Windows:
+
+1. **Download the Executable**  
+   - Go to the **Releases** section of this repository.
+   - Download the `win_progress_v_1.2.0.zip` file containing the executable.
+
+2. **Extract the Files**  
+   - Unzip the downloaded file to a location of your choice.
+
+3. **Run the Executable**  
+   - Navigate to the extracted folder.
+   - Double-click on `progress.exe` to launch the package.
+
+4. **Ensure Data Folder is properly structured**  
+   - The data folder is found in the following path relative to progress.exe:  
+     ```
+     Lib/progress/Data
+     ```
+    - The Data folder proper structure is found beneath solver installation.
+
+5. **Download a Solver**
+   - The executable requires a solver to function, see below.
+
+
 ### Solver Installation
 
 Ensure an optimization solver is installed on your machine. Solvers to consider include:
