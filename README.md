@@ -13,6 +13,7 @@ Release date: 12/12/2024
 - [Getting Started](#getting-started)
 - [Data Requirements](#data) 
 - [Workflow Description](#workflow)
+- [Citing ProGRESS](#cite)
 - [Contact](#contact)
 
 ## Introduction 
@@ -29,17 +30,17 @@ Key features of ProGRESS include:
 
 - **Stochastic Monte Carlo Simulation Engine:** At the core of ProGRESS is a Markov Chain Monte Carlo-based engine that allows users to simulate practically unlimited scenarios involving diverse component failures and weather conditions. Each scenario is considered to be a sample of the Monte Carlo simulation and spans 8760 hours (one year). The users can choose as many samples as they want, the choice typically depending on factors such as system size, convergence criteria, and computational resources of the user.
 
-- **Historical VER Data:** ProGRESS allows users to conveniently download weather data using APIs. Data related to solar weather is downloaded by ProGRESS from [NSRDB](https://nsrdb.nrel.gov/) while wind-related weather data is downloaded from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). ProGRESS then seamlessly converts the weather data to solar and wind power generation data using in-built functions. Users may utilize their own timeseries VRE generation datasets as well. 
+- **Historical VER Data:** ProGRESS allows users to conveniently download weather data using APIs. Data related to solar weather is downloaded by ProGRESS from [NSRDB](https://nsrdb.nrel.gov/) while wind-related weather data is downloaded from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). ProGRESS then seamlessly converts the weather data to solar and wind power generation data using built-in functions. Users may utilize their own timeseries VER generation datasets as well. 
 
 - **VER Uncertainty Handling:** Proper handling of the uncertainty associated with VERs is crucial to accurate resource adequacy assessment and ESS sizing for maintaining grid reliability. ProGRESS uses innovative techniques to quantify uncertainty associated with VERs and ensures that these resources are represented appropriately within the simulation. A k-means clustering technique is used to cluster solar power generation while a transition rate matrix method is used for wind power generation.
 
-- **Model Flexibility:** Users can currently represent their power systems using a transportation or a copper-sheet model. The copper-sheet model runs significantly faster, especially for larger systems, while the transportation model generates more accurate results.
+- **Model Flexibility:** Users may perform a composite system reliability or generation adequacy analysis using transportation or copper-sheet models, respectively.  The copper-sheet model runs significantly faster, especially for larger systems, while the transportation model generates more accurate results.
 
 - **Modular Structure:** The tool is constructed using an Object-Oriented Programming (OOP) structure and a modular design. This approach enables users to easily modify the backend programs to meet their specific requirements. 
 
-- **User-friendly Graphical User Interface:** The interactive Graphical User Interface (GUI) offered by ProGRESS simplifies the process of input data upload, model building, and results interpretation.
+- **User-friendly Platform:** The interactive Graphical User Interface (GUI) offered by ProGRESS simplifies the process of input data upload, model building, and results interpretation. In addition, an executable file is also available for Windows users with the current release, thus allowing stakeholders to use the tool without needing to install Python or have any coding background.
 
-- **Parallel Programming Capabilities:** The backend includes scripts for parallel programming (using Python's [mpi4py](https://mpi4py.readthedocs.io/en/stable/index.html) library), allowing users with access to high-performance computing resources to run longer simulations with larger systems for more accurate results. Currently, this functionality is not available through the GUI.
+- **Parallel Programming Capabilities:** The backend includes scripts for parallel programming (using Python's [mpi4py](https://mpi4py.readthedocs.io/en/stable/index.html) library), allowing users with access to high-performance computing resources to run longer simulations with larger systems for more accurate results. This functionality is not available through the GUI.
 
 [Back to Top](#top)
 ## Getting started
@@ -270,7 +271,7 @@ When the application is first launched, users will see the home page:
 
 Once the API information is saved, users can move on to the `Solar` tab. 
 
-**Step 2a.** Users may upload their own solar power generation data using the format specified in this [file](./progress/Data/Solar/solar_data.xlsx) or download solar weather data from [NSRDB](https://nsrdb.nrel.gov/) and convert to solar power generation data using the tool. If downloading data, please check for the data availability at the website since the range of years for which data is available is updated periodically. ProGRESS uses [pvlib](https://pvlib-python.readthedocs.io/en/stable/) to convert the downloaded solar weather data to solar power generation data.
+**Step 2a.** Users may upload their own solar power generation data using the format specified in this [file](./progress/Data/Solar/solar_data.xlsx) or download solar weather data from [NSRDB](https://nsrdb.nrel.gov/) and convert to solar power generation data using the tool. If downloading data, please check for the data availability at the website since the range of years for which data is available is updated periodically. ProGRESS uses [pvlib](https://pvlib-python.readthedocs.io/en/stable/) to convert the downloaded solar weather data to solar power generation data. In case the user does not have solar installation in their system, they can select the `No Solar` option from the drop down list. 
 
 |<img src = "progress/Images/workflow/solar_1.png" width="480" height="320" alt="Solar" /> | <img src = "progress/Images/workflow/solar_2.png" width="480" height="320" alt="Solar" /> |
 |-------------------------|-------------------------|
@@ -289,11 +290,11 @@ Once the API information is saved, users can move on to the `Solar` tab.
 <img src = "progress/Images/workflow/sim.png" width="660" height="440" alt="Sim" />
 
 <a id="results"></a>
-**Step 5.** Users can view the results within the application once the simulation is complete. 
+**Step 5.** Users may view the results within the application using the results viewer once the simulation is complete. 
 
 <img src = "progress/Images/workflow/results.png" width="660" height="440" alt="Results" />
 
-Results include reliability indices, plots of hourly load curtailment, hourly solar and wind power generation, hourly energy storage state-of-charge, heat maps of outages across different months of the year and hours of the day. The results will also be available in the `Results` folder. Some example results are shown below. 
+Results are stored in a distinct folder for each run, the timestamp included in the folder name indicating a particular run. Some results, including load curtailment, solar and wind generation, and ESS SOC evolution are stored for each sample of the run in distinct folders within the directory created for that run. Other results, including system reliability indices, evolution of the LOLP and Coefficient of Variation (COV) across all samples, and heat maps of outages across different months of the year and hours of the day are stored in a separate folder titled `Indices`. These results are indicators of overall system reliability health while the results for the individual samples provide insight into the conditions that led to outages for these samples. 
 
 |<img src = "progress/Images/workflow/res_heatmap.png" width="500" height="300" alt="Results" /> | <img src = "progress/Images/workflow/res_ess.png" width="500" height="300" alt="Results" /> |
 |-------------------------|-------------------------|
@@ -373,6 +374,7 @@ A test case is included with this tool. The test system is the [IEEE RTS-GMLC](h
 All test system data provided with the tool has been taken from the [RTS-GMLC GitHub repository](<https://github.com/GridMod/RTS-GMLC>).
 
 ## Citing ProGRESS
+<a id="cite"></a>
 
 If you use ProGRESS in your research, please cite the following paper:
 
