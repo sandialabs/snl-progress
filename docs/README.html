@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Probabilistic Grid Reliability Analysis with Energy Storage Systems (ProGRESS) &#8212; ProGRESS 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=8d563738"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api_reference.html" />
+    <link rel="prev" title="Welcome to ProGRESS’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <p><img alt="Progress Logo" src="_images/progress_transparent_alt.png" /></p>
+<section id="probabilistic-grid-reliability-analysis-with-energy-storage-systems-progress">
+<h1><ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)<a class="headerlink" href="#probabilistic-grid-reliability-analysis-with-energy-storage-systems-progress" title="Link to this heading">¶</a></h1>
+<p>Current release version: 1.0.0</p>
+<p>Release date: 12/12/2024</p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="#intro"><span class="xref myst">Introduction</span></a></p></li>
+<li><p><a class="reference internal" href="#key-features"><span class="xref myst">Key Features of ProGRESS</span></a></p></li>
+<li><p><a class="reference internal" href="#getting-started"><span class="xref myst">Getting Started</span></a></p></li>
+<li><p><a class="reference internal" href="#data"><span class="xref myst">Data Requirements</span></a></p></li>
+<li><p><a class="reference internal" href="#workflow"><span class="xref myst">Workflow Description</span></a></p></li>
+<li><p><a class="reference internal" href="#contact"><span class="xref myst">Contact</span></a></p></li>
+</ul>
+</section>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p><a id="intro"></a></p>
+<p>The Probabilistic Grid Reliability Analysis with Energy Storage Systems (ProGRESS) software tool is a Python-based open-source tool for assessing the resource adequacy of the evolving electric power grid integrated with energy storage systems (ESS). This tool utilizes a Markov Chain Monte Carlo-based stochastic simulation engine to create diverse scenarios that test the limits of the modern power grid consisting of a high volume of ESSs and variable energy resources (VER).  State-of-the-art ESS models are incorporated within the Monte Carlo simulation engine. The charge-discharge dynamics of ESSs, along with their evolving state-of-charge (SOC), are captured by the tool. In addition, ESS failures and repair models are also built into the tool, allowing users to analyze the availability of their ESS devices when they are needed most. ProGRESS also offers the capability of handling the uncertainty associated with VERs, such as, wind and solar power generation resources, enabling the user to simulate thousands of different renewable generation scenarios depending on weather conditions. Users are able to build their own grid models, download and utilize historical VER data using APIs, and analyze magnitude, duration, and frequency of expected future outages. ProGRESS allows users to make informed decisions and plan effectively for VER- and ESS-rich future power systems.</p>
+<p><a class="reference internal" href="#top"><span class="xref myst">Back to Top</span></a></p>
+</section>
+<section id="key-features-of-progress">
+<h2>Key Features of ProGRESS<a class="headerlink" href="#key-features-of-progress" title="Link to this heading">¶</a></h2>
+<p><a id="Key-features"></a>
+Key features of ProGRESS include:</p>
+<ul class="simple">
+<li><p><strong>Emphasis on Energy Storage Systems:</strong> ProGRESS is developed for analyzing the resource adequacy of power systems with a special focus on ESS. This tool offers unique features such as integrating failure and repair models of ESS in resource adequacy evaluation while preserving its charge/discharge dynamics and SOC update characteristics. Future updates to the tool will include sizing of ESS for grid reliability applications, economic analysis of using ESS for these purposes, more detailed ESS reliability models, and other ESS-centric features.</p></li>
+<li><p><strong>Stochastic Monte Carlo Simulation Engine:</strong> At the core of ProGRESS is a Markov Chain Monte Carlo-based engine that allows users to simulate practically unlimited scenarios involving diverse component failures and weather conditions. Each scenario is considered to be a sample of the Monte Carlo simulation and spans 8760 hours (one year). The users can choose as many samples as they want, the choice typically depending on factors such as system size, convergence criteria, and computational resources of the user.</p></li>
+<li><p><strong>Historical VER Data:</strong> ProGRESS allows users to conveniently download weather data using APIs. Data related to solar weather is downloaded by ProGRESS from <a class="reference external" href="https://nsrdb.nrel.gov/">NSRDB</a> while wind-related weather data is downloaded from <a class="reference external" href="https://www.nrel.gov/grid/wind-toolkit.html">Wind Integration National Dataset Toolkits</a>. ProGRESS then seamlessly converts the weather data to solar and wind power generation data using in-built functions. Users may utilize their own timeseries VRE generation datasets as well.</p></li>
+<li><p><strong>VER Uncertainty Handling:</strong> Proper handling of the uncertainty associated with VERs is crucial to accurate resource adequacy assessment and ESS sizing for maintaining grid reliability. ProGRESS uses innovative techniques to quantify uncertainty associated with VERs and ensures that these resources are represented appropriately within the simulation. A k-means clustering technique is used to cluster solar power generation while a transition rate matrix method is used for wind power generation.</p></li>
+<li><p><strong>Model Flexibility:</strong> Users can currently represent their power systems using a transportation or a copper-sheet model. The copper-sheet model runs significantly faster, especially for larger systems, while the transportation model generates more accurate results.</p></li>
+<li><p><strong>Modular Structure:</strong> The tool is constructed using an Object-Oriented Programming (OOP) structure and a modular design. This approach enables users to easily modify the backend programs to meet their specific requirements.</p></li>
+<li><p><strong>User-friendly Graphical User Interface:</strong> The interactive Graphical User Interface (GUI) offered by ProGRESS simplifies the process of input data upload, model building, and results interpretation.</p></li>
+<li><p><strong>Parallel Programming Capabilities:</strong> The backend includes code for parallel programming (using Python’s <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/index.html">mpi4py</a> library), allowing users with access to high-performance computing resources to run longer simulations with larger systems for more accurate results. Currently, this functionality is not available through the GUI.</p></li>
+</ul>
+<p><a class="reference internal" href="#top"><span class="xref myst">Back to Top</span></a></p>
+</section>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<p><a id="getting-started"></a></p>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Python (&gt;= 3.9, &lt;3.12) installed on your system</p></li>
+<li><p>Git installed on your system</p></li>
+</ul>
+</section>
+<section id="installing-python">
+<h3>Installing Python<a class="headerlink" href="#installing-python" title="Link to this heading">¶</a></h3>
+<ol class="arabic simple">
+<li><p>Installers can be found at: https://www.python.org/downloads/release/python-3913/</p></li>
+<li><p>Make sure to check the box “Add Python to PATH” at the bottom of the installer prompt.</p></li>
+</ol>
+</section>
+<section id="installing-git">
+<h3>Installing Git<a class="headerlink" href="#installing-git" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Visit <a class="reference external" href="https://git-scm.com/">git-scm.com</a> to download Git for your operating system.</p></li>
+<li><p>Follow the installation instructions provided on the website.</p></li>
+</ul>
+</section>
+<section id="setting-up-a-virtual-environment">
+<h3>Setting Up a Virtual Environment<a class="headerlink" href="#setting-up-a-virtual-environment" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p>Open Command Prompt on Windows or Terminal on macOS and Linux.</p></li>
+<li><p>Install <code class="docutils literal notranslate"><span class="pre">virtualenv</span></code> (if not already installed):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenv</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create a virtual environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">your_path</span><span class="o">&gt;</span>
+<span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">virtualenv</span> <span class="o">&lt;</span><span class="n">env_name</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">&lt;your_path&gt;</span></code> with the path to the folder where you want to create the virtual environment.</p>
+</li>
+<li><p>Activate the virtual environment:</p>
+<ul>
+<li><p>On Windows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">&lt;</span><span class="n">your_path</span><span class="o">&gt;</span>
+<span class="o">.</span>\<span class="o">&lt;</span><span class="n">env_name</span><span class="o">&gt;</span>\<span class="n">Scripts</span>\<span class="n">activate</span>
+</pre></div>
+</div>
+</li>
+<li><p>On macOS/Linux:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="o">&lt;</span><span class="n">env_name</span><span class="o">&gt;/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="installing-progress">
+<h3>Installing ProGRESS<a class="headerlink" href="#installing-progress" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p>Clone the Repository:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/sandialabs/snl-progress.git
+</pre></div>
+</div>
+</li>
+<li><p>Navigate to the <code class="docutils literal notranslate"><span class="pre">snl_progress</span></code> Directory:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>&lt;path_to_snl-progress&gt;
+</pre></div>
+</div>
+</li>
+<li><p>Install Dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="solver-installation">
+<h3>Solver Installation<a class="headerlink" href="#solver-installation" title="Link to this heading">¶</a></h3>
+<p>Ensure an optimization solver is installed on your machine. Solvers to consider include:</p>
+<p><strong>Open-source Solvers</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.gnu.org/software/glpk/">GLPK</a></p></li>
+<li><p><a class="reference external" href="https://github.com/coin-or/Clp">Clp</a></p></li>
+<li><p><a class="reference external" href="https://highs.dev/#top">HiGHs</a></p></li>
+</ul>
+<p><strong>Commercial Solvers</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.gurobi.com/">Gurobi</a></p></li>
+<li><p><a class="reference external" href="https://www.ibm.com/products/ilog-cplex-optimization-studio">Cplex</a></p></li>
+</ul>
+<p><a class="reference internal" href="#top"><span class="xref myst">Back to Top</span></a></p>
+</section>
+</section>
+<section id="data-requirements">
+<h2>Data Requirements<a class="headerlink" href="#data-requirements" title="Link to this heading">¶</a></h2>
+<p><a id="data"></a></p>
+<p>Users must create a <code class="docutils literal notranslate"><span class="pre">Data</span></code> folder inside the <code class="docutils literal notranslate"><span class="pre">progress</span></code> directory with the subfolders <code class="docutils literal notranslate"><span class="pre">System</span></code>, <code class="docutils literal notranslate"><span class="pre">Solar</span></code>, and <code class="docutils literal notranslate"><span class="pre">Wind</span></code> to store system, solar, and wind data, respectively. These subfolders must contain the following data files as shown below:</p>
+<ul class="simple">
+<li><p>README.md</p></li>
+<li><p>LICENSE</p></li>
+<li><p>progress/</p>
+<ul>
+<li><p>Data/</p>
+<ul>
+<li><p>System/</p>
+<ul>
+<li><p>branch.csv</p></li>
+<li><p>bus.csv</p></li>
+<li><p>gen.csv</p></li>
+<li><p>load.csv</p></li>
+<li><p>storage.csv</p></li>
+</ul>
+</li>
+<li><p>Solar/</p>
+<ul>
+<li><p>solar_sites.csv</p></li>
+<li><p>solar_data.xlsx (if solar power generation data is user provided)</p></li>
+</ul>
+</li>
+<li><p>Wind/</p>
+<ul>
+<li><p>w_power_curves.csv</p></li>
+<li><p>wind_sites.csv</p></li>
+<li><p>windspeed_data.csv (if wind speed data is user provided)</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>The file names should be kept exactly the same as shown above. The column names inside each <code class="docutils literal notranslate"><span class="pre">.csv</span></code> file should also be left unchanged. File templates with data from the RTS-GMLC system are provided here: <a class="reference internal" href="#./progress/Data"><span class="xref myst"><code class="docutils literal notranslate"><span class="pre">Data</span></code></span></a>.
+A detailed description of the <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files along with the column names is provided as follows:</p>
+<section id="system">
+<h3>System<a class="headerlink" href="#system" title="Link to this heading">¶</a></h3>
+<section id="branch-csv">
+<h4><code class="docutils literal notranslate"><span class="pre">branch.csv</span></code><a class="headerlink" href="#branch-csv" title="Link to this heading">¶</a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Branch ID</p></td>
+<td><p>Unique branch ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>From Bus</p></td>
+<td><p>From Bus ID</p></td>
+</tr>
+<tr class="row-even"><td><p>To Bus</p></td>
+<td><p>To Bus ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>R</p></td>
+<td><p>Branch resistance p.u.</p></td>
+</tr>
+<tr class="row-even"><td><p>X</p></td>
+<td><p>Branch reactance p.u.</p></td>
+</tr>
+<tr class="row-odd"><td><p>B</p></td>
+<td><p>Branch line charging susceptance p.u.</p></td>
+</tr>
+<tr class="row-even"><td><p>MTTTR</p></td>
+<td><p>Mean Time to Repair</p></td>
+</tr>
+<tr class="row-odd"><td><p>MTTF</p></td>
+<td><p>Mean Time to Failure</p></td>
+</tr>
+<tr class="row-even"><td><p>TranOutRate</p></td>
+<td><p>Outage rates of transmission lines</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bus-csv">
+<h4><code class="docutils literal notranslate"><span class="pre">bus.csv</span></code><a class="headerlink" href="#bus-csv" title="Link to this heading">¶</a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Bus Name</p></td>
+<td><p>Bus/Zone name</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bus No.</p></td>
+<td><p>Numeric bus ID</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gen-csv">
+<h4><code class="docutils literal notranslate"><span class="pre">gen.csv</span></code><a class="headerlink" href="#gen-csv" title="Link to this heading">¶</a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Gen No.</p></td>
+<td><p>Numeric gen ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>Gen Name</p></td>
+<td><p>Generator name</p></td>
+</tr>
+<tr class="row-even"><td><p>Bus No.</p></td>
+<td><p>Connection bus/zone number</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tech</p></td>
+<td><p>Technology Type</p></td>
+</tr>
+<tr class="row-even"><td><p>Max Cap</p></td>
+<td><p>Maximum capacity of unit</p></td>
+</tr>
+<tr class="row-odd"><td><p>Min Cap</p></td>
+<td><p>Minimum capacity of unit</p></td>
+</tr>
+<tr class="row-even"><td><p>FOR</p></td>
+<td><p>Forced Outage Rate</p></td>
+</tr>
+<tr class="row-odd"><td><p>MTTR</p></td>
+<td><p>Mean Time to Repair</p></td>
+</tr>
+<tr class="row-even"><td><p>MTTF</p></td>
+<td><p>Mean Time to Failure</p></td>
+</tr>
+<tr class="row-odd"><td><p>Cost</p></td>
+<td><p>Cost of generation</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="load-csv">
+<h4><code class="docutils literal notranslate"><span class="pre">load.csv</span></code><a class="headerlink" href="#load-csv" title="Link to this heading">¶</a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>datetime</p></td>
+<td><p>mm/dd/yy hh:mm</p></td>
+</tr>
+<tr class="row-odd"><td><p>day</p></td>
+<td><p>mm/dd/yy</p></td>
+</tr>
+<tr class="row-even"><td><p>time</p></td>
+<td><p>hh:mm:ss</p></td>
+</tr>
+<tr class="row-odd"><td><p>system_wide</p></td>
+<td><p>Total load in the entire system</p></td>
+</tr>
+<tr class="row-even"><td><p>Bus_1</p></td>
+<td><p>Load in bus/zone 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bus_2</p></td>
+<td><p>Load in bus/zone 2</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td><p>Keep adding columns for all buses</p></td>
+</tr>
+</tbody>
+</table>
+<p>Replace <code class="docutils literal notranslate"><span class="pre">Bus_1</span></code>, <code class="docutils literal notranslate"><span class="pre">Bus_2</span></code>, … with the bus names from the <code class="docutils literal notranslate"><span class="pre">bus.csv</span></code>.</p>
+</section>
+<section id="storage-csv">
+<h4><code class="docutils literal notranslate"><span class="pre">storage.csv</span></code><a class="headerlink" href="#storage-csv" title="Link to this heading">¶</a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Name</p></td>
+<td><p>Name of storage unit</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bus</p></td>
+<td><p>Bus/zone to which it is connected</p></td>
+</tr>
+<tr class="row-even"><td><p>Pmax</p></td>
+<td><p>Maximum power rating</p></td>
+</tr>
+<tr class="row-odd"><td><p>Pmin</p></td>
+<td><p>Minimum power rating</p></td>
+</tr>
+<tr class="row-even"><td><p>Duration</p></td>
+<td><p>Duration in hours</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_SOC</p></td>
+<td><p>Maximum allowed state-of-charge (0 to 1)</p></td>
+</tr>
+<tr class="row-even"><td><p>min_SOC</p></td>
+<td><p>Minimum allowed state-of-charge (0 to 1)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Efficiency</p></td>
+<td><p>Efficiency (0 to 1)</p></td>
+</tr>
+<tr class="row-even"><td><p>Discharge Cost</p></td>
+<td><p>Cost of discharge</p></td>
+</tr>
+<tr class="row-odd"><td><p>Charge Cost</p></td>
+<td><p>Cost of charge</p></td>
+</tr>
+<tr class="row-even"><td><p>Units</p></td>
+<td><p>No. of subunits in the ESS</p></td>
+</tr>
+<tr class="row-odd"><td><p>MTTR</p></td>
+<td><p>Mean Time to Repair</p></td>
+</tr>
+<tr class="row-even"><td><p>MTTF</p></td>
+<td><p>Mean Time to Failure</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="solar">
+<h3>Solar<a class="headerlink" href="#solar" title="Link to this heading">¶</a></h3>
+<section id="solar-sites-csv">
+<h4><code class="docutils literal notranslate"><span class="pre">solar_sites.csv</span></code><a class="headerlink" href="#solar-sites-csv" title="Link to this heading">¶</a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>site_name</p></td>
+<td><p>Name of the solar site</p></td>
+</tr>
+<tr class="row-odd"><td><p>lat</p></td>
+<td><p>latitude of the site</p></td>
+</tr>
+<tr class="row-even"><td><p>long</p></td>
+<td><p>longitude of the site</p></td>
+</tr>
+<tr class="row-odd"><td><p>MW</p></td>
+<td><p>Maximum capacity of the plant in MW</p></td>
+</tr>
+<tr class="row-even"><td><p>tracking</p></td>
+<td><p>Single/Dual axis tracking (1 or 2)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Zone</p></td>
+<td><p>Bus/zone in which site is located</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="wind">
+<h3>Wind<a class="headerlink" href="#wind" title="Link to this heading">¶</a></h3>
+<section id="wind-sites-csv">
+<h4><code class="docutils literal notranslate"><span class="pre">wind_sites.csv</span></code><a class="headerlink" href="#wind-sites-csv" title="Link to this heading">¶</a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Farm No.</p></td>
+<td><p>Numeric wind farm ID</p></td>
+</tr>
+<tr class="row-odd"><td><p>Farm Name</p></td>
+<td><p>Name of wind farm</p></td>
+</tr>
+<tr class="row-even"><td><p>Zone Name</p></td>
+<td><p>Name of zone/bus in which wind farm is located</p></td>
+</tr>
+<tr class="row-odd"><td><p>Zone No.</p></td>
+<td><p>No. of zone/bus in which wind farm is located</p></td>
+</tr>
+<tr class="row-even"><td><p>Power Class</p></td>
+<td><p>Wind power class</p></td>
+</tr>
+<tr class="row-odd"><td><p>Latitude</p></td>
+<td><p>Latitude of the site</p></td>
+</tr>
+<tr class="row-even"><td><p>Longitude</p></td>
+<td><p>Longitude of the site</p></td>
+</tr>
+<tr class="row-odd"><td><p>Hub Height</p></td>
+<td><p>Height of wind turbines</p></td>
+</tr>
+<tr class="row-even"><td><p>Turbine Rating</p></td>
+<td><p>Rating of wind turbines in MW</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="w-power-curves-csv">
+<h4><code class="docutils literal notranslate"><span class="pre">w_power_curves.csv</span></code><a class="headerlink" href="#w-power-curves-csv" title="Link to this heading">¶</a></h4>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Start (m/s)</p></td>
+<td><p>Starting wind speed for this class in (m/s)</p></td>
+</tr>
+<tr class="row-odd"><td><p>End (m/s)</p></td>
+<td><p>Ending wind speed for this class in (m/s)</p></td>
+</tr>
+<tr class="row-even"><td><p>Class 1</p></td>
+<td><p>Conversion ratio from speed to power for Class 1</p></td>
+</tr>
+<tr class="row-odd"><td><p>Class 2</p></td>
+<td><p>Conversion ratio from speed to power for Class 2</p></td>
+</tr>
+<tr class="row-even"><td><p>…</p></td>
+<td><p>Users can add as many wind classes as they want</p></td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#top"><span class="xref myst">Back to Top</span></a></p>
+</section>
+</section>
+</section>
+<section id="workflow-description">
+<h2>Workflow Description<a class="headerlink" href="#workflow-description" title="Link to this heading">¶</a></h2>
+<p><a id="workflow"></a></p>
+<p>Simulations in the ProGRESS tool can be executed in three different ways. Users may choose to A) utilize the Graphical User Interface to run simulations, B) use Python scripts to run simulations on their local computer or a remote server, or C) use Python and bash scripts to run simulations by utilizing parallel processing capabilities of a High Performance Computer. The following sections describe each approach in detail.</p>
+<section id="a-instructions-for-running-simulations-using-the-graphical-user-interface">
+<h3>A. Instructions for Running Simulations using the Graphical User Interface<a class="headerlink" href="#a-instructions-for-running-simulations-using-the-graphical-user-interface" title="Link to this heading">¶</a></h3>
+<p>Navigate to the directory where ProGRESS is installed and ensure that the virtual environment is activated. Use the following command to launch the tool:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>progress
+</pre></div>
+</div>
+<p>When the application is first launched, users will see the home page:</p>
+<p><img alt="Home Page" src="_images/home_page.png" /></p>
+<!-- <img src = "Images/workflow/home_page.png" width="660" height="440" alt="Home" /> -->
+<p><strong>Step 1.</strong> After pressing the <code class="docutils literal notranslate"><span class="pre">Get</span> <span class="pre">Started</span></code> button, users will be prompted to enter API information. Ensure that you have signed up at the <a class="reference external" href="https://developer.nrel.gov/">NREL Developer Network</a> beforehand using your details and obtained the required api key. You may skip this step if you plan on using your own data.</p>
+<p><img alt="API" src="_images/API.png" /></p>
+<!-- <img src = "Images/workflow/API.png" width="660" height="440" alt="API" /> -->
+<p>Once the API information is saved, users can move on to the <code class="docutils literal notranslate"><span class="pre">Solar</span></code> tab.</p>
+<p><strong>Step 2a.</strong> Users may upload their own solar power generation data using the format specified in this <a class="reference internal" href="#./progress/Data/Solar/solar_data.xlsx"><span class="xref myst">file</span></a> or download solar weather data from <a class="reference external" href="https://nsrdb.nrel.gov/">NSRDB</a> and convert to solar power generation data using the tool. If downloading data, please check for the data availability at the website since the range of years for which data is available is updated periodically. ProGRESS uses <a class="reference external" href="https://pvlib-python.readthedocs.io/en/stable/">pvlib</a> to convert the downloaded solar weather data to solar power generation data.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="solar1" src="_images/solar_1.png" /></p></th>
+<th class="head"><p><img alt="solar2" src="_images/solar_2.png" /></p></th>
+</tr>
+</thead>
+</table>
+<p><strong>Step 2b.</strong> The next step involves clustering the solar power generation data. A k-means clustering algorithm is utilized to cluster the data into days with similar solar power generation patterns and values. These clusters are later utilized by the MCS to randomly select days based on the month of the year. Users are able to choose the optimum number of clusters by evaluating the performance of different cluster values. For example, if the user inputs <code class="docutils literal notranslate"><span class="pre">10</span></code> in the <code class="docutils literal notranslate"><span class="pre">No.</span> <span class="pre">of</span> <span class="pre">Clusters</span> <span class="pre">to</span> <span class="pre">Evaluate</span></code> field, the tool will evaluate the performance of clusters starting from <code class="docutils literal notranslate"><span class="pre">2</span></code> to <code class="docutils literal notranslate"><span class="pre">10</span></code>. The SSE and silhouette scores will be displayed on the GUI once the evaluation is complete and can be used to make informed decision on the optimal number of clusters.</p>
+<p><img alt="solar3" src="_images/solar_3.png" /></p>
+<!-- <img src = "Images/workflow/solar_3.png" width="660" height="440" alt="Solar" /> -->
+<p><strong>Step 3.</strong> The next step involves adding wind data. Users may choose to upload their own wind speed data using the format specified in this <a class="reference internal" href="#./progress/Data/Wind/windspeed_data.csv"><span class="xref myst">file</span></a> or download the same from <a class="reference external" href="https://www.nrel.gov/grid/wind-toolkit.html">Wind Integration National Dataset Toolkits</a>. The windspeed data can then be used to generate a transition rate matrix using the <code class="docutils literal notranslate"><span class="pre">Process</span> <span class="pre">Wind</span> <span class="pre">Speed</span> <span class="pre">Data</span></code> button. The transition rate matrix will eventually be used by the MCS to estimate the wind power generation for each hour.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="wind1" src="_images/wind_1.png" /></p></th>
+<th class="head"><p><img alt="wind2" src="_images/wind_2.png" /></p></th>
+</tr>
+</thead>
+</table>
+<p><strong>Step 4.</strong> Once all data has been added, the user can now run the simulation. Guidelines for adjusting the parameters on this page can be found <a class="reference internal" href="#2step1"><span class="xref myst">here</span></a>. Press the <code class="docutils literal notranslate"><span class="pre">Run</span> <span class="pre">Simulation</span></code> button once all the information is entered. The simulation progress will be displayed on the right side of the page.</p>
+<p><img alt="sim" src="_images/sim.png" /></p>
+<!-- <img src = "progress/Images/workflow/sim.png" width="660" height="440" alt="Sim" /> -->
+<p><a id="results"></a>
+<strong>Step 5.</strong> Users can view the results within the application once the simulation is complete.</p>
+<p><img alt="results" src="_images/results.png" /></p>
+<!-- <img src = "progress/Images/workflow/results.png" width="660" height="440" alt="Results" /> -->
+<p>Results include reliability indices, plots of hourly load curtailment, hourly solar and wind power generation, hourly energy storage state-of-charge, heat maps of outages across different months of the year and hours of the day. The results will also be available in the <code class="docutils literal notranslate"><span class="pre">Results</span></code> folder. Some example results are shown below.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="heatmap" src="_images/res_heatmap.png" /></p></th>
+<th class="head"><p><img alt="ess" src="_images/res_ess.png" /></p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><img alt="load_curt" src="_images/res_loadcurt.png" /></p></td>
+<td><p><img alt="res_wind" src="_images/res_wind.png" /></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="b-instructions-for-running-simulations-using-the-command-line-on-local-or-remote-computers-servers">
+<h3>B. Instructions for Running Simulations using the Command-Line on Local or Remote Computers/Servers<a class="headerlink" href="#b-instructions-for-running-simulations-using-the-command-line-on-local-or-remote-computers-servers" title="Link to this heading">¶</a></h3>
+<p>ProGRESS offers the capability to run simulations through script-based execution without the use of the GUI. These scripts can run on local computers or remote servers. Ensure that you have followed the steps outlined in <a class="reference internal" href="#getting-started"><span class="xref myst">Getting Started</span></a> for installing the required software and setting up the environment necessary for running the tool. Then navigate to the <a class="reference internal" href="#./progress"><span class="xref myst">progress</span></a> directory and ensure that the virtual environment is activated.</p>
+<p><a id="2step1"></a>
+<strong>Step 1. Configure the Input File:</strong></p>
+<p>Before running the simulation, configure the <a class="reference internal" href="#progress/input.yaml"><span class="xref myst">input.yaml</span></a> file with the specific simulation parameters. Open the file in a text editor and adjust the parameters according to your requirements. The <code class="docutils literal notranslate"><span class="pre">api_key</span></code>, <code class="docutils literal notranslate"><span class="pre">email</span></code>, <code class="docutils literal notranslate"><span class="pre">affiliation</span></code>, and <code class="docutils literal notranslate"><span class="pre">name</span></code> fields are required for downloading weather data from the <a class="reference external" href="https://nsrdb.nrel.gov/">NSRDB</a> and <a class="reference external" href="https://www.nrel.gov/grid/wind-toolkit.html">Wind Integration National Dataset Toolkits</a>. Ensure that you have signed up at the <a class="reference external" href="https://developer.nrel.gov/">NREL Developer Network</a> beforehand using your details and obtained the required api key. Also check the data availability at the websites as the range of years for which data is available is updated periodically. Guidance on setting the simulation parameters are provided as follows:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parameter</p></th>
+<th class="head"><p>Comments</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">samples</span></code></p></td>
+<td><p>This is the number of samples that needs to be run for the MCS to converge and depends heavily on the system. Running a small number of samples (e.g., 10-20) might provide a trend of expected outages in the system, although it is recommended that the users run as many samples as required for the MCS to converge for more accurate results. The convergence can be tracked using the Coefficient of Variation (COV) metric plotted in the <code class="docutils literal notranslate"><span class="pre">COV_track.pdf</span></code> file, which can be found in the <code class="docutils literal notranslate"><span class="pre">Results</span></code> folder.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sim_hours</span></code></p></td>
+<td><p>The recommended number is 8760 hours or one full year for each sample.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">load_factor</span></code></p></td>
+<td><p>Default value is 1. Users may tune this parameter to check how increasing or decreasing the hourly load profile by a constant factor affects system outages.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">model</span></code></p></td>
+<td><p>Users can select a Copper Sheet or a Zonal Model. The Copper Sheet model runs faster but the Zonal Model might be more accurate.</p></td>
+</tr>
+</tbody>
+</table>
+<p><a id="2step2"></a>
+<strong>Step 2. Download Weather Data:</strong></p>
+<p>Run the <a class="reference internal" href="#./progress/data_download_process.py"><span class="xref myst">data_download_process.py</span></a> file to download the required solar weather and wind speed data using the NREL API.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>data_download_process.py
+</pre></div>
+</div>
+<p>Running this file will also process the downloaded weather data and convert them into solar and wind power generation data for each site. Users may skip this step if they want to use their own data or have already downloaded and processed the data during a previous run.</p>
+<p><strong>Step 3. Run Monte Carlo Simlulation</strong></p>
+<p>The final step would be to run the <a class="reference internal" href="#./progress/example_simulation.py"><span class="xref myst">example_simulation.py</span></a> file.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>example_simulation.py
+</pre></div>
+</div>
+<p>Running this file executes the MCS for the pre-specified number of samples and generates results that include values of system reliability indices, outage heatmaps, ESS state-of-charge, solar and wind generation plots, and the coefficient of variation. All results will be stored in the <a class="reference internal" href="#./progress/Results"><span class="xref myst">Results</span></a> folder once the simulation is complete. Please refer to <a class="reference internal" href="#results"><span class="xref myst">Step 8</span></a> of the previous section for more details on results.</p>
+</section>
+<section id="c-instructions-for-running-simulations-on-a-high-performance-computer-parallel-computation">
+<h3>C. Instructions for Running Simulations on a High Performance Computer (Parallel Computation)<a class="headerlink" href="#c-instructions-for-running-simulations-on-a-high-performance-computer-parallel-computation" title="Link to this heading">¶</a></h3>
+<p>This approach is strongly recommended for users having access to a HPC system and running the tool for analyzing the reliability of large power systems and/or a large number of samples. The example script (<a class="reference internal" href="#./progress/example_simulation_multi_proc.py"><span class="xref myst">example_simulation_multi_proc.py</span></a>) provided with the tool utilizes Python’s <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/index.html">mpi4py</a> library to implement parallel computation. The computation time would depend on the number of nodes (and the number of cores in each node) that the simulation is run on.</p>
+<p>Ensure that you have followed the steps outlined in <a class="reference internal" href="#getting-started"><span class="xref myst">Getting Started</span></a> for installing the required software and setting up the environment necessary for running the tool on the HPC server. Then follow <a class="reference internal" href="#2step1"><span class="xref myst">Step 1</span></a> and <a class="reference internal" href="#2step2"><span class="xref myst">Step 2</span></a> from the previous section to configure the <a class="reference internal" href="#progress/input.yaml"><span class="xref myst">input.yaml</span></a> file and to download the necessary data, respectively. <a class="reference internal" href="#"><span class="xref myst">Step 2</span></a> may be skipped if users want to use their own data or have already downloaded and processed the data during a previous run. There are two main ways of running simulations on a HPC and utilize parallel computation capabilities: a) Using an interactive node, or b) using a bash file to schedule a job.</p>
+<p><strong>a) Using an Interactive Node:</strong></p>
+<p>If using a single interactive node, ensure that you are in the <a class="reference internal" href="#./progress"><span class="xref myst">progress</span></a> directory and execute the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mpiexec<span class="w"> </span>-n<span class="w"> </span>x<span class="w"> </span>python<span class="w"> </span>example_simulation_multi_proc.py
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">x</span></code> is the number of cores (<code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&lt;</span> <span class="pre">total</span> <span class="pre">no.</span> <span class="pre">of</span> <span class="pre">cores</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">node</span></code> ) you want to utilize.</p>
+<p><strong>b) Using a <code class="docutils literal notranslate"><span class="pre">bash</span></code> file for scheduling and running jobs:</strong></p>
+<p>An example <code class="docutils literal notranslate"><span class="pre">bash</span></code> file is provided <a class="reference internal" href="#./progress/example_job.bash"><span class="xref myst">here</span></a>. Users can configure this file according to their requirements and typically schedule a job using the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sbatch<span class="w"> </span>example_job.bash
+</pre></div>
+</div>
+<p>The job will run when it reaches the top of the queue.</p>
+<p><a class="reference internal" href="#top"><span class="xref myst">Back to Top</span></a></p>
+</section>
+</section>
+<section id="sample-case-study">
+<h2>Sample Case Study<a class="headerlink" href="#sample-case-study" title="Link to this heading">¶</a></h2>
+<p>A test case is included with this tool. The test system is the <a class="reference external" href="https://ieeexplore.ieee.org/abstract/document/8753693">IEEE RTS-GMLC</a>, which is a modernized version of the <a class="reference external" href="https://ieeexplore.ieee.org/abstract/document/780914">IEEE RTS-96</a>. A zonal model of the test system is illustrated as follows:</p>
+<p><img alt="rts_gmlc" src="_images/RTS_GMLC.png" /></p>
+<!-- <img src = "Images/workflow/RTS_GMLC.png" width="600" height="500" alt="RTS" />  -->
+<p>All test system data provided with the tool has been taken from the <a class="reference external" href="https://github.com/GridMod/RTS-GMLC">RTS-GMLC GitHub repository</a>.</p>
+</section>
+<section id="acknowledgment">
+<h2>Acknowledgment<a class="headerlink" href="#acknowledgment" title="Link to this heading">¶</a></h2>
+<p><a id="acknowledgement"></a>
+The ProGRESS tool is developed and maintained by the <a class="reference external" href="https://energy.sandia.gov/programs/energy-storage/analytics/">Energy Storage Analytics Group</a> at <a class="reference external" href="https://www.sandia.gov/">Sandia National Laboratories</a>. This material is based upon work supported by the <strong>U.S. Department of Energy, Office of Electricity (OE), Energy Storage Division</strong>.</p>
+<p><strong>Project team:</strong></p>
+<ul class="simple">
+<li><p>Atri Bera</p></li>
+<li><p>Andres Lopez</p></li>
+<li><p>Yung-Jai Pomeroy</p></li>
+<li><p>Cody Newlun</p></li>
+<li><p>Tu Nguyen</p></li>
+<li><p>Dilip Pandit</p></li>
+</ul>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p><img alt="logo2" src="_images/Sandia_National_Laboratories_logo.svg" /></p></th>
+<th class="head"><p><img alt="new_doe" src="_images/New_DOE_Logo_Color.jpg" /></p></th>
+</tr>
+</thead>
+</table>
+<p><a class="reference internal" href="#top"><span class="xref myst">Back to Top</span></a></p>
+</section>
+<section id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Link to this heading">¶</a></h2>
+<p><a id="contact"></a></p>
+<p>For reporting bugs and other issues, please use the “Issues” feature of this repository. For more information regarding the tool and collaboration opportunities, please contact project developer: Atri Bera (<code class="docutils literal notranslate"><span class="pre">abera&#64;sandia.gov</span></code>)</p>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ProGRESS</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#table-of-contents">Table of Contents</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-features-of-progress">Key Features of ProGRESS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-requirements">Data Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow-description">Workflow Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sample-case-study">Sample Case Study</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgment">Acknowledgment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to ProGRESS’s documentation!</a></li>
+      <li>Next: <a href="api_reference.html" title="next chapter">API Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Atri Bera.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/README.md.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -34,7 +34,7 @@ autodoc_mock_imports = [
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Get the project root directory
-project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
+project_root = os.path.abspath(os.path.join(current_dir, '..', '..', '..'))
 
 # Add the project root to sys.path
 sys.path.insert(0, project_root)

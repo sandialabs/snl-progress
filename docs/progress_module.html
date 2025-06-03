@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Progress Package &#8212; ProGRESS 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=8d563738"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Progress Data Download Process Module" href="progress_data_download_process.html" />
+    <link rel="prev" title="API Reference" href="api_reference.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="progress-package">
+<h1>Progress Package<a class="headerlink" href="#progress-package" title="Link to this heading">¶</a></h1>
+<section id="general-introduction">
+<h2>General Introduction<a class="headerlink" href="#general-introduction" title="Link to this heading">¶</a></h2>
+<p>Welcome to the <strong>ProGRESS API</strong> documentation. The modules here implement the
+core functionality of the ProGRESS software tool, a Python-based resource adequacy
+simulation environment focused on integrating and analyzing conventional generators,
+energy storage systems (ESS), wind farms, and solar photovoltaic sites.</p>
+<p>All modules are written in Python, with an object-oriented design. Together, they
+provide functionality for:</p>
+<ul class="simple">
+<li><p>Parsing and managing system data (buses, branches, generators, storage).</p></li>
+<li><p>Downloading and processing solar and wind data.</p></li>
+<li><p>Clustering solar generation days.</p></li>
+<li><p>Creating and solving resource adequacy studies via a Monte Carlo Simulation framework.</p></li>
+<li><p>Plotting and visualizing results.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For a complete picture of how these modules interact, see the main project README
+and the API reference within the documentation.</p>
+</div>
+<section id="main-py">
+<h3>__main__.py<a class="headerlink" href="#main-py" title="Link to this heading">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">__main__.py</span></code> is the entry point for running the ProGRESS GUI. It sets up the PySide6
+application, provides user interface elements (tabs for Solar, Wind, and System data),
+and manages long-running tasks through worker threads.</p>
+<p><strong>Overview</strong>:</p>
+<ul class="simple">
+<li><p>Launches the GUI with PySide6.</p></li>
+<li><p>Defines a main window class and worker threads to handle background operations without blocking the UI.</p></li>
+<li><p>Coordinates data loading (system, wind, solar), parameter input, and simulation runs.</p></li>
+</ul>
+<span class="target" id="module-progress"></span></section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ProGRESS</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html"><ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="api_reference.html">API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Progress Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_data_download_process.html">Progress Data Download Process Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_example_simulation.html">Progress Example Simulation Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_example_simulation_mult_proc.html">Progress Example Simulation (Mult Proc) Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_main_MPI.html">Progress Main MPI Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_mod_kmeans.html">Progress K-Means Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_mod_matrices.html">Progress Matrices Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_mod_plot.html">Progress Plot Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_mod_solar.html">Progress Solar Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_mod_sysdata.html">Progress System Data Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_mod_utilities.html">Progress Utilities Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_mod_wind.html">Progress Wind Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress_paths.html">Progress Paths Module</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="api_reference.html">API Reference</a><ul>
+      <li>Previous: <a href="api_reference.html" title="previous chapter">API Reference</a></li>
+      <li>Next: <a href="progress_data_download_process.html" title="next chapter">Progress Data Download Process Module</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Atri Bera.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/progress_module.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

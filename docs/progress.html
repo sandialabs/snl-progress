@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>progress package &#8212; ProGRESS 1.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=8d563738"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="progress-package">
+<h1>progress package<a class="headerlink" href="#progress-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="progress.App.html">progress.App package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="progress.App.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress.App.html#progress-app-mainwindow-module">progress.App.MainWindow module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="progress.App.html#module-progress.App">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-progress.data_download_process">
+<span id="progress-data-download-process-module"></span><h2>progress.data_download_process module<a class="headerlink" href="#module-progress.data_download_process" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.data_download_process.DataProcess">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.data_download_process.</span></span><span class="sig-name descname"><span class="pre">DataProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.data_download_process.DataProcess" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class used to process wind and solar data from configuration and create
+relevant input files for further modeling.</p>
+<p>This class reads a configuration file, and uses it to download, prepare, and
+organize wind and solar data. It delegates certain tasks (e.g., data download,
+transformation, K-means clustering) to specialized modules:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Wind</span></code> for wind data processing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Solar</span></code> for solar data processing</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KMeans_Pipeline</span></code> for clustering the resultant data</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_file</strong> (<em>str</em>) – Path to the YAML configuration file containing
+user settings and file/directory paths.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.data_download_process.DataProcess.ProcessSolarData">
+<span class="sig-name descname"><span class="pre">ProcessSolarData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#progress.data_download_process.DataProcess.ProcessSolarData" title="Link to this definition">¶</a></dt>
+<dd><p>Downloads, processes, and prepares solar data for modeling.</p>
+<p>This method performs the following sequence of operations:</p>
+<ol class="arabic simple">
+<li><p><strong>Initialize Solar Module</strong>: Creates a <code class="docutils literal notranslate"><span class="pre">Solar</span></code> instance with user-specified
+site data paths and directory locations.</p></li>
+<li><p><strong>Download &amp; Compute Solar Generation</strong>: Invokes <code class="docutils literal notranslate"><span class="pre">solar.SolarGen()</span></code> to fetch
+weather data from the user’s API and compute solar generation profiles
+across the specified date range.</p></li>
+<li><p><strong>Gather Computed Profiles</strong>: Executes <code class="docutils literal notranslate"><span class="pre">solar.SolarGenGather()</span></code> to combine
+yearly generation results into a single dataset, suitable for clustering
+or probability analysis.</p></li>
+<li><p><strong>Perform K-Means Clustering</strong>: Creates and runs a <code class="docutils literal notranslate"><span class="pre">KMeans_Pipeline</span></code> instance.
+It clusters the processed solar generation data into a specified number of
+clusters, calculates probabilities, and saves the results to file.</p></li>
+<li><p><strong>Obtain Solar Profiles &amp; Probabilities</strong>: Uses <code class="docutils literal notranslate"><span class="pre">solar.GetSolarProfiles()</span></code>
+to retrieve final site-level data, maximum possible generation, and the
+probability distribution for solar capacity factors.</p></li>
+</ol>
+<p>In the end, this prepares solar data for further simulation or scenario analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If required CSV files for solar sites or probabilities
+are not present.</p></li>
+<li><p><strong>ValueError</strong> – If solar data files contain invalid values or structures.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.data_download_process.DataProcess.ProcessWindData">
+<span class="sig-name descname"><span class="pre">ProcessWindData</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#progress.data_download_process.DataProcess.ProcessWindData" title="Link to this definition">¶</a></dt>
+<dd><p>Downloads, processes, and prepares wind data for modeling.</p>
+<p>This method performs the following steps:</p>
+<ol class="arabic simple">
+<li><p><strong>Set Up Paths</strong>: Derives file paths for wind sites, power curves,
+windspeed data, and transition rate Excel sheets from the loaded configuration.</p></li>
+<li><p><strong>Download Wind Data</strong>: Invokes <code class="docutils literal notranslate"><span class="pre">wind.DownloadWindData()</span></code> to fetch
+raw wind speed data using the user’s API credentials and configuration parameters.</p></li>
+<li><p><strong>Prepare Wind Farms Data</strong>: Calls <code class="docutils literal notranslate"><span class="pre">wind.WindFarmsData()</span></code> to aggregate
+site information, farm names, zone numbers, wind classes, and power curves.</p></li>
+<li><p><strong>Calculate Transition Rates</strong>: Uses <code class="docutils literal notranslate"><span class="pre">wind.CalWindTrRates()</span></code> to compute
+wind transition rates (wind speed state transitions) from the downloaded datasets.</p></li>
+<li><p><strong>Read Transition Matrices</strong>: Loads transition matrices from an Excel file
+and organizes them into a NumPy array.</p></li>
+</ol>
+<p>This step ultimately collects and prepares wind-related data so that it can
+be integrated into larger studies (e.g., generating time-series or capacity
+factor profiles for wind generation).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If expected CSV/Excel files for wind data are missing.</p></li>
+<li><p><strong>ValueError</strong> – If wind data files contain invalid values or structures.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="progress-example-simulation-module">
+<h2>progress.example_simulation module<a class="headerlink" href="#progress-example-simulation-module" title="Link to this heading">¶</a></h2>
+</section>
+<section id="module-progress.example_simulation_mult_proc">
+<span id="progress-example-simulation-mult-proc-module"></span><h2>progress.example_simulation_mult_proc module<a class="headerlink" href="#module-progress.example_simulation_mult_proc" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.example_simulation_mult_proc.ProgressMultiProcess">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.example_simulation_mult_proc.</span></span><span class="sig-name descname"><span class="pre">ProgressMultiProcess</span></span><a class="headerlink" href="#progress.example_simulation_mult_proc.ProgressMultiProcess" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles multi-process execution (via <code class="docutils literal notranslate"><span class="pre">mpi4py</span></code>) of a Mixed Time Sequential
+Monte Carlo Simulation (MCS) for reliability analysis.</p>
+<p>This class sets up MPI parameters and provides methods to perform
+system reliability simulations. It leverages parallel processing
+to distribute Monte Carlo samples across multiple ranks.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.example_simulation_mult_proc.ProgressMultiProcess.MCS">
+<span class="sig-name descname"><span class="pre">MCS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.example_simulation_mult_proc.ProgressMultiProcess.MCS" title="Link to this definition">¶</a></dt>
+<dd><p>Performs a Mixed Time Sequential Monte Carlo Simulation for system reliability assessment.</p>
+<p><strong>High-level Steps</strong>:</p>
+<p>1. <strong>Read Configuration</strong>:
+Loads user settings (file paths, simulation hours, etc.) from <code class="docutils literal notranslate"><span class="pre">input_file</span></code>.</p>
+<p>2. <strong>Data Import &amp; Pre-Processing</strong>:
+- Reads system data (generators, branches, buses, loads, storage) using</p>
+<blockquote>
+<div><p><a class="reference internal" href="progress_mod_sysdata.html#progress.mod_sysdata.RASystemData" title="progress.mod_sysdata.RASystemData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RASystemData</span></code></a>.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Prepares reliability- and capacity-related variables (e.g., MTTF, MTTR, capacities).</p></li>
+<li><p>Conditionally loads and processes wind data (if <code class="docutils literal notranslate"><span class="pre">wind_directory</span></code> is defined).</p></li>
+<li><p>Conditionally loads and processes solar data (if <code class="docutils literal notranslate"><span class="pre">solar_directory</span></code> is defined).</p></li>
+<li><p>Builds matrices required for optimization using <a class="reference internal" href="progress_mod_matrices.html#progress.mod_matrices.RAMatrices" title="progress.mod_matrices.RAMatrices"><code class="xref py py-class docutils literal notranslate"><span class="pre">RAMatrices</span></code></a>.</p></li>
+</ul>
+<p>3. <strong>Monte Carlo Loop</strong>:
+Repeats the following for each sample:
+- Initializes each component in an up state or random initial state (e.g., wind class).
+- Iterates through the specified simulation hours (<code class="docutils literal notranslate"><span class="pre">sim_hours</span></code>):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Updates next states (up/down) via random draws from reliability transition rates.</p></li>
+<li><p>Adjusts ESS states of charge to account for potential failures.</p></li>
+<li><p>Retrieves wind and solar power outputs (if configured).</p></li>
+<li><p>Performs an optimization-based dispatch (zonal or copper-sheet) to meet load</p></li>
+</ul>
+<p>while minimizing generation costs and curtailment.
+* Tracks Loss of Load (LOL) occurrences for reliability indices.</p>
+</div></blockquote>
+<p>4. <strong>Convergence Checks</strong>:
+Tracks reliability indices such as LOLP and EUE, and evaluates partial
+convergence at each sample (using rank 0 to aggregate data across processes).</p>
+<p>5. <strong>Final Aggregation</strong>:
+- Uses MPI to combine results across ranks.
+- Returns final reliability indices, record arrays, and references for plotting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_file</strong> (<em>str</em>) – Path to the YAML configuration file containing simulation parameters.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing:</p>
+<ul class="simple">
+<li><p><strong>rank</strong> (<em>int</em>): Rank of the current MPI process.</p></li>
+<li><p><strong>SOC_rec</strong> (<em>numpy.ndarray</em>): State of charge records for storage units across simulation.</p></li>
+<li><p><strong>curt_rec</strong> (<em>numpy.ndarray</em>): Load curtailment records over simulation hours.</p></li>
+<li><p><strong>renewable_rec</strong> (<em>dict</em>): Recorded wind &amp; solar power generation for visualization.</p></li>
+<li><p><strong>bus_name</strong> (<em>list[str]</em>): List of bus names from system data.</p></li>
+<li><p><strong>essname</strong> (<em>list[str]</em>): List of storage device names.</p></li>
+<li><p><strong>main_folder</strong> (<em>str</em>): Path to the folder containing the running script.</p></li>
+<li><p><strong>sim_hours</strong> (<em>int</em>): Number of hours simulated.</p></li>
+<li><p><strong>mLOLP_rec</strong> (<em>numpy.ndarray</em>): Running average of LOLP values across samples.</p></li>
+<li><p><strong>COV_rec</strong> (<em>numpy.ndarray</em>): Coefficient of Variation array for checking convergence.</p></li>
+<li><p><strong>samples</strong> (<em>int</em>): Number of Monte Carlo samples.</p></li>
+<li><p><strong>size</strong> (<em>int</em>): Total number of MPI processes.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If input files (configuration, CSV, Excel) cannot be located.</p></li>
+<li><p><strong>ValueError</strong> – If any required key/parameter is missing or invalid in the config.</p></li>
+<li><p><strong>RuntimeError</strong> – If optimization constraints fail or cannot converge.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-progress.main_MPI">
+<span id="progress-main-mpi-module"></span><h2>progress.main_MPI module<a class="headerlink" href="#module-progress.main_MPI" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="progress.main_MPI.MCS">
+<span class="sig-prename descclassname"><span class="pre">progress.main_MPI.</span></span><span class="sig-name descname"><span class="pre">MCS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solar_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wind_directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.main_MPI.MCS" title="Link to this definition">¶</a></dt>
+<dd><p>Performs a Mixed Time Sequential Monte Carlo Simulation (MCS) to evaluate the reliability of a power system.</p>
+<p>This function iterates over a specified number of Monte Carlo samples (<code class="docutils literal notranslate"><span class="pre">samples</span></code>) and simulates
+each sample for <code class="docutils literal notranslate"><span class="pre">sim_hours</span></code> hours. It then records load curtailment, state-of-charge (SOC) for
+storage, and renewable generation (wind and solar) outcomes, combining them into reliability indices.
+Parallel execution is handled via <code class="docutils literal notranslate"><span class="pre">mpi4py</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>samples</strong> (<em>int</em>) – Number of Monte Carlo samples to run.</p></li>
+<li><p><strong>sim_hours</strong> (<em>int</em>) – Number of hours to simulate within each sample.</p></li>
+<li><p><strong>system_directory</strong> (<em>str</em>) – Path to the directory containing system data (e.g., generator, branch, bus, load, storage).</p></li>
+<li><p><strong>solar_directory</strong> (<em>str</em><em> or </em><em>bool</em>) – Path to the directory containing solar data files, or <code class="docutils literal notranslate"><span class="pre">False</span></code> if solar data is not used.</p></li>
+<li><p><strong>wind_directory</strong> (<em>str or</em>) – Path to the directory containing wind data files, or <code class="docutils literal notranslate"><span class="pre">False</span></code> if wind data is not used.</p></li>
+</ul>
+</dd>
+</dl>
+<p>some change</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A tuple containing:</p>
+<ul class="simple">
+<li><p><strong>index_all</strong> (<em>dict</em>):
+Dictionary of reliability indices aggregated from all MPI processes.
+Typically includes final LOLP, EUE, LOLE, and other reliability metrics.</p></li>
+<li><p><strong>rank</strong> (<em>int</em>):
+The MPI rank (process ID). For single-process runs, this is 0.</p></li>
+<li><p><strong>SOC_rec</strong> (<em>np.ndarray</em>):
+2D array with shape <code class="docutils literal notranslate"><span class="pre">(number_of_storage_units,</span> <span class="pre">sim_hours)</span></code>
+tracking the state-of-charge for each storage device over time.</p></li>
+<li><p><strong>curt_rec</strong> (<em>np.ndarray</em>):
+1D array (length = <code class="docutils literal notranslate"><span class="pre">sim_hours</span></code>) of load curtailment values
+(in MW or a per-unit equivalent).</p></li>
+<li><p><strong>renewable_rec</strong> (<em>dict</em>):
+Dictionary containing wind and solar generation records for visualization.
+Keys include:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;wind_rec&quot;</span></code> – 2D array of wind generation by zone vs. hour</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;solar_rec&quot;</span></code> – 2D array of solar generation by zone vs. hour</p></li>
+</ul>
+</li>
+<li><p><strong>bus_name</strong> (<em>list[str]</em>):
+List of bus names from the system model.</p></li>
+<li><p><strong>essname</strong> (<em>list[str]</em>):
+List of energy storage system (ESS) names.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If one of the required data files (e.g., system or renewable data) is missing.</p></li>
+<li><p><strong>ValueError</strong> – If the input parameters or data structures contain invalid entries.</p></li>
+<li><p><strong>RuntimeError</strong> – If the underlying optimization solver fails or cannot converge to a solution.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-progress.mod_kmeans">
+<span id="progress-mod-kmeans-module"></span><h2>progress.mod_kmeans module<a class="headerlink" href="#module-progress.mod_kmeans" title="Link to this heading">¶</a></h2>
+<section id="kmeans-pipeline-package">
+<h3>KMeans_Pipeline Package<a class="headerlink" href="#kmeans-pipeline-package" title="Link to this heading">¶</a></h3>
+<p>This package provides the <cite>KMeans_Pipeline</cite> class to perform KMeans clustering on solar generation data.
+The package includes functionality for preprocessing, data transformation, clustering, and evaluation.</p>
+<dl class="simple">
+<dt>Class:</dt><dd><p>KMeans_Pipeline: A pipeline class for running KMeans clustering on solar generation data.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.directory">
+<span class="sig-prename descclassname"><span class="pre">progress.mod_kmeans.</span></span><span class="sig-name descname"><span class="pre">directory</span></span><a class="headerlink" href="#progress.mod_kmeans.directory" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the directory containing the solar data files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.site_data">
+<span class="sig-prename descclassname"><span class="pre">progress.mod_kmeans.</span></span><span class="sig-name descname"><span class="pre">site_data</span></span><a class="headerlink" href="#progress.mod_kmeans.site_data" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the CSV file containing site information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<section id="example-usage">
+<h4>Example Usage:<a class="headerlink" href="#example-usage" title="Link to this heading">¶</a></h4>
+<p>This example demonstrates how to use the <cite>KMeans_Pipeline</cite> class to perform KMeans clustering on solar generation data.
+It performs the following steps:
+1. Initializes the pipeline with the <cite>solar_data.xlsx</cite> file and a list of selected sites.
+2. Calculates the cluster probabilities using the <cite>calculate_cluster_probability</cite> method.
+3. Splits and clusters the data based on the generated labels using the <cite>split_and_cluster_data</cite> method.
+4. Outputs metrics of the clustering to a text file using the <cite>test_metrics</cite> method.</p>
+<p>Note: Ensure the data file <cite>solar_data.xlsx</cite> exists in the same directory as the script, or provide an absolute path to it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># Define the list of selected sites for analysis</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;/Users/abera/Documents/My_Projects/QuESt_Reliability/QuESt_Reliability_App/Data/Solar&#39;</span>
+    <span class="n">site_data</span> <span class="o">=</span> <span class="n">directory</span> <span class="o">+</span> <span class="s1">&#39;/solar_sites.csv&#39;</span>
+
+    <span class="c1"># Initialize the KMeans_Pipeline class</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">KMeans_Pipeline</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">site_data</span><span class="p">)</span>
+
+    <span class="c1"># Generate and save the clustering metrics to a text file</span>
+    <span class="n">pipeline</span><span class="o">.</span><span class="n">test_metrics</span><span class="p">(</span><span class="n">clust_eval</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># Uncomment the following lines to run additional steps</span>
+    <span class="c1"># pipeline.run(n_clusters = 5)</span>
+    <span class="c1"># pipeline.calculate_cluster_probability()</span>
+    <span class="c1"># pipeline.split_and_cluster_data()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.mod_kmeans.</span></span><span class="sig-name descname"><span class="pre">KMeans_Pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A pipeline class for running KMeans clustering on solar generation data.
+It performs preprocessing, data transformation, and finally clusters the data.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.excel_file_path">
+<span class="sig-name descname"><span class="pre">excel_file_path</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.excel_file_path" title="Link to this definition">¶</a></dt>
+<dd><p>Path to the Excel file containing the Solar Generation, Site Information, and CSI data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.solar_gen_df">
+<span class="sig-name descname"><span class="pre">solar_gen_df</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.solar_gen_df" title="Link to this definition">¶</a></dt>
+<dd><p>DataFrame containing Solar Generation data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.site_info_df">
+<span class="sig-name descname"><span class="pre">site_info_df</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.site_info_df" title="Link to this definition">¶</a></dt>
+<dd><p>DataFrame containing Site Information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.csi_df">
+<span class="sig-name descname"><span class="pre">csi_df</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.csi_df" title="Link to this definition">¶</a></dt>
+<dd><p>DataFrame containing Clear Sky Index (CSI) data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.selected_sites">
+<span class="sig-name descname"><span class="pre">selected_sites</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.selected_sites" title="Link to this definition">¶</a></dt>
+<dd><p>List of site names to be included in the analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.first_light">
+<span class="sig-name descname"><span class="pre">first_light</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.first_light" title="Link to this definition">¶</a></dt>
+<dd><p>DataFrame containing first light timings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.last_light">
+<span class="sig-name descname"><span class="pre">last_light</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.last_light" title="Link to this definition">¶</a></dt>
+<dd><p>DataFrame containing last light timings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.sg_mean_am">
+<span class="sig-name descname"><span class="pre">sg_mean_am</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.sg_mean_am" title="Link to this definition">¶</a></dt>
+<dd><p>AM Solar generation mean values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.sg_mean_pm">
+<span class="sig-name descname"><span class="pre">sg_mean_pm</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.sg_mean_pm" title="Link to this definition">¶</a></dt>
+<dd><p>PM Solar generation mean values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.csi_sd_am">
+<span class="sig-name descname"><span class="pre">csi_sd_am</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.csi_sd_am" title="Link to this definition">¶</a></dt>
+<dd><p>AM Cloud Sky Irradiance standard deviation values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.csi_sd_pm">
+<span class="sig-name descname"><span class="pre">csi_sd_pm</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.csi_sd_pm" title="Link to this definition">¶</a></dt>
+<dd><p>PM Cloud Sky Irradiance standard deviation values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.kmeans_df">
+<span class="sig-name descname"><span class="pre">kmeans_df</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.kmeans_df" title="Link to this definition">¶</a></dt>
+<dd><p>DataFrame prepared for KMeans clustering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pd.DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.predicted_labels">
+<span class="sig-name descname"><span class="pre">predicted_labels</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.predicted_labels" title="Link to this definition">¶</a></dt>
+<dd><p>Cluster labels for each data point.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.silhouette">
+<span class="sig-name descname"><span class="pre">silhouette</span></span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.silhouette" title="Link to this definition">¶</a></dt>
+<dd><p>Silhouette score of the clustering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.calculate_cluster_probability">
+<span class="sig-name descname"><span class="pre">calculate_cluster_probability</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.calculate_cluster_probability" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the monthly probabilities for each cluster label.</p>
+<p>This method generates a pivot DataFrame that shows the monthly probabilities for each cluster.
+It operates on the class attributes <cite>predicted_labels</cite> and <cite>kmeans_df</cite>.</p>
+<p>The function goes through the following steps:
+1. Resets the index of <cite>kmeans_df</cite>.
+2. Extracts the month from the date column in <cite>kmeans_df</cite>.
+3. Groups the data by cluster and month, calculating the count of data points in each group.
+4. Calculates the total count for each month.
+5. Merges both counts to calculate probabilities.
+6. Saves the calculated probabilities in a pivot DataFrame.</p>
+<p>The resulting DataFrame is saved to a CSV file named ‘percentage_probability.csv’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The function saves the output to a CSV file and modifies class attributes.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.create_kmeans_df">
+<span class="sig-name descname"><span class="pre">create_kmeans_df</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sg_mean_am</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sg_mean_pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csi_sd_am</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">csi_sd_pm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_light</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_light</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.create_kmeans_df" title="Link to this definition">¶</a></dt>
+<dd><p>Combines various DataFrames to form a DataFrame ready for K-means clustering.</p>
+<p>This function performs several operations:
+- Sets the index to ‘date’ for all input DataFrames.
+- Adds appropriate suffixes to each DataFrame to maintain data context.
+- Concatenates all DataFrames along the columns.
+- Sorts the resulting DataFrame by the column names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sg_mean_am</strong> (<em>DataFrame</em>) – DataFrame containing mean AM solar generation data.</p></li>
+<li><p><strong>sg_mean_pm</strong> (<em>DataFrame</em>) – DataFrame containing mean PM solar generation data.</p></li>
+<li><p><strong>csi_sd_am</strong> (<em>DataFrame</em>) – DataFrame containing standard deviation of AM cloud-to-sun irradiance data.</p></li>
+<li><p><strong>csi_sd_pm</strong> (<em>DataFrame</em>) – DataFrame containing standard deviation of PM cloud-to-sun irradiance data.</p></li>
+<li><p><strong>first_light</strong> (<em>DataFrame</em>) – DataFrame containing the first light hours for each day.</p></li>
+<li><p><strong>last_light</strong> (<em>DataFrame</em>) – DataFrame containing the last light hours for each day.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A DataFrame that combines all input DataFrames, ready for K-means clustering.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.find_elbow">
+<span class="sig-name descname"><span class="pre">find_elbow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kmeans_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">clust_eval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.find_elbow" title="Link to this definition">¶</a></dt>
+<dd><p>Finds the optimal number of clusters for KMeans clustering using the elbow method.</p>
+<p>This method goes through the following steps:
+1. Resets the DataFrame index.
+2. Converts ‘date’ to ‘month’ and creates cyclical features for it.
+3. Scales features and applies PCA via a preprocessing pipeline.
+4. Loops through a predefined number of clusters (1 to 11).
+5. Performs KMeans clustering with the specified number of clusters.
+6. Calculates the sum of squared errors (SSE) for each KMeans run.
+7. Uses the KneeLocator to identify the “elbow point” in the SSE curve, which indicates the optimal number of clusters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kmeans_df</strong> (<em>DataFrame</em>) – The DataFrame to cluster.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Contains the following elements:</dt><dd><ul class="simple">
+<li><p>The optimal number of clusters, as determined by the elbow method.</p></li>
+<li><p>The sum of squared errors (SSE) for each number of clusters from 1 to 11.</p></li>
+<li><p>Silhouette scores for each number of clusters from 2 to 11.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.process_csi_data">
+<span class="sig-name descname"><span class="pre">process_csi_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">csi_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_sites</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.process_csi_data" title="Link to this definition">¶</a></dt>
+<dd><p>Processes cloud-to-sun irradiance data to get standard deviation for AM and PM periods.</p>
+<p>This function performs several operations:
+- Filters the data for selected sites.
+- Scales the data using standardization.
+- Calculates the standard deviation for AM and PM slots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>csi_info</strong> (<em>DataFrame</em>) – DataFrame containing the cloud-to-sun irradiance data.
+The DataFrame should have a ‘datetime’ column and columns for each site’s irradiance.</p></li>
+<li><p><strong>selected_sites</strong> (<em>list</em>) – List of site names to include in the processing.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two DataFrames representing the standard deviation for AM and PM values, respectively.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.process_flh_and_llh">
+<span class="sig-name descname"><span class="pre">process_flh_and_llh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solar_gen_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_sites</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.process_flh_and_llh" title="Link to this definition">¶</a></dt>
+<dd><p>Processes first and last light hours from solar generation data.</p>
+<p>This function performs the following:
+- Identifies the first and last light hours for each day based on solar generation data.
+- Encodes these hours as cyclic features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>solar_gen_df</strong> (<em>DataFrame</em>) – DataFrame containing the solar generation data.
+The DataFrame should have a ‘datetime’ column and columns for each site’s solar generation.</p></li>
+<li><p><strong>selected_sites</strong> (<em>list</em>) – List of site columns to include from solar_gen_df.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Two DataFrames representing first and last light hours, respectively,</dt><dd><p>with cyclic features encoded.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Internal Functions:</dt><dd><ul class="simple">
+<li><p>get_first_non_zero(series): Returns the first non-zero hour in a time series.</p></li>
+<li><p>get_last_non_zero(series): Returns the last non-zero hour in a time series.</p></li>
+<li><p>encode_cyclic_features(df): Encodes specified features as cyclic.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.process_solar_data">
+<span class="sig-name descname"><span class="pre">process_solar_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solar_gen_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_info_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selected_sites</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.process_solar_data" title="Link to this definition">¶</a></dt>
+<dd><p>Processes solar generation data to obtain mean AM and PM values.</p>
+<p>This function performs several operations:
+- Filters the data for selected sites.
+- Normalizes solar generation data by the wattage limit for each site.
+- Calculates the mean solar generation for AM and PM slots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>solar_gen_df</strong> (<em>DataFrame</em>) – DataFrame containing the solar generation data.
+The DataFrame should have a ‘datetime’ column and columns for each site’s solar generation.</p></li>
+<li><p><strong>site_info_df</strong> (<em>DataFrame</em>) – DataFrame containing information about the sites,
+including ‘site_name’ and ‘MW’ (megawatt capacity).</p></li>
+<li><p><strong>selected_sites</strong> (<em>list</em>) – List of site names to include in the processing.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two DataFrames representing mean AM and mean PM values, respectively.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.run" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.run_kmeans_pipeline">
+<span class="sig-name descname"><span class="pre">run_kmeans_pipeline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kmeans_df</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.run_kmeans_pipeline" title="Link to this definition">¶</a></dt>
+<dd><p>Executes the K-means clustering pipeline on the input DataFrame.</p>
+<p>The function performs the following steps:
+1. Resets the DataFrame index.
+2. Converts ‘date’ to ‘month’ and creates cyclical features for it.
+3. Scales features and applies PCA via a preprocessing pipeline.
+4. Executes K-means clustering.
+5. Combines preprocessing and clustering into one pipeline.
+6. Fits the pipeline to the data.
+7. Computes the silhouette score to evaluate clustering quality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kmeans_df</strong> (<em>DataFrame</em>) – The DataFrame to cluster.</p></li>
+<li><p><strong>**kwargs</strong> – Additional keyword arguments to configure K-means clustering,
+such as ‘n_clusters’ to specify the number of clusters (default is 11).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>Contains the following elements:</dt><dd><ul class="simple">
+<li><p>Clustered DataFrame with a new ‘cluster’ column.</p></li>
+<li><p>Predicted cluster labels.</p></li>
+<li><p>The fitted pipeline object.</p></li>
+<li><p>Silhouette score for the clustering.</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.split_and_cluster_data">
+<span class="sig-name descname"><span class="pre">split_and_cluster_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.split_and_cluster_data" title="Link to this definition">¶</a></dt>
+<dd><p>Splits the solar generation data into clusters and saves each cluster’s data into separate CSV files.</p>
+<p>This method first normalizes the solar generation data by site wattage and then transposes the data
+into 24-hour segments. Each segment is labeled with a cluster identifier based on previously determined
+labels. The data for each cluster is then saved into a dedicated directory and CSV file.</p>
+<p>The method organizes the output by creating a directory for each cluster under a main ‘Clusters’ directory,
+where each directory contains CSV files for each data column, segmented by day.</p>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Creates a directory structure under ‘Clusters’ in the specified directory.</p></li>
+<li><p>Writes multiple CSV files containing the clustered data.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This method performs file I/O operations and does not return any values.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Example Directory Structure:</dt><dd><dl class="simple">
+<dt>Clusters/</dt><dd><dl class="simple">
+<dt>cluster_1/</dt><dd><p>site1.csv
+site2.csv</p>
+</dd>
+<dt>cluster_2/</dt><dd><p>site1.csv
+site2.csv</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.test_metrics">
+<span class="sig-name descname"><span class="pre">test_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clust_eval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.test_metrics" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates and writes K-means clustering metrics to a text file.</p>
+<p>This method evaluates the clustering performance using the elbow method and silhouette scores,
+and writes the detailed results to a file named ‘clustering_results.txt’.</p>
+<p>The method outputs a detailed explanation of the elbow method and silhouette scores, and
+it identifies the optimal number of clusters based on the provided dataset. It also captures
+the sum of squared errors (SSE) for different numbers of clusters, along with their respective
+silhouette scores.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>clust_eval</strong> (<em>int</em>) – The maximum number of clusters to evaluate, which determines the range
+of clusters to consider for finding the elbow point.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Side Effects:</dt><dd><ul class="simple">
+<li><p>Writes to a file ‘clustering_results.txt’ in the specified directory.</p></li>
+<li><p>Temporarily redirects stdout to this file to capture print statements.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>This method does not return a value but writes output to a file.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Example of File Output:</dt><dd><p>The optimal number of clusters in a dataset is the number that…
+Optimal Number of Clusters: X
+SSE for Y Clusters: Z
+Silhouette Score for Y Clusters: W</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_kmeans.KMeans_Pipeline.update_progress">
+<span class="sig-name descname"><span class="pre">update_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_kmeans.KMeans_Pipeline.update_progress" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-progress.mod_matrices">
+<span id="progress-mod-matrices-module"></span><h2>progress.mod_matrices module<a class="headerlink" href="#module-progress.mod_matrices" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.mod_matrices.RAMatrices">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.mod_matrices.</span></span><span class="sig-name descname"><span class="pre">RAMatrices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_matrices.RAMatrices" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates generation, incidence, and curtailment matrices for the RA model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nb</strong> (<em>int</em>) – Number of buses in the system.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_matrices.RAMatrices.Ainc">
+<span class="sig-name descname"><span class="pre">Ainc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tb</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_matrices.RAMatrices.Ainc" title="Link to this definition">¶</a></dt>
+<dd><p>Creates an incidence matrix for modeling flow constraints.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nl</strong> (<em>int</em>) – Number of lines.</p></li>
+<li><p><strong>fb</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – List of “from bus” indices for each line.</p></li>
+<li><p><strong>tb</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – List of “to bus” indices for each line.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 2D NumPy array with shape <code class="docutils literal notranslate"><span class="pre">(nl,</span> <span class="pre">nb)</span></code> where each row
+represents one line. Entries of <code class="docutils literal notranslate"><span class="pre">+1</span></code> and <code class="docutils literal notranslate"><span class="pre">-1</span></code> indicate
+the sending and receiving buses, respectively.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_matrices.RAMatrices.chmat">
+<span class="sig-name descname"><span class="pre">chmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">essbus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_matrices.RAMatrices.chmat" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a matrix for ESS charging variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ness</strong> (<em>int</em>) – Number of energy storage systems (ESS).</p></li>
+<li><p><strong>essbus</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – List of ESS bus indices.</p></li>
+<li><p><strong>nb</strong> (<em>int</em>) – Number of buses.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 2D NumPy array with shape <code class="docutils literal notranslate"><span class="pre">(nb,</span> <span class="pre">ness)</span></code> where each column
+corresponds to an ESS unit and the row index indicates the bus
+at which that ESS is located.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_matrices.RAMatrices.curtmat">
+<span class="sig-name descname"><span class="pre">curtmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_matrices.RAMatrices.curtmat" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a curtailment matrix for load curtailment variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>nb</strong> (<em>int</em>) – Number of buses.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 2D identity matrix of shape <code class="docutils literal notranslate"><span class="pre">(nb,</span> <span class="pre">nb)</span></code>. This matrix is often used
+to represent a direct mapping of curtailment variables to each bus.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_matrices.RAMatrices.genmat">
+<span class="sig-name descname"><span class="pre">genmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">genbus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">essbus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_matrices.RAMatrices.genmat" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a generation matrix for the optimization problem.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ng</strong> (<em>int</em>) – Number of generators.</p></li>
+<li><p><strong>genbus</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – List of generator bus indices.</p></li>
+<li><p><strong>ness</strong> (<em>int</em>) – Number of energy storage systems (ESS).</p></li>
+<li><p><strong>essbus</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – List of ESS bus indices.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 2D NumPy array with shape <code class="docutils literal notranslate"><span class="pre">(nb,</span> <span class="pre">ng</span> <span class="pre">+</span> <span class="pre">ness)</span></code> where each column
+corresponds to one generator (or ESS) and the row index indicates
+the bus to which that generator/ESS is connected.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-progress.mod_plot">
+<span id="progress-mod-plot-module"></span><h2>progress.mod_plot module<a class="headerlink" href="#module-progress.mod_plot" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.mod_plot.RAPlotTools">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.mod_plot.</span></span><span class="sig-name descname"><span class="pre">RAPlotTools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_plot.RAPlotTools" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Provides plotting tools for visualizing simulation results, including wind and solar generation,
+state-of-charge (SOC) of ESS, load curtailment, and outage heat maps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>main_folder</strong> (<em>str</em>) – The primary directory where plot outputs will be saved.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_plot.RAPlotTools.OutageMap">
+<span class="sig-name descname"><span class="pre">OutageMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outage_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_plot.RAPlotTools.OutageMap" title="Link to this definition">¶</a></dt>
+<dd><p>Plots a heatmap of outage data, typically representing the percentage of
+load loss across months and hours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>outage_data</strong> (<em>str</em>) – Path to a CSV file containing outage percentages,
+with rows corresponding to months and columns corresponding to hours.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If the specified CSV file does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_plot.RAPlotTools.PlotCOV">
+<span class="sig-name descname"><span class="pre">PlotCOV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">COV_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_plot.RAPlotTools.PlotCOV" title="Link to this definition">¶</a></dt>
+<dd><p>Plots the Coefficient of Variation (COV) of LOLP across samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>COV_rec</strong> (<em>numpy.ndarray</em>) – A 1D NumPy array (length = samples) of COV values computed at each sample.</p></li>
+<li><p><strong>samples</strong> (<em>int</em>) – Number of Monte Carlo samples.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – The total number of MPI processes (or 1 if serial execution).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_plot.RAPlotTools.PlotLOLP">
+<span class="sig-name descname"><span class="pre">PlotLOLP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mLOLP_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_plot.RAPlotTools.PlotLOLP" title="Link to this definition">¶</a></dt>
+<dd><p>Plots the running average of the Loss of Load Probability (LOLP) across samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mLOLP_rec</strong> (<em>numpy.ndarray</em>) – A 1D NumPy array (length = samples) of running mean LOLP values.</p></li>
+<li><p><strong>samples</strong> (<em>int</em>) – Number of Monte Carlo samples.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – The total number of MPI processes (or 1 if serial execution).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_plot.RAPlotTools.PlotLoadCurt">
+<span class="sig-name descname"><span class="pre">PlotLoadCurt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">curt_rec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_plot.RAPlotTools.PlotLoadCurt" title="Link to this definition">¶</a></dt>
+<dd><p>Plots load curtailment over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>curt_rec</strong> (<em>numpy.ndarray</em>) – A 1D NumPy array (length = hours) of load curtailment values (in MW).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_plot.RAPlotTools.PlotSOC">
+<span class="sig-name descname"><span class="pre">PlotSOC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">SOC_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">essname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_plot.RAPlotTools.PlotSOC" title="Link to this definition">¶</a></dt>
+<dd><p>Plots state of charge (SOC) of energy storage systems (ESS) over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>SOC_rec</strong> (<em>numpy.ndarray</em>) – A 2D NumPy array (shape: <code class="docutils literal notranslate"><span class="pre">(number_of_ESS,</span> <span class="pre">hours)</span></code>) representing
+the state of charge of each ESS over time.</p></li>
+<li><p><strong>essname</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of ESS names corresponding to each row in <code class="docutils literal notranslate"><span class="pre">SOC_rec</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_plot.RAPlotTools.PlotSolarGen">
+<span class="sig-name descname"><span class="pre">PlotSolarGen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solar_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bus_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_plot.RAPlotTools.PlotSolarGen" title="Link to this definition">¶</a></dt>
+<dd><p>Plots solar power generation over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>solar_rec</strong> (<em>numpy.ndarray</em>) – A 2D NumPy array (shape: <code class="docutils literal notranslate"><span class="pre">(number_of_zones,</span> <span class="pre">hours)</span></code>)
+of solar power generation values over time.</p></li>
+<li><p><strong>bus_name</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of bus names corresponding to each row (zone) in <code class="docutils literal notranslate"><span class="pre">solar_rec</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_plot.RAPlotTools.PlotWindGen">
+<span class="sig-name descname"><span class="pre">PlotWindGen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wind_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bus_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_plot.RAPlotTools.PlotWindGen" title="Link to this definition">¶</a></dt>
+<dd><p>Plots wind power generation over time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>wind_rec</strong> (<em>numpy.ndarray</em>) – A 2D NumPy array (shape: <code class="docutils literal notranslate"><span class="pre">(number_of_zones,</span> <span class="pre">hours)</span></code>)
+of wind power generation values over time.</p></li>
+<li><p><strong>bus_name</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – A list of bus names corresponding to each row (zone) in <code class="docutils literal notranslate"><span class="pre">wind_rec</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-progress.mod_solar">
+<span id="progress-mod-solar-module"></span><h2>progress.mod_solar module<a class="headerlink" href="#module-progress.mod_solar" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.mod_solar.Solar">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.mod_solar.</span></span><span class="sig-name descname"><span class="pre">Solar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_solar.Solar" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class to handle solar generation data by downloading weather data from the NSRDB,
+calculating solar generation using PVLib, and preparing data for Monte Carlo Simulation (MCS).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>site_data</strong> (<em>str</em>) – Path to the CSV file containing site data (site name, latitude, longitude, etc.).</p></li>
+<li><p><strong>directory</strong> (<em>str</em>) – Directory for saving and reading solar-related data files.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_solar.Solar.GetSolarProfiles">
+<span class="sig-name descname"><span class="pre">GetSolarProfiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solar_prob_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_solar.Solar.GetSolarProfiles" title="Link to this definition">¶</a></dt>
+<dd><p>Extracts and organizes solar data from clustered CSVs for use in Monte Carlo Simulation (MCS).
+Each cluster directory contains daily solar generation profiles for all sites; these are stacked
+into a 4D array of shape (cluster, day, hour, site). Probability data for each cluster is also read
+from the given CSV.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>solar_prob_data</strong> (<em>str</em>) – Path to the CSV file containing solar probability data (cluster probabilities).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 5-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>n_sites</strong> (<em>int</em>): Number of solar sites.</p></li>
+<li><p><strong>s_zone_no</strong> (<em>pd.Series</em>): Zone numbers corresponding to each site.</p></li>
+<li><p><strong>MW</strong> (<em>pd.Series</em>): Rated capacity (in MW) for each site.</p></li>
+<li><p><strong>s_profiles</strong> (<em>list[np.ndarray]</em>): A list of 3D NumPy arrays, one per cluster,
+with shape (days, hours, sites).</p></li>
+<li><p><strong>solar_prob</strong> (<em>np.ndarray</em>): Probability values for each cluster.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>FileNotFoundError</strong> – If cluster directories or CSV files are missing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_solar.Solar.SolarGen">
+<span class="sig-name descname"><span class="pre">SolarGen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">your_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">your_affiliation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">your_email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_solar.Solar.SolarGen" title="Link to this definition">¶</a></dt>
+<dd><p>Downloads weather data from NREL NSRDB and calculates solar generation using PVLib for each site.</p>
+<dl class="simple">
+<dt>This method:</dt><dd><ol class="arabic simple">
+<li><p>Iterates through each site and year in the specified range.</p></li>
+<li><p>Downloads weather data (DNI, GHI, DHI, etc.) from the NSRDB using HTTP requests.</p></li>
+<li><p>Uses PVLib’s ModelChain with a simple PVWatts-based system to convert the weather data
+into AC power output.</p></li>
+<li><p>Writes both the satellite-based and clearsky-based generation profiles to CSV files.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api_key</strong> (<em>str</em>) – Your personal API key for the NREL NSRDB.</p></li>
+<li><p><strong>your_name</strong> (<em>str</em>) – Your full name (required by the NSRDB API).</p></li>
+<li><p><strong>your_affiliation</strong> (<em>str</em>) – Your organizational affiliation (required by the NSRDB API).</p></li>
+<li><p><strong>your_email</strong> (<em>str</em>) – Your email address (required by the NSRDB API).</p></li>
+<li><p><strong>year_start</strong> (<em>int</em>) – Start year for data downloads.</p></li>
+<li><p><strong>year_end</strong> (<em>int</em>) – End year (inclusive) for data downloads.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>requests.exceptions.RequestException</strong> – If there is a network-related error during the download.</p></li>
+<li><p><strong>OSError</strong> – If writing to the local file system fails for any reason.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_solar.Solar.SolarGenGather">
+<span class="sig-name descname"><span class="pre">SolarGenGather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_solar.Solar.SolarGenGather" title="Link to this definition">¶</a></dt>
+<dd><p>Gathers and processes solar generation data from all sites and years, concatenating
+each site’s satellite-based and clearsky-based generation files into single CSVs.
+It then computes a clearsky index (CSI) and stores the final data in an Excel file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>year_start</strong> (<em>int</em>) – Start year (inclusive) for gathering solar generation data.</p></li>
+<li><p><strong>year_end</strong> (<em>int</em>) – End year (inclusive) for gathering solar generation data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If expected CSV files do not exist in the specified directory.</p></li>
+<li><p><strong>OSError</strong> – If any file operation (read/write/remove) fails.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-progress.mod_sysdata">
+<span id="progress-mod-sysdata-module"></span><h2>progress.mod_sysdata module<a class="headerlink" href="#module-progress.mod_sysdata" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.mod_sysdata.RASystemData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.mod_sysdata.</span></span><span class="sig-name descname"><span class="pre">RASystemData</span></span><a class="headerlink" href="#progress.mod_sysdata.RASystemData" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Manages and processes the core system data needed for resource adequacy (RA) assessments.</p>
+<dl class="simple">
+<dt>This class provides methods to read and extract power system information from CSV files:</dt><dd><ul class="simple">
+<li><p><strong>Branch data</strong> (e.g., line capacities, MTTF/MTTR)</p></li>
+<li><p><strong>Bus data</strong> (bus names, bus numbers)</p></li>
+<li><p><strong>Generator data</strong> (pmax, pmin, forced outage rates, maintenance times, costs)</p></li>
+<li><p><strong>Storage data</strong> (ESS ratings, SOC constraints, costs, reliability parameters)</p></li>
+<li><p><strong>Load data</strong> (regional load profiles)</p></li>
+</ul>
+</dd>
+</dl>
+<p>These methods facilitate easy import and organization of data so that reliability
+or adequacy simulations can be conducted downstream (e.g., Monte Carlo simulations).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_sysdata.RASystemData.branch">
+<span class="sig-name descname"><span class="pre">branch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_branch</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_sysdata.RASystemData.branch" title="Link to this definition">¶</a></dt>
+<dd><p>Loads branch (transmission line) data and extracts key attributes for RA analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data_branch</strong> (<em>str</em>) – Path to the CSV file containing branch data, typically including
+columns like “From Bus”, “To Bus”, “Rating”, “MTTF”, “MTTR”, etc.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing:</p>
+<ul class="simple">
+<li><p><strong>nl</strong> (<em>int</em>): Number of transmission lines (rows in the CSV).</p></li>
+<li><p><strong>fb</strong> (<em>np.ndarray</em>): 1D array of “From Bus” indices for each line.</p></li>
+<li><p><strong>tb</strong> (<em>np.ndarray</em>): 1D array of “To Bus” indices for each line.</p></li>
+<li><p><strong>cap_trans</strong> (<em>np.ndarray</em>): 1D array of transmission line ratings (MW).</p></li>
+<li><p><strong>MTTF_trans</strong> (<em>np.ndarray</em>): Mean time to failure for each line (hours).</p></li>
+<li><p><strong>MTTR_trans</strong> (<em>np.ndarray</em>): Mean time to repair for each line (hours).</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If <code class="docutils literal notranslate"><span class="pre">data_branch</span></code> does not point to a valid file.</p></li>
+<li><p><strong>pd.errors.EmptyDataError</strong> – If the CSV file is empty or badly formatted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_sysdata.RASystemData.bus">
+<span class="sig-name descname"><span class="pre">bus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_bus</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_sysdata.RASystemData.bus" title="Link to this definition">¶</a></dt>
+<dd><p>Loads bus data and extracts bus names and numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data_bus</strong> (<em>str</em>) – Path to the CSV file containing bus data, often with columns
+“Bus Name” and “Bus No.”.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing:</p>
+<ul class="simple">
+<li><p><strong>bus_name</strong> (<em>pd.Series</em>): Series of bus names.</p></li>
+<li><p><strong>bus_no</strong> (<em>np.ndarray</em>): 1D array of bus indices.</p></li>
+<li><p><strong>nz</strong> (<em>int</em>): Number of buses (length of <code class="docutils literal notranslate"><span class="pre">bus_no</span></code>).</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If <code class="docutils literal notranslate"><span class="pre">data_bus</span></code> is not found.</p></li>
+<li><p><strong>pd.errors.EmptyDataError</strong> – If the CSV is empty or invalid.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_sysdata.RASystemData.gen">
+<span class="sig-name descname"><span class="pre">gen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_gen</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_sysdata.RASystemData.gen" title="Link to this definition">¶</a></dt>
+<dd><p>Loads conventional generator data, including capacities and reliability parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data_gen</strong> (<em>str</em>) – Path to the CSV file containing generator info (e.g., “Bus No.”,
+“Max Cap”, “Min Cap”, “FOR”, “MTTF”, “MTTR”, “Cost”).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing:</p>
+<ul class="simple">
+<li><p><strong>genbus</strong> (<em>np.ndarray</em>): Bus indices (1D) for each generator.</p></li>
+<li><p><strong>ng</strong> (<em>int</em>): Number of generators in the system.</p></li>
+<li><p><strong>pmax</strong> (<em>np.ndarray</em>): Max capacity (MW) of each generator.</p></li>
+<li><p><strong>pmin</strong> (<em>np.ndarray</em>): Min capacity (MW) of each generator.</p></li>
+<li><p><strong>FOR_gen</strong> (<em>np.ndarray</em>): Forced outage rate of each generator.</p></li>
+<li><p><strong>MTTF_gen</strong> (<em>np.ndarray</em>): Mean time to failure (hours).</p></li>
+<li><p><strong>MTTR_gen</strong> (<em>np.ndarray</em>): Mean time to repair (hours).</p></li>
+<li><p><strong>gencost</strong> (<em>np.ndarray</em>): Generation cost for each generator.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If <code class="docutils literal notranslate"><span class="pre">data_gen</span></code> file is not found.</p></li>
+<li><p><strong>pd.errors.EmptyDataError</strong> – If the CSV is empty or malformed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_sysdata.RASystemData.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bus_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_load</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_sysdata.RASystemData.load" title="Link to this definition">¶</a></dt>
+<dd><p>Loads and returns time-series load data (demand) for specified bus(es).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bus_name</strong> (<em>str</em><em> or </em><em>list</em><em>[</em><em>str</em><em>]</em>) – Column label(s) in the load CSV corresponding to each region’s load.
+Can be a string for a single bus or a list of strings for multiple buses.</p></li>
+<li><p><strong>data_load</strong> (<em>str</em>) – Path to the CSV file containing hourly or sub-hourly load data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A NumPy array containing load values. Its shape depends on whether <code class="docutils literal notranslate"><span class="pre">bus_name</span></code>
+references one or multiple columns.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If <code class="docutils literal notranslate"><span class="pre">data_load</span></code> is not found.</p></li>
+<li><p><strong>pd.errors.EmptyDataError</strong> – If the CSV is empty or invalid.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_sysdata.RASystemData.storage">
+<span class="sig-name descname"><span class="pre">storage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_storage</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_sysdata.RASystemData.storage" title="Link to this definition">¶</a></dt>
+<dd><p>Loads and returns data on energy storage systems (ESS), including power ratings and SOC limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>data_storage</strong> (<em>str</em>) – Path to the CSV file containing ESS data (e.g., “Pmax”, “Pmin”,
+“Duration”, “max_SOC”, “min_SOC”, “MTTF”, “MTTR”, etc.).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A tuple containing:</p>
+<ul class="simple">
+<li><p><strong>essname</strong> (<em>pd.Series</em>): Names/IDs for each ESS unit.</p></li>
+<li><p><strong>essbus</strong> (<em>np.ndarray</em>): Bus indices corresponding to each ESS.</p></li>
+<li><p><strong>ness</strong> (<em>int</em>): Number of ESS units.</p></li>
+<li><p><strong>ess_pmax</strong> (<em>np.ndarray</em>): Maximum power output (MW) for each ESS.</p></li>
+<li><p><strong>ess_pmin</strong> (<em>np.ndarray</em>): Minimum power output (MW) for each ESS.</p></li>
+<li><p><strong>ess_duration</strong> (<em>np.ndarray</em>): Duration (hours) of each ESS at rated power.</p></li>
+<li><p><strong>ess_socmax</strong> (<em>np.ndarray</em>): Max SOC fraction for each ESS (0-1).</p></li>
+<li><p><strong>ess_socmin</strong> (<em>np.ndarray</em>): Min SOC fraction for each ESS (0-1).</p></li>
+<li><p><strong>ess_eff</strong> (<em>np.ndarray</em>): Round-trip efficiency of each ESS.</p></li>
+<li><p><strong>disch_cost</strong> (<em>np.ndarray</em>): Discharge cost for each ESS.</p></li>
+<li><p><strong>ch_cost</strong> (<em>np.ndarray</em>): Charge cost for each ESS.</p></li>
+<li><p><strong>MTTF_ess</strong> (<em>np.ndarray</em>): Mean time to failure (hours) for each ESS.</p></li>
+<li><p><strong>MTTR_ess</strong> (<em>np.ndarray</em>): Mean time to repair (hours) for each ESS.</p></li>
+<li><p><strong>ess_units</strong> (<em>np.ndarray</em>): Multiplicities or number of identical ESS units.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If <code class="docutils literal notranslate"><span class="pre">data_storage</span></code> file does not exist.</p></li>
+<li><p><strong>pd.errors.EmptyDataError</strong> – If the CSV is empty or malformed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-progress.mod_utilities">
+<span id="progress-mod-utilities-module"></span><h2>progress.mod_utilities module<a class="headerlink" href="#module-progress.mod_utilities" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.mod_utilities.</span></span><span class="sig-name descname"><span class="pre">RAUtilities</span></span><a class="headerlink" href="#progress.mod_utilities.RAUtilities" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Contains utility methods required for performing mixed time sequential
+Monte Carlo (MCS) simulations and evaluating reliability indices
+in power systems.</p>
+<dl class="simple">
+<dt>This class offers functions to:</dt><dd><ul class="simple">
+<li><p>Compute reliability transition rates for various components (generators, transmission lines, ESS).</p></li>
+<li><p>Track and update component states (fail/repair) over simulated time.</p></li>
+<li><p>Aggregate or compute net capacities, state of charge, and wind/solar generation.</p></li>
+<li><p>Perform optimization-based dispatch (economic dispatch) in either a zonal or
+copper-sheet model.</p></li>
+<li><p>Compute final reliability indices (e.g., LOLP, EUE, LOLE) and handle parallel (MPI) processing steps.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.CheckConvergence">
+<span class="sig-name descname"><span class="pre">CheckConvergence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LOLP_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mLOLP_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">COV_rec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.CheckConvergence" title="Link to this definition">¶</a></dt>
+<dd><p>Gathers partial results from all MPI processes and updates the
+running mean and coefficient of variation (COV) for LOLP.
+Used to track convergence during MCS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>int</em>) – Current sample index.</p></li>
+<li><p><strong>LOLP_rec</strong> (<em>np.ndarray</em>) – Array of LOLP values recorded by the local process for each sample so far.</p></li>
+<li><p><strong>comm</strong> (<em>mpi4py.MPI.Comm</em>) – MPI communicator object.</p></li>
+<li><p><strong>rank</strong> (<em>int</em>) – MPI rank of this process.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – Total number of MPI processes.</p></li>
+<li><p><strong>mLOLP_rec</strong> (<em>np.ndarray</em>) – Array for storing the running mean of LOLP across samples.</p></li>
+<li><p><strong>COV_rec</strong> (<em>np.ndarray</em>) – Array for storing the coefficient of variation (COV) at each sample.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 2-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>mLOLP_rec</strong> (<em>np.ndarray</em>): Updated array of mean LOLP values across processes.</p></li>
+<li><p><strong>COV_rec</strong> (<em>np.ndarray</em>): Updated array of COV values, checking for convergence.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.GetReliabilityIndices">
+<span class="sig-name descname"><span class="pre">GetReliabilityIndices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.GetReliabilityIndices" title="Link to this definition">¶</a></dt>
+<dd><p>Computes final reliability indices (LOLP, EUE, EPNS, LOLE, etc.)
+by averaging over the recorded arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices_rec</strong> (<em>dict</em>) – Dictionary with arrays of reliability indices
+(one entry per sample).</p></li>
+<li><p><strong>sim_hours</strong> (<em>int</em>) – Total number of hours (e.g., 8760) in the simulation horizon.</p></li>
+<li><p><strong>samples</strong> (<em>int</em>) – Number of Monte Carlo samples performed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A dictionary containing final reliability metrics such as LOLP, LOLH, EUE, EPNS, LOLE, etc.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.NextState">
+<span class="sig-name descname"><span class="pre">NextState</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_tot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mu_tot</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cap_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cap_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_units</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.NextState" title="Link to this definition">¶</a></dt>
+<dd><p>Determines which component (gen/trans/ESS) transitions (fails or repairs) next
+using exponential random draws, then updates system states and capacities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>t_min</strong> (<em>float</em>) – Time (hours) remaining until the next state transition event occurs.</p></li>
+<li><p><strong>ng</strong> (<em>int</em>) – Number of conventional generators.</p></li>
+<li><p><strong>ness</strong> (<em>int</em>) – Number of energy storage systems.</p></li>
+<li><p><strong>nl</strong> (<em>int</em>) – Number of transmission lines.</p></li>
+<li><p><strong>lambda_tot</strong> (<em>np.ndarray</em>) – Failure rates for all components (ordered: gen, lines, ESS).</p></li>
+<li><p><strong>mu_tot</strong> (<em>np.ndarray</em>) – Repair rates for all components (ordered: gen, lines, ESS).</p></li>
+<li><p><strong>current_state</strong> (<em>np.ndarray</em>) – Current binary states of each component (1 = up, 0 = down).
+For ESS, each integer denotes how many are up among identical units.</p></li>
+<li><p><strong>cap_max</strong> (<em>np.ndarray</em>) – Maximum capacities for each component type.</p></li>
+<li><p><strong>cap_min</strong> (<em>np.ndarray</em>) – Minimum capacities for each component type.</p></li>
+<li><p><strong>ess_units</strong> (<em>np.ndarray</em>) – Number of identical units for each ESS installation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 3-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>current_state</strong> (<em>np.ndarray</em>): Updated states after one component fails/repairs.</p></li>
+<li><p><strong>current_cap</strong> (<em>dict</em>): Current maximum and minimum capacity arrays (accounting for the updated state).</p></li>
+<li><p><strong>t_min</strong> (<em>float</em>): Updated time to the next state transition.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.OptDispatch">
+<span class="sig-name descname"><span class="pre">OptDispatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_ess</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_soc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BMva</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_Pg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_flow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_inc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curt_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gencost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">net_load</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SOC_old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_pmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_eff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disch_cost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_cost</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.OptDispatch" title="Link to this definition">¶</a></dt>
+<dd><p>Formulates and solves an economic dispatch (transportation model) optimization
+for a single hour, including line flow constraints, generation dispatch,
+storage charging/discharging, and load curtailment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ng</strong> (<em>int</em>) – Number of conventional generators.</p></li>
+<li><p><strong>nz</strong> (<em>int</em>) – Number of zones.</p></li>
+<li><p><strong>nl</strong> (<em>int</em>) – Number of lines.</p></li>
+<li><p><strong>ness</strong> (<em>int</em>) – Number of energy storage systems.</p></li>
+<li><p><strong>fb_ess</strong> (<em>function</em>) – Function specifying variable bounds for ESS charging power.</p></li>
+<li><p><strong>fb_soc</strong> (<em>function</em>) – Function specifying variable bounds for ESS state of charge.</p></li>
+<li><p><strong>BMva</strong> (<em>float</em>) – System base power (MVA).</p></li>
+<li><p><strong>fb_Pg</strong> (<em>function</em>) – Function specifying variable bounds for generator and ESS discharge power.</p></li>
+<li><p><strong>fb_flow</strong> (<em>function</em>) – Function specifying variable bounds for line flow.</p></li>
+<li><p><strong>A_inc</strong> (<em>np.ndarray</em>) – Incidence matrix for lines.</p></li>
+<li><p><strong>gen_mat</strong> (<em>np.ndarray</em>) – Generation matrix indicating which bus/zone each generator belongs to.</p></li>
+<li><p><strong>curt_mat</strong> (<em>np.ndarray</em>) – Matrix used for load curtailment variables (identity mapping to each zone).</p></li>
+<li><p><strong>ch_mat</strong> (<em>np.ndarray</em>) – Matrix used for storage charging variables (which bus/zone each ESS belongs to).</p></li>
+<li><p><strong>gencost</strong> (<em>np.ndarray</em>) – Per-unit fuel costs for conventional generators.</p></li>
+<li><p><strong>net_load</strong> (<em>np.ndarray</em>) – Net load array (MW) per zone.</p></li>
+<li><p><strong>SOC_old</strong> (<em>np.ndarray</em>) – Previous hour’s state-of-charge for each ESS (MWh).</p></li>
+<li><p><strong>ess_pmax</strong> (<em>np.ndarray</em>) – Maximum power output (MW) for each ESS.</p></li>
+<li><p><strong>ess_eff</strong> (<em>np.ndarray</em>) – Round-trip efficiency (fraction) for each ESS.</p></li>
+<li><p><strong>disch_cost</strong> (<em>np.ndarray</em>) – Discharge cost for each ESS.</p></li>
+<li><p><strong>ch_cost</strong> (<em>np.ndarray</em>) – Charge cost for each ESS.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 2-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>load_curt</strong> (<em>float</em>): Total load curtailment (MW) in this hour.</p></li>
+<li><p><strong>SOC_old</strong> (<em>np.ndarray</em>): Updated state-of-charge for each ESS after dispatch.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.OptDispatchLite">
+<span class="sig-name descname"><span class="pre">OptDispatchLite</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ness</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_ess</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_soc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BMva</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fb_Pg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_inc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gencost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">net_load</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SOC_old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_pmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_eff</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disch_cost</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch_cost</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.OptDispatchLite" title="Link to this definition">¶</a></dt>
+<dd><p>Solves an economic dispatch problem ignoring line flow constraints (copper-sheet model).
+This method is a simplified version of <a class="reference internal" href="progress_mod_utilities.html#progress.mod_utilities.RAUtilities.OptDispatch" title="progress.mod_utilities.RAUtilities.OptDispatch"><code class="xref py py-meth docutils literal notranslate"><span class="pre">OptDispatch()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ng</strong> (<em>int</em>) – Number of conventional generators.</p></li>
+<li><p><strong>nz</strong> (<em>int</em>) – Number of zones.</p></li>
+<li><p><strong>ness</strong> (<em>int</em>) – Number of energy storage systems.</p></li>
+<li><p><strong>fb_ess</strong> (<em>function</em>) – Function specifying variable bounds for ESS charging power.</p></li>
+<li><p><strong>fb_soc</strong> (<em>function</em>) – Function specifying variable bounds for ESS state-of-charge.</p></li>
+<li><p><strong>BMva</strong> (<em>float</em>) – System base power (MVA).</p></li>
+<li><p><strong>fb_Pg</strong> (<em>function</em>) – Function specifying variable bounds for generator and ESS discharge power.</p></li>
+<li><p><strong>A_inc</strong> (<em>np.ndarray</em>) – Incidence matrix (not strictly used, but included for consistency).</p></li>
+<li><p><strong>gencost</strong> (<em>np.ndarray</em>) – Per-unit costs for conventional generators.</p></li>
+<li><p><strong>net_load</strong> (<em>np.ndarray</em>) – Net load (MW) for the entire system (summed over all zones).</p></li>
+<li><p><strong>SOC_old</strong> (<em>np.ndarray</em>) – Previous hour’s state-of-charge for each ESS (MWh).</p></li>
+<li><p><strong>ess_pmax</strong> (<em>np.ndarray</em>) – Maximum power output for each ESS.</p></li>
+<li><p><strong>ess_eff</strong> (<em>np.ndarray</em>) – Round-trip efficiency for each ESS.</p></li>
+<li><p><strong>disch_cost</strong> (<em>np.ndarray</em>) – Discharge cost for each ESS.</p></li>
+<li><p><strong>ch_cost</strong> (<em>np.ndarray</em>) – Charge cost for each ESS.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 2-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>load_curt</strong> (<em>float</em>): Total load curtailment (MW).</p></li>
+<li><p><strong>SOC_old</strong> (<em>np.ndarray</em>): Updated state-of-charge for each ESS.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.OutageAnalysis">
+<span class="sig-name descname"><span class="pre">OutageAnalysis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.OutageAnalysis" title="Link to this definition">¶</a></dt>
+<dd><p>Identifies the start and end of each outage (load-curtailed period)
+from the binary LOL array and calculates their durations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>var_s</strong> (<em>dict</em>) – Dictionary of sample-specific tracking variables (e.g., “label_LOLF”).</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>1D array of outage durations (in hours).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.OutageHeatMap">
+<span class="sig-name descname"><span class="pre">OutageHeatMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">LOL_track</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">main_folder</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.OutageHeatMap" title="Link to this definition">¶</a></dt>
+<dd><p>Aggregates hourly loss-of-load data into a monthly/hourly matrix and writes
+the percentage of load-loss hours by month/hour to a CSV file.
+Can be used later for creating heatmaps.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>LOL_track</strong> (<em>np.ndarray</em>) – 4D array of shape (size, samples, 365, 24) representing the LOL states.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – Total number of MPI processes.</p></li>
+<li><p><strong>samples</strong> (<em>int</em>) – Number of Monte Carlo samples.</p></li>
+<li><p><strong>main_folder</strong> (<em>str</em>) – Directory path where results (CSV/plots) are saved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.ParallelProcessing">
+<span class="sig-name descname"><span class="pre">ParallelProcessing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LOL_track</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rank</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_hours</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.ParallelProcessing" title="Link to this definition">¶</a></dt>
+<dd><p>Gathers reliability indices and the LOL tracker from all MPI processes to compute
+average indices over all ranks. Optionally saves final results and calls
+<a class="reference internal" href="progress_mod_utilities.html#progress.mod_utilities.RAUtilities.OutageHeatMap" title="progress.mod_utilities.RAUtilities.OutageHeatMap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">OutageHeatMap()</span></code></a> if a full-year simulation is run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices</strong> (<em>dict</em>) – Dictionary of reliability indices for the local rank.</p></li>
+<li><p><strong>LOL_track</strong> (<em>np.ndarray</em>) – 2D array of shape (samples, hours) tracking LOL states for the local rank.</p></li>
+<li><p><strong>comm</strong> (<em>mpi4py.MPI.Comm</em>) – MPI communicator object.</p></li>
+<li><p><strong>rank</strong> (<em>int</em>) – MPI rank of this process.</p></li>
+<li><p><strong>size</strong> (<em>int</em>) – Total number of MPI processes.</p></li>
+<li><p><strong>samples</strong> (<em>int</em>) – Number of Monte Carlo samples performed.</p></li>
+<li><p><strong>sim_hours</strong> (<em>int</em>) – Number of hours in each sample (e.g., 8760).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If rank=0, a dictionary containing aggregated reliability indices
+(LOLP, EUE, etc.) across all ranks, else returns None.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.SolarPower">
+<span class="sig-name descname"><span class="pre">SolarPower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_zone_no</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solar_prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_profiles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_sites</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s_max</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.SolarPower" title="Link to this definition">¶</a></dt>
+<dd><p>Determines solar power output for each zone based on a randomly selected cluster/day/hour profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> (<em>int</em>) – Current hour in the overall MCS simulation.</p></li>
+<li><p><strong>nz</strong> (<em>int</em>) – Number of zones.</p></li>
+<li><p><strong>s_zone_no</strong> (<em>np.ndarray</em>) – Zone indices for each solar site.</p></li>
+<li><p><strong>solar_prob</strong> (<em>np.ndarray</em>) – Array of cluster probabilities (rows = clusters, columns = months).</p></li>
+<li><p><strong>s_profiles</strong> (<em>list</em><em>[</em><em>np.ndarray</em><em>]</em>) – List of 3D arrays, each containing daily solar profiles for a cluster
+(dimensions: [days, 24 hours, sites]).</p></li>
+<li><p><strong>s_sites</strong> (<em>int</em>) – Number of solar sites.</p></li>
+<li><p><strong>s_max</strong> (<em>np.ndarray</em>) – Maximum capacity (MW) of each solar site.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 2D NumPy array of shape (24, nz), giving solar generation (MW) for each zone over 24 hours.
+Only the row corresponding to hour n%24 is relevant at time n, but the entire 2D block
+is returned for convenience.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.TrackLOLStates">
+<span class="sig-name descname"><span class="pre">TrackLOLStates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">load_curt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">BMva</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LOL_track</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.TrackLOLStates" title="Link to this definition">¶</a></dt>
+<dd><p>Records whether load was curtailed at the current hour, and logs
+loss-of-load days, frequencies, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>load_curt</strong> (<em>float</em>) – The amount of load curtailment (MW).</p></li>
+<li><p><strong>BMva</strong> (<em>float</em>) – System base power (MVA) for consistent unit conversions.</p></li>
+<li><p><strong>var_s</strong> (<em>dict</em>) – Dictionary of temporary simulation variables (e.g.,
+curtailment array, LOL day counts).</p></li>
+<li><p><strong>LOL_track</strong> (<em>np.ndarray</em>) – 2D array (shape: [samples, hours]) tracking which hours had loss of load.</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – Current Monte Carlo sample index.</p></li>
+<li><p><strong>n</strong> (<em>int</em>) – Current hour index.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 2-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>var_s</strong> (<em>dict</em>): Updated dictionary of simulation variables.</p></li>
+<li><p><strong>LOL_track</strong> (<em>np.ndarray</em>): Updated array marking loss-of-load hours.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.UpdateIndexArrays">
+<span class="sig-name descname"><span class="pre">UpdateIndexArrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices_rec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sim_hours</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.UpdateIndexArrays" title="Link to this definition">¶</a></dt>
+<dd><p>Updates reliability index accumulators (LOLP, EUE, EPNS, LOLE, etc.)
+after each sample is completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices_rec</strong> (<em>dict</em>) – Dictionary that stores reliability indices across samples.</p></li>
+<li><p><strong>var_s</strong> (<em>dict</em>) – Dictionary of sample-specific tracking variables
+(curtailment array, LOL states, etc.).</p></li>
+<li><p><strong>sim_hours</strong> (<em>int</em>) – Number of hours in the current simulation (e.g., 8760 for a year).</p></li>
+<li><p><strong>s</strong> (<em>int</em>) – Current sample index.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>indices_rec</strong> (<em>dict</em>): Updated dictionary containing reliability
+index arrays for all samples.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.WindPower">
+<span class="sig-name descname"><span class="pre">WindPower</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_sites</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zone_no</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r_cap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_w_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tr_mats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">w_turbines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_curve2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_curve3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.WindPower" title="Link to this definition">¶</a></dt>
+<dd><p>Computes wind power generation by randomly transitioning wind speed classes,
+then mapping each class to a turbine power output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nz</strong> (<em>int</em>) – Number of zones in the system.</p></li>
+<li><p><strong>w_sites</strong> (<em>int</em>) – Number of wind farm sites.</p></li>
+<li><p><strong>zone_no</strong> (<em>np.ndarray</em>) – Zone indices for each wind site.</p></li>
+<li><p><strong>w_classes</strong> (<em>int</em>) – Total number of wind speed classes used.</p></li>
+<li><p><strong>r_cap</strong> (<em>np.ndarray</em>) – Rated capacities (MW) of wind turbines at each site.</p></li>
+<li><p><strong>current_w_class</strong> (<em>np.ndarray</em>) – Current wind speed class for each site (1D array).</p></li>
+<li><p><strong>tr_mats</strong> (<em>np.ndarray</em>) – 3D array of transition rate matrices for each site (dimensions: [site, w_classes, w_classes]).</p></li>
+<li><p><strong>p_class</strong> (<em>np.ndarray</em>) – Array specifying the power curve classification type (e.g., 2 or 3) for each site.</p></li>
+<li><p><strong>w_turbines</strong> (<em>np.ndarray</em>) – Number of turbines at each site.</p></li>
+<li><p><strong>out_curve2</strong> (<em>np.ndarray</em>) – Power output curve for class 2 turbines (indexed by wind speed class).</p></li>
+<li><p><strong>out_curve3</strong> (<em>np.ndarray</em>) – Power output curve for class 3 turbines (indexed by wind speed class).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 2-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>w_zones</strong> (<em>np.ndarray</em>): Wind generation in each zone (size = nz).</p></li>
+<li><p><strong>current_w_class</strong> (<em>np.ndarray</em>): Updated wind speed classes for the next hour.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.capacities">
+<span class="sig-name descname"><span class="pre">capacities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_pmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_pmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cap_trans</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.capacities" title="Link to this definition">¶</a></dt>
+<dd><p>Constructs arrays of maximum and minimum capacities for generators, lines, and ESS
+for use in the MCS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nl</strong> (<em>int</em>) – Number of transmission lines.</p></li>
+<li><p><strong>pmax</strong> (<em>np.ndarray</em>) – Maximum capacities (MW) of each generator.</p></li>
+<li><p><strong>pmin</strong> (<em>np.ndarray</em>) – Minimum capacities (MW) of each generator.</p></li>
+<li><p><strong>ess_pmax</strong> (<em>np.ndarray</em>) – Maximum power outputs (MW) for each ESS.</p></li>
+<li><p><strong>ess_pmin</strong> (<em>np.ndarray</em>) – Minimum power outputs (MW) for each ESS.</p></li>
+<li><p><strong>cap_trans</strong> (<em>np.ndarray</em>) – Transmission capacities (MW) for each line.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 2-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>cap_max</strong> (<em>np.ndarray</em>): Concatenated maximum capacities (generators + lines + ESS).</p></li>
+<li><p><strong>cap_min</strong> (<em>np.ndarray</em>): Concatenated minimum capacities (generators + lines + ESS).</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.reltrates">
+<span class="sig-name descname"><span class="pre">reltrates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">MTTF_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MTTF_trans</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MTTR_gen</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MTTR_trans</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MTTF_ess</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MTTR_ess</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.reltrates" title="Link to this definition">¶</a></dt>
+<dd><p>Computes repair and failure rates for generators, transmission lines, and ESS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>MTTF_gen</strong> (<em>np.ndarray</em>) – Mean time to failure for generators (hours).</p></li>
+<li><p><strong>MTTF_trans</strong> (<em>np.ndarray</em>) – Mean time to failure for transmission lines (hours).</p></li>
+<li><p><strong>MTTR_gen</strong> (<em>np.ndarray</em>) – Mean time to repair for generators (hours).</p></li>
+<li><p><strong>MTTR_trans</strong> (<em>np.ndarray</em>) – Mean time to repair for transmission lines (hours).</p></li>
+<li><p><strong>MTTF_ess</strong> (<em>np.ndarray</em>) – Mean time to failure for energy storage systems (hours).</p></li>
+<li><p><strong>MTTR_ess</strong> (<em>np.ndarray</em>) – Mean time to repair for energy storage systems (hours).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 2-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>mu_tot</strong> (<em>np.ndarray</em>): Repair rates (1/MTTR) for all components (gen, trans, ESS).</p></li>
+<li><p><strong>lambda_tot</strong> (<em>np.ndarray</em>): Failure rates (1/MTTF) for all components.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_utilities.RAUtilities.updateSOC">
+<span class="sig-name descname"><span class="pre">updateSOC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_cap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_pmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_socmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ess_socmin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SOC_old</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_utilities.RAUtilities.updateSOC" title="Link to this definition">¶</a></dt>
+<dd><p>Adjusts the state-of-charge (SOC) for storage units to reflect any
+failures/repairs that reduce or restore capacity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ng</strong> (<em>int</em>) – Number of generators.</p></li>
+<li><p><strong>nl</strong> (<em>int</em>) – Number of lines.</p></li>
+<li><p><strong>current_cap</strong> (<em>dict</em>) – Dictionary of current max and min capacities (from <a class="reference internal" href="progress_mod_utilities.html#progress.mod_utilities.RAUtilities.NextState" title="progress.mod_utilities.RAUtilities.NextState"><code class="xref py py-meth docutils literal notranslate"><span class="pre">NextState()</span></code></a>).</p></li>
+<li><p><strong>ess_pmax</strong> (<em>np.ndarray</em>) – Original maximum power outputs for ESS (MW).</p></li>
+<li><p><strong>ess_duration</strong> (<em>np.ndarray</em>) – Duration (hours) of each ESS at rated power.</p></li>
+<li><p><strong>ess_socmax</strong> (<em>np.ndarray</em>) – Maximum SOC fraction for each ESS.</p></li>
+<li><p><strong>ess_socmin</strong> (<em>np.ndarray</em>) – Minimum SOC fraction for each ESS.</p></li>
+<li><p><strong>SOC_old</strong> (<em>np.ndarray</em>) – Previous SOC values (in MWh).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 3-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>ess_smax</strong> (<em>np.ndarray</em>): Maximum allowable SOC (in MWh) after accounting for failures/repairs.</p></li>
+<li><p><strong>ess_smin</strong> (<em>np.ndarray</em>): Minimum allowable SOC (in MWh).</p></li>
+<li><p><strong>SOC_old</strong> (<em>np.ndarray</em>): Updated SOC for each ESS.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-progress.mod_wind">
+<span id="progress-mod-wind-module"></span><h2>progress.mod_wind module<a class="headerlink" href="#module-progress.mod_wind" title="Link to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="progress.mod_wind.Wind">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.mod_wind.</span></span><span class="sig-name descname"><span class="pre">Wind</span></span><a class="headerlink" href="#progress.mod_wind.Wind" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles downloading, assembling, and analyzing wind data from the NREL Wind Toolkit for
+resource adequacy or other power system studies.</p>
+<p>This class provides methods to:</p>
+<ol class="arabic simple">
+<li><p><strong>DownloadWindData</strong>: Fetch and parse wind speed data (at specified heights)
+from NREL’s Wind Toolkit for each wind site/year.</p></li>
+<li><p><strong>WindFarmsData</strong>: Read and organize farm-level metadata (capacity, turbine rating, etc.)
+along with power curve information.</p></li>
+<li><p><strong>CalWindTrRates</strong>: Compute transition rate matrices for wind speed classes based on
+time series data, useful in Markov chain-based reliability or adequacy models.</p></li>
+</ol>
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_wind.Wind.CalWindTrRates">
+<span class="sig-name descname"><span class="pre">CalWindTrRates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">windspeed_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcurve_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_wind.Wind.CalWindTrRates" title="Link to this definition">¶</a></dt>
+<dd><p>Computes and stores transition rate matrices for wind speed classes
+using Markov chain assumptions. Each site’s wind speed time series
+is discretized into classes, and a transition probability matrix
+is computed.</p>
+<dl class="simple">
+<dt><strong>Process Summary</strong>:</dt><dd><ol class="arabic simple">
+<li><p>Reads wind speed data from the merged CSV created by <a class="reference internal" href="progress_mod_wind.html#progress.mod_wind.Wind.DownloadWindData" title="progress.mod_wind.Wind.DownloadWindData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DownloadWindData()</span></code></a>.</p></li>
+<li><p>Bins wind speed observations into classes based on the start speeds
+defined in the power curve CSV.</p></li>
+<li><p>Increments counts for transitions between consecutive hours
+(e.g., from class j to class k).</p></li>
+<li><p>Converts transition counts to probabilities and writes each site’s
+transition matrix to an Excel file.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> (<em>str</em>) – Directory to save the resulting transition rate Excel file.</p></li>
+<li><p><strong>windspeed_data</strong> (<em>str</em>) – Path to the CSV file containing wind speed time series
+for all sites (output of <a class="reference internal" href="progress_mod_wind.html#progress.mod_wind.Wind.DownloadWindData" title="progress.mod_wind.Wind.DownloadWindData"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DownloadWindData()</span></code></a>).</p></li>
+<li><p><strong>site_data</strong> (<em>str</em>) – Path to the CSV containing wind farm data
+(Farm No., Farm Name, etc.).</p></li>
+<li><p><strong>pcurve_data</strong> (<em>str</em>) – Path to the CSV containing power curve data (defining wind speed classes).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A 3D NumPy array of shape <code class="docutils literal notranslate"><span class="pre">(sites,</span> <span class="pre">classes,</span> <span class="pre">classes)</span></code> representing
+transition probability matrices for each site. Each [i, j, k]
+entry is the probability of moving from class j to class k at site i.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If any of the CSV files (windspeed_data, site_data, pcurve_data) are missing.</p></li>
+<li><p><strong>pd.errors.EmptyDataError</strong> – If any CSV is empty or cannot be parsed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_wind.Wind.DownloadWindData">
+<span class="sig-name descname"><span class="pre">DownloadWindData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">affiliation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year_end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_wind.Wind.DownloadWindData" title="Link to this definition">¶</a></dt>
+<dd><p>Downloads wind speed data from the NREL Wind Toolkit for the given sites and years,
+then consolidates it into a single CSV file.</p>
+<dl class="simple">
+<dt><strong>Process Summary</strong>:</dt><dd><ol class="arabic simple">
+<li><p>Reads site metadata (longitude, latitude, hub height) from the specified CSV.</p></li>
+<li><p>Iterates through each site and year to request wind speed data at 80m and 100m heights
+from the NREL API.</p></li>
+<li><p>Applies power-law interpolation if a site’s hub height differs from 80m and 100m.</p></li>
+<li><p>Merges all sites (for each year) into a single DataFrame, adjusting timestamps, and
+finally writes a combined CSV of wind speeds at each site.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>directory</strong> (<em>str</em>) – Directory where downloaded data and final merged CSV will be saved.</p></li>
+<li><p><strong>site_data</strong> (<em>str</em>) – Path to the CSV file containing site metadata (Farm Name, Longitude, Latitude, Hub Height, etc.).</p></li>
+<li><p><strong>api_key</strong> (<em>str</em>) – Your personal API key for accessing the NREL Wind Toolkit.</p></li>
+<li><p><strong>email</strong> (<em>str</em>) – Your email address (required by the NREL API).</p></li>
+<li><p><strong>affiliation</strong> (<em>str</em>) – Your organization or affiliation (required by the NREL API).</p></li>
+<li><p><strong>year_start</strong> (<em>int</em>) – The first (earliest) year of data to download.</p></li>
+<li><p><strong>year_end</strong> (<em>int</em>) – The last (latest) year of data to download.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the site CSV file is missing or unreachable.</p></li>
+<li><p><strong>requests.exceptions.RequestException</strong> – For network or API-related failures during data download.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="progress.mod_wind.Wind.WindFarmsData">
+<span class="sig-name descname"><span class="pre">WindFarmsData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcurve_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.mod_wind.Wind.WindFarmsData" title="Link to this definition">¶</a></dt>
+<dd><p>Reads and organizes wind farm metadata and power curve data to facilitate
+wind power output calculations in subsequent modeling.</p>
+<dl class="simple">
+<dt><strong>Process Summary</strong>:</dt><dd><ol class="arabic simple">
+<li><p>Reads the wind farm CSV to extract site/farm identifiers, zone numbers,
+and capacities (MW).</p></li>
+<li><p>Computes the number of turbines per farm based on rated capacity and turbine rating.</p></li>
+<li><p>Reads the power curve CSV to identify wind speed class thresholds
+and power output curves for Classes 2 and 3.</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>site_data</strong> (<em>str</em>) – Path to the CSV containing wind farm data (Farm No., Farm Name, Zone No., Max Cap, Turbine Rating, etc.).</p></li>
+<li><p><strong>pcurve_data</strong> (<em>str</em>) – Path to the CSV containing power curve data (Start/End speeds, Class 2 curve, Class 3 curve, etc.).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A 10-element tuple containing:</p>
+<ul class="simple">
+<li><p><strong>w_sites</strong> (<em>int</em>): Number of wind farm sites.</p></li>
+<li><p><strong>farm_name</strong> (<em>pd.Series</em>): Names of each wind farm.</p></li>
+<li><p><strong>zone_no</strong> (<em>np.ndarray</em>): Zone indices corresponding to each wind farm.</p></li>
+<li><p><strong>w_classes</strong> (<em>int</em>): Number of discrete wind speed classes.</p></li>
+<li><p><strong>w_turbines</strong> (<em>np.ndarray</em>): Number of turbines at each site.</p></li>
+<li><p><strong>turbine_rating</strong> (<em>np.ndarray</em>): Rated power (MW) of each turbine.</p></li>
+<li><p><strong>p_class</strong> (<em>np.ndarray</em>): Array indicating which power curve class (2 or 3) each site uses.</p></li>
+<li><p><strong>out_curve2</strong> (<em>np.ndarray</em>): Power output curve for Class 2 turbines (indexed by wind speed class).</p></li>
+<li><p><strong>out_curve3</strong> (<em>np.ndarray</em>): Power output curve for Class 3 turbines (indexed by wind speed class).</p></li>
+<li><p><strong>start_speed</strong> (<em>np.ndarray</em>): Lower bounds of wind speed classes (m/s).</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If either CSV (site_data or pcurve_data) is not found.</p></li>
+<li><p><strong>pd.errors.EmptyDataError</strong> – If either CSV file is empty or cannot be parsed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-progress.paths">
+<span id="progress-paths-module"></span><h2>progress.paths module<a class="headerlink" href="#module-progress.paths" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="progress.paths.get_path">
+<span class="sig-prename descclassname"><span class="pre">progress.paths.</span></span><span class="sig-name descname"><span class="pre">get_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#progress.paths.get_path" title="Link to this definition">¶</a></dt>
+<dd><p>Determines the base path of the application.</p>
+<p>If the application is running in a frozen state (e.g., packaged with PyInstaller),
+this function returns the directory containing the executable. Otherwise, it
+returns the directory containing the current script.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The absolute path to the application’s base directory.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-progress">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-progress" title="Link to this heading">¶</a></h2>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">ProGRESS</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html"><ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2024, Atri Bera.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/progress.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
