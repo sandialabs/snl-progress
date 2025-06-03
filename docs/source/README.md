@@ -1,5 +1,5 @@
 
-![progress-bold](https://github.com/user-attachments/assets/3f16da17-0ef1-4edc-9425-35439e7b63dd)
+![Progress Logo](images/logos/progress_transparent_alt.png)
 
 # <ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)
 
