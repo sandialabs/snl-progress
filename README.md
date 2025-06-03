@@ -46,6 +46,33 @@ Key features of ProGRESS include:
 ## Getting started
 <a id="getting-started"></a>
 
+### Easy Installation (Windows Executable)
+
+Follow these steps to install and run the Progress executable on Windows:
+
+1. **Download the Executable**  
+   - Go to the **Releases** section of this repository.
+   - Download the `win_progress_v_1.2.0.zip` file containing the executable.
+
+2. **Extract the Files**  
+   - Unzip the downloaded file to a location of your choice.
+
+3. **Run the Executable**  
+   - Navigate to the extracted folder.
+   - Double-click on `progress.exe` to launch the package.
+
+4. **Ensure Data Folder is properly structured**  
+   - The data folder is found in the following path relative to progress.exe:  
+     ```
+     Lib/progress/Data
+     ```
+    - The correct structure for the Data folder can be found [here](#data).
+
+5. **Download a Solver**
+   - The executable requires a solver to function, the instructions for downloading one can be found [here](#solver).
+
+### Manual Installation Instructions
+
 ### Prerequisites
 - Python (>= 3.9, <3.12) installed on your system
 - Git installed on your system
@@ -95,33 +122,8 @@ Key features of ProGRESS include:
 3. Install Dependencies:
     ```bash
     python -m pip install -r requirements.txt
-    
-### Easy Installation (Windows Executable)
 
-Follow these steps to install and run the Progress executable on Windows:
-
-1. **Download the Executable**  
-   - Go to the **Releases** section of this repository.
-   - Download the `win_progress_v_1.2.0.zip` file containing the executable.
-
-2. **Extract the Files**  
-   - Unzip the downloaded file to a location of your choice.
-
-3. **Run the Executable**  
-   - Navigate to the extracted folder.
-   - Double-click on `progress.exe` to launch the package.
-
-4. **Ensure Data Folder is properly structured**  
-   - The data folder is found in the following path relative to progress.exe:  
-     ```
-     Lib/progress/Data
-     ```
-    - The Data folder proper structure is found beneath solver installation.
-
-5. **Download a Solver**
-   - The executable requires a solver to function, see below.
-
-
+<a id="solver"></a>
 ### Solver Installation
 
 Ensure an optimization solver is installed on your machine. Solvers to consider include:
