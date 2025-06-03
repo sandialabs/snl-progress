@@ -1,5 +1,5 @@
 
-![progress-bold](https://github.com/user-attachments/assets/3f16da17-0ef1-4edc-9425-35439e7b63dd)
+<img src = "progress/Images/logos/progress-bold.png" width="1400" height="250" alt="API" />
 
 # <ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)
 
@@ -18,7 +18,7 @@ Release date: 12/12/2024
 ## Introduction 
 <a id="intro"></a>
 
-The Probabilistic Grid Reliability Analysis with Energy Storage Systems (ProGRESS) software tool is a Python-based open-source tool for assessing the resource adequacy of the evolving electric power grid integrated with energy storage systems (ESS). This tool utilizes a Markov Chain Monte Carlo-based stochastic simulation engine to create diverse scenarios that test the limits of the modern power grid consisting of a high volume of ESSs and variable energy resources (VER).  State-of-the-art ESS models are incorporated within the Monte Carlo simulation engine. The charge-discharge dynamics of ESSs, along with their evolving state-of-charge (SOC), are captured by the tool. In addition, ESS failures and repair models are also built into the tool, allowing users to analyze the availability of their ESS devices when they are needed most. ProGRESS also offers the capability of handling the uncertainty associated with VERs, such as, wind and solar power generation resources, enabling the user to simulate thousands of different renewable generation scenarios depending on weather conditions. Users are able to build their own grid models, download and utilize historical VER data using APIs, and analyze magnitude, duration, and frequency of expected future outages. ProGRESS allows users to make informed decisions and plan effectively for VER- and ESS-rich future power systems.
+The Probabilistic Grid Reliability Analysis with Energy Storage Systems (ProGRESS) software tool is a Python-based open-source tool for assessing the resource adequacy of the evolving electric power grid integrated with energy storage systems (ESS). This tool utilizes a Markov Chain Monte Carlo-based stochastic simulation engine to create diverse scenarios that test the limits of the modern power grid consisting of a high volume of ESSs and variable energy resources (VER).  State-of-the-art ESS models are incorporated within the Monte Carlo simulation engine. The charge-discharge dynamics of ESSs, along with their evolving state-of-charge (SOC), are captured by the tool. In addition, ESS failures and repair models are also built into the tool, allowing users to analyze the availability of their ESS devices when they are needed most. ProGRESS also offers the capability of handling the uncertainty associated with VERs, enabling the user to simulate thousands of diverse generation scenarios depending on weather conditions. Users are able to build their own grid models, download and utilize historical VER data using APIs, and analyze magnitude, duration, and frequency of expected future outages. ProGRESS allows users to make informed decisions and plan effectively for a reliable future electric grid.
 
 [Back to Top](#top)
 ## Key Features of ProGRESS
@@ -39,7 +39,7 @@ Key features of ProGRESS include:
 
 - **User-friendly Graphical User Interface:** The interactive Graphical User Interface (GUI) offered by ProGRESS simplifies the process of input data upload, model building, and results interpretation.
 
-- **Parallel Programming Capabilities:** The backend includes code for parallel programming (using Python's [mpi4py](https://mpi4py.readthedocs.io/en/stable/index.html) library), allowing users with access to high-performance computing resources to run longer simulations with larger systems for more accurate results. Currently, this functionality is not available through the GUI.
+- **Parallel Programming Capabilities:** The backend includes scripts for parallel programming (using Python's [mpi4py](https://mpi4py.readthedocs.io/en/stable/index.html) library), allowing users with access to high-performance computing resources to run longer simulations with larger systems for more accurate results. Currently, this functionality is not available through the GUI.
 
 [Back to Top](#top)
 ## Getting started
@@ -371,6 +371,23 @@ A test case is included with this tool. The test system is the [IEEE RTS-GMLC](h
 <img src = "progress/Images/workflow/RTS_GMLC.png" width="600" height="500" alt="RTS" /> 
 
 All test system data provided with the tool has been taken from the [RTS-GMLC GitHub repository](<https://github.com/GridMod/RTS-GMLC>).
+
+## Citing ProGRESS
+
+If you use ProGRESS in your research, please cite the following paper:
+
+A. Bera, C. J. Newlun, A. Lopez, Y. -J. Pomeroy, T. Nguyen and R. Byrne, "Probabilistic Grid Reliability Analysis with Energy Storage System (ProGRESS): An Open-Source Tool for Assessing the Reliability of Power Systems," 2025 IEEE Electrical Energy Storage Applications and Technologies Conference (EESAT), Charlotte, NC, USA, 2025, pp. 1-5, doi: 10.1109/EESAT62935.2025.10891214.
+
+Bibtex Entry:
+
+@inproceedings{bera2025probabilistic, <br>
+  title={Probabilistic Grid Reliability Analysis with Energy Storage System (ProGRESS): An Open-Source Tool for Assessing the Reliability of Power Systems}, <br>
+  author={Bera, Atri and Newlun, Cody J and Lopez, Andres and Pomeroy, Yung-Jai and Nguyen, Tu and Byrne, Ray}, <br>
+  booktitle={2025 IEEE Electrical Energy Storage Applications and Technologies Conference (EESAT)}, <br>
+  pages={1--5}, <br>
+  year={2025}, <br>
+  organization={IEEE} <br>
+}
 
 ## Acknowledgment
 <a id="acknowledgement"></a>

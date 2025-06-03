@@ -1,0 +1,210 @@
+QWidget{
+	background-color: rgb(240, 240, 240);
+}
+
+QLabel {
+    font: 18pt "Arial";
+    color: rgb(80, 80, 80);
+}
+
+QTabWidget::pane {
+    border: 0px;
+}
+
+QTabBar::tab {
+    background: transparent;
+    padding: 5px 15px;
+    border: 1px solid transparent;
+    color: rgb(56, 122, 61);
+    border-bottom: 2px solid transparent;
+}
+
+QTabBar::tab:selected {
+    color: rgb(56, 122, 61);
+    border-bottom: 1px solid rgb(56, 122, 61);
+
+}
+
+QTabBar::tab:hover {
+    background: rgba(56, 122, 61, 0.2);
+    color: rgb(56, 122, 61);
+}
+
+QFrame {
+    background-color: transparent;
+    border: none;
+}
+QTextBrowser {
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgb(255, 255, 255);
+    color: rgb(80, 80, 80);
+}
+
+QPushButton {
+    color: rgb(80, 80, 80);
+    font: 16pt "Arial";
+    background-color: transparent;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+QPushButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+QPushButton:pressed {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+QPushButton:checked {
+    background-color: rgb(56, 122, 61);
+    color: white;
+}
+
+QPushButton:checked:hover {
+    background-color: rgb(46, 102, 51);
+}
+QComboBox {
+    background: rgb(255, 255, 255);
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: 4px;
+    color: rgb(80, 80, 80);
+    padding: 5px;
+}
+QComboBox::drop-down {
+    border: none;
+}
+QComboBox QAbstractItemView {
+    background-color: rgb(255, 255, 255);
+    selection-background-color: rgb(100, 100, 100);
+    color: rgb(80, 80, 80);
+}
+QComboBox QAbstractItemView::item {
+    background-color: rgb(255, 255, 255);
+    border: none;
+}
+QComboBox QAbstractItemView::item:hover {
+    background-color: rgb(220, 220, 220);
+    border: none;
+}
+QComboBox QAbstractItemView::item:selected {
+    background-color: rgb(100, 100, 100);
+    border: none;
+    color: rgb(255, 255, 255);
+}
+QScrollBar:vertical {
+    border: none;
+    background: rgb(240, 240, 240);
+    width: 8px;
+    margin: 22px 0 22px 0;
+}
+
+QScrollBar::handle:vertical {
+    background: rgb(180, 180, 180);
+    min-height: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: rgb(160, 160, 160);
+}
+
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+    background: none;
+}
+
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+    background: none;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background: rgb(240, 240, 240);
+    height: 8px;
+    margin: 0 22px 0 22px;
+}
+
+QScrollBar::handle:horizontal {
+    background: rgb(180, 180, 180);
+    min-width: 20px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: rgb(160, 160, 160);
+}
+
+QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+    background: none;
+}
+
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+    background: none;
+}
+QScrollArea {
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: 5px;
+    padding: 5px;
+    background-color: rgb(240, 240, 240);
+    color: rgb(80, 80, 80);
+}
+QLineEdit {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    border: 1px solid rgb(180, 180, 180);
+    padding: 5px;
+    border-radius: 4px;
+}
+
+QLineEdit:focus {
+    border: 1px solid rgb(46, 102, 51);
+}
+
+#land #label {
+    font: 48pt "Arial";
+    color:rgb(56, 122, 61);
+}
+#land #label_2 {
+    font: 16pt "Arial";
+
+    color:rgb(80, 80, 80);
+}
+
+#land #label_6 {
+    font: 12pt "Arial";
+
+    color:rgb(80, 80, 80);
+}
+
+#get_started_button {
+    color: rgb(80, 80, 80);
+    font: 16pt "Arial";
+    background-color: transparent;
+    border: 2px solid rgb(80, 80, 80);
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+#get_started_button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+#get_started_button:pressed {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#api_frame_21, #api_frame_20, #api_frame_19, #api_frame_18, #solar_frame, #solar_frame_2, #solar_frame_3, #solar2_frame_54, #solar2_frame_2, #wind_frame_2, #wind_frame_3, #wind_frame_4{
+    background-color: rgba(245, 245, 245, 0.2); 
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+ #sim_frame_37, #sim_frame_38, #sim_frame_39, #sim_frame_40, #theme_frame {
+    background-color: rgba(245, 245, 245, 0.2); 
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 10px;
+}
+#theme_label{
+    font: 32pt "Arial";
+
+    color:rgb(80, 80, 80);
+}
