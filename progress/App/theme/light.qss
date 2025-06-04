@@ -208,3 +208,6 @@ QLineEdit:focus {
 
     color:rgb(80, 80, 80);
 }
+QTreeView {
+    color: rgb(80, 80, 80);
+}

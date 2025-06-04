@@ -248,3 +248,7 @@ QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
     border-radius: 8px;
     padding: 10px;
 }
+
+QTreeView {
+    color: rgb(200, 200, 200);
+}
