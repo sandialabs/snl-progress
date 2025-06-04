@@ -13,3 +13,5 @@ PySide6==6.5.2
 PySide6-Addons==6.5.2
 PySide6-Essentials==6.5.2
 Markdown==3.7
+plotly==5.22.0
+kaleido==0.2.1
