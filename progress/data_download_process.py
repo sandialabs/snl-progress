@@ -9,26 +9,21 @@ from progress.mod_kmeans import KMeans_Pipeline
 
 class DataProcess:
     """
-    A class used to process wind and solar data from configuration and create 
-    relevant input files for further modeling.
+    A class used to process wind and solar data from configuration and create relevant input files for further modeling.
 
-    This class reads a configuration file, and uses it to download, prepare, and 
-    organize wind and solar data. It delegates certain tasks (e.g., data download, 
-    transformation, K-means clustering) to specialized modules:
+    This class reads a configuration file, and uses it to download, prepare, and organize wind and solar data. It delegates certain tasks (e.g., data download, transformation, K-means clustering) to specialized modules:
       - ``Wind`` for wind data processing
       - ``Solar`` for solar data processing
       - ``KMeans_Pipeline`` for clustering the resultant data
 
-    :param input_file: Path to the YAML configuration file containing 
-                      user settings and file/directory paths.
+    :param input_file: Path to the YAML configuration file containing user settings and file/directory paths.
     :type input_file: str
     """
     def __init__(self, input_file):
         """
         Initializes the DataProcess instance by loading the configuration from a YAML file.
 
-        This method opens and parses a YAML file specified by ``input_file``, 
-        storing its contents in the ``self.config`` attribute for subsequent use.
+        This method opens and parses a YAML file specified by ``input_file``, storing its contents in the ``self.config`` attribute for subsequent use.
 
         :param input_file: Absolute or relative path to the YAML configuration file.
         :type input_file: str
@@ -47,24 +42,17 @@ class DataProcess:
 
         This method performs the following steps:
 
-        1. **Set Up Paths**: Derives file paths for wind sites, power curves, 
-           windspeed data, and transition rate Excel sheets from the loaded configuration.
+        1. **Set Up Paths**: Derives file paths for wind sites, power curves, windspeed data, and transition rate Excel sheets from the loaded configuration.
 
-        2. **Download Wind Data**: Invokes ``wind.DownloadWindData()`` to fetch 
-           raw wind speed data using the user’s API credentials and configuration parameters.
+        2. **Download Wind Data**: Invokes ``wind.DownloadWindData()`` to fetch raw wind speed data using the user’s API credentials and configuration parameters.
 
-        3. **Prepare Wind Farms Data**: Calls ``wind.WindFarmsData()`` to aggregate 
-           site information, farm names, zone numbers, wind classes, and power curves.
+        3. **Prepare Wind Farms Data**: Calls ``wind.WindFarmsData()`` to aggregate site information, farm names, zone numbers, wind classes, and power curves.
 
-        4. **Calculate Transition Rates**: Uses ``wind.CalWindTrRates()`` to compute 
-           wind transition rates (wind speed state transitions) from the downloaded datasets.
+        4. **Calculate Transition Rates**: Uses ``wind.CalWindTrRates()`` to compute wind transition rates (wind speed state transitions) from the downloaded datasets.
 
-        5. **Read Transition Matrices**: Loads transition matrices from an Excel file 
-           and organizes them into a NumPy array.
+        5. **Read Transition Matrices**: Loads transition matrices from an Excel file and organizes them into a NumPy array.
 
-        This step ultimately collects and prepares wind-related data so that it can 
-        be integrated into larger studies (e.g., generating time-series or capacity 
-        factor profiles for wind generation).
+        This step ultimately collects and prepares wind-related data so that it can be integrated into larger studies (e.g., generating time-series or capacity factor profiles for wind generation).
 
         :return: None
         :rtype: None
@@ -109,32 +97,22 @@ class DataProcess:
 
         This method performs the following sequence of operations:
 
-        1. **Initialize Solar Module**: Creates a ``Solar`` instance with user-specified 
-           site data paths and directory locations.
+        1. **Initialize Solar Module**: Creates a ``Solar`` instance with user-specified site data paths and directory locations.
 
-        2. **Download & Compute Solar Generation**: Invokes ``solar.SolarGen()`` to fetch 
-           weather data from the user’s API and compute solar generation profiles 
-           across the specified date range.
+        2. **Download & Compute Solar Generation**: Invokes ``solar.SolarGen()`` to fetch weather data from the user’s API and compute solar generation profiles across the specified date range.
 
-        3. **Gather Computed Profiles**: Executes ``solar.SolarGenGather()`` to combine 
-           yearly generation results into a single dataset, suitable for clustering 
-           or probability analysis.
+        3. **Gather Computed Profiles**: Executes ``solar.SolarGenGather()`` to combine yearly generation results into a single dataset, suitable for clustering or probability analysis.
 
-        4. **Perform K-Means Clustering**: Creates and runs a ``KMeans_Pipeline`` instance. 
-           It clusters the processed solar generation data into a specified number of 
-           clusters, calculates probabilities, and saves the results to file.
+        4. **Perform K-Means Clustering**: Creates and runs a ``KMeans_Pipeline`` instance. It clusters the processed solar generation data into a specified number of clusters, calculates probabilities, and saves the results to file.
 
-        5. **Obtain Solar Profiles & Probabilities**: Uses ``solar.GetSolarProfiles()`` 
-           to retrieve final site-level data, maximum possible generation, and the 
-           probability distribution for solar capacity factors.
+        5. **Obtain Solar Profiles & Probabilities**: Uses ``solar.GetSolarProfiles()`` to retrieve final site-level data, maximum possible generation, and the probability distribution for solar capacity factors.
 
         In the end, this prepares solar data for further simulation or scenario analysis.
 
         :return: None
         :rtype: None
 
-        :raises FileNotFoundError: If required CSV files for solar sites or probabilities 
-                                  are not present.
+        :raises FileNotFoundError: If required CSV files for solar sites or probabilities are not present.
         :raises ValueError: If solar data files contain invalid values or structures.
         """
 

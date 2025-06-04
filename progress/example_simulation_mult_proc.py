@@ -17,12 +17,9 @@ from progress.mod_kmeans import KMeans_Pipeline
 
 class ProgressMultiProcess:
     """
-    Handles multi-process execution (via ``mpi4py``) of a Mixed Time Sequential 
-    Monte Carlo Simulation (MCS) for reliability analysis.
+    Handles multi-process execution (via ``mpi4py``) of a Mixed Time Sequential Monte Carlo Simulation (MCS) for reliability analysis.
 
-    This class sets up MPI parameters and provides methods to perform 
-    system reliability simulations. It leverages parallel processing 
-    to distribute Monte Carlo samples across multiple ranks.
+    This class sets up MPI parameters and provides methods to perform system reliability simulations. It leverages parallel processing to distribute Monte Carlo samples across multiple ranks.
     """
 
     def __init__(self):
@@ -53,8 +50,7 @@ class ProgressMultiProcess:
         Loads user settings (file paths, simulation hours, etc.) from ``input_file``.
 
         2. **Data Import & Pre-Processing**:
-        - Reads system data (generators, branches, buses, loads, storage) using 
-            :class:`RASystemData <progress.mod_sysdata.RASystemData>`.
+        - Reads system data (generators, branches, buses, loads, storage) using :class:`RASystemData <progress.mod_sysdata.RASystemData>`.
         - Prepares reliability- and capacity-related variables (e.g., MTTF, MTTR, capacities).
         - Conditionally loads and processes wind data (if ``wind_directory`` is defined).
         - Conditionally loads and processes solar data (if ``solar_directory`` is defined).
@@ -67,13 +63,11 @@ class ProgressMultiProcess:
             * Updates next states (up/down) via random draws from reliability transition rates.
             * Adjusts ESS states of charge to account for potential failures.
             * Retrieves wind and solar power outputs (if configured).
-            * Performs an optimization-based dispatch (zonal or copper-sheet) to meet load 
-            while minimizing generation costs and curtailment.
+            * Performs an optimization-based dispatch (zonal or copper-sheet) to meet load while minimizing generation costs and curtailment.
             * Tracks Loss of Load (LOL) occurrences for reliability indices.
 
         4. **Convergence Checks**:
-        Tracks reliability indices such as LOLP and EUE, and evaluates partial 
-        convergence at each sample (using rank 0 to aggregate data across processes).
+        Tracks reliability indices such as LOLP and EUE, and evaluates partial convergence at each sample (using rank 0 to aggregate data across processes).
 
         5. **Final Aggregation**:
         - Uses MPI to combine results across ranks.

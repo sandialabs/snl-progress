@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <title>Progress Example Simulation (Mult Proc) Module &#8212; ProGRESS 1.0.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
-    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
     <script src="_static/documentation_options.js?v=8d563738"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Progress Main MPI Module" href="progress_main_MPI.html" />
+    <link rel="next" title="Progress K-Means Module" href="progress_mod_kmeans.html" />
     <link rel="prev" title="Progress Example Simulation Module" href="progress_example_simulation.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -37,13 +37,10 @@
 <span id="progress-example-simulation-mult-proc-module"></span><h1>Progress Example Simulation (Mult Proc) Module<a class="headerlink" href="#module-progress.example_simulation_mult_proc" title="Link to this heading">¶</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="progress.example_simulation_mult_proc.ProgressMultiProcess">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.example_simulation_mult_proc.</span></span><span class="sig-name descname"><span class="pre">ProgressMultiProcess</span></span><a class="headerlink" href="#progress.example_simulation_mult_proc.ProgressMultiProcess" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">progress.example_simulation_mult_proc.</span></span><span class="sig-name descname"><span class="pre">ProgressMultiProcess</span></span><a class="headerlink" href="#progress.example_simulation_mult_proc.ProgressMultiProcess" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Handles multi-process execution (via <code class="docutils literal notranslate"><span class="pre">mpi4py</span></code>) of a Mixed Time Sequential
-Monte Carlo Simulation (MCS) for reliability analysis.</p>
-<p>This class sets up MPI parameters and provides methods to perform
-system reliability simulations. It leverages parallel processing
-to distribute Monte Carlo samples across multiple ranks.</p>
+<p>Handles multi-process execution (via <code class="docutils literal notranslate"><span class="pre">mpi4py</span></code>) of a Mixed Time Sequential Monte Carlo Simulation (MCS) for reliability analysis.</p>
+<p>This class sets up MPI parameters and provides methods to perform system reliability simulations. It leverages parallel processing to distribute Monte Carlo samples across multiple ranks.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="progress.example_simulation_mult_proc.ProgressMultiProcess.MCS">
 <span class="sig-name descname"><span class="pre">MCS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#progress.example_simulation_mult_proc.ProgressMultiProcess.MCS" title="Link to this definition">¶</a></dt>
@@ -52,16 +49,11 @@ to distribute Monte Carlo samples across multiple ranks.</p>
 <p>1. <strong>Read Configuration</strong>:
 Loads user settings (file paths, simulation hours, etc.) from <code class="docutils literal notranslate"><span class="pre">input_file</span></code>.</p>
 <p>2. <strong>Data Import &amp; Pre-Processing</strong>:
-- Reads system data (generators, branches, buses, loads, storage) using</p>
-<blockquote>
-<div><p><a class="reference internal" href="progress_mod_sysdata.html#progress.mod_sysdata.RASystemData" title="progress.mod_sysdata.RASystemData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RASystemData</span></code></a>.</p>
-</div></blockquote>
-<ul class="simple">
-<li><p>Prepares reliability- and capacity-related variables (e.g., MTTF, MTTR, capacities).</p></li>
-<li><p>Conditionally loads and processes wind data (if <code class="docutils literal notranslate"><span class="pre">wind_directory</span></code> is defined).</p></li>
-<li><p>Conditionally loads and processes solar data (if <code class="docutils literal notranslate"><span class="pre">solar_directory</span></code> is defined).</p></li>
-<li><p>Builds matrices required for optimization using <a class="reference internal" href="progress_mod_matrices.html#progress.mod_matrices.RAMatrices" title="progress.mod_matrices.RAMatrices"><code class="xref py py-class docutils literal notranslate"><span class="pre">RAMatrices</span></code></a>.</p></li>
-</ul>
+- Reads system data (generators, branches, buses, loads, storage) using <a class="reference internal" href="progress_mod_sysdata.html#progress.mod_sysdata.RASystemData" title="progress.mod_sysdata.RASystemData"><code class="xref py py-class docutils literal notranslate"><span class="pre">RASystemData</span></code></a>.
+- Prepares reliability- and capacity-related variables (e.g., MTTF, MTTR, capacities).
+- Conditionally loads and processes wind data (if <code class="docutils literal notranslate"><span class="pre">wind_directory</span></code> is defined).
+- Conditionally loads and processes solar data (if <code class="docutils literal notranslate"><span class="pre">solar_directory</span></code> is defined).
+- Builds matrices required for optimization using <a class="reference internal" href="progress_mod_matrices.html#progress.mod_matrices.RAMatrices" title="progress.mod_matrices.RAMatrices"><code class="xref py py-class docutils literal notranslate"><span class="pre">RAMatrices</span></code></a>.</p>
 <p>3. <strong>Monte Carlo Loop</strong>:
 Repeats the following for each sample:
 - Initializes each component in an up state or random initial state (e.g., wind class).
@@ -71,14 +63,12 @@ Repeats the following for each sample:
 <li><p>Updates next states (up/down) via random draws from reliability transition rates.</p></li>
 <li><p>Adjusts ESS states of charge to account for potential failures.</p></li>
 <li><p>Retrieves wind and solar power outputs (if configured).</p></li>
-<li><p>Performs an optimization-based dispatch (zonal or copper-sheet) to meet load</p></li>
+<li><p>Performs an optimization-based dispatch (zonal or copper-sheet) to meet load while minimizing generation costs and curtailment.</p></li>
+<li><p>Tracks Loss of Load (LOL) occurrences for reliability indices.</p></li>
 </ul>
-<p>while minimizing generation costs and curtailment.
-* Tracks Loss of Load (LOL) occurrences for reliability indices.</p>
 </div></blockquote>
 <p>4. <strong>Convergence Checks</strong>:
-Tracks reliability indices such as LOLP and EUE, and evaluates partial
-convergence at each sample (using rank 0 to aggregate data across processes).</p>
+Tracks reliability indices such as LOLP and EUE, and evaluates partial convergence at each sample (using rank 0 to aggregate data across processes).</p>
 <p>5. <strong>Final Aggregation</strong>:
 - Uses MPI to combine results across ranks.
 - Returns final reliability indices, record arrays, and references for plotting.</p>
@@ -155,7 +145,6 @@ convergence at each sample (using rank 0 to aggregate data across processes).</p
 <li class="toctree-l2"><a class="reference internal" href="progress_data_download_process.html">Progress Data Download Process Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="progress_example_simulation.html">Progress Example Simulation Module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Progress Example Simulation (Mult Proc) Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="progress_main_MPI.html">Progress Main MPI Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="progress_mod_kmeans.html">Progress K-Means Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="progress_mod_matrices.html">Progress Matrices Module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="progress_mod_plot.html">Progress Plot Module</a></li>
@@ -174,7 +163,7 @@ convergence at each sample (using rank 0 to aggregate data across processes).</p
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="api_reference.html">API Reference</a><ul>
       <li>Previous: <a href="progress_example_simulation.html" title="previous chapter">Progress Example Simulation Module</a></li>
-      <li>Next: <a href="progress_main_MPI.html" title="next chapter">Progress Main MPI Module</a></li>
+      <li>Next: <a href="progress_mod_kmeans.html" title="next chapter">Progress K-Means Module</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -195,7 +184,7 @@ convergence at each sample (using rank 0 to aggregate data across processes).</p
       &#169;2024, Atri Bera.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.2.3</a>
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |

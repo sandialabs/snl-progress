@@ -17,47 +17,34 @@ from datetime import datetime
 
 def MCS(input_file):
     """
-    Executes a Mixed Time Sequential Monte Carlo Simulation (MCS) for reliability analysis 
-    using data from various RA modules.
+    Executes a Mixed Time Sequential Monte Carlo Simulation (MCS) for reliability analysis using data from various RA modules.
 
     **Overview of the Process**:
 
     1. **Configuration & Setup**:
-       - Reads simulation parameters (e.g., number of samples, simulation hours, file locations) 
-         from a YAML file.
+       - Reads simulation parameters (e.g., number of samples, simulation hours, file locations) from a YAML file.
        - Initializes paths for system data, wind data, and solar data.
     
     2. **System Data & Preprocessing**:
-       - Creates instances of :class:`RASystemData <.mod_sysdata.RASystemData>` and 
-         :class:`RAUtilities <.mod_utilities.RAUtilities>` to read generator, branch, 
-         bus, load, and storage data, along with their reliability parameters 
-         (Mean Time To Failure, Mean Time To Repair, etc.).
+       - Creates instances of :class:`RASystemData <.mod_sysdata.RASystemData>` and :class:`RAUtilities <.mod_utilities.RAUtilities>` to read generator, branch, bus, load, and storage data, along with their reliability parameters (Mean Time To Failure, Mean Time To Repair, etc.).
        - Computes total transition rates and capacities for generation and transmission.
 
     3. **Wind & Solar Integration** (if specified):
-       - Invokes :class:`Wind <.mod_wind.Wind>` and :class:`Solar <.mod_solar.Solar>` classes 
-         to download/process wind or solar data, build transition rate matrices, 
-         and retrieve probability distributions or generation profiles.
+       - Invokes :class:`Wind <.mod_wind.Wind>` and :class:`Solar <.mod_solar.Solar>` classes to download/process wind or solar data, build transition rate matrices, and retrieve probability distributions or generation profiles.
 
     4. **Matrices & Optimization Setup**:
-       - Uses :class:`RAMatrices <.mod_matrices.RAMatrices>` to construct key model matrices 
-         (generator matrix, charging matrix, incidence matrix, curtailment matrix).
+       - Uses :class:`RAMatrices <.mod_matrices.RAMatrices>` to construct key model matrices (generator matrix, charging matrix, incidence matrix, curtailment matrix).
        - Defines internal bounds and callbacks for optimization variables.
 
     5. **Monte Carlo Simulation**:
-       - For each sample (from 1 to ``samples``), simulates a full year (``sim_hours`` hours), 
-         updating component states (up/down) based on reliability transitions.
-       - Recalculates available capacities, updates energy storage states, 
-         and computes net load after accounting for wind/solar generation.
-       - Performs an optimization-based economic dispatch (Zonal or Copper Sheet approach) 
-         to serve load while minimizing curtailment, capturing load loss events as needed.
+       - For each sample (from 1 to ``samples``), simulates a full year (``sim_hours`` hours), updating component states (up/down) based on reliability transitions.
+       - Recalculates available capacities, updates energy storage states, and computes net load after accounting for wind/solar generation.
+       - Performs an optimization-based economic dispatch (Zonal or Copper Sheet approach) to serve load while minimizing curtailment, capturing load loss events as needed.
        - Tracks reliability indices, state-of-charge, and curtailment for output.
 
     6. **Index Calculation & Convergence**:
-       - Accumulates reliability indices (e.g., LOLP, EUE) and checks partial convergence 
-         by computing the Coefficient of Variation (COV) of LOLP across samples.
-       - Writes final reliability metrics to a CSV file and optionally produces 
-         an outage heat map if a full-year simulation (8760 hours) is performed.
+       - Accumulates reliability indices (e.g., LOLP, EUE) and checks partial convergence by computing the Coefficient of Variation (COV) of LOLP across samples.
+       - Writes final reliability metrics to a CSV file and optionally produces an outage heat map if a full-year simulation (8760 hours) is performed.
 
     :param input_file: Path to the YAML configuration file that provides simulation settings.
     :type input_file: str
