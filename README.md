@@ -308,7 +308,7 @@ Once the API information is saved, users can move on to the `Solar` tab.
 
 <img src = "progress/Images/workflow/n_solar_3.png" width="660" height="440" alt="Solar" />
 
-**Step 3.** The next step involves adding wind data. Users may choose to upload their own wind speed data using the format specified in this [file](./progress/Data/Wind/windspeed_data.csv) or download the same from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). The windspeed data can then be used to generate a transition rate matrix using the `Process Wind Speed Data` button. The transition rate matrix will eventually be used by the MCS to estimate the wind power generation for each hour. 
+**Step 3.** The next step involves adding wind data. Users may choose to upload their own wind speed data using the format specified in this [file](./progress/Data/Wind/windspeed_data.csv) or download the same from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). The windspeed data can then be used to generate a transition rate matrix using the `Process Wind Speed Data` button. The transition rate matrix will eventually be used by the MCS to estimate the wind power generation for each hour. In case the user does not have wind installation in their system, they can select the `No Wind` option from the drop down list.
 
 |<img src = "progress/Images/workflow/n_wind_1.png" width="480" height="320" alt="Wind" />| <img src = "progress/Images/workflow/wind_2.png" width="480" height="320" alt="Wind" />|
 |-------------------------|-------------------------|
@@ -322,14 +322,12 @@ Once the API information is saved, users can move on to the `Solar` tab.
 
 <img src = "progress/Images/workflow/n_res_1.png" width="660" height="440" alt="Results" />
 
-Results are stored in a distinct folder for each run, the timestamp included in the folder name indicating a particular run. Some results, including load curtailment, solar and wind generation, and ESS SOC evolution are stored for each sample of the run in distinct folders within the directory created for that run. Other results, including system reliability indices, evolution of the LOLP and Coefficient of Variation (COV) across all samples, and heat maps of outages across different months of the year and hours of the day are stored in a separate folder titled `Indices`. These results are indicators of overall system reliability health while the results for the individual samples provide insight into the conditions that led to outages for these samples. 
+Results are stored in a distinct folder for each run, the timestamp included in the folder name indicating a particular run. Some results, including load curtailment, solar and wind generation, and ESS SOC evolution are stored for each sample of the run in distinct folders within the directory created for that run. Other results, including system reliability indices, evolution of the LOLP (bottom right) and Coefficient of Variation (COV) across all samples, and heat maps of outages across different months of the year and hours of the day are stored in a separate folder titled `Indices`. These results are indicators of overall system reliability health while the results for the individual samples provide insight into the conditions that led to outages for those samples. 
 
 |<img src = "progress/Images/workflow/res_heatmap.png" width="500" height="300" alt="Results" /> | <img src = "progress/Images/workflow/res_ess.png" width="500" height="300" alt="Results" /> |
 |-------------------------|-------------------------|
 |<img src = "progress/Images/workflow/res_loadcurt.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/res_wind.png" width="500" height="300" alt="Results" />|
-|-------------------------|-------------------------|
-
-
+|<img src = "progress/Images/workflow/n_res_COV.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/n_res_LOLP.png" width="500" height="300" alt="Results" />|
 
 ### B. Instructions for Running Simulations using the Command-Line on Local or Remote Computers/Servers
 
@@ -345,7 +343,7 @@ Before running the simulation, configure the [input.yaml](progress/input.yaml) f
 |`samples`| This is the number of samples that needs to be run for the MCS to converge and depends heavily on the system. Running a small number of samples (e.g., 10-20) might provide a trend of expected outages in the system, although it is recommended that the users run as many samples as required for the MCS to converge for more accurate results. The convergence can be tracked using the Coefficient of Variation (COV) metric plotted in the `COV_track.pdf` file, which can be found in the `Results` folder.|
 |`sim_hours`| The recommended number is 8760 hours or one full year for each sample.|
 |`load_factor`| Default value is 1. Users may tune this parameter to check how increasing or decreasing the hourly load profile by a constant factor affects system outages.|
-|`model`| Users can select a Copper Sheet or a Zonal Model. The Copper Sheet model runs faster but the Zonal Model might be more accurate.|
+|`model`| Users can select the `Copper Sheet Model` option for generation adequacy analysis where the transmission lines are not considered, or the `Zonal Model` option for a composite system reliability analysis, where a transportation model of the system is considered. The `Copper Sheet model` runs faster but the `Zonal Model` might generate for accurate results.|
 
 <a id="2step2"></a>
 **Step 2. Download Weather Data:**
