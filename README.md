@@ -3,9 +3,9 @@
 
 # <ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)
 
-Current release version: 1.0.0
+Current release version: v1.2.0
 
-Release date: 12/12/2024
+Release date: 06/04/2025
 
 ## Table of Contents
 - [Introduction](#intro)
@@ -45,6 +45,33 @@ Key features of ProGRESS include:
 [Back to Top](#top)
 ## Getting started
 <a id="getting-started"></a>
+
+### Easy Installation (Windows Executable)
+
+Follow these steps to install and run the Progress executable on Windows:
+
+1. **Download the Executable**  
+   - Go to the **Releases** section of this repository.
+   - Download the `win_progress_v_1.2.0.zip` file containing the executable.
+
+2. **Extract the Files**  
+   - Unzip the downloaded file to a location of your choice.
+
+3. **Run the Executable**  
+   - Navigate to the extracted folder.
+   - Double-click on `progress.exe` to launch the package.
+
+4. **Ensure Data Folder is properly structured**  
+   - The data folder is found in the following path relative to progress.exe:  
+     ```
+     Lib/progress/Data
+     ```
+    - The correct structure for the Data folder can be found [here](#data).
+
+5. **Download a Solver**
+   - The executable requires a solver to function, the instructions for downloading one can be found [here](#solver).
+
+### Manual Installation Instructions
 
 ### Prerequisites
 - Python (>= 3.9, <3.12) installed on your system
@@ -95,33 +122,8 @@ Key features of ProGRESS include:
 3. Install Dependencies:
     ```bash
     python -m pip install -r requirements.txt
-    
-### Easy Installation (Windows Executable)
 
-Follow these steps to install and run the Progress executable on Windows:
-
-1. **Download the Executable**  
-   - Go to the **Releases** section of this repository.
-   - Download the `win_progress_v_1.2.0.zip` file containing the executable.
-
-2. **Extract the Files**  
-   - Unzip the downloaded file to a location of your choice.
-
-3. **Run the Executable**  
-   - Navigate to the extracted folder.
-   - Double-click on `progress.exe` to launch the package.
-
-4. **Ensure Data Folder is properly structured**  
-   - The data folder is found in the following path relative to progress.exe:  
-     ```
-     Lib/progress/Data
-     ```
-    - The Data folder proper structure is found beneath solver installation.
-
-5. **Download a Solver**
-   - The executable requires a solver to function, see below.
-
-
+<a id="solver"></a>
 ### Solver Installation
 
 Ensure an optimization solver is installed on your machine. Solvers to consider include:
@@ -289,43 +291,43 @@ python -m progress
 
 When the application is first launched, users will see the home page:
 
-<img src = "progress/Images/workflow/home_page.png" width="660" height="440" alt="Home" />
+<img src = "progress/Images/workflow/n_home_page.png" width="660" height="440" alt="Home" />
 
 **Step 1.** After pressing the `Get Started` button, users will be prompted to enter API information. Ensure that you have signed up at the [NREL Developer Network](https://developer.nrel.gov/) beforehand using your details and obtained the required api key. You may skip this step if you plan on using your own data. 
 
-<img src = "progress/Images/workflow/API.png" width="660" height="440" alt="API" />
+<img src = "progress/Images/workflow/n_API.png" width="660" height="440" alt="API" />
 
 Once the API information is saved, users can move on to the `Solar` tab. 
 
 **Step 2a.** Users may upload their own solar power generation data using the format specified in this [file](./progress/Data/Solar/solar_data.xlsx) or download solar weather data from [NSRDB](https://nsrdb.nrel.gov/) and convert to solar power generation data using the tool. If downloading data, please check for the data availability at the website since the range of years for which data is available is updated periodically. ProGRESS uses [pvlib](https://pvlib-python.readthedocs.io/en/stable/) to convert the downloaded solar weather data to solar power generation data. In case the user does not have solar installation in their system, they can select the `No Solar` option from the drop down list. 
 
-|<img src = "progress/Images/workflow/solar_1.png" width="480" height="320" alt="Solar" /> | <img src = "progress/Images/workflow/solar_2.png" width="480" height="320" alt="Solar" /> |
+|<img src = "progress/Images/workflow/n_solar_1.png" width="480" height="320" alt="Solar" /> | <img src = "progress/Images/workflow/n_solar_2.png" width="480" height="320" alt="Solar" /> |
 |-------------------------|-------------------------|
 
 **Step 2b.** The next step involves clustering the solar power generation data. A k-means clustering algorithm is utilized to cluster the data into days with similar solar power generation patterns and values. These clusters are later utilized by the MCS to randomly select days based on the month of the year. Users are able to choose the optimum number of clusters by evaluating the performance of different cluster values. For example, if the user inputs `10` in the `No. of Clusters to Evaluate` field, the tool will evaluate the performance of clusters starting from `2` to `10`. The SSE and silhouette scores will be displayed on the GUI once the evaluation is complete and can be used to make informed decision on the optimal number of clusters. 
 
-<img src = "progress/Images/workflow/solar_3.png" width="660" height="440" alt="Solar" />
+<img src = "progress/Images/workflow/n_solar_3.png" width="660" height="440" alt="Solar" />
 
-**Step 3.** The next step involves adding wind data. Users may choose to upload their own wind speed data using the format specified in this [file](./progress/Data/Wind/windspeed_data.csv) or download the same from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). The windspeed data can then be used to generate a transition rate matrix using the `Process Wind Speed Data` button. The transition rate matrix will eventually be used by the MCS to estimate the wind power generation for each hour. 
+**Step 3.** The next step involves adding wind data. Users may choose to upload their own wind speed data using the format specified in this [file](./progress/Data/Wind/windspeed_data.csv) or download the same from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). The windspeed data can then be used to generate a transition rate matrix using the `Process Wind Speed Data` button. The transition rate matrix will eventually be used by the MCS to estimate the wind power generation for each hour. In case the user does not have wind installation in their system, they can select the `No Wind` option from the drop down list.
 
-|<img src = "progress/Images/workflow/wind_1.png" width="480" height="320" alt="Wind" />| <img src = "progress/Images/workflow/wind_2.png" width="480" height="320" alt="Wind" />|
+|<img src = "progress/Images/workflow/n_wind_1.png" width="480" height="320" alt="Wind" />| <img src = "progress/Images/workflow/wind_2.png" width="480" height="320" alt="Wind" />|
 |-------------------------|-------------------------|
 
 **Step 4.** Once all data has been added, the user can now run the simulation. Guidelines for adjusting the parameters on this page can be found [here](#2step1). Press the `Run Simulation` button once all the information is entered. The simulation progress will be displayed on the right side of the page.  
 
-<img src = "progress/Images/workflow/sim.png" width="660" height="440" alt="Sim" />
+<img src = "progress/Images/workflow/n_sim.png" width="660" height="440" alt="Sim" />
 
 <a id="results"></a>
 **Step 5.** Users may view the results within the application using the results viewer once the simulation is complete. 
 
-<img src = "progress/Images/workflow/results.png" width="660" height="440" alt="Results" />
+<img src = "progress/Images/workflow/n_res_1.png" width="660" height="440" alt="Results" />
 
-Results are stored in a distinct folder for each run, the timestamp included in the folder name indicating a particular run. Some results, including load curtailment, solar and wind generation, and ESS SOC evolution are stored for each sample of the run in distinct folders within the directory created for that run. Other results, including system reliability indices, evolution of the LOLP and Coefficient of Variation (COV) across all samples, and heat maps of outages across different months of the year and hours of the day are stored in a separate folder titled `Indices`. These results are indicators of overall system reliability health while the results for the individual samples provide insight into the conditions that led to outages for these samples. 
+Results are stored in a distinct folder for each run, the timestamp included in the folder name indicating a particular run. Some results, including load curtailment, solar and wind generation, and ESS SOC evolution are stored for each sample of the run in distinct folders within the directory created for that run. Other results, including system reliability indices, evolution of the LOLP (bottom right) and Coefficient of Variation (COV) across all samples, and heat maps of outages across different months of the year and hours of the day are stored in a separate folder titled `Indices`. These results are indicators of overall system reliability health while the results for the individual samples provide insight into the conditions that led to outages for those samples. 
 
 |<img src = "progress/Images/workflow/res_heatmap.png" width="500" height="300" alt="Results" /> | <img src = "progress/Images/workflow/res_ess.png" width="500" height="300" alt="Results" /> |
 |-------------------------|-------------------------|
 |<img src = "progress/Images/workflow/res_loadcurt.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/res_wind.png" width="500" height="300" alt="Results" />|
-
+|<img src = "progress/Images/workflow/n_res_COV.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/n_res_LOLP.png" width="500" height="300" alt="Results" />|
 
 ### B. Instructions for Running Simulations using the Command-Line on Local or Remote Computers/Servers
 
@@ -341,7 +343,7 @@ Before running the simulation, configure the [input.yaml](progress/input.yaml) f
 |`samples`| This is the number of samples that needs to be run for the MCS to converge and depends heavily on the system. Running a small number of samples (e.g., 10-20) might provide a trend of expected outages in the system, although it is recommended that the users run as many samples as required for the MCS to converge for more accurate results. The convergence can be tracked using the Coefficient of Variation (COV) metric plotted in the `COV_track.pdf` file, which can be found in the `Results` folder.|
 |`sim_hours`| The recommended number is 8760 hours or one full year for each sample.|
 |`load_factor`| Default value is 1. Users may tune this parameter to check how increasing or decreasing the hourly load profile by a constant factor affects system outages.|
-|`model`| Users can select a Copper Sheet or a Zonal Model. The Copper Sheet model runs faster but the Zonal Model might be more accurate.|
+|`model`| Users can select the `Copper Sheet Model` option for generation adequacy analysis where the transmission lines are not considered, or the `Zonal Model` option for a composite system reliability analysis, where a transportation model of the system is considered. The `Copper Sheet model` runs faster but the `Zonal Model` might generate for accurate results.|
 
 <a id="2step2"></a>
 **Step 2. Download Weather Data:**
