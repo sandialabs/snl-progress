@@ -291,42 +291,44 @@ python -m progress
 
 When the application is first launched, users will see the home page:
 
-<img src = "progress/Images/workflow/home_page.png" width="660" height="440" alt="Home" />
+<img src = "progress/Images/workflow/n_home_page.png" width="660" height="440" alt="Home" />
 
 **Step 1.** After pressing the `Get Started` button, users will be prompted to enter API information. Ensure that you have signed up at the [NREL Developer Network](https://developer.nrel.gov/) beforehand using your details and obtained the required api key. You may skip this step if you plan on using your own data. 
 
-<img src = "progress/Images/workflow/API.png" width="660" height="440" alt="API" />
+<img src = "progress/Images/workflow/n_API.png" width="660" height="440" alt="API" />
 
 Once the API information is saved, users can move on to the `Solar` tab. 
 
 **Step 2a.** Users may upload their own solar power generation data using the format specified in this [file](./progress/Data/Solar/solar_data.xlsx) or download solar weather data from [NSRDB](https://nsrdb.nrel.gov/) and convert to solar power generation data using the tool. If downloading data, please check for the data availability at the website since the range of years for which data is available is updated periodically. ProGRESS uses [pvlib](https://pvlib-python.readthedocs.io/en/stable/) to convert the downloaded solar weather data to solar power generation data. In case the user does not have solar installation in their system, they can select the `No Solar` option from the drop down list. 
 
-|<img src = "progress/Images/workflow/solar_1.png" width="480" height="320" alt="Solar" /> | <img src = "progress/Images/workflow/solar_2.png" width="480" height="320" alt="Solar" /> |
+|<img src = "progress/Images/workflow/n_solar_1.png" width="480" height="320" alt="Solar" /> | <img src = "progress/Images/workflow/n_solar_2.png" width="480" height="320" alt="Solar" /> |
 |-------------------------|-------------------------|
 
 **Step 2b.** The next step involves clustering the solar power generation data. A k-means clustering algorithm is utilized to cluster the data into days with similar solar power generation patterns and values. These clusters are later utilized by the MCS to randomly select days based on the month of the year. Users are able to choose the optimum number of clusters by evaluating the performance of different cluster values. For example, if the user inputs `10` in the `No. of Clusters to Evaluate` field, the tool will evaluate the performance of clusters starting from `2` to `10`. The SSE and silhouette scores will be displayed on the GUI once the evaluation is complete and can be used to make informed decision on the optimal number of clusters. 
 
-<img src = "progress/Images/workflow/solar_3.png" width="660" height="440" alt="Solar" />
+<img src = "progress/Images/workflow/n_solar_3.png" width="660" height="440" alt="Solar" />
 
 **Step 3.** The next step involves adding wind data. Users may choose to upload their own wind speed data using the format specified in this [file](./progress/Data/Wind/windspeed_data.csv) or download the same from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). The windspeed data can then be used to generate a transition rate matrix using the `Process Wind Speed Data` button. The transition rate matrix will eventually be used by the MCS to estimate the wind power generation for each hour. 
 
-|<img src = "progress/Images/workflow/wind_1.png" width="480" height="320" alt="Wind" />| <img src = "progress/Images/workflow/wind_2.png" width="480" height="320" alt="Wind" />|
+|<img src = "progress/Images/workflow/n_wind_1.png" width="480" height="320" alt="Wind" />| <img src = "progress/Images/workflow/wind_2.png" width="480" height="320" alt="Wind" />|
 |-------------------------|-------------------------|
 
 **Step 4.** Once all data has been added, the user can now run the simulation. Guidelines for adjusting the parameters on this page can be found [here](#2step1). Press the `Run Simulation` button once all the information is entered. The simulation progress will be displayed on the right side of the page.  
 
-<img src = "progress/Images/workflow/sim.png" width="660" height="440" alt="Sim" />
+<img src = "progress/Images/workflow/n_sim.png" width="660" height="440" alt="Sim" />
 
 <a id="results"></a>
 **Step 5.** Users may view the results within the application using the results viewer once the simulation is complete. 
 
-<img src = "progress/Images/workflow/results.png" width="660" height="440" alt="Results" />
+<img src = "progress/Images/workflow/n_res_1.png" width="660" height="440" alt="Results" />
 
 Results are stored in a distinct folder for each run, the timestamp included in the folder name indicating a particular run. Some results, including load curtailment, solar and wind generation, and ESS SOC evolution are stored for each sample of the run in distinct folders within the directory created for that run. Other results, including system reliability indices, evolution of the LOLP and Coefficient of Variation (COV) across all samples, and heat maps of outages across different months of the year and hours of the day are stored in a separate folder titled `Indices`. These results are indicators of overall system reliability health while the results for the individual samples provide insight into the conditions that led to outages for these samples. 
 
 |<img src = "progress/Images/workflow/res_heatmap.png" width="500" height="300" alt="Results" /> | <img src = "progress/Images/workflow/res_ess.png" width="500" height="300" alt="Results" /> |
 |-------------------------|-------------------------|
 |<img src = "progress/Images/workflow/res_loadcurt.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/res_wind.png" width="500" height="300" alt="Results" />|
+|-------------------------|-------------------------|
+
 
 
 ### B. Instructions for Running Simulations using the Command-Line on Local or Remote Computers/Servers
