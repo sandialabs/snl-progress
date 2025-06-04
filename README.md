@@ -3,9 +3,9 @@
 
 # <ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)
 
-Current release version: 1.0.0
+Current release version: v1.2.0
 
-Release date: 12/12/2024
+Release date: 06/04/2025
 
 ## Table of Contents
 - [Introduction](#intro)
