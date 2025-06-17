@@ -6,7 +6,7 @@ openpyxl==3.1.4
 seaborn==0.13.2
 scikit-learn==1.5.0
 kneed==0.8.5
-requests==2.32.3
+requests==2.32.4
 pvlib==0.11.0
 NREL-rex==0.2.86
 PySide6==6.5.2
