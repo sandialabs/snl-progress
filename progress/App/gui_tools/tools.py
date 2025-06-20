@@ -1,5 +1,6 @@
 import sys
-from PySide6.QtCore import Signal, QThread
+from PySide6.QtCore import Signal, QThread, QPropertyAnimation, QEasingCurve
+
 class DataHandler:
     """Contains all data necessary for GUI/optimization"""
     def __init__(self) -> None:
@@ -300,3 +301,21 @@ class StdoutBuffer:
 
     def flush(self):
         pass
+
+def show_frames(self, frame):
+    """Method to smoothly animate frame appearance."""
+    current_width = frame.width()
+    
+    if current_width == 0:
+        # Calculate the desired width based on the parent or layout
+        new_width = frame.parent().width()  # Use the parent's width or a fraction of it
+    else:
+        new_width = 0  # Collapse to 0 width
+
+    # Create a property animation for the maximum width
+    self.animation = QPropertyAnimation(frame, b"maximumWidth")
+    self.animation.setDuration(750)
+    self.animation.setStartValue(current_width)
+    self.animation.setEndValue(new_width)
+    self.animation.setEasingCurve(QEasingCurve.InOutQuart)
+    self.animation.start()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'sim_guigNDqJf.ui'
+## Form generated from reading UI file 'sim_guiMPMAJE.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -42,7 +42,7 @@ class Ui_sim_widget(object):
         self.frame_44.setFrameShape(QFrame.Shape.NoFrame)
         self.frame_44.setFrameShadow(QFrame.Shadow.Raised)
         self.horizontalLayout_36 = QHBoxLayout(self.frame_44)
-        self.horizontalLayout_36.setSpacing(0)
+        self.horizontalLayout_36.setSpacing(15)
         self.horizontalLayout_36.setObjectName(u"horizontalLayout_36")
         self.horizontalLayout_36.setContentsMargins(0, 9, 0, 0)
         self.frame_43 = QFrame(self.frame_44)
@@ -186,18 +186,27 @@ class Ui_sim_widget(object):
 
         self.horizontalLayout_36.addWidget(self.frame_43)
 
-        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_36.addItem(self.horizontalSpacer_24)
-
-        self.textBrowser_2 = QTextBrowser(self.frame_44)
+        self.sim_process_frame = QFrame(self.frame_44)
+        self.sim_process_frame.setObjectName(u"sim_process_frame")
+        self.sim_process_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.sim_process_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout = QHBoxLayout(self.sim_process_frame)
+        self.horizontalLayout.setSpacing(0)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.textBrowser_2 = QTextBrowser(self.sim_process_frame)
         self.textBrowser_2.setObjectName(u"textBrowser_2")
+        self.textBrowser_2.setMaximumSize(QSize(16777215, 16777215))
         self.textBrowser_2.setStyleSheet(u"")
+        self.textBrowser_2.setFrameShape(QFrame.Shape.StyledPanel)
 
-        self.horizontalLayout_36.addWidget(self.textBrowser_2)
+        self.horizontalLayout.addWidget(self.textBrowser_2)
 
-        self.horizontalLayout_36.setStretch(0, 1)
-        self.horizontalLayout_36.setStretch(2, 3)
+
+        self.horizontalLayout_36.addWidget(self.sim_process_frame)
+
+        self.horizontalLayout_36.setStretch(0, 3)
+        self.horizontalLayout_36.setStretch(1, 1)
 
         self.verticalLayout_27.addWidget(self.frame_44)
 

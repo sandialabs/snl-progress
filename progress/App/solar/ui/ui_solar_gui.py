@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'solar_guidpzHON.ui'
+## Form generated from reading UI file 'solar_guiqXTOuQ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -64,43 +64,17 @@ class Ui_solar_widget(object):
         sizePolicy.setHeightForWidth(self.widget_6.sizePolicy().hasHeightForWidth())
         self.widget_6.setSizePolicy(sizePolicy)
         self.widget_6.setStyleSheet(u"")
-        self.gridLayout = QGridLayout(self.widget_6)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.textBrowser_4 = QTextBrowser(self.widget_6)
-        self.textBrowser_4.setObjectName(u"textBrowser_4")
-        self.textBrowser_4.setStyleSheet(u"")
-        self.textBrowser_4.setFrameShape(QFrame.Shape.NoFrame)
-
-        self.gridLayout.addWidget(self.textBrowser_4, 0, 1, 2, 1)
-
-        self.pushButton_solar_dl = QPushButton(self.widget_6)
-        self.pushButton_solar_dl.setObjectName(u"pushButton_solar_dl")
-        self.pushButton_solar_dl.setEnabled(True)
-        self.pushButton_solar_dl.setMinimumSize(QSize(143, 0))
-        font1 = QFont()
-        font1.setFamilies([u"Arial"])
-        font1.setPointSize(18)
-        font1.setBold(False)
-        font1.setItalic(False)
-        self.pushButton_solar_dl.setFont(font1)
-        self.pushButton_solar_dl.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.pushButton_solar_dl.setStyleSheet(u"")
-
-        self.gridLayout.addWidget(self.pushButton_solar_dl, 2, 0, 1, 1)
-
-        self.widget_4 = QWidget(self.widget_6)
-        self.widget_4.setObjectName(u"widget_4")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.widget_4.sizePolicy().hasHeightForWidth())
-        self.widget_4.setSizePolicy(sizePolicy1)
-        self.widget_4.setStyleSheet(u"")
-        self.verticalLayout = QVBoxLayout(self.widget_4)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.solar_frame = QFrame(self.widget_4)
+        self.horizontalLayout_3 = QHBoxLayout(self.widget_6)
+        self.horizontalLayout_3.setSpacing(0)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.frame = QFrame(self.widget_6)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_8 = QVBoxLayout(self.frame)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.solar_frame = QFrame(self.frame)
         self.solar_frame.setObjectName(u"solar_frame")
         self.solar_frame.setFrameShape(QFrame.Shape.NoFrame)
         self.solar_frame.setFrameShadow(QFrame.Shadow.Raised)
@@ -110,11 +84,11 @@ class Ui_solar_widget(object):
         self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.label_20 = QLabel(self.solar_frame)
         self.label_20.setObjectName(u"label_20")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.label_20.sizePolicy().hasHeightForWidth())
-        self.label_20.setSizePolicy(sizePolicy2)
+        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.label_20.sizePolicy().hasHeightForWidth())
+        self.label_20.setSizePolicy(sizePolicy1)
         self.label_20.setStyleSheet(u"")
 
         self.verticalLayout_3.addWidget(self.label_20)
@@ -125,15 +99,15 @@ class Ui_solar_widget(object):
         self.comboBox_2.addItem("")
         self.comboBox_2.addItem("")
         self.comboBox_2.setObjectName(u"comboBox_2")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.comboBox_2.sizePolicy().hasHeightForWidth())
-        self.comboBox_2.setSizePolicy(sizePolicy3)
+        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.comboBox_2.sizePolicy().hasHeightForWidth())
+        self.comboBox_2.setSizePolicy(sizePolicy2)
         self.comboBox_2.setMinimumSize(QSize(0, 30))
-        font2 = QFont()
-        font2.setPointSize(11)
-        self.comboBox_2.setFont(font2)
+        font1 = QFont()
+        font1.setPointSize(11)
+        self.comboBox_2.setFont(font1)
         self.comboBox_2.setStyleSheet(u"")
         self.comboBox_2.setEditable(False)
         self.comboBox_2.setMaxVisibleItems(10)
@@ -147,21 +121,17 @@ class Ui_solar_widget(object):
         self.verticalLayout_3.addWidget(self.pushButton_solar_upload)
 
 
-        self.verticalLayout.addWidget(self.solar_frame)
+        self.verticalLayout_8.addWidget(self.solar_frame)
 
-
-        self.gridLayout.addWidget(self.widget_4, 0, 0, 1, 1)
-
-        self.widget_5 = QWidget(self.widget_6)
-        self.widget_5.setObjectName(u"widget_5")
-        self.widget_5.setEnabled(True)
-        sizePolicy.setHeightForWidth(self.widget_5.sizePolicy().hasHeightForWidth())
-        self.widget_5.setSizePolicy(sizePolicy)
-        self.widget_5.setStyleSheet(u"")
-        self.verticalLayout_9 = QVBoxLayout(self.widget_5)
-        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
-        self.verticalLayout_9.setContentsMargins(0, 0, 0, 0)
-        self.solar_frame_2 = QFrame(self.widget_5)
+        self.solar_box = QFrame(self.frame)
+        self.solar_box.setObjectName(u"solar_box")
+        self.solar_box.setFrameShape(QFrame.Shape.NoFrame)
+        self.solar_box.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout = QVBoxLayout(self.solar_box)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.solar_frame_2 = QFrame(self.solar_box)
         self.solar_frame_2.setObjectName(u"solar_frame_2")
         self.solar_frame_2.setFrameShape(QFrame.Shape.NoFrame)
         self.solar_frame_2.setFrameShadow(QFrame.Shadow.Raised)
@@ -182,9 +152,9 @@ class Ui_solar_widget(object):
         self.verticalLayout_4.addWidget(self.lineEdit_starty)
 
 
-        self.verticalLayout_9.addWidget(self.solar_frame_2)
+        self.verticalLayout.addWidget(self.solar_frame_2)
 
-        self.solar_frame_3 = QFrame(self.widget_5)
+        self.solar_frame_3 = QFrame(self.solar_box)
         self.solar_frame_3.setObjectName(u"solar_frame_3")
         self.solar_frame_3.setFrameShape(QFrame.Shape.NoFrame)
         self.solar_frame_3.setFrameShadow(QFrame.Shadow.Raised)
@@ -204,22 +174,59 @@ class Ui_solar_widget(object):
 
         self.verticalLayout_5.addWidget(self.lineEdit_endy)
 
+        self.pushButton_solar_dl = QPushButton(self.solar_frame_3)
+        self.pushButton_solar_dl.setObjectName(u"pushButton_solar_dl")
+        self.pushButton_solar_dl.setEnabled(True)
+        self.pushButton_solar_dl.setMinimumSize(QSize(143, 0))
+        font2 = QFont()
+        font2.setFamilies([u"Arial"])
+        font2.setPointSize(18)
+        font2.setBold(False)
+        font2.setItalic(False)
+        self.pushButton_solar_dl.setFont(font2)
+        self.pushButton_solar_dl.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.pushButton_solar_dl.setStyleSheet(u"")
 
-        self.verticalLayout_9.addWidget(self.solar_frame_3)
+        self.verticalLayout_5.addWidget(self.pushButton_solar_dl)
 
 
-        self.gridLayout.addWidget(self.widget_5, 1, 0, 1, 1)
+        self.verticalLayout.addWidget(self.solar_frame_3)
 
+
+        self.verticalLayout_8.addWidget(self.solar_box)
+
+
+        self.horizontalLayout_3.addWidget(self.frame)
+
+        self.solar_process = QFrame(self.widget_6)
+        self.solar_process.setObjectName(u"solar_process")
+        self.solar_process.setFrameShape(QFrame.Shape.NoFrame)
+        self.solar_process.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_10 = QVBoxLayout(self.solar_process)
+        self.verticalLayout_10.setSpacing(0)
+        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.verticalLayout_10.setContentsMargins(0, 0, 0, 0)
+        self.textBrowser_4 = QTextBrowser(self.solar_process)
+        self.textBrowser_4.setObjectName(u"textBrowser_4")
+        self.textBrowser_4.setStyleSheet(u"")
+        self.textBrowser_4.setFrameShape(QFrame.Shape.NoFrame)
+
+        self.verticalLayout_10.addWidget(self.textBrowser_4)
+
+
+        self.horizontalLayout_3.addWidget(self.solar_process)
+
+        self.horizontalLayout_3.setStretch(0, 1)
 
         self.gridLayout_4.addWidget(self.widget_6, 0, 0, 1, 1)
 
         self.widget_10 = QWidget(self.frame_4)
         self.widget_10.setObjectName(u"widget_10")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
-        self.widget_10.setSizePolicy(sizePolicy4)
+        sizePolicy3 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy3.setHorizontalStretch(0)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.widget_10.sizePolicy().hasHeightForWidth())
+        self.widget_10.setSizePolicy(sizePolicy3)
         self.widget_10.setStyleSheet(u"")
         self.horizontalLayout = QHBoxLayout(self.widget_10)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -366,7 +373,7 @@ class Ui_solar_widget(object):
         self.pushButton_2.setObjectName(u"pushButton_2")
         self.pushButton_2.setMinimumSize(QSize(135, 0))
         self.pushButton_2.setSizeIncrement(QSize(0, 0))
-        self.pushButton_2.setFont(font1)
+        self.pushButton_2.setFont(font2)
         self.pushButton_2.setStyleSheet(u"")
 
         self.horizontalLayout_22.addWidget(self.pushButton_2)
@@ -427,13 +434,7 @@ class Ui_solar_widget(object):
 
         self.verticalLayout_38.addWidget(self.lineEdit_2)
 
-
-        self.verticalLayout_43.addWidget(self.solar2_frame_54)
-
-
-        self.verticalLayout_21.addWidget(self.frame_30)
-
-        self.frame_31 = QFrame(self.widget_2)
+        self.frame_31 = QFrame(self.solar2_frame_54)
         self.frame_31.setObjectName(u"frame_31")
         self.frame_31.setStyleSheet(u"")
         self.frame_31.setFrameShape(QFrame.Shape.NoFrame)
@@ -444,13 +445,19 @@ class Ui_solar_widget(object):
         self.pushButton_3 = QPushButton(self.frame_31)
         self.pushButton_3.setObjectName(u"pushButton_3")
         self.pushButton_3.setMinimumSize(QSize(135, 0))
-        self.pushButton_3.setFont(font1)
+        self.pushButton_3.setFont(font2)
         self.pushButton_3.setStyleSheet(u"")
 
         self.horizontalLayout_25.addWidget(self.pushButton_3)
 
 
-        self.verticalLayout_21.addWidget(self.frame_31)
+        self.verticalLayout_38.addWidget(self.frame_31)
+
+
+        self.verticalLayout_43.addWidget(self.solar2_frame_54)
+
+
+        self.verticalLayout_21.addWidget(self.frame_30)
 
 
         self.verticalLayout_22.addWidget(self.widget_2)
@@ -458,32 +465,54 @@ class Ui_solar_widget(object):
 
         self.horizontalLayout_27.addWidget(self.frame_33)
 
-        self.frame_29 = QFrame(self.frame_32)
-        self.frame_29.setObjectName(u"frame_29")
-        self.frame_29.setStyleSheet(u"")
-        self.frame_29.setFrameShape(QFrame.Shape.NoFrame)
-        self.horizontalLayout_23 = QHBoxLayout(self.frame_29)
-        self.horizontalLayout_23.setSpacing(6)
-        self.horizontalLayout_23.setObjectName(u"horizontalLayout_23")
-        self.horizontalLayout_23.setContentsMargins(0, 0, 0, 0)
-        self.textBrowser_6 = QTextBrowser(self.frame_29)
+        self.solar_box_2 = QFrame(self.frame_32)
+        self.solar_box_2.setObjectName(u"solar_box_2")
+        self.solar_box_2.setStyleSheet(u"")
+        self.solar_box_2.setFrameShape(QFrame.Shape.NoFrame)
+        self.horizontalLayout_6 = QHBoxLayout(self.solar_box_2)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.solar_process_3 = QFrame(self.solar_box_2)
+        self.solar_process_3.setObjectName(u"solar_process_3")
+        self.solar_process_3.setFrameShape(QFrame.Shape.NoFrame)
+        self.solar_process_3.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_5 = QHBoxLayout(self.solar_process_3)
+        self.horizontalLayout_5.setSpacing(0)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.textBrowser_6 = QTextBrowser(self.solar_process_3)
         self.textBrowser_6.setObjectName(u"textBrowser_6")
         self.textBrowser_6.setStyleSheet(u"")
 
-        self.horizontalLayout_23.addWidget(self.textBrowser_6)
+        self.horizontalLayout_5.addWidget(self.textBrowser_6)
 
-        self.textBrowser_5 = QTextBrowser(self.frame_29)
+
+        self.horizontalLayout_6.addWidget(self.solar_process_3)
+
+        self.solar_process_2 = QFrame(self.solar_box_2)
+        self.solar_process_2.setObjectName(u"solar_process_2")
+        self.solar_process_2.setFrameShape(QFrame.Shape.NoFrame)
+        self.solar_process_2.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_4 = QHBoxLayout(self.solar_process_2)
+        self.horizontalLayout_4.setSpacing(0)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.textBrowser_5 = QTextBrowser(self.solar_process_2)
         self.textBrowser_5.setObjectName(u"textBrowser_5")
         self.textBrowser_5.setStyleSheet(u"")
-        self.textBrowser_5.setFrameShape(QFrame.Shape.NoFrame)
+        self.textBrowser_5.setFrameShape(QFrame.Shape.StyledPanel)
 
-        self.horizontalLayout_23.addWidget(self.textBrowser_5)
+        self.horizontalLayout_4.addWidget(self.textBrowser_5)
 
-        self.horizontalLayout_23.setStretch(0, 2)
-        self.horizontalLayout_23.setStretch(1, 1)
 
-        self.horizontalLayout_27.addWidget(self.frame_29)
+        self.horizontalLayout_6.addWidget(self.solar_process_2)
 
+        self.horizontalLayout_6.setStretch(0, 1)
+        self.horizontalLayout_6.setStretch(1, 1)
+
+        self.horizontalLayout_27.addWidget(self.solar_box_2)
+
+        self.horizontalLayout_27.setStretch(0, 1)
         self.horizontalLayout_27.setStretch(1, 1)
 
         self.verticalLayout_23.addWidget(self.frame_32)
@@ -497,10 +526,10 @@ class Ui_solar_widget(object):
         self.horizontalLayout_26.setContentsMargins(0, 0, 0, 0)
         self.pushButton_DI_previous_5 = QPushButton(self.widget_17)
         self.pushButton_DI_previous_5.setObjectName(u"pushButton_DI_previous_5")
-        sizePolicy3.setHeightForWidth(self.pushButton_DI_previous_5.sizePolicy().hasHeightForWidth())
-        self.pushButton_DI_previous_5.setSizePolicy(sizePolicy3)
+        sizePolicy2.setHeightForWidth(self.pushButton_DI_previous_5.sizePolicy().hasHeightForWidth())
+        self.pushButton_DI_previous_5.setSizePolicy(sizePolicy2)
         self.pushButton_DI_previous_5.setMinimumSize(QSize(55, 25))
-        self.pushButton_DI_previous_5.setFont(font1)
+        self.pushButton_DI_previous_5.setFont(font2)
         self.pushButton_DI_previous_5.setStyleSheet(u"")
 
         self.horizontalLayout_26.addWidget(self.pushButton_DI_previous_5)
@@ -512,7 +541,7 @@ class Ui_solar_widget(object):
         self.pushButton_DI_next_5 = QPushButton(self.widget_17)
         self.pushButton_DI_next_5.setObjectName(u"pushButton_DI_next_5")
         self.pushButton_DI_next_5.setMinimumSize(QSize(45, 25))
-        self.pushButton_DI_next_5.setFont(font1)
+        self.pushButton_DI_next_5.setFont(font2)
         self.pushButton_DI_next_5.setStyleSheet(u"")
 
         self.horizontalLayout_26.addWidget(self.pushButton_DI_next_5)
@@ -536,7 +565,6 @@ class Ui_solar_widget(object):
 
     def retranslateUi(self, solar_widget):
         solar_widget.setWindowTitle(QCoreApplication.translate("solar_widget", u"Form", None))
-        self.pushButton_solar_dl.setText(QCoreApplication.translate("solar_widget", u"Download Solar Data", None))
         self.label_20.setText(QCoreApplication.translate("solar_widget", u"Data input:", None))
         self.comboBox_2.setItemText(0, QCoreApplication.translate("solar_widget", u"--Select Option--", None))
         self.comboBox_2.setItemText(1, QCoreApplication.translate("solar_widget", u"Download Solar Data from NSRDB", None))
@@ -548,6 +576,7 @@ class Ui_solar_widget(object):
         self.lineEdit_starty.setText("")
         self.label_26.setText(QCoreApplication.translate("solar_widget", u"End Year:", None))
         self.lineEdit_endy.setText("")
+        self.pushButton_solar_dl.setText(QCoreApplication.translate("solar_widget", u"Download Solar Data", None))
         self.pushButton_DI_previous_2.setText(QCoreApplication.translate("solar_widget", u"Previous", None))
         self.pushButton_DI_next_2.setText(QCoreApplication.translate("solar_widget", u"Next", None))
         self.pushButton.setText(QCoreApplication.translate("solar_widget", u"Skip", None))

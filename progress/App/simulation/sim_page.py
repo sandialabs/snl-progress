@@ -4,7 +4,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
 from progress.paths import get_path
 import os
-from progress.App.gui_tools.tools import WorkerThread
+from progress.App.gui_tools.tools import WorkerThread, show_frames
 from progress.mod_matrices import RAMatrices
 from progress.mod_plot import RAPlotTools
 import numpy as np
@@ -32,6 +32,8 @@ class sim_form(QWidget, Ui_sim_widget):
         self.pushButton_6.clicked.connect(lambda: self.page_changer_next.emit())
         self.pushButton_5.clicked.connect(self.run)
 
+        self.sim_process_frame.setMaximumWidth(0)
+
         self.plot_count = 0
 
     def handle_output(self, text_browser, text):
@@ -49,7 +51,7 @@ class sim_form(QWidget, Ui_sim_widget):
     def run(self, ):
         # save input on simulation page
         self.save_mcsinput()
-
+        show_frames(self, self.sim_process_frame)
         # create and start worker thread for running MCS
         self.worker_model = WorkerThread(self.MCS, self.current_text)
         self.worker_model.output_updated.connect(lambda text: self.handle_output(self.textBrowser_2, text))

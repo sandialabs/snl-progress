@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QMessageBox, QFileDialog, QLabel, QSizePo
 from progress.App.solar.ui.ui_solar_gui import Ui_solar_widget
 from PySide6.QtCore import Signal, Qt
 from progress.mod_solar import Solar
-from progress.App.gui_tools.tools import WorkerThread, StdoutBuffer
+from progress.App.gui_tools.tools import WorkerThread, StdoutBuffer, show_frames
 from progress.mod_kmeans import KMeans_Pipeline
 from progress.paths import get_path
 base_dir = get_path()
@@ -28,7 +28,7 @@ class solar_form(QWidget, Ui_solar_widget):
         self.pushButton.clicked.connect(lambda: self.page_changer_next.emit())
 
 
-        self.widget_5.setVisible(False)
+      #  self.widget_5.setVisible(False)
         self.textBrowser_4.setVisible(False)
         self.pushButton_solar_dl.setVisible(False)
         self.pushButton_DI_next_2.setVisible(False)
@@ -51,6 +51,12 @@ class solar_form(QWidget, Ui_solar_widget):
         self.tester=0
         self.png_count =0
         self.counter = 0
+        self.solar_box_2.setMaximumWidth(0)
+        self.solar_process.setMaximumWidth(0)
+        self.solar_process_2.setMaximumWidth(0)
+       # self.solar_process_3.setMaximumWidth(0)
+        self.solar_box.setMaximumWidth(0)
+        self.solar2_frame_54.setMaximumWidth(0)
 
     def show_help_clusters(self):
         QMessageBox.information(self, "Clusters Help", "This step finds the optimum number of clusters to evaluate.")
@@ -60,19 +66,28 @@ class solar_form(QWidget, Ui_solar_widget):
 
     def solar_cb_changed(self, index):
         if index == 1:
+            show_frames(self,self.solar_box)
             self.textBrowser_4.setVisible(True)
-            self.widget_5.setVisible(True)
+          #  self.widget_5.setVisible(True)
             self.pushButton_solar_dl.setVisible(True)
             self.pushButton_solar_upload.setVisible(False)
         elif index == 2:
+            #self.solar_box.setMaximumWidth(0)
             self.pushButton_solar_upload.setVisible(True)
             self.textBrowser_4.setVisible(False)
-            self.widget_5.setVisible(False)
+
+          #  self.widget_5.setVisible(False)
             self.pushButton_solar_dl.setVisible(False)
             # self.pushButton_DI_next_2.setVisible(True)
+            if self.solar_box.width() >0:
+                show_frames(self,self.solar_box)
         elif index == 3:
+            self.pushButton_solar_upload.setVisible(False)
+           # self.solar_box.setMaximumWidth(0)
             self.data_handler.set_solar_directory(False)
             self.pushButton_DI_next_2.setVisible(True)
+            if self.solar_box.width() >0:
+                show_frames(self,self.solar_box)
 
     def upload_solar_data(self):
 
@@ -85,6 +100,7 @@ class solar_form(QWidget, Ui_solar_widget):
 
     # download weather data and convert to solar generation data for all sites
     def solar_data_process(self):
+        show_frames(self, self.solar_process)
         self.textBrowser_4.append("Downloading solar data...")
         self.input_starty = int(self.lineEdit_starty.text())
         self.input_endy = int(self.lineEdit_endy.text())
@@ -128,9 +144,11 @@ class solar_form(QWidget, Ui_solar_widget):
 
     def kmeans_eval(self):
 
+
         if hasattr(self, 'label_sse'):
             self.label_sse.setVisible(False)
             self.horizontalLayout_23.removeWidget(self.label_sse)
+
         self.textBrowser_6.setVisible(True)
         self.textBrowser_5.setVisible(True)
         self.solar_site_data = self.solar_directory + "/solar_sites.csv"
@@ -140,9 +158,11 @@ class solar_form(QWidget, Ui_solar_widget):
         QMessageBox.information(self, "Clustering Metrics", "Press OK to continue. This may take a few minutes.")
 
         self.clust_eval = self.lineEdit.text()
+        self.solar_box_2.setMaximumWidth(16777215)
 
         # Create a worker thread for the instantiation of KMeans_Pipeline
         self.worker_pipeline = WorkerThread(self.create_pipeline)
+       # show_frames(self, self.solar_process_3)
         self.worker_pipeline.output_updated.connect(lambda text: self.handle_output(self.textBrowser_6, text))
         #self.worker_pipeline.finished.connect(self.start_test_metrics)
         self.worker_pipeline.finished.connect(self.checker)
@@ -150,11 +170,13 @@ class solar_form(QWidget, Ui_solar_widget):
         self.worker_pipeline.start()
 
     def checker(self):
+
         if self.counter==0:
             # print(self.counter)
             self.counter = 1
             # print(self.counter)
         else:
+            show_frames(self, self.solar_process_3)
             self.start_test_metrics()
             self.counter = 0
 
@@ -214,13 +236,23 @@ class solar_form(QWidget, Ui_solar_widget):
                 elif self.png_count ==1 :
                     self.textBrowser_6.hide()
 
-                    # Create a QLabel to display the image
+
                     self.label_sse = QLabel()
                     self.label_sse.setPixmap(pixmap)
-                    self.label_sse.setPixmap(pixmap.scaled(self.textBrowser_6.width(), self.textBrowser_6.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                    self.label_sse.setScaledContents(True)  # Enable scaling
                     self.label_sse.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-                    self.horizontalLayout_23.insertWidget(0, self.label_sse)
+                    # Insert the label into the layout
+                    self.horizontalLayout_5.insertWidget(0, self.label_sse)
+
+
+                    # Create a QLabel to display the image
+                    # self.label_sse = QLabel()
+                    # self.label_sse.setPixmap(pixmap)
+                    # self.label_sse.setPixmap(pixmap.scaled(self.textBrowser_6.width(), self.textBrowser_6.height(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                    # self.label_sse.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+                    # self.horizontalLayout_5.insertWidget(0, self.label_sse)
                     self.png_count = 0
 
                     # label.setAlignment(Qt.AlignCenter)
@@ -250,6 +282,8 @@ class solar_form(QWidget, Ui_solar_widget):
     def on_workers_finished(self):
         # QMessageBox.information(self, "Clustering Metrics", "Please look at SSE curve and silhouette score results to make an informed choice on the number of clusters.")
         self.display_png(self.pdf_path)
+        self.solar_process_2.setMinimumWidth(300)
+        show_frames(self, self.solar2_frame_54)
         # self.display_text_file(self.cluster_results)
 
     def kmeans_gen(self):

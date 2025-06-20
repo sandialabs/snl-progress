@@ -5,7 +5,7 @@ from progress.mod_wind import Wind
 import pandas as pd
 import numpy as np
 import os
-from progress.App.gui_tools.tools import WorkerThread, StdoutBuffer
+from progress.App.gui_tools.tools import WorkerThread, StdoutBuffer, show_frames
 
 from progress.paths import get_path
 base_dir = get_path()
@@ -25,13 +25,13 @@ class wind_form(QWidget, Ui_wind_widget):
         # # button connections in tab widget "wind"
         self.pushButton_DI_next_3.clicked.connect(lambda: self.page_changer_next.emit())
         self.pushButton_DI_previous_3.clicked.connect(lambda: self.page_changer_previous.emit())
-        self.widget_9.setVisible(False)
+        #self.widget_9.setVisible(False)
         self.pushButton_4.setVisible(False)
         self.pushButton_7.setVisible(False)
         self.textBrowser_3.setVisible(False)
         self.pushButton_wind_upload.setVisible(False)
         self.pushButton_DI_next_3.setVisible(False)
-        self.pushButton_help_wind.setVisible(False)
+        #self.pushButton_help_wind.setVisible(False)
         self.comboBox_3.currentIndexChanged.connect(self.wind_cb_changed)
         self.pushButton_wind_upload.clicked.connect(self.upload_wind_data)
         self.pushButton_help_wind.clicked.connect(self.wind_process_help)
@@ -39,21 +39,32 @@ class wind_form(QWidget, Ui_wind_widget):
         self.pushButton_7.clicked.connect(self.process_existing_wdata)
         self.wind_directory = os.path.join(base_dir, "Data", "Wind")
         self.data_handler.set_wind_directory(self.wind_directory)
+        self.wind_box.setMaximumWidth(0)
 
     def wind_cb_changed(self, index):
         if index == 1:
-            self.widget_9.setVisible(True)
+           # self.widget_9.setVisible(True)
+           # self.pushButton_help_wind.setVisible(True)
+            self.pushButton_wind_upload.setVisible(False)
             self.pushButton_4.setVisible(True)
             self.pushButton_7.setVisible(False)
+            show_frames(self,self.wind_box)
+
         elif index == 2:
-            self.pushButton_help_wind.setVisible(True)
+           # self.pushButton_help_wind.setVisible(False)
             self.pushButton_DI_next_3.setVisible(True)
-            self.widget_9.setVisible(False)
+            #self.widget_9.setVisible(False)
             self.pushButton_4.setVisible(False)
             self.pushButton_wind_upload.setVisible(True)
+            if self.wind_box.width() >0:
+                show_frames(self,self.wind_box)
         elif index == 3:
+         #   self.pushButton_help_wind.setVisible(False)
             self.data_handler.set_wind_directory(False)
+            self.pushButton_wind_upload.setVisible(False)
             self.pushButton_DI_next_3.setVisible(True)
+            if self.wind_box.width() >0:
+                show_frames(self,self.wind_box)
 
     def upload_wind_data(self):
 
