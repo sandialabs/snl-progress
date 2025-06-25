@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'sim_guiMPMAJE.ui'
+## Form generated from reading UI file 'sim_guiaCszFG.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -255,7 +255,7 @@ class Ui_sim_widget(object):
         self.label_12.setText(QCoreApplication.translate("sim_widget", u"Samples:", None))
         self.label_17.setText(QCoreApplication.translate("sim_widget", u"Simulation hours:", None))
         self.lineEdit_5.setText(QCoreApplication.translate("sim_widget", u"8760", None))
-        self.label_19.setText(QCoreApplication.translate("sim_widget", u"Load Factor", None))
+        self.label_19.setText(QCoreApplication.translate("sim_widget", u"Load Scaling Factor:", None))
         self.lineEdit_6.setText(QCoreApplication.translate("sim_widget", u"1", None))
         self.label_18.setText(QCoreApplication.translate("sim_widget", u"Model type:", None))
         self.comboBox.setItemText(0, QCoreApplication.translate("sim_widget", u"Zonal Model", None))

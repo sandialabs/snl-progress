@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'wind_guiMIxzwl.ui'
+## Form generated from reading UI file 'wind_guitDnHaE.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -27,7 +27,7 @@ class Ui_wind_widget(object):
         wind_widget.resize(1406, 876)
         self.verticalLayout_6 = QVBoxLayout(wind_widget)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_6.setContentsMargins(9, 9, 9, 9)
         self.frame_5 = QFrame(wind_widget)
         self.frame_5.setObjectName(u"frame_5")
         self.frame_5.setFrameShape(QFrame.Shape.NoFrame)
@@ -69,7 +69,7 @@ class Ui_wind_widget(object):
         self.verticalLayout_3 = QVBoxLayout(self.wind_frame_2)
         self.verticalLayout_3.setSpacing(15)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_3.setContentsMargins(9, 9, 9, 9)
         self.label_27 = QLabel(self.wind_frame_2)
         self.label_27.setObjectName(u"label_27")
         sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -121,7 +121,7 @@ class Ui_wind_widget(object):
         self.wind_box.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout = QVBoxLayout(self.wind_box)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setContentsMargins(9, 9, 9, 9)
         self.wind_frame_3 = QFrame(self.wind_box)
         self.wind_frame_3.setObjectName(u"wind_frame_3")
         self.wind_frame_3.setFrameShape(QFrame.Shape.NoFrame)
@@ -129,7 +129,7 @@ class Ui_wind_widget(object):
         self.verticalLayout_4 = QVBoxLayout(self.wind_frame_3)
         self.verticalLayout_4.setSpacing(15)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_4.setContentsMargins(9, 9, 9, 9)
         self.label_31 = QLabel(self.wind_frame_3)
         self.label_31.setObjectName(u"label_31")
 

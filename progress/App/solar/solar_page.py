@@ -22,7 +22,8 @@ class solar_form(QWidget, Ui_solar_widget):
 
         self.data_handler = data_handler
         self.pushButton_DI_previous_2.clicked.connect(lambda: self.page_changer_previous.emit())
-        self.pushButton_DI_next_2.clicked.connect(lambda: self.stackedWidget_2.setCurrentIndex(1))
+        self.pushButton_DI_next_2.clicked.connect(self.skip_check)
+        # self.pushButton_DI_next_2.clicked.connect(lambda: self.stackedWidget_2.setCurrentIndex(1))
         self.pushButton_DI_next_5.clicked.connect(lambda: self.page_changer_next.emit())
         self.pushButton_DI_previous_5.clicked.connect(lambda: self.stackedWidget_2.setCurrentIndex(0))
         self.pushButton.clicked.connect(lambda: self.page_changer_next.emit())
@@ -57,6 +58,14 @@ class solar_form(QWidget, Ui_solar_widget):
        # self.solar_process_3.setMaximumWidth(0)
         self.solar_box.setMaximumWidth(0)
         self.solar2_frame_54.setMaximumWidth(0)
+
+    def skip_check(self):
+        if self.comboBox_2.currentIndex() == 3:
+            self.page_changer_next.emit()
+            print("here")
+        else:
+            self.stackedWidget_2.setCurrentIndex(1)
+            print("okay")
 
     def show_help_clusters(self):
         QMessageBox.information(self, "Clusters Help", "This step finds the optimum number of clusters to evaluate.")

@@ -83,6 +83,8 @@ class MainAppWindow(QMainWindow, Ui_MainWindow):
         self.light_button.clicked.connect(self.apply_light_theme)
         self.dark_button.clicked.connect(self.apply_dark_theme)
         self.apply_light_theme()
+        #solver connection
+        self.set_solve.clicked.connect(self.set_sol)
 
     def load_sys_data(self):
         rasd = RASystemData()
@@ -159,6 +161,10 @@ class MainAppWindow(QMainWindow, Ui_MainWindow):
         """Apply the light theme."""
         light = os.path.join(base_dir,"App", "theme", "light.qss")
         self.load_stylesheet(light)
+
+    def set_sol(self):
+        solver = self.solve_text.text()
+        self.data_handler.set_solver(solver)
 
 def main():
     """

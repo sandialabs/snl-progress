@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowJVojMk.ui'
+## Form generated from reading UI file 'mainwindowAeoYQw.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -16,7 +16,8 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QGridLayout, QMainWindow, QPushButton,
+from PySide6.QtWidgets import (QApplication, QFrame, QGridLayout, QHBoxLayout,
+    QLabel, QLineEdit, QMainWindow, QPushButton,
     QSizePolicy, QStackedWidget, QTabWidget, QVBoxLayout,
     QWidget)
 import progress.resources_rc
@@ -25,7 +26,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1136, 575)
+        MainWindow.resize(1171, 632)
         palette = QPalette()
         MainWindow.setPalette(palette)
         MainWindow.setStyleSheet(u"")
@@ -142,22 +143,92 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.results_tab, "")
         self.tab = QWidget()
         self.tab.setObjectName(u"tab")
-        self.verticalLayout_4 = QVBoxLayout(self.tab)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.light_button = QPushButton(self.tab)
+        self.verticalLayout_9 = QVBoxLayout(self.tab)
+        self.verticalLayout_9.setSpacing(15)
+        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.theme_frame = QFrame(self.tab)
+        self.theme_frame.setObjectName(u"theme_frame")
+        self.theme_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.theme_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_8 = QVBoxLayout(self.theme_frame)
+        self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.label = QLabel(self.theme_frame)
+        self.label.setObjectName(u"label")
+
+        self.verticalLayout_8.addWidget(self.label)
+
+        self.label_2 = QLabel(self.theme_frame)
+        self.label_2.setObjectName(u"label_2")
+
+        self.verticalLayout_8.addWidget(self.label_2)
+
+        self.frame_2 = QFrame(self.theme_frame)
+        self.frame_2.setObjectName(u"frame_2")
+        self.frame_2.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame_2.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_2)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.light_button = QPushButton(self.frame_2)
         self.light_button.setObjectName(u"light_button")
         self.light_button.setCheckable(True)
         self.light_button.setChecked(True)
         self.light_button.setAutoExclusive(True)
 
-        self.verticalLayout_4.addWidget(self.light_button)
+        self.horizontalLayout_2.addWidget(self.light_button)
 
-        self.dark_button = QPushButton(self.tab)
+        self.dark_button = QPushButton(self.frame_2)
         self.dark_button.setObjectName(u"dark_button")
         self.dark_button.setCheckable(True)
         self.dark_button.setAutoExclusive(True)
 
-        self.verticalLayout_4.addWidget(self.dark_button)
+        self.horizontalLayout_2.addWidget(self.dark_button)
+
+
+        self.verticalLayout_8.addWidget(self.frame_2, 0, Qt.AlignmentFlag.AlignHCenter)
+
+
+        self.verticalLayout_9.addWidget(self.theme_frame)
+
+        self.solver_frame = QFrame(self.tab)
+        self.solver_frame.setObjectName(u"solver_frame")
+        self.solver_frame.setFrameShape(QFrame.Shape.NoFrame)
+        self.solver_frame.setFrameShadow(QFrame.Shadow.Raised)
+        self.verticalLayout_6 = QVBoxLayout(self.solver_frame)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.label_3 = QLabel(self.solver_frame)
+        self.label_3.setObjectName(u"label_3")
+
+        self.verticalLayout_6.addWidget(self.label_3)
+
+        self.label_4 = QLabel(self.solver_frame)
+        self.label_4.setObjectName(u"label_4")
+
+        self.verticalLayout_6.addWidget(self.label_4)
+
+        self.frame_3 = QFrame(self.solver_frame)
+        self.frame_3.setObjectName(u"frame_3")
+        self.frame_3.setFrameShape(QFrame.Shape.NoFrame)
+        self.frame_3.setFrameShadow(QFrame.Shadow.Raised)
+        self.horizontalLayout = QHBoxLayout(self.frame_3)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.solve_text = QLineEdit(self.frame_3)
+        self.solve_text.setObjectName(u"solve_text")
+
+        self.horizontalLayout.addWidget(self.solve_text)
+
+        self.set_solve = QPushButton(self.frame_3)
+        self.set_solve.setObjectName(u"set_solve")
+        self.set_solve.setFlat(True)
+
+        self.horizontalLayout.addWidget(self.set_solve)
+
+
+        self.verticalLayout_6.addWidget(self.frame_3, 0, Qt.AlignmentFlag.AlignHCenter)
+
+
+        self.verticalLayout_9.addWidget(self.solver_frame)
 
         self.tabWidget.addTab(self.tab, "")
         self.about_tab = QWidget()
@@ -207,9 +278,15 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.wind_tab), QCoreApplication.translate("MainWindow", u"Wind", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.sim_tab), QCoreApplication.translate("MainWindow", u"Simulation", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.results_tab), QCoreApplication.translate("MainWindow", u"Results", None))
-        self.light_button.setText(QCoreApplication.translate("MainWindow", u"Light Theme", None))
-        self.dark_button.setText(QCoreApplication.translate("MainWindow", u"Dark Theme", None))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Themes", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:16pt;\">Themes:</span></p></body></html>", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt;\">Customize the look and feel of the Progress tool by selecting a theme.</span></p></body></html>", None))
+        self.light_button.setText(QCoreApplication.translate("MainWindow", u"Light Mode", None))
+        self.dark_button.setText(QCoreApplication.translate("MainWindow", u"Dark Mode", None))
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:16pt;\">Solvers:</span></p></body></html>", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:11pt;\">A solver is the computational engine used to solve optimization problems. The default solver is GLPK (GNU Linear Programming Kit).</span></p><p><span style=\" font-size:11pt;\">If you prefer to use a different solver, enter its name in the textbox below and click set. Ensure the solver is installed and properly configured on your system.</span></p></body></html>", None))
+        self.solve_text.setText(QCoreApplication.translate("MainWindow", u"GLPK", None))
+        self.set_solve.setText(QCoreApplication.translate("MainWindow", u"Set", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"Settings", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.about_tab), QCoreApplication.translate("MainWindow", u"About", None))
     # retranslateUi
 

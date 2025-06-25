@@ -197,7 +197,7 @@ QLineEdit:focus {
     padding: 10px;
 }
 
- #sim_frame_37, #sim_frame_38, #sim_frame_39, #sim_frame_40, #theme_frame {
+ #sim_frame_37, #sim_frame_38, #sim_frame_39, #sim_frame_40, #theme_frame, #solver_frame {
     background-color: rgba(245, 245, 245, 0.2); 
     border: 1px solid #cccccc;
     border-radius: 8px;

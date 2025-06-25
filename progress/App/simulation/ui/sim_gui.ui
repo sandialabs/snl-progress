@@ -233,7 +233,7 @@
                <item>
                 <widget class="QLabel" name="label_19">
                  <property name="text">
-                  <string>Load Factor</string>
+                  <string>Load Scaling Factor:</string>
                  </property>
                 </widget>
                </item>

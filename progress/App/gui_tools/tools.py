@@ -66,6 +66,11 @@ class DataHandler:
         self.out_curve3 = None
         self.start_speed = None
         self.tr_mats = None
+        ##solver
+        self.solver = None
+
+    def set_solver(self, solver):
+        self.solver = solver
 
     def set_input_api(self, input_api):
         self.input_api = input_api
