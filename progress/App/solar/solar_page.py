@@ -165,7 +165,7 @@ class solar_form(QWidget, Ui_solar_widget):
         self.solar = Solar(self.solar_site_data, self.solar_directory)
 
         QMessageBox.information(self, "Clustering Metrics", "Press OK to continue. This may take a few minutes.")
-
+        self.textBrowser_6.append("Clustering Metrics... Please wait.")
         self.clust_eval = self.lineEdit.text()
         self.solar_box_2.setMaximumWidth(16777215)
 
@@ -301,6 +301,7 @@ class solar_form(QWidget, Ui_solar_widget):
 
     def kmeans_gen(self):
         # self.textBrowser_5.setVisible(False)
+        QMessageBox.information(self, "Clustering Started", "Please wait as the solar data is clustered.")
         self.clust_gen = self.lineEdit_2.text()
         self.pipeline.run(n_clusters = int(self.clust_gen))
         self.pipeline.calculate_cluster_probability()
