@@ -62,10 +62,10 @@ class solar_form(QWidget, Ui_solar_widget):
     def skip_check(self):
         if self.comboBox_2.currentIndex() == 3:
             self.page_changer_next.emit()
-            print("here")
+
         else:
             self.stackedWidget_2.setCurrentIndex(1)
-            print("okay")
+
 
     def show_help_clusters(self):
         QMessageBox.information(self, "Clusters Help", "This step finds the optimum number of clusters to evaluate.")
@@ -156,7 +156,7 @@ class solar_form(QWidget, Ui_solar_widget):
 
         if hasattr(self, 'label_sse'):
             self.label_sse.setVisible(False)
-            self.horizontalLayout_23.removeWidget(self.label_sse)
+            #self.horizontalLayout_23.removeWidget(self.label_sse)
 
         self.textBrowser_6.setVisible(True)
         self.textBrowser_5.setVisible(True)
@@ -185,7 +185,9 @@ class solar_form(QWidget, Ui_solar_widget):
             self.counter = 1
             # print(self.counter)
         else:
-            show_frames(self, self.solar_process_3)
+            if self.solar_process_3.width == 0:
+
+                show_frames(self, self.solar_process_3)
             self.start_test_metrics()
             self.counter = 0
 
@@ -199,12 +201,12 @@ class solar_form(QWidget, Ui_solar_widget):
     def start_test_metrics(self):
         # Check if worker_pipeline has completed
         if hasattr(self, 'worker_pipeline') and self.worker_pipeline.isFinished():
-            
+
             # directly calling test_metrics instead of using worker thread to bypass threading issue for M-chip macbooks
-            self.pipeline.test_metrics(int(self.clust_eval)) 
+            self.pipeline.test_metrics(int(self.clust_eval))
             # Create worker threads for the pipeline methods
             # self.worker1 = WorkerThread(self.pipeline.test_metrics, int(self.clust_eval)) # this is causing Bus 10 error for M-chip macbooks (threading issue)
-            self.worker1 = WorkerThread(self.dummy_func)        
+            self.worker1 = WorkerThread(self.dummy_func)
             self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
 
             # Connect signals
@@ -292,7 +294,9 @@ class solar_form(QWidget, Ui_solar_widget):
         # QMessageBox.information(self, "Clustering Metrics", "Please look at SSE curve and silhouette score results to make an informed choice on the number of clusters.")
         self.display_png(self.pdf_path)
         self.solar_process_2.setMinimumWidth(300)
-        show_frames(self, self.solar2_frame_54)
+        if self.solar2_frame_54.width() == 0:
+            show_frames(self, self.solar2_frame_54)
+
         # self.display_text_file(self.cluster_results)
 
     def kmeans_gen(self):
