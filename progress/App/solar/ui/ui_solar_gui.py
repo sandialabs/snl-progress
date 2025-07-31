@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'solar_guiqXTOuQ.ui'
+## Form generated from reading UI file 'solar_guiosCFHq.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -25,7 +25,7 @@ class Ui_solar_widget(object):
     def setupUi(self, solar_widget):
         if not solar_widget.objectName():
             solar_widget.setObjectName(u"solar_widget")
-        solar_widget.resize(1248, 681)
+        solar_widget.resize(1248, 678)
         self.verticalLayout_2 = QVBoxLayout(solar_widget)
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -278,7 +278,7 @@ class Ui_solar_widget(object):
         self.frame_33.setStyleSheet(u"")
         self.frame_33.setFrameShape(QFrame.Shape.NoFrame)
         self.verticalLayout_22 = QVBoxLayout(self.frame_33)
-        self.verticalLayout_22.setSpacing(0)
+        self.verticalLayout_22.setSpacing(15)
         self.verticalLayout_22.setObjectName(u"verticalLayout_22")
         self.verticalLayout_22.setContentsMargins(0, 0, 0, 0)
         self.widget = QWidget(self.frame_33)
@@ -356,13 +356,7 @@ class Ui_solar_widget(object):
 
         self.verticalLayout_6.addWidget(self.lineEdit)
 
-
-        self.verticalLayout_7.addWidget(self.solar2_frame_2)
-
-
-        self.verticalLayout_20.addWidget(self.frame_14)
-
-        self.solar2_frame_27 = QFrame(self.frame_28)
+        self.solar2_frame_27 = QFrame(self.solar2_frame_2)
         self.solar2_frame_27.setObjectName(u"solar2_frame_27")
         self.solar2_frame_27.setFrameShape(QFrame.Shape.NoFrame)
         self.horizontalLayout_22 = QHBoxLayout(self.solar2_frame_27)
@@ -391,7 +385,13 @@ class Ui_solar_widget(object):
         self.horizontalLayout_22.addWidget(self.pushButton_api_8)
 
 
-        self.verticalLayout_20.addWidget(self.solar2_frame_27)
+        self.verticalLayout_6.addWidget(self.solar2_frame_27)
+
+
+        self.verticalLayout_7.addWidget(self.solar2_frame_2)
+
+
+        self.verticalLayout_20.addWidget(self.frame_14)
 
 
         self.verticalLayout_24.addWidget(self.frame_28)

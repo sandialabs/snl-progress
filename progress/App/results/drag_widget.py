@@ -244,6 +244,9 @@ class FileBrowser(QTreeView):
         # connect click signal
         self.clicked.connect(self.on_file_clicked)
 
+        self.hideColumn(1)
+        self.hideColumn(2)
+        self.hideColumn(3)
         # Enable drag-and-drop
         self.setDragEnabled(True)
         self.setAcceptDrops(True)

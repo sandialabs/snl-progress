@@ -8,6 +8,8 @@ from progress.paths import get_path
 base_dir = get_path()
 import os
 from PySide6.QtGui import QPixmap
+import plotly.graph_objects as go
+from plotly.offline import plot
 
 class solar_form(QWidget, Ui_solar_widget):
     """Landing page widget."""
@@ -58,6 +60,9 @@ class solar_form(QWidget, Ui_solar_widget):
        # self.solar_process_3.setMaximumWidth(0)
         self.solar_box.setMaximumWidth(0)
         self.solar2_frame_54.setMaximumWidth(0)
+
+        self._threads = []
+        self.evenshow=2
 
     def skip_check(self):
         if self.comboBox_2.currentIndex() == 3:
@@ -153,6 +158,7 @@ class solar_form(QWidget, Ui_solar_widget):
 
     def kmeans_eval(self):
 
+        self.pushButton_2.setEnabled(False)
 
         if hasattr(self, 'label_sse'):
             self.label_sse.setVisible(False)
@@ -199,26 +205,53 @@ class solar_form(QWidget, Ui_solar_widget):
         pass
 
     def start_test_metrics(self):
-        # Check if worker_pipeline has completed
         if hasattr(self, 'worker_pipeline') and self.worker_pipeline.isFinished():
-
-            # directly calling test_metrics instead of using worker thread to bypass threading issue for M-chip macbooks
-            self.pipeline.test_metrics(int(self.clust_eval))
-            # Create worker threads for the pipeline methods
-            # self.worker1 = WorkerThread(self.pipeline.test_metrics, int(self.clust_eval)) # this is causing Bus 10 error for M-chip macbooks (threading issue)
-            self.worker1 = WorkerThread(self.dummy_func)
-            self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
-
-            # Connect signals
+            self.worker1 = WorkerThread(self.pipeline.test_metrics, int(self.clust_eval))
+            self._threads.append(self.worker1)
             self.worker1.output_updated.connect(lambda text: self.handle_output(self.textBrowser_6, text))
-            self.worker1.finished.connect(self.start_worker2)
-            self.worker2.output_updated.connect(lambda text: self.handle_output(self.textBrowser_5, text))
-            self.worker2.finished.connect(self.on_workers_finished)
-
-            # Start the first worker
+            self.worker1.finished.connect(self.on_test_metrics_finished)
             self.worker1.start()
         else:
             print("worker_pipeline has not finished yet.")
+
+
+
+    def on_test_metrics_finished(self):
+        if hasattr(self.worker1, 'result') and self.worker1.result:
+            elbow, sse = self.worker1.result
+
+            # Create and save plot in main thread (this prevents Bus 10 crash)
+            fig = go.Figure(data=[go.Scatter(x=list(range(1, len(sse) + 1)), y=sse, mode='lines')])
+            fig.update_layout(xaxis_title="No. of Clusters", yaxis_title="Sum of Squared Errors")
+            fig.write_image(self.pdf_path)
+
+        # Continue with original workflow
+        self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
+        self._threads.append(self.worker2)
+        self.worker2.output_updated.connect(lambda text: self.handle_output(self.textBrowser_5, text))
+        self.worker2.finished.connect(self.on_workers_finished)
+        self.worker2.start()
+    # def start_test_metrics(self):
+    #     # Check if worker_pipeline has completed
+    #     if hasattr(self, 'worker_pipeline') and self.worker_pipeline.isFinished():
+
+    #         # directly calling test_metrics instead of using worker thread to bypass threading issue for M-chip macbooks
+    #         self.pipeline.test_metrics(int(self.clust_eval))
+    #         # Create worker threads for the pipeline methods
+    #         # self.worker1 = WorkerThread(self.pipeline.test_metrics, int(self.clust_eval)) # this is causing Bus 10 error for M-chip macbooks (threading issue)
+    #         self.worker1 = WorkerThread(self.dummy_func)
+    #         self.worker2 = WorkerThread(self.display_text_file, self.cluster_results)
+
+    #         # Connect signals
+    #         self.worker1.output_updated.connect(lambda text: self.handle_output(self.textBrowser_6, text))
+    #         self.worker1.finished.connect(self.start_worker2)
+    #         self.worker2.output_updated.connect(lambda text: self.handle_output(self.textBrowser_5, text))
+    #         self.worker2.finished.connect(self.on_workers_finished)
+
+    #         # Start the first worker
+    #         self.worker1.start()
+    #     else:
+    #         print("worker_pipeline has not finished yet.")
 
     def start_worker2(self):
         if self.tester==0:
@@ -228,12 +261,14 @@ class solar_form(QWidget, Ui_solar_widget):
             self.tester=0
 
     def display_text_file(self, file_path):
-        try:
-            with open(file_path, 'r') as file:
-                content = file.read()
-                self.textBrowser_5.append(content)  # Append the content to the QTextBrowser
-        except Exception as e:
-            self.textBrowser_5.append(f"Error loading file: {e}")
+        if self.evenshow % 2 ==0:
+            try:
+                with open(file_path, 'r') as file:
+                    content = file.read()
+                    self.textBrowser_5.append(content)  # Append the content to the QTextBrowser
+            except Exception as e:
+                self.textBrowser_5.append(f"Error loading file: {e}")
+        self.evenshow +=1
 
 
     def display_png(self, file_path):
@@ -292,12 +327,16 @@ class solar_form(QWidget, Ui_solar_widget):
 
     def on_workers_finished(self):
         # QMessageBox.information(self, "Clustering Metrics", "Please look at SSE curve and silhouette score results to make an informed choice on the number of clusters.")
-        self.display_png(self.pdf_path)
-        self.solar_process_2.setMinimumWidth(300)
-        if self.solar2_frame_54.width() == 0:
-            show_frames(self, self.solar2_frame_54)
+        if self.evenshow % 2 ==0:
+            self.display_png(self.pdf_path)
+            self.pushButton_2.setEnabled(True)
+            self.solar_process_2.setMinimumWidth(300)
+            if self.solar2_frame_54.width() == 0:
+                show_frames(self, self.solar2_frame_54)
 
-        # self.display_text_file(self.cluster_results)
+        self.evenshow +=1
+
+            # self.display_text_file(self.cluster_results)
 
     def kmeans_gen(self):
         # self.textBrowser_5.setVisible(False)

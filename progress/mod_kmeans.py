@@ -505,38 +505,118 @@ class KMeans_Pipeline:
 
         return predicted_labels
 
+    # def find_elbow(self, kmeans_df, clust_eval):
+    #     """
+    #     Finds the optimal number of clusters for KMeans clustering using the elbow method.
+
+    #     This method goes through the following steps:
+    #     1. Resets the DataFrame index.
+    #     2. Converts 'date' to 'month' and creates cyclical features for it.
+    #     3. Scales features and applies PCA via a preprocessing pipeline.
+    #     4. Loops through a predefined number of clusters (1 to 11).
+    #     5. Performs KMeans clustering with the specified number of clusters.
+    #     6. Calculates the sum of squared errors (SSE) for each KMeans run.
+    #     7. Uses the KneeLocator to identify the "elbow point" in the SSE curve, which indicates the optimal number of clusters.
+
+    #     Parameters:
+    #         kmeans_df (DataFrame): The DataFrame to cluster.
+
+    #     Returns:
+    #         tuple: Contains the following elements:
+    #             - The optimal number of clusters, as determined by the elbow method.
+    #             - The sum of squared errors (SSE) for each number of clusters from 1 to 11.
+    #             - Silhouette scores for each number of clusters from 2 to 11.
+    #     """
+    #     # Preprocessing steps
+    #     kmeans_df.reset_index(inplace=True)
+
+    #     kmeans_df['date'] = pd.to_datetime(kmeans_df['date'])
+    #     kmeans_df['month'] = kmeans_df['date'].dt.month
+    #     kmeans_df = kmeans_df.drop('date', axis=1)
+
+    #     kmeans_df['month_sin'] = np.sin(2 * np.pi * kmeans_df['month'] / 12)
+    #     kmeans_df['month_cos'] = np.cos(2 * np.pi * kmeans_df['month'] / 12)
+
+    #     kmeans_df = kmeans_df.drop('month', axis=1)
+    #     kmeans_df.fillna(0, inplace=True)
+
+    #     sse = []
+    #     silhouette_scores = []
+    #     self.update_progress("Evaluating Clusters", 0/clust_eval)
+
+    #     for k in range(1, clust_eval + 1):
+    #         # Create the preprocessor pipeline
+    #         preprocessor = Pipeline(
+    #             [
+    #                 ("scaler", MinMaxScaler()),
+    #                 ("pca", PCA(n_components=2)),
+    #             ]
+    #         )
+
+    #         # Create the K-means clustering pipeline
+    #         cluster = Pipeline(
+    #             [
+    #                 ("kmeans", KMeans(n_clusters=k,
+    #                                 init='k-means++',
+    #                                 n_init=100,
+    #                                 max_iter=1500,
+    #                                 random_state=42
+    #                                 )
+    #                 ),
+    #             ]
+    #         )
+
+    #         # Combine both pipelines
+    #         pipe = Pipeline(
+    #             [
+    #                 ("preprocessor", preprocessor),
+    #                 ("cluster", cluster),
+    #             ]
+    #         )
+
+    #         # Fit the pipeline on the data
+    #         pipe.fit(kmeans_df)
+    #         sse.append(pipe['cluster']['kmeans'].inertia_)
+
+    #         # Calculate the silhouette score only for k > 1
+    #         if k > 1:
+    #             preprocessed_data = pipe["preprocessor"].transform(kmeans_df)
+    #             silhouette_score_t = silhouette_score(preprocessed_data, pipe["cluster"]["kmeans"].labels_)
+    #             silhouette_scores.append(silhouette_score_t)
+    #         else:
+    #             silhouette_scores.append(None)
+
+    #         self.update_progress("Evaluating Clusters", k/clust_eval)
+
+    #     print("\n")
+
+    #     kl = KneeLocator(
+    #         range(1, clust_eval+1), sse, curve="convex", direction="decreasing"
+    #     )
+
+    #     # plot SSE vs clusters
+    #     fig = go.Figure(data=[go.Scatter(x = list(range(1, clust_eval+1)), y = sse, mode = 'lines' )])
+    #     fig.update_layout(
+    #         xaxis_title="No. of Clusters", 
+    #         yaxis_title="Sum of Squared Errors",
+    #     )
+    #     sseplot_name = "SSE_Curve.png"
+    #     fig.write_image(f"{self.directory}/{sseplot_name}")
+
+    #     return kl.elbow, sse, silhouette_scores
+
+
     def find_elbow(self, kmeans_df, clust_eval):
         """
         Finds the optimal number of clusters for KMeans clustering using the elbow method.
-
-        This method goes through the following steps:
-        1. Resets the DataFrame index.
-        2. Converts 'date' to 'month' and creates cyclical features for it.
-        3. Scales features and applies PCA via a preprocessing pipeline.
-        4. Loops through a predefined number of clusters (1 to 11).
-        5. Performs KMeans clustering with the specified number of clusters.
-        6. Calculates the sum of squared errors (SSE) for each KMeans run.
-        7. Uses the KneeLocator to identify the "elbow point" in the SSE curve, which indicates the optimal number of clusters.
-
-        Parameters:
-            kmeans_df (DataFrame): The DataFrame to cluster.
-
-        Returns:
-            tuple: Contains the following elements:
-                - The optimal number of clusters, as determined by the elbow method.
-                - The sum of squared errors (SSE) for each number of clusters from 1 to 11.
-                - Silhouette scores for each number of clusters from 2 to 11.
+        Returns the optimal number, SSEs, and silhouette scores.
         """
-        # Preprocessing steps
         kmeans_df.reset_index(inplace=True)
-
         kmeans_df['date'] = pd.to_datetime(kmeans_df['date'])
         kmeans_df['month'] = kmeans_df['date'].dt.month
         kmeans_df = kmeans_df.drop('date', axis=1)
-
         kmeans_df['month_sin'] = np.sin(2 * np.pi * kmeans_df['month'] / 12)
         kmeans_df['month_cos'] = np.cos(2 * np.pi * kmeans_df['month'] / 12)
-
         kmeans_df = kmeans_df.drop('month', axis=1)
         kmeans_df.fillna(0, inplace=True)
 
@@ -545,65 +625,24 @@ class KMeans_Pipeline:
         self.update_progress("Evaluating Clusters", 0/clust_eval)
 
         for k in range(1, clust_eval + 1):
-            # Create the preprocessor pipeline
-            preprocessor = Pipeline(
-                [
-                    ("scaler", MinMaxScaler()),
-                    ("pca", PCA(n_components=2)),
-                ]
-            )
-
-            # Create the K-means clustering pipeline
-            cluster = Pipeline(
-                [
-                    ("kmeans", KMeans(n_clusters=k,
-                                    init='k-means++',
-                                    n_init=100,
-                                    max_iter=1500,
-                                    random_state=42
-                                    )
-                    ),
-                ]
-            )
-
-            # Combine both pipelines
-            pipe = Pipeline(
-                [
-                    ("preprocessor", preprocessor),
-                    ("cluster", cluster),
-                ]
-            )
-
-            # Fit the pipeline on the data
+            preprocessor = Pipeline([("scaler", MinMaxScaler()), ("pca", PCA(n_components=2))])
+            cluster = Pipeline([("kmeans", KMeans(n_clusters=k, init='k-means++', n_init=100, max_iter=1500, random_state=42))])
+            pipe = Pipeline([("preprocessor", preprocessor), ("cluster", cluster)])
             pipe.fit(kmeans_df)
             sse.append(pipe['cluster']['kmeans'].inertia_)
 
-            # Calculate the silhouette score only for k > 1
             if k > 1:
-                preprocessed_data = pipe["preprocessor"].transform(kmeans_df)
-                silhouette_score_t = silhouette_score(preprocessed_data, pipe["cluster"]["kmeans"].labels_)
-                silhouette_scores.append(silhouette_score_t)
+                data = pipe["preprocessor"].transform(kmeans_df)
+                silhouette_scores.append(silhouette_score(data, pipe["cluster"]["kmeans"].labels_))
             else:
                 silhouette_scores.append(None)
 
             self.update_progress("Evaluating Clusters", k/clust_eval)
 
         print("\n")
-
-        kl = KneeLocator(
-            range(1, clust_eval+1), sse, curve="convex", direction="decreasing"
-        )
-
-        # plot SSE vs clusters
-        fig = go.Figure(data=[go.Scatter(x = list(range(1, clust_eval+1)), y = sse, mode = 'lines' )])
-        fig.update_layout(
-            xaxis_title="No. of Clusters", 
-            yaxis_title="Sum of Squared Errors",
-        )
-        sseplot_name = "SSE_Curve.png"
-        fig.write_image(f"{self.directory}/{sseplot_name}")
-
+        kl = KneeLocator(range(1, clust_eval + 1), sse, curve="convex", direction="decreasing")
         return kl.elbow, sse, silhouette_scores
+
 
     def calculate_cluster_probability(self):
         """
@@ -753,6 +792,9 @@ class KMeans_Pipeline:
         print("\n")
 
 
+
+
+
     def test_metrics(self, clust_eval):
         """
         Calculates and writes K-means clustering metrics to a text file.
@@ -827,6 +869,8 @@ class KMeans_Pipeline:
 
             # Restore the original stdout
             sys.stdout = original_stdout
+            
+        return elbow, sse
 
 # if __name__ == "__main__":
 
