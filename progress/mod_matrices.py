@@ -29,6 +29,8 @@ class RAMatrices:
         """
         self.ng = ng + ness
         self.genbus = np.concatenate((genbus, essbus))
+        # TODO: Add dtype validation - empty essbus arrays need dtype=int to avoid IndexError
+        # when using genbus[i] as array index. Consider: self.genbus = np.concatenate((genbus, essbus)).astype(int)
         self.gen_mat = np.zeros((self.nb, self.ng))
         j_temp = 0
         for i in range(self.ng):

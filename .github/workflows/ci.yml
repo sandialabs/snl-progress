@@ -1,0 +1,632 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel superseded runs on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install black ruff
+      
+      - name: Check code formatting
+        run: black --check progress/ tests/
+      
+      - name: Lint code
+        run: ruff check progress/ tests/
+
+  type-check:
+    name: Type Checking
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install mypy types-requests || true
+      
+      - name: Type check
+        run: mypy progress || mypy . || true
+        continue-on-error: true
+
+  test-matrices:
+    name: Test Matrices Module
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e . || true
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Run matrices tests
+        run: |
+          pytest tests/test_mod_matrices.py \
+                 --cov=progress.mod_matrices \
+                 --cov-report=xml \
+                 --cov-report=term-missing \
+                 --junit-xml=tests/test-results-matrices.xml \
+                 -v
+      
+      - name: Upload matrices test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: matrices-test-results-${{ matrix.python-version }}
+          path: |
+            tests/test-results-matrices.xml
+            coverage.xml
+          retention-days: 30
+
+  test-plot:
+    name: Test Plot Module
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e . || true
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Run plot tests
+        run: |
+          pytest tests/test_mod_plot.py \
+                 --cov=progress.mod_plot \
+                 --cov-report=xml \
+                 --cov-report=term-missing \
+                 --junit-xml=tests/test-results-plot.xml \
+                 -v
+      
+      - name: Upload plot test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: plot-test-results-${{ matrix.python-version }}
+          path: |
+            tests/test-results-plot.xml
+            coverage.xml
+          retention-days: 30
+
+  test-solar:
+    name: Test Solar Module
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e . || true
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Run solar tests
+        run: |
+          pytest tests/test_mod_solar.py \
+                 --cov=progress.mod_solar \
+                 --cov-report=xml \
+                 --cov-report=term-missing \
+                 --junit-xml=tests/test-results-solar.xml \
+                 -v
+      
+      - name: Upload solar test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: solar-test-results-${{ matrix.python-version }}
+          path: |
+            tests/test-results-solar.xml
+            coverage.xml
+          retention-days: 30
+
+  test-sysdata:
+    name: Test System Data Module
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e . || true
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Verify data directory exists
+        run: |
+          echo "Checking for production data directory..."
+          if [ -d "progress/Data" ]; then
+            echo "✅ Production data directory found"
+            ls -la progress/Data/
+          else
+            echo "❌ Production data directory not found"
+            exit 1
+          fi
+      
+      - name: Run sysdata tests
+        run: |
+          pytest tests/test_mod_sysdata.py \
+                 --cov=progress.mod_sysdata \
+                 --cov-report=xml \
+                 --cov-report=term-missing \
+                 --junit-xml=tests/test-results-sysdata.xml \
+                 -v
+      
+      - name: Upload sysdata test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sysdata-test-results-${{ matrix.python-version }}
+          path: |
+            tests/test-results-sysdata.xml
+            coverage.xml
+          retention-days: 30
+
+  test-utilities:
+    name: Test Utilities Module
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e . || true
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Verify data directory exists
+        run: |
+          echo "Checking for production data directory..."
+          if [ -d "progress/Data" ]; then
+            echo "✅ Production data directory found"
+            ls -la progress/Data/
+          else
+            echo "❌ Production data directory not found"
+            exit 1
+          fi
+      
+      - name: Run utilities tests
+        run: |
+          pytest tests/test_mod_utilities.py \
+                 --cov=progress.mod_utilities \
+                 --cov-report=xml \
+                 --cov-report=term-missing \
+                 --junit-xml=tests/test-results-utilities.xml \
+                 -v
+      
+      - name: Upload utilities test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: utilities-test-results-${{ matrix.python-version }}
+          path: |
+            tests/test-results-utilities.xml
+            coverage.xml
+          retention-days: 30
+
+  test-wind:
+    name: Test Wind Module
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e . || true
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Verify data directory exists
+        run: |
+          echo "Checking for production data directory..."
+          if [ -d "progress/Data" ]; then
+            echo "✅ Production data directory found"
+            ls -la progress/Data/
+          else
+            echo "❌ Production data directory not found"
+            exit 1
+          fi
+      
+      - name: Run wind tests
+        run: |
+          pytest tests/test_mod_wind.py \
+                 --cov=progress.mod_wind \
+                 --cov-report=xml \
+                 --cov-report=term-missing \
+                 --junit-xml=tests/test-results-wind.xml \
+                 -v
+      
+      - name: Upload wind test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: wind-test-results-${{ matrix.python-version }}
+          path: |
+            tests/test-results-wind.xml
+            coverage.xml
+          retention-days: 30
+
+  test-kmeans:
+    name: Test KMeans Module
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e . || true
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Verify data directory exists
+        run: |
+          echo "Checking for production data directory..."
+          if [ -d "progress/Data" ]; then
+            echo "✅ Production data directory found"
+            ls -la progress/Data/
+          else
+            echo "❌ Production data directory not found"
+            exit 1
+          fi
+      
+      - name: Run kmeans tests
+        run: |
+          pytest tests/test_mod_kmeans.py \
+                 --cov=progress.mod_kmeans \
+                 --cov-report=xml \
+                 --cov-report=term-missing \
+                 --junit-xml=tests/test-results-kmeans.xml \
+                 -v
+      
+      - name: Upload kmeans test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kmeans-test-results-${{ matrix.python-version }}
+          path: |
+            tests/test-results-kmeans.xml
+            coverage.xml
+          retention-days: 30
+
+  test-smoke:
+    name: Test Smoke Tests
+    needs: [lint]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt', 'pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e . || true
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Run smoke tests
+        run: |
+          pytest tests/test_smoke.py \
+                 --junit-xml=tests/test-results-smoke.xml \
+                 -v
+      
+      - name: Upload smoke test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-test-results-${{ matrix.python-version }}
+          path: tests/test-results-smoke.xml
+          retention-days: 30
+
+  test-summary:
+    name: Test Summary
+    needs: [test-matrices, test-plot, test-solar, test-sysdata, test-utilities, test-wind, test-kmeans, test-smoke]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+      
+      - name: Generate test summary
+        id: test-summary
+        run: |
+          echo "## 🧪 Test Results Summary" > test-summary.md
+          echo "" >> test-summary.md
+          echo "### 📊 Test Statistics by Module" >> test-summary.md
+          echo "| Python Version | Module | Status | Tests Run | Passed | Failed | Skipped | Coverage |" >> test-summary.md
+          echo "|----------------|--------|--------|-----------|--------|--------|---------|----------|" >> test-summary.md
+          
+          # Parse JUnit XML files and generate summary
+          for xml_file in */test-results-*.xml; do
+            if [ -f "$xml_file" ]; then
+              python_version=$(echo "$xml_file" | cut -d'/' -f1 | grep -o '[0-9]\+\.[0-9]\+' | head -1)
+              module_name=$(echo "$xml_file" | cut -d'/' -f2 | sed 's/test-results-\(.*\)\.xml/\1/')
+              
+              # Extract test statistics from XML
+              tests=$(grep -o 'tests="[0-9]*"' "$xml_file" | cut -d'"' -f2 | head -1)
+              failures=$(grep -o 'failures="[0-9]*"' "$xml_file" | cut -d'"' -f2 | head -1)
+              skipped=$(grep -o 'skipped="[0-9]*"' "$xml_file" | cut -d'"' -f2 | head -1)
+              
+              if [ -z "$tests" ]; then tests=0; fi
+              if [ -z "$failures" ]; then failures=0; fi
+              if [ -z "$skipped" ]; then skipped=0; fi
+              
+              passed=$((tests - failures - skipped))
+              
+              if [ "$failures" -eq 0 ]; then
+                status="✅ PASS"
+              else
+                status="❌ FAIL"
+              fi
+              
+              # Try to get coverage from coverage.xml if it exists
+              coverage_file=$(dirname "$xml_file")/coverage.xml
+              if [ -f "$coverage_file" ]; then
+                coverage=$(grep -o 'line-rate="[0-9.]*"' "$coverage_file" | cut -d'"' -f2 | head -1)
+                if [ -n "$coverage" ]; then
+                  coverage_percent=$(echo "$coverage * 100" | bc -l | cut -d'.' -f1)
+                  coverage_display="${coverage_percent}%"
+                else
+                  coverage_display="N/A"
+                fi
+              else
+                coverage_display="N/A"
+              fi
+              
+              echo "| $python_version | $module_name | $status | $tests | $passed | $failures | $skipped | $coverage_display |" >> test-summary.md
+            fi
+          done
+          
+          echo "" >> test-summary.md
+          echo "### 📋 Failed Tests by Module" >> test-summary.md
+          echo "```" >> test-summary.md
+          for xml_file in */test-results-*.xml; do
+            if [ -f "$xml_file" ]; then
+              module_name=$(echo "$xml_file" | cut -d'/' -f2 | sed 's/test-results-\(.*\)\.xml/\1/')
+              failures=$(grep -o 'failures="[0-9]*"' "$xml_file" | cut -d'"' -f2 | head -1)
+              if [ -n "$failures" ] && [ "$failures" -gt 0 ]; then
+                echo "=== $module_name ===" >> test-summary.md
+                grep -A 5 -B 5 'failure' "$xml_file" | head -20 >> test-summary.md || true
+                echo "" >> test-summary.md
+              fi
+            fi
+          done
+          echo "```" >> test-summary.md
+          
+          echo "" >> test-summary.md
+          echo "### 📁 Artifacts" >> test-summary.md
+          echo "- Test results and coverage reports are available in the workflow artifacts" >> test-summary.md
+          echo "- Download artifacts to view detailed logs and coverage reports" >> test-summary.md
+          echo "- Each module has its own artifact with specific test results and coverage data" >> test-summary.md
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = fs.readFileSync('test-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+      
+      - name: Upload test summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-summary
+          path: test-summary.md
+          retention-days: 30

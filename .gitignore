@@ -6,3 +6,14 @@ config.ini
 *.pyc
 progress/Data/*
 progress/Results
+.venv*/
+# Test artifacts
+tests/test-results*.xml
+tests/htmlcov/
+tests/.coverage
+tests/coverage.xml
+tests/.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.pytest_cache/
