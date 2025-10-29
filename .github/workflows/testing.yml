@@ -1,0 +1,71 @@
+name: testing
+
+on:
+  push:
+    branches: [ci/phase1, main]
+  pull_request:
+    branches: [ci/phase1, main]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  test:
+    name: Run All Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 60
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov pytest-xdist
+      
+      - name: Code Quality Check
+        run: |
+          pip install black ruff
+          echo "========================================="
+          echo "CODE FORMATTING CHECK"
+          echo "========================================="
+          black --check progress/ tests/ || echo "⚠️ Formatting issues found"
+          echo ""
+          echo "========================================="
+          echo "LINTING CHECK"
+          echo "========================================="
+          ruff check progress/ tests/ || echo "⚠️ Linting issues found"
+      
+      - name: Run All Tests
+        run: |
+          echo ""
+          echo "========================================="
+          echo "RUNNING COMPLETE TEST SUITE"
+          echo "========================================="
+          echo "Testing all modules with coverage reporting..."
+          echo ""
+          pytest tests/ \
+                 --cov=progress \
+                 --cov-report=term-missing \
+                 --cov-report=term:skip-covered \
+                 --tb=short \
+                 --maxfail=0 \
+                 -v
+      
+      - name: Final Summary
+        if: always()
+        run: |
+          echo ""
+          echo "========================================="
+          echo "TEST SUITE COMPLETE"
+          echo "========================================="
+          echo "All tests have finished. Review the output above for results."
