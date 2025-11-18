@@ -1,0 +1,5 @@
+﻿Farm No.,Farm Name,Zone Name,Zone No.,Type,Max Cap,Power Class,Latitude,Longitude,Hub Height,Turbine Rating
+1,122_WIND_1,A,1,Wind_PPA,714,2,32.706375,-116.32663,100,8
+3,309_WIND_1,C,3,Wind_PPA,148,3,34.605991,-118.127289,100,8
+4,317_WIND_1,C,3,Wind_PPA,799,3,35.376648,-116.90155,100,8
+5,303_WIND_1,C,3,Wind_PPA,847,2,35.25256,-118.048615,100,8

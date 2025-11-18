@@ -401,6 +401,33 @@ A test case is included with this tool. The test system is the [IEEE RTS-GMLC](h
 
 All test system data provided with the tool has been taken from the [RTS-GMLC GitHub repository](<https://github.com/GridMod/RTS-GMLC>).
 
+## Additional Features
+Some additional features have been introduced to the ProGRESS tool. These features are currently available only for command line simulations in  [example_simulation.py](./progress/example_simulation.py) and [example_simulation_multi_proc.py](./progress/example_simulation.py).
+
+**a) Single and multi-period optimization models:**
+
+ProGRESS now supports both single-period and multi-period optimization models within the Monte Carlo framework. Single-period optimization is designed to run the energy storage systems in reliability support mode, i.e. they only discharge to reduce load curtailments and maintain full state-of-charge otherwise. In the multi-period optimization, storage serves two purposes: operate to reduce the system operation fuel costs and support the grid during load curtailment events. Users can select the optimization mode using the `optimization_period` parameter in the [input.yaml](progress/input.yaml) file. We recommend running multi-period option with 24 hour periods for a high computational performance. Note: For multi-period simulation, you must use the Data_MP directory.
+
+|<img src = "progress/Images/workflow/soc_single_period.png" width="500" height="300" alt="Results" /> | <img src = "progress/Images/workflow/soc_multi_period.png" width="500" height="300" alt="Results" /> 
+|-------------------------|-------------------------|
+
+**b) Cathode-chemistry specific degradation models:**
+
+ProGRESS now supports cathode-chemistry specific battery degradation models for energy storage systems. Users can now specify the cell cathode chemistry in the [storage.csv](./progress/Data/System/storage.csv) file. Currently, there are four battery chemistry choices: LMO (derived from [Xu et. al.](https://ieeexplore.ieee.org/document/7488267)) and LFP, NMC, NCA (derived from [Preger et. al.](https://iopscience.iop.org/article/10.1149/1945-7111/abae37/meta)). Users can leave this field empty if degradation models are not applicable. Then, in the [input.yaml](progress/input.yaml) file, following parameters need to be provided:
+
+| Parameter      | Comments                   |
+|--------------|-----------------------------------|
+|`evaluate_degradation`| Set to True to consider energy storage degradation in the simulation.
+|`degradation_interval`| Use this parameter (in hours) to configure how often degradation is evaluated and enforced. Recommended: 168 hours (1 week) or more.
+|`detailed_thermal_model`| Set to True to use detailed [PyBaMM](https://pybamm.org/) thermal model for degradation calculations. Enabling this option will increase computation time. If set to False, constant 25 C temperature is used. |
+
+Users can view the impacts of cell degradation and failures in the `ESS_cap.pdf` file, which can be found in the `Results` folder.
+
+| <img src="progress/Images/workflow/ess_cap_failure.png" width="400"/> | <img src="progress/Images/workflow/ess_cap_deg.png" width="400"/> | <img src="progress/Images/workflow/ess_cap_fail_deg.png" width="400"/> |
+|:------------------------------:|:------------------------------:|:------------------------------:|
+| (a) Capacity failure only | (b) Capacity degradation only | (c) Combined failure and degradation |
+
+
 ## Citing ProGRESS
 <a id="cite"></a>
 

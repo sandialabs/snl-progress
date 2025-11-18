@@ -70,6 +70,26 @@ class RAPlotTools:
         plt.savefig(pdf_path)
         plt.close()
 
+    def PlotESCap(self, ess_cap_rec, essname, s):
+        """
+        Plots state of charge (SOC) of energy storage systems (ESS) over time.
+
+        Parameters:
+            SOC_rec (numpy.ndarray): SOC records.
+            essname (list): List of ESS names.
+        """
+
+        plt.title("ESS Capacity")
+        plt.xlabel("Hours")
+        plt.ylabel("Capacity (MWh)")
+        plt.plot(ess_cap_rec.T, label = essname)
+        plt.legend(loc = 'upper right')
+
+        pdf_path = os.path.join(self.results_subdir, f'ESS_Cap_sample_{s+1}.pdf')
+
+        plt.savefig(pdf_path)
+        plt.close()
+
     def PlotLoadCurt(self, curt_rec, s):
         """
         Plots load curtailment over time.

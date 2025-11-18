@@ -6,6 +6,7 @@ import calendar
 import os
 from datetime import datetime
 
+#np.random.seed(42)  
 class RAUtilities:
     '''
     This class contains the different methods required for performing mixed time sequential Monte Carlo simulation and evaluate the reliability indices of a power system.
@@ -309,7 +310,7 @@ class RAUtilities:
         model.Pc = Var(range(ness), bounds = fb_ess) # charge variables for ESS
         model.SOC = Var(range(ness), bounds = fb_soc) # state-of-charge variables for ESS
         model.curt = Var(range(nz), bounds = (0, None)) # load curtailment variables
-
+        model.renewable_curt = Var(range(nz), bounds = (0, None)) # renewable load curtailment variables
         A_inc_t = np.transpose(A_inc) # transposing incedence matrix
 
         LOL_cost = 1000 # cost of lost load (set to very high so that system always tries to minimize loss)
@@ -319,7 +320,7 @@ class RAUtilities:
             return(sum(A_inc_t[i, j]*model.flow[j] for j in range(nl))\
                     + sum(gen_mat[i,m]*model.Pg[m] for m in range(ng + ness)) \
                     + sum(ch_mat[i,m]*model.Pc[m] for m in range(ness)) \
-            + sum(curt_mat[i,c]*model.curt[c] for c in range(nz)) >= net_load[i]/BMva)
+                    + sum(curt_mat[i,c]*model.curt[c] for c in range(nz)) == model.renewable_curt[i] + net_load[i]/BMva)
 
         model.equality = Constraint(range(nz), rule = con_rule1)
 
@@ -351,8 +352,98 @@ class RAUtilities:
         # gen = np.array(list(model.Pg.get_values().values()))
 
         SOC_old = np.array(list(model.SOC.get_values().values()))
+        P_dis = np.array(list(model.Pg.get_values().values()))[ng::]
+        P_ch = np.array(list(model.Pc.get_values().values()))
+        return(load_curt, SOC_old, P_dis, P_ch)
 
-        return(load_curt, SOC_old)
+    def OptDispatchMP(self, ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
+                    gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost, time_period, copper_sheet = False):
+       
+        model = ConcreteModel() # declaring the model
+
+        # declaring the variables
+        T = range(time_period)
+        model.flow = Var(range(nl), T, bounds = fb_flow) # line flow variables
+        model.Pg = Var(range(ng + ness), T, bounds  = fb_Pg) # power output for conventional generators and ESS discharge
+        model.Pc = Var(range(ness), T, bounds = fb_ess) # charge variables for ESS
+        model.SOC = Var(range(ness), T, bounds = fb_soc) # state-of-charge variables for ESS
+        model.curt = Var(range(nz), T, bounds = (0, None)) # load curtailment variables
+        model.ren_curt = Var(range(nz), T, bounds = fb_ren)
+
+        A_inc_t = np.transpose(A_inc) # transposing incedence matrix
+
+        LOL_cost = 100000000 # cost of lost load (set to very high so that system always tries to minimize loss)
+
+        # power balance constraint
+        if copper_sheet == False:
+            def con_rule1(model,i,t):
+                return(sum(A_inc_t[i, j]*model.flow[j,t] for j in range(nl))\
+                        + sum(gen_mat[i,m]*model.Pg[m,t] for m in range(ng + ness)) \
+                        + sum(ch_mat[i,m]*model.Pc[m,t] for m in range(ness)) \
+                + sum(curt_mat[i,c]*model.curt[c,t] for c in range(nz)) == model.ren_curt[i,t] + net_load[i,t]/BMva)
+
+            model.equality = Constraint(range(nz), T, rule = con_rule1)
+
+        if copper_sheet == True:
+            for i in range(nl):
+                for t in T:
+                    model.flow[i, t].fix(0.0)
+                    
+            def con_rule1(model, t):
+                return(sum(model.Pg[m,t] for m in range(ng + ness)) \
+                      + sum(model.Pc[m,t] for m in range(ness)) \
+                      + sum(model.curt[c,t] for c in range(nz)) == sum(model.ren_curt[i,t] for i in range(nz)) 
+                      + sum(net_load[:,t])/BMva)
+
+            model.equality = Constraint(T, rule = con_rule1)
+
+        # soc update constraint
+        def con_rule2(model, i,t):
+            if t == 0:
+                return(model.SOC[i,t] == SOC_old[i] - ess_eff[i]*model.Pc[i,t] - model.Pg[ng + i,t])
+            else: 
+                return(model.SOC[i,t] == model.SOC[i,t-1] - ess_eff[i]*model.Pc[i,t] - model.Pg[ng + i,t])
+
+        model.soc_constraint = Constraint(range(ness), T, rule = con_rule2)
+
+        def soc_rule_EoD(model,i,t):
+            if (t + 1)%24 == 0:
+                return(model.SOC[i,t] >= SOC_old[i])
+            else:
+                return Constraint.Skip
+        model.soc_neutrality = Constraint(range(ness), T, rule = soc_rule_EoD)
+
+        # charge discharge constraint for the soc
+        def con_rule3(model, i,t):
+            return(-model.Pc[i,t] + model.Pg[ng + i,t] <= ess_pmax[i]/BMva)
+
+        model.chdis_constraint = Constraint(range(ness), T, rule = con_rule3)
+
+        # Objective ----> minimize total cost (cost of gen + cost of storage + cost of lost load)
+        model.objective = Objective( expr = sum(model.curt[i, t] * LOL_cost for i in range(nz) for t in T)
+                                    + sum(gencost[i] * model.Pg[i, t] * BMva for i in range(ng) for t in T)
+                                    + sum(disch_cost[i] * model.Pg[ng + i, t] * BMva for i in range(ness) for t in T)
+                                    + sum(ch_cost[i] * -model.Pc[i, t] * BMva for i in range(ness) for t in T))
+        
+        opt = SolverFactory('glpk')
+        res = opt.solve(model, tee = False)
+
+        load_curt = np.zeros(len(T))
+        for t in T:
+            current_curtail = 0
+            for z in range(nz):
+                current_curtail += model.curt[z, t].value
+            load_curt[t] = current_curtail
+        soc_profile = np.zeros((ness, len(T)))
+        p_discharge = np.zeros((ness, len(T)))
+        p_charge = np.zeros((ness, len(T)))
+        for i in range(ness):
+            for t in T:
+                soc_profile[i, t] = model.SOC[i, t].value
+                p_discharge[i, t] = model.Pg[ng + i, t].value
+                p_charge[i, t] = model.Pc[i, t].value
+
+        return load_curt, soc_profile, p_discharge, p_charge
 
     def OptDispatchLite(self, ng, nz, ness, fb_ess, fb_soc, BMva, fb_Pg, A_inc, \
                     gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost):
@@ -430,8 +521,9 @@ class RAUtilities:
         load_curt = sum(np.array(list(model.curt.get_values().values())))
 
         SOC_old = np.array(list(model.SOC.get_values().values()))
-
-        return(load_curt, SOC_old)
+        P_dis = np.array(list(model.Pg.get_values().values()))[ng::]
+        P_ch = np.array(list(model.Pc.get_values().values()))
+        return(load_curt, SOC_old, P_dis, P_ch)
 
     def TrackLOLStates(self, load_curt, BMva, var_s, LOL_track, s, n):
         """
@@ -569,7 +661,7 @@ class RAUtilities:
             # results_subdir = os.path.join(main_folder, 'Results', timestamp)
             pd.DataFrame((LOL_prob)*100/days_in_month[:, np.newaxis]).to_csv(f"{all_subdir}/LOL_perc_prob.csv")
 
-    def ParallelProcessing(self, indices, LOL_track, comm, rank, size, samples, sim_hours):
+    def ParallelProcessing(self, indices, LOL_track, comm, rank, size, samples, sim_hours, main_folder):
         """
         Performs parallel processing to gather results from different processes.
 
@@ -613,13 +705,8 @@ class RAUtilities:
             index_all = {"LOLP": self.LOLP_allp, "LOLH": self.LOLH_allp, "EUE": self.EUE_allp, "EPNS": self.EPNS_allp, "LOLF": self.LOLF_allp, \
                          "MDT": self.MDT_allp, "LOLE": self.LOLE_allp}
 
-            main_folder = os.path.dirname(os.path.abspath(__file__))
-
-            if not os.path.exists(f"{main_folder}/Results"):
-                os.makedirs(f"{main_folder}/Results")
-
             df = pd.DataFrame([index_all])
-            df.to_csv(f"{main_folder}/Results/indices.csv", index=False)
+            df.to_csv(f"{main_folder}/indices.csv", index=False)
 
             if sim_hours == 8760:
                 self.recvbuf_LOL = self.recvbuf_LOL.reshape(size, samples, 365, 24)

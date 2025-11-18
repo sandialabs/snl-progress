@@ -101,9 +101,9 @@ class RASystemData:
         self.MTTF_ess = self.storage['MTTF'].values
         self.MTTR_ess = self.storage['MTTR'].values
         self.ess_units = self.storage['Units'].values
-
+        self.ess_chemistry = self.storage['Chemistry'].values # cell chemistry of BESS
         return(self.essname, self.essbus, self.ness, self.ess_pmax, self.ess_pmin, self.ess_duration, self.ess_socmax, self.ess_socmin, \
-               self.ess_eff, self.disch_cost, self.ch_cost, self.MTTF_ess, self.MTTR_ess, self.ess_units)
+               self.ess_eff, self.disch_cost, self.ch_cost, self.MTTF_ess, self.MTTR_ess, self.ess_units, self.ess_chemistry)
 
     def load(self, bus_name, data_load):
         """
