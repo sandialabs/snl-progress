@@ -4,9 +4,9 @@ import numpy as np
 class RASystemData:
     '''This class extracts, modifies and returns the system data required for resource adequacy assessment'''
 
-    # def __init__(self, nh):
-    #     '''Hours of data available'''
-    #     self.nh = nh
+    def __init__(self, opt_type):
+        '''optimization type: single or multi-period'''
+        self.opt_type = opt_type
 
     def branch(self, data_branch):
         """
@@ -70,7 +70,10 @@ class RASystemData:
         self.FOR_gen = self.gen['FOR'].values # forced outage rate
         self.MTTF_gen = self.gen['MTTF'].values # mean time to failure in hours
         self.MTTR_gen = self.gen['MTTR'].values # mean time to repair in hours
-        self.gencost = self.gen['Cost'].values # cost of generation 
+        if self.opt_type == 'single_period':
+            self.gencost = np.ones(self.ng)
+        if self.opt_type == 'multi_period':
+            self.gencost = self.gen['Cost'].values # cost of generation 
 
         return(self.genbus, self.ng, self.pmax, self.pmin, self.FOR_gen, self.MTTF_gen, self.MTTR_gen, self.gencost)
 
@@ -96,12 +99,16 @@ class RASystemData:
         self.ess_socmax = self.storage['max_SOC'].values # maximum ESS SOC as fraction
         self.ess_socmin = self.storage['min_SOC'].values # minimum ESS SOC as fraction
         self.ess_eff = self.storage['Efficiency'].values # round-trip efficiency
-        self.disch_cost = self.storage['Discharge Cost'].values # cost of discharging from storage
-        self.ch_cost = self.storage['Charge Cost'].values
+        if self.opt_type == 'single_period':
+            self.disch_cost = np.ones(self.ness)*2 # cost of discharging from storage
+            self.ch_cost = np.ones(self.ness)*5
+        if self.opt_type == 'multi_period':
+            self.disch_cost = self.storage['Discharge Cost'].values # cost of discharging from storage
+            self.ch_cost = self.storage['Charge Cost'].values
         self.MTTF_ess = self.storage['MTTF'].values
         self.MTTR_ess = self.storage['MTTR'].values
         self.ess_units = self.storage['Units'].values
-        self.ess_chemistry = self.storage['Chemistry'].values # cell chemistry of BESS
+        self.ess_chemistry = getattr(self.storage.get("Chemistry", None), "values", "LFP") # cell chemistry of BESS
         return(self.essname, self.essbus, self.ness, self.ess_pmax, self.ess_pmin, self.ess_duration, self.ess_socmax, self.ess_socmin, \
                self.ess_eff, self.disch_cost, self.ch_cost, self.MTTF_ess, self.MTTR_ess, self.ess_units, self.ess_chemistry)
 

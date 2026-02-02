@@ -50,7 +50,7 @@ def MCS(input_file, results_subdir) :
     data_storage = system_directory + '/storage.csv'
     BMva = 100
 
-    rasd = RASystemData()
+    rasd = RASystemData(optimization_period)
     genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost = rasd.gen(data_gen)
     nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch)
     bus_name, bus_no, nz = rasd.bus(data_bus)
@@ -129,6 +129,7 @@ def MCS(input_file, results_subdir) :
                         "rengen_temp": 0}
 
         SOC_old = 0.5*(np.multiply(np.multiply(ess_pmax, ess_duration), ess_socmax))/BMva
+        ESS_initial_capacities = copy.deepcopy(ess_pmax)
         SOC_rec = np.zeros((ness, sim_hours))
         Pdis_rec = np.zeros((ness, sim_hours))
         Pch_rec = np.zeros((ness, sim_hours))
@@ -281,10 +282,10 @@ def MCS(input_file, results_subdir) :
                     
                     if config['model'] == 'Zonal':
                         load_curt, SOC_profile, P_dis, P_ch = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
-                                                        gencost, holder_dict["net_load"], SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = False)
+                                                        gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = False)
                     elif config['model'] == 'Copper Sheet':
                         load_curt, SOC_profile, P_dis, P_ch = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
-                                                        gencost, holder_dict["net_load"], SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = True)
+                                                        gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = True)
 
                     # record values for visualization purposes
                     SOC_rec[:, n-time_periods+1:n+1] = SOC_profile*BMva
@@ -292,6 +293,7 @@ def MCS(input_file, results_subdir) :
                     Pdis_rec[:, n-time_periods+1:n+1] = P_dis*BMva
                     curt_rec[n-time_periods+1:n+1] = load_curt*BMva
                     SOC_old = SOC_profile[:,-1]
+                    ESS_initial_capacities = current_cap["max"][ng + nl::]
                     initialize_holder_vars(holder_dict)
                     # track loss of load states
                     for i in range(time_periods):
