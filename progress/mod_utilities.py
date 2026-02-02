@@ -357,7 +357,7 @@ class RAUtilities:
         return(load_curt, SOC_old, P_dis, P_ch)
 
     def OptDispatchMP(self, ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
-                    gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost, time_period, copper_sheet = False):
+                    gencost, net_load, SOC_old, ESS_initial_capacitites, ess_pmax, ess_eff, disch_cost, ch_cost, time_period, copper_sheet = False):
        
         model = ConcreteModel() # declaring the model
 
@@ -399,19 +399,15 @@ class RAUtilities:
 
         # soc update constraint
         def con_rule2(model, i,t):
+            current_pmax = -fb_ess(model,i,t)[0]
             if t == 0:
-                return(model.SOC[i,t] == SOC_old[i] - ess_eff[i]*model.Pc[i,t] - model.Pg[ng + i,t])
+                last_pmax = ESS_initial_capacitites[i]/BMva + 1e-15
+                return(model.SOC[i,t] == SOC_old[i]*current_pmax/last_pmax - ess_eff[i]*model.Pc[i,t] - model.Pg[ng + i,t])
             else: 
-                return(model.SOC[i,t] == model.SOC[i,t-1] - ess_eff[i]*model.Pc[i,t] - model.Pg[ng + i,t])
+                last_pmax = -fb_ess(model,i,t-1)[0] + 1e-15
+                return(model.SOC[i,t] == model.SOC[i,t-1]*current_pmax/last_pmax - ess_eff[i]*model.Pc[i,t] - model.Pg[ng + i,t])
 
         model.soc_constraint = Constraint(range(ness), T, rule = con_rule2)
-
-        def soc_rule_EoD(model,i,t):
-            if (t + 1)%24 == 0:
-                return(model.SOC[i,t] >= SOC_old[i])
-            else:
-                return Constraint.Skip
-        model.soc_neutrality = Constraint(range(ness), T, rule = soc_rule_EoD)
 
         # charge discharge constraint for the soc
         def con_rule3(model, i,t):
@@ -427,7 +423,7 @@ class RAUtilities:
         
         opt = SolverFactory('glpk')
         res = opt.solve(model, tee = False)
-
+        
         load_curt = np.zeros(len(T))
         for t in T:
             current_curtail = 0
