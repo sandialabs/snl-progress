@@ -14,8 +14,9 @@ year_start_w: 2007
 year_end_w: 2014
 
 # Inputs for Solar
-year_start_s: 1998    
-year_end_s: 2020
+year_start_s: 2022   
+year_end_s: 2024
+n_clusters: 8
 
 # Monte Carlo simulation parameters
 samples: 1

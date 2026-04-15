@@ -48,6 +48,7 @@ class DataProcess:
     def ProcessSolarData(self):
 
         solar_directory = self.config['data'] + '/Solar'
+        n_clusters = self.config['n_clusters']
 
         # download and process solar data
         if solar_directory:
@@ -70,7 +71,7 @@ class DataProcess:
             pipeline = KMeans_Pipeline(solar_directory, solar_site_data)
 
             # Run the pipeline before performing any other actions
-            pipeline.run(n_clusters = 10)
+            pipeline.run(n_clusters = n_clusters)
 
             # Calculate the cluster probabilities and save them to a CSV file
             pipeline.calculate_cluster_probability()
