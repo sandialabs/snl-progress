@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from mod_wind import Wind
-from mod_solar import Solar
-from mod_kmeans import KMeans_Pipeline
+from progress.mod_wind import Wind
+from progress.mod_solar import Solar
+from progress.mod_kmeans import KMeans_Pipeline
 
 
 class DataProcess:
