@@ -9,13 +9,16 @@ email: "youremail"
 affiliation: 'youraffiliation' # no spaces, + can be used instead
 name: 'yourname' # no spaces, + can be used instead
 
-# Inputs for Wind 
+
+# Inputs for Wind
+download_w: 'No' # Yes/No based on whether data needs to be downloaded
 year_start_w: 2007
-year_end_w: 2014
+year_end_w: 2007
 
 # Inputs for Solar
+download_s: 'No' # Yes/No based on whether data needs to be downloaded
 year_start_s: 2022   
-year_end_s: 2024
+year_end_s: 2022
 n_clusters: 8
 
 # Monte Carlo simulation parameters
