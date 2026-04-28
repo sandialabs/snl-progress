@@ -10,14 +10,13 @@ import yaml
 from datetime import datetime
 import argparse
 
-from mod_sysdata import RASystemData
-from mod_solar import Solar
-from mod_wind import Wind
-from mod_utilities import RAUtilities
-from mod_matrices import RAMatrices
-from mod_plot import RAPlotTools
-from mod_kmeans import KMeans_Pipeline
-from mod_degradation import BESS_Degradation
+from progress.mod_sysdata import RASystemData
+from progress.mod_solar import Solar
+from progress.mod_wind import Wind
+from progress.mod_utilities import RAUtilities
+from progress.mod_matrices import RAMatrices
+from progress.mod_plot import RAPlotTools
+from progress.mod_kmeans import KMeans_Pipeline
 
 class ProgressMultiProcess:
 

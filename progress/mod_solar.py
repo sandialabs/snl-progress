@@ -66,7 +66,7 @@ class Solar:
                 name = self.names[i]
                 lat = self.lats[i]
                 lon = self.lons[i]
-
+                
                 # download data for satellite
                 url = 'https://developer.nrel.gov/api/nsrdb/v2/solar/nsrdb-GOES-tmy-v4-0-0-download.csv?wkt=POINT({lon}%20{lat})&names=tmy-{year}&leap_day={leap}&interval={interval}&utc={utc}&full_name={name}&email={email}&affiliation={affiliation}&mailing_list={mailing_list}&reason={reason}&api_key={api}'\
                     .format(year=year, lat=lat, lon=lon, leap=leap_year, interval=interval, utc=utc, name=your_name, \

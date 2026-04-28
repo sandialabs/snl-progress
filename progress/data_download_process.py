@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from mod_wind import Wind
-from mod_solar import Solar
-from mod_kmeans import KMeans_Pipeline
+from progress.mod_wind import Wind
+from progress.mod_solar import Solar
+from progress.mod_kmeans import KMeans_Pipeline
 
 
 class DataProcess:
@@ -30,9 +30,11 @@ class DataProcess:
             
             wind = Wind()
 
-            # download wind data
-            wind.DownloadWindData(wind_directory, wind_sites, self.config['api_key'], self.config['email'], self.config['affiliation'], \
-                                self.config['year_start_w'], self.config['year_end_w'])
+            if self.config['download_w'] == 'Yes':
+
+                # download wind data
+                wind.DownloadWindData(wind_directory, wind_sites, self.config['api_key'], self.config['email'], self.config['affiliation'], \
+                                    self.config['year_start_w'], self.config['year_end_w'])
                 
             w_sites, farm_name, zone_no, w_classes, w_turbines, r_cap, p_class, out_curve2, out_curve3,\
                 start_speed = wind.WindFarmsData(wind_sites, wind_power_curves)
@@ -48,6 +50,7 @@ class DataProcess:
     def ProcessSolarData(self):
 
         solar_directory = self.config['data'] + '/Solar'
+        n_clusters = self.config['n_clusters']
 
         # download and process solar data
         if solar_directory:
@@ -59,18 +62,20 @@ class DataProcess:
 
             solar = Solar(solar_site_data, solar_directory)
 
-            # download weather data and calculate solar generation
-            solar.SolarGen(self.config['api_key'], self.config['name'], self.config['affiliation'], \
-                       self.config['email'], self.config['year_start_s'], self.config['year_end_s'])
-            
-            # process data for input into k-means code
-            solar.SolarGenGather(self.config['year_start_s'], self.config['year_end_s'])
+            if self.config['download_s'] == 'Yes':
+
+                # download weather data and calculate solar generation
+                solar.SolarGen(self.config['api_key'], self.config['name'], self.config['affiliation'], \
+                        self.config['email'], self.config['year_start_s'], self.config['year_end_s'])
+                
+                # process data for input into k-means code
+                solar.SolarGenGather(self.config['year_start_s'], self.config['year_end_s'])
             
             # Initialize the KMeans_Pipeline class
             pipeline = KMeans_Pipeline(solar_directory, solar_site_data)
 
             # Run the pipeline before performing any other actions
-            pipeline.run(n_clusters = 10)
+            pipeline.run(n_clusters = n_clusters)
 
             # Calculate the cluster probabilities and save them to a CSV file
             pipeline.calculate_cluster_probability()
