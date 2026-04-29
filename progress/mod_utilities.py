@@ -401,10 +401,10 @@ class RAUtilities:
         def con_rule2(model, i,t):
             current_pmax = -fb_ess(model,i,t)[0]
             if t == 0:
-                last_pmax = ESS_initial_capacitites[i]/BMva + 1e-15
+                last_pmax = ESS_initial_capacitites[i]/BMva + 1e-5
                 return(model.SOC[i,t] == SOC_old[i]*current_pmax/last_pmax - ess_eff[i]*model.Pc[i,t] - model.Pg[ng + i,t])
             else: 
-                last_pmax = -fb_ess(model,i,t-1)[0] + 1e-15
+                last_pmax = -fb_ess(model,i,t-1)[0] + 1e-5
                 return(model.SOC[i,t] == model.SOC[i,t-1]*current_pmax/last_pmax - ess_eff[i]*model.Pc[i,t] - model.Pg[ng + i,t])
 
         model.soc_constraint = Constraint(range(ness), T, rule = con_rule2)

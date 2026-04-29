@@ -5,6 +5,7 @@ import copy
 import pandas as pd
 import os
 import yaml
+import argparse
 
 from progress.mod_sysdata import RASystemData
 from progress.mod_solar import Solar
@@ -13,6 +14,7 @@ from progress.mod_utilities import RAUtilities
 from progress.mod_matrices import RAMatrices
 from progress.mod_plot import RAPlotTools
 from progress.mod_kmeans import KMeans_Pipeline
+from progress.mod_degradation import BESS_Degradation
 from datetime import datetime
 
 def MCS(input_file, results_subdir) :   
@@ -36,10 +38,12 @@ def MCS(input_file, results_subdir) :
     if time_periods == 1:
         optimization_period = "single_period"
     else:
+        if time_periods % 24 != 0:
+            raise ValueError("For multi-period optimization, the optimization_period should be a multiple of 24.")
         optimization_period = "multi_period"
-    evaluate_degradation = config['evaluate_degradation']
-    detailed_thermal_model = config['detailed_thermal_model']
-    degradation_interval = config['degradation_interval']
+    evaluate_degradation = config.get('evaluate_degradation', False)
+    detailed_thermal_model = config.get('detailed_thermal_model', False)
+    degradation_interval = config.get('degradation_interval', 168)
 
     # system data
     data_gen = system_directory + '/gen.csv'
@@ -250,9 +254,6 @@ def MCS(input_file, results_subdir) :
                 ess_smax, ess_smin, _ = raut.updateSOC(ng, nl, current_cap, ess_pmax, ess_duration_temp, ess_socmax, ess_socmin, SOC_old)
                 ess_smax_store[:, n] = ess_smax
                 
-                if (n+1)%time_periods == 0:
-                    _ , _ , SOC_old = raut.updateSOC(ng, nl, current_cap, ess_pmax, ess_duration_temp, ess_socmax, ess_socmin, SOC_old)
-
                 holder_dict["g_limit"][normalized_hour] = {"g_lb": np.concatenate((current_cap["min"][0:ng]/BMva, current_cap["min"][ng + nl::]/BMva)), \
                             "g_ub": np.concatenate((current_cap["max"][0:ng]/BMva, current_cap["max"][ng + nl::]/BMva)), \
                             "tl": current_cap["max"][ng:ng + nl]/BMva}
@@ -327,8 +328,8 @@ def MCS(input_file, results_subdir) :
                         SOC_old[ess_idx] = SOC_old[ess_idx] * (1-current_deg_instance.L)
                         SOC_old_deg[ess_name] = soc_profile_norm[-1]
                     
-            if (n+1)%24 == 0:
-                print(f'Hour {n + 1}')
+        if (n+1)%500 == 0:
+            print(f'Hour {n + 1}')
             
         # collect indices for all samples
         indices_rec = raut.UpdateIndexArrays(indices_rec, var_s, sim_hours, s)
@@ -370,15 +371,31 @@ def MCS(input_file, results_subdir) :
 #                                      SIMULATION 
 # =========================================================================================
 if __name__ == "__main__":
-    
-    main_folder = os.path.dirname(os.path.abspath(__file__))
-    timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    results_subdir = os.path.join(main_folder, 'Results', timestamp)
-    os.makedirs(results_subdir, exist_ok=True)
+    # --- Parse CLI args ---
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", help="Path to YAML configuration file. Default: ./progress/input.yaml")
+    parser.add_argument("--out", help="Optional: output directory. If not provided, a new Results_<timestamp> folder will be created.")
+    args = parser.parse_args()
+
+    # --- Determine input YAML ---
+    if args.config:
+        config_file = os.path.abspath(args.config)
+    else:
+        config_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "input.yaml"))
+
+    # --- Determine output folder ---
+    if args.out:
+        main_folder = os.path.abspath(args.out)
+        results_subdir = main_folder
+    else:
+        main_folder = os.path.dirname(os.path.abspath(__file__))
+        timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        results_subdir = os.path.join(main_folder, 'Results', timestamp)
+        os.makedirs(results_subdir, exist_ok=True)
         
     # run MCS
     indices, SOC_rec, curt_rec, renewable_rec, bus_name, essname, sim_hours, \
-        samples, mLOLP_rec, COV_rec = MCS('./input.yaml', results_subdir)
+        samples, mLOLP_rec, COV_rec = MCS(config_file, results_subdir)
     
     # plot indices for all samples after MCS is complete
     rapt = RAPlotTools(results_subdir)

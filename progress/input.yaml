@@ -1,7 +1,7 @@
 # ProGRESS Configuration File
 
 # Data file directory
-data: "path/to/Data" #For multi-period, remember to set the data directory to Data_MP. 
+data: "path/to/Data" 
 
 # Inputs for the API
 api_key: "yourapikey"
@@ -23,6 +23,13 @@ n_clusters: 8
 
 # Monte Carlo simulation parameters
 samples: 1
-sim_hours: 8760
+sim_hours: 1024
 load_factor: 1
-model: 'Copper Sheet' # 'Zonal' or 'Copper Sheet'
+model: 'Zonal' # 'Zonal' or 'Copper Sheet'
+
+# Multi-period and degradation config
+optimization_period: 25 #Set to 1 for single period optimization. For multi-period set to multiples of 24. Recommended: 24 hours. 
+evaluate_degradation: True #Set to True to include BESS degradation in the model.
+degradation_interval: 168 #How often degradation is evaluated in hours. Recommended: 168 hours (1 week) or more .
+detailed_thermal_model: False #Set to True to use detailed PyBAMM thermal model for BESS degradation calculations. Will increase computation time. If false, constant 25 C temp used. 
+

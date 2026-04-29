@@ -351,7 +351,7 @@ Before running the simulation, configure the [input.yaml](progress/input.yaml) f
 Run the [data_download_process.py](./progress/data_download_process.py) file to download the required solar weather and wind speed data using the NREL API. 
 
 ```bash
-python data_download_process.py
+python -m progress.data_download_process
 ```
 
 Running this file will also process the downloaded weather data and convert them into solar and wind power generation data for each site. Users may skip this step if they want to use their own data or have already downloaded and processed the data during a previous run.
@@ -361,7 +361,7 @@ Running this file will also process the downloaded weather data and convert them
 The final step would be to run the [example_simulation.py](./progress/example_simulation.py) file. 
 
 ```bash
-python example_simulation.py
+python -m progress.example_simulation
 ```
 
 Running this file executes the MCS for the pre-specified number of samples and generates results that include values of system reliability indices, outage heatmaps, ESS state-of-charge, solar and wind generation plots, and the coefficient of variation. All results will be stored in the [Results](./progress/Results) folder once the simulation is complete. Please refer to [Step 8](#results) of the previous section for more details on results. 
@@ -374,10 +374,10 @@ Ensure that you have followed the steps outlined in [Getting Started](#getting-s
 
 **a) Using an Interactive Node:**
 
-If using a single interactive node, ensure that you are in the [progress](./progress) directory and execute the following:
+If using a single interactive node, ensure that you are in the project directory and execute the following:
 
 ```bash
-mpiexec -n x python example_simulation_multi_proc.py
+mpiexec -n x python -m progress.example_simulation_multi_proc
 ```
 where `x` is the number of cores (`x < total no. of cores in the node` ) you want to utilize. 
 
@@ -413,7 +413,7 @@ ProGRESS now supports both single-period and multi-period optimization models wi
 
 **b) Cathode-chemistry specific degradation models:**
 
-ProGRESS now supports cathode-chemistry specific battery degradation models for energy storage systems. Users can now specify the cell cathode chemistry in the [storage.csv](./progress/Data/System/storage.csv) file. Currently, there are four battery chemistry choices: LMO (derived from [Xu et. al.](https://ieeexplore.ieee.org/document/7488267)) and LFP, NMC, NCA (derived from [Preger et. al.](https://iopscience.iop.org/article/10.1149/1945-7111/abae37/meta)). Users can leave this field empty if degradation models are not applicable. Then, in the [input.yaml](progress/input.yaml) file, following parameters need to be provided:
+ProGRESS now supports cathode-chemistry specific battery degradation models for energy storage systems. Users can now specify the cell cathode chemistry in the [storage.csv](./progress/Data/System/storage.csv) file. Currently, there are four battery chemistry choices: LMO (derived from [Xu et. al.](https://ieeexplore.ieee.org/document/7488267)) and LFP, NMC, NCA (derived from [Preger et. al.](https://iopscience.iop.org/article/10.1149/1945-7111/abae37/meta)). Details on the stress-factor-based degradation models using in this tool can be found in [this paper](https://ieeexplore.ieee.org/abstract/document/11404120). For degradation analysis, in the [input.yaml](progress/input.yaml) file, following parameters need to be provided:
 
 | Parameter      | Comments                   |
 |--------------|-----------------------------------|

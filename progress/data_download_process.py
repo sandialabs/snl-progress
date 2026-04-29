@@ -91,6 +91,6 @@ class DataProcess:
         
 if __name__ == "__main__":
 
-    data = DataProcess('input.yaml')
+    data = DataProcess('progress/input.yaml')
     data.ProcessWindData()
     data.ProcessSolarData()

@@ -17,6 +17,7 @@ from progress.mod_utilities import RAUtilities
 from progress.mod_matrices import RAMatrices
 from progress.mod_plot import RAPlotTools
 from progress.mod_kmeans import KMeans_Pipeline
+from progress.mod_degradation import BESS_Degradation
 
 class ProgressMultiProcess:
 
@@ -47,10 +48,12 @@ class ProgressMultiProcess:
         if time_periods == 1:
             optimization_period = "single_period"
         else:
+            if time_periods % 24 != 0:
+                raise ValueError("For multi-period optimization, the optimization_period should be a multiple of 24.")
             optimization_period = "multi_period"
-        evaluate_degradation = config['evaluate_degradation']
-        detailed_thermal_model = config['detailed_thermal_model']
-        degradation_interval = config['degradation_interval']
+        evaluate_degradation = config.get('evaluate_degradation', False)
+        detailed_thermal_model = config.get('detailed_thermal_model', False)
+        degradation_interval = config.get('degradation_interval', 168)
 
         # system data
         data_gen = system_directory + '/gen.csv'
@@ -256,9 +259,6 @@ class ProgressMultiProcess:
                     ess_smax, ess_smin, _ = raut.updateSOC(ng, nl, current_cap, ess_pmax, ess_duration_temp, ess_socmax, ess_socmin, SOC_old)
                     ess_smax_store[:, n] = ess_smax
                     
-                    if (n+1)%time_periods == 0:
-                        _ , _ , SOC_old = raut.updateSOC(ng, nl, current_cap, ess_pmax, ess_duration_temp, ess_socmax, ess_socmin, SOC_old)
-
                     holder_dict["g_limit"][normalized_hour] = {"g_lb": np.concatenate((current_cap["min"][0:ng]/BMva, current_cap["min"][ng + nl::]/BMva)), \
                                 "g_ub": np.concatenate((current_cap["max"][0:ng]/BMva, current_cap["max"][ng + nl::]/BMva)), \
                                 "tl": current_cap["max"][ng:ng + nl]/BMva}
@@ -367,8 +367,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", help="Path to YAML configuration file. Default: ./progress/input.yaml")
     parser.add_argument("--out", help="Optional: output directory. If not provided, a new Results_<timestamp> folder will be created.")
-    parser.add_argument("--optimization_period", default="multi_period")
-    parser.add_argument("--time_periods", type=int, default=24)
     args = parser.parse_args()
 
     # --- Determine input YAML ---
