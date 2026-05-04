@@ -7,12 +7,11 @@ import os
 import yaml
 
 from progress.mod_sysdata import RASystemData
-from progress.mod_solar import Solar
+from mod_solar import Solar
 from progress.mod_wind import Wind
 from progress.mod_utilities import RAUtilities
 from progress.mod_matrices import RAMatrices
 from progress.mod_plot import RAPlotTools
-# from progress.mod_kmeans import KMeans_Pipeline
 from datetime import datetime
 
 def MCS(input_file) :   
@@ -73,10 +72,10 @@ def MCS(input_file) :
     # download and process solar data
     if solar_directory:
 
-        solar_site_data = solar_directory+"/solar_sites.csv"
+        # solar_site_data = solar_directory+"/solar_sites.csv"
         solar_prob_data = solar_directory+"/solar_probs.csv"
 
-        solar = Solar(solar_site_data, solar_directory)
+        solar = Solar(solar_directory)
         
         s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
 

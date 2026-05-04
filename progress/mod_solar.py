@@ -29,6 +29,11 @@ class Solar:
         self.solar_site_data = solar_directory + "/solar_sites.csv"
         self.sites_df = pd.read_csv(self.solar_site_data)
 
+        self.names = self.sites_df["site_name"]
+        self.n_sites = len(self.sites_df)
+        self.s_zone_no = self.sites_df['zone']
+        self.MW = self.sites_df["MW"]
+
         # directory for storing downloaded data
         self.weather_data_directory = Path(solar_directory + "/solar_weather_data")
         self.weather_data_directory.mkdir(exist_ok=True)
@@ -236,14 +241,14 @@ class Solar:
             tuple: Number of sites, zone numbers, MW capacity, solar profiles, and solar probability.
 
         '''
-        clusters = glob.glob(os.path.join(self.directory + "/Clusters/", '*/'))
+        clusters = glob.glob(os.path.join(self.solar_directory + "/Clusters/", '*/'))
         n_clust = len(clusters) # no. of clusters created (depends on user and data)
 
         self.s_profiles = [] # this array will contain solar data for all clusters, sites, and days
         for i in range(1, n_clust + 1):
             self.cluster_list = []
             for site in self.names:
-                matrix=pd.read_csv(self.directory + "/Clusters/" + str(i) + "/"+site+".csv")
+                matrix=pd.read_csv(self.solar_directory + "/Clusters/" + str(i) + "/"+site+".csv")
                 self.cluster_list.append(matrix)
             self.s_profiles.append(np.stack(self.cluster_list,-1))
 
