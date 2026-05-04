@@ -8,7 +8,7 @@ import yaml
 import argparse
 
 from progress.mod_sysdata import RASystemData
-from progress.mod_solar import Solar
+from mod_solar import Solar
 from progress.mod_wind import Wind
 from progress.mod_utilities import RAUtilities
 from progress.mod_matrices import RAMatrices
@@ -89,10 +89,11 @@ def MCS(input_file, results_subdir) :
     # download and process solar data
     if solar_dir_exists:
 
-        solar_site_data = solar_directory+"/solar_sites.csv"
+        # solar_site_data = solar_directory+"/solar_sites.csv"
         solar_prob_data = solar_directory+"/solar_probs.csv"
 
-        solar = Solar(solar_site_data, solar_directory)
+        solar = Solar(solar_directory)
+        
         s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
 
         # print("Solar data processing complete!")

@@ -3,8 +3,8 @@ import pandas as pd
 import yaml
 
 from progress.mod_wind import Wind
-from progress.mod_solar import Solar
-from progress.mod_kmeans import KMeans_Pipeline
+from mod_solar import Solar
+from mod_kmeans import KMeans_Pipeline
 
 
 class DataProcess:
@@ -60,16 +60,13 @@ class DataProcess:
             solar_site_data = solar_directory+"/solar_sites.csv"
             solar_prob_data = solar_directory+"/solar_probs.csv"
 
-            solar = Solar(solar_site_data, solar_directory)
+            solar = Solar(solar_directory)
 
             if self.config['download_s'] == 'Yes':
 
                 # download weather data and calculate solar generation
-                solar.SolarGen(self.config['api_key'], self.config['name'], self.config['affiliation'], \
-                        self.config['email'], self.config['year_start_s'], self.config['year_end_s'])
-                
-                # process data for input into k-means code
-                solar.SolarGenGather(self.config['year_start_s'], self.config['year_end_s'])
+                start_year = self.config['year_start_s']; end_year = self.config['year_end_s']
+                solar.run_pipeline(start_year, end_year)
             
             # Initialize the KMeans_Pipeline class
             pipeline = KMeans_Pipeline(solar_directory, solar_site_data)
@@ -83,7 +80,7 @@ class DataProcess:
             # Split the data and cluster them based on the generated labels
             pipeline.split_and_cluster_data()
 
-            s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
+            # s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
 
             print("Solar data processing complete!")
 

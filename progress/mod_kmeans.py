@@ -75,14 +75,11 @@ class KMeans_Pipeline:
         excel_file_path (str): Path to the Excel file containing the Solar Generation, Site Information, and CSI data.
         solar_gen_df (pd.DataFrame): DataFrame containing Solar Generation data.
         site_info_df (pd.DataFrame): DataFrame containing Site Information.
-        csi_df (pd.DataFrame): DataFrame containing Clear Sky Index (CSI) data.
         selected_sites (list): List of site names to be included in the analysis.
         first_light (pd.DataFrame): DataFrame containing first light timings.
         last_light (pd.DataFrame): DataFrame containing last light timings.
         sg_mean_am (pd.DataFrame): AM Solar generation mean values.
         sg_mean_pm (pd.DataFrame): PM Solar generation mean values.
-        csi_sd_am (pd.DataFrame): AM Cloud Sky Irradiance standard deviation values.
-        csi_sd_pm (pd.DataFrame): PM Cloud Sky Irradiance standard deviation values.
         kmeans_df (pd.DataFrame): DataFrame prepared for KMeans clustering.
         predicted_labels (array): Cluster labels for each data point.
         silhouette (float): Silhouette score of the clustering.
@@ -92,7 +89,6 @@ class KMeans_Pipeline:
             block = int(round(bar_length * progress))
             text = "\r{}: [{}] {:.0f}% Complete.".format(process, "#" * block + "-" * (bar_length - block), progress * 100)
             print(text, end='', flush=True)
-
 
     def __init__(self, directory, site_data, **kwargs):
         """
@@ -105,11 +101,9 @@ class KMeans_Pipeline:
             **kwargs (dict): Optional arguments that the function takes.
         """
         self.directory = directory
-        self.excel_file_path = f'{self.directory}/solar_data.xlsx'
+        self.sgen_file_path = f'{self.directory}/gen_all_sites.csv'
 
-        # Read the data from different sheets in the Excel file
-        self.solar_gen_df = pd.read_excel(self.excel_file_path, sheet_name='solar_gen')
-        self.csi_df = pd.read_excel(self.excel_file_path, sheet_name='csi')
+        self.solar_gen_df = pd.read_csv(self.sgen_file_path)
         self.site_info_df = pd.read_csv(site_data)
 
         # Select sites based on optional argument or use all sites
@@ -118,11 +112,20 @@ class KMeans_Pipeline:
         else:
             self.selected_sites = self.site_info_df['site_name'].tolist()
 
-        # Preprocess data for KMeans clustering
-        self.first_light, self.last_light = self.process_flh_and_llh(self.solar_gen_df, self.selected_sites)
-        self.sg_mean_am, self.sg_mean_pm = self.process_solar_data(self.solar_gen_df, self.site_info_df, self.selected_sites)
-        self.csi_sd_am, self.csi_sd_pm = self.process_csi_data(self.csi_df, self.selected_sites)
-        self.kmeans_df = self.create_kmeans_df(self.sg_mean_am, self.sg_mean_pm, self.csi_sd_am, self.csi_sd_pm, self.first_light, self.last_light)
+        self.first_light, self.last_light = self.process_flh_and_llh(
+            self.solar_gen_df, self.selected_sites
+        )
+
+        self.sg_mean_am, self.sg_mean_pm = self.process_solar_data(
+            self.solar_gen_df, self.site_info_df, self.selected_sites
+        )
+
+        self.kmeans_df = self.create_kmeans_df(
+            self.sg_mean_am,
+            self.sg_mean_pm,
+            self.first_light,
+            self.last_light
+        )
 
     def process_flh_and_llh(self, solar_gen_df, selected_sites):
         """
@@ -178,8 +181,8 @@ class KMeans_Pipeline:
         sg_df = solar_gen_df
         self.update_progress("Processing FLH and LLH", 1/7)
 
-        sg_df = sg_df[['datetime'] + selected_sites]  # Keep only the selected columns
-        sg_df['datetime'] = pd.to_datetime(sg_df['datetime'])  # Convert 'datetime' to a datetime object
+        sg_df = sg_df[['time'] + selected_sites]  # Keep only the selected columns
+        sg_df['datetime'] = pd.to_datetime(sg_df['time'])  # Convert 'datetime' to a datetime object
         sg_df.set_index('datetime', inplace=True)  # Set 'datetime' as the index
         self.update_progress("Processing FLH and LLH", 2/7)
 
@@ -239,18 +242,20 @@ class KMeans_Pipeline:
         self.update_progress("Processing Solar Data", 1/9)
 
         # Filter columns based on selected sites
-        sg_df = sg_df[['datetime'] + selected_sites]
+        sg_df = sg_df[['time'] + selected_sites]
         self.update_progress("Processing Solar Data", 2/9)
 
         # Filter rows in site_df based on selected sites
         site_df = site_df[site_df['site_name'].isin(selected_sites)].reset_index(drop=True)
         self.update_progress("Processing Solar Data", 3/9)
 
-        # Convert datetime to date
-        sg_df['datetime'] = pd.to_datetime(sg_df['datetime'])
+        sg_df['datetime'] = pd.to_datetime(sg_df['time'])
+
+        # Keep only date for grouping
         sg_df['date'] = sg_df['datetime'].dt.date
-        sg_df = sg_df.set_index('date').reset_index()
-        sg_df = sg_df.drop('datetime', axis=1)
+
+        # Drop datetime completely before any aggregation
+        sg_df = sg_df.drop(columns=['datetime'])
         self.update_progress("Processing Solar Data", 4/9)
 
         # Create group_id for AM/PM grouping
@@ -269,7 +274,9 @@ class KMeans_Pipeline:
             self.update_progress("Processing Solar Data", 7/9)
 
         # Calculate mean and preserve date
-        sg_df_mean = sg_df.drop(columns=['date']).groupby('group_id').mean()
+        # sg_df_mean = sg_df.drop(columns=['date']).groupby('group_id').mean()
+        numeric_cols = sg_df.select_dtypes(include=[np.number]).columns
+        sg_df_mean = sg_df.groupby('group_id')[numeric_cols].mean()
         dates_sg = sg_df.groupby('group_id')['date'].first()
         sg_df_mean['date'] = dates_sg
         sg_df_mean = sg_df_mean.set_index('date').reset_index()
@@ -283,70 +290,9 @@ class KMeans_Pipeline:
 
         return sg_mean_am, sg_mean_pm
 
-    def process_csi_data(self, csi_info, selected_sites):
-        """
-        Processes cloud-to-sun irradiance data to get standard deviation for AM and PM periods.
-
-        This function performs several operations:
-        - Filters the data for selected sites.
-        - Scales the data using standardization.
-        - Calculates the standard deviation for AM and PM slots.
-
-        Parameters:
-            csi_info (DataFrame): DataFrame containing the cloud-to-sun irradiance data.
-                The DataFrame should have a 'datetime' column and columns for each site's irradiance.
-            selected_sites (list): List of site names to include in the processing.
-
-        Returns:
-            tuple: Two DataFrames representing the standard deviation for AM and PM values, respectively.
-
-        """
-        # Load the data into a pandas dataframe
-        csi_df = csi_info
-        self.update_progress("Processing CSI Data", 1/9)
-
-        # Filter columns based on selected sites
-        csi_df = csi_df[['datetime'] + selected_sites]
-        self.update_progress("Processing CSI Data", 2/9)
-
-        # Convert the datetime column into just date without time
-        csi_df['datetime'] = pd.to_datetime(csi_df['datetime'])
-        csi_df['date'] = csi_df['datetime'].dt.date
-        csi_df = csi_df.drop('datetime', axis=1).set_index('date').reset_index()
-        self.update_progress("Processing CSI Data", 3/9)
-
-        # Create a group id that will be used to group into am/pm for each date
-        csi_df['group_id'] = np.arange(len(csi_df)) // 12
-        self.update_progress("Processing CSI Data", 4/9)
-
-        # Store the dates that will be reapplied to the new dataframe
-        dates_csi = csi_df.groupby('group_id')['date'].first()
-        self.update_progress("Processing CSI Data", 5/9)
-
-        # Get the standard deviation of each group of 12 (am/pm)
-        csi_df_std = csi_df.drop(columns=['date']).groupby('group_id').std()
-        self.update_progress("Processing CSI Data", 6/9)
-
-        # Scale the data to have a variance of 1 and mean of 0
-        scaler = StandardScaler()
-        scaled_data = scaler.fit_transform(csi_df_std)
-        csi_sd_df = pd.DataFrame(scaled_data, columns=csi_df_std.columns)
-        self.update_progress("Processing CSI Data", 7/9)
-
-        # Add the dates back to the data frame after processing
-        csi_sd_df['date'] = dates_csi
-        csi_sd_df = csi_sd_df.set_index('date').reset_index()
-        self.update_progress("Processing CSI Data", 8/9)
-
-        # Split the data into am and pm
-        csi_sd_am = csi_sd_df[csi_sd_df.index % 2 == 0].reset_index(drop=True)
-        csi_sd_pm = csi_sd_df[csi_sd_df.index % 2 != 0].reset_index(drop=True)
-        self.update_progress("Processing CSI Data", 9/9)
-        print("\n")
-
-        return csi_sd_am, csi_sd_pm
-
-    def create_kmeans_df(self, sg_mean_am, sg_mean_pm, csi_sd_am, csi_sd_pm, first_light, last_light):
+    # def create_kmeans_df(self, sg_mean_am, sg_mean_pm, csi_sd_am, csi_sd_pm, first_light, last_light):
+    def create_kmeans_df(self, sg_mean_am, sg_mean_pm,
+                        first_light, last_light):
         """
         Combines various DataFrames to form a DataFrame ready for K-means clustering.
 
@@ -371,8 +317,6 @@ class KMeans_Pipeline:
         # Set the index for each dataframe
         sg_mean_am.set_index('date', inplace=True)
         sg_mean_pm.set_index('date', inplace=True)
-        csi_sd_am.set_index('date', inplace=True)
-        csi_sd_pm.set_index('date', inplace=True)
         first_light.set_index('date', inplace=True)
         last_light.set_index('date', inplace=True)
         self.update_progress("Creating Tables", 1/4)
@@ -380,14 +324,17 @@ class KMeans_Pipeline:
         # Add suffixes to each set
         sg_mean_am = sg_mean_am.add_suffix('_sg_mean_am')
         sg_mean_pm = sg_mean_pm.add_suffix('_sg_mean_pm')
-        csi_sd_am = csi_sd_am.add_suffix('_csi_sd_am')
-        csi_sd_pm = csi_sd_pm.add_suffix('_csi_sd_pm')
         first_light = first_light.add_suffix('_first_light')
         last_light = last_light.add_suffix('_last_light')
         self.update_progress("Creating Tables", 2/4)
 
         # Concatenate the dataframes along columns
-        kmeans_df = pd.concat([sg_mean_am, sg_mean_pm, csi_sd_am, csi_sd_pm, first_light, last_light], axis=1)
+        kmeans_df = pd.concat([
+            sg_mean_am,
+            sg_mean_pm,
+            first_light,
+            last_light
+        ], axis=1)
         self.update_progress("Creating Tables", 3/4)
 
         # Sort the columns
@@ -700,7 +647,7 @@ class KMeans_Pipeline:
         site_df = self.site_info_df
 
         # Remove un-needed values
-        df = df[['datetime'] + self.selected_sites]
+        df = df[['time'] + self.selected_sites]
 
         # Gets the site wattage for normalization
         site_wattage = site_df[['site_name','MW']]
@@ -724,18 +671,27 @@ class KMeans_Pipeline:
             if column == 'datetime':
                 continue
 
-            temp_df = df[[column]]
+            df['datetime'] = pd.to_datetime(df['time'])
+            df['date'] = df['datetime'].dt.date
+
+            temp_df = df[['date', column]]
 
             reshaped_data = []
 
-            for i in range(0, len(temp_df), 24):
-                row = temp_df.iloc[i:i+24].values.flatten()
+            for date, group in temp_df.groupby('date'):
+                row = group[column].values
                 reshaped_data.append(row)
 
             reshaped_df = pd.DataFrame(reshaped_data)
-            repeated_labels = np.repeat(labels, len(reshaped_df) // len(labels))
 
-            reshaped_df['labels'] = repeated_labels
+            if len(labels) != len(reshaped_df):
+                raise ValueError(
+                    f"Label count ({len(labels)}) does not match number of daily chunks ({len(reshaped_df)})"
+                )
+
+            reshaped_df['labels'] = labels
+
+            # reshaped_df['labels'] = repeated_labels
 
             # Step 3: Split each reshaped DataFrame into more DataFrames based on the corresponding cluster
             for label in reshaped_df['labels'].unique():
@@ -747,9 +703,16 @@ class KMeans_Pipeline:
                 # Remove the labels column
                 df_cluster = df_cluster.drop(columns=['labels'])
 
-                # Save the DataFrame to the cluster directory under "clusters"
-                df_cluster.to_csv(f'{self.directory}/Clusters/{label + 1}/{column}.csv', index=False)
-                # df_cluster.to_csv(f'clusters/cluster_{label}/{column}.csv', index=False)
+                # Replace any missing values with 0
+                df_cluster = df_cluster.fillna(0)
+                
+                # save the dataframe
+                df_cluster.to_csv(
+                    f'{self.directory}/Clusters/{label + 1}/{column}.csv',
+                    index=False,
+                    na_rep='0'
+                )
+
         print("\n")
 
 
