@@ -1,221 +1,230 @@
+import cdsapi
 import pandas as pd
-import requests
+import numpy as np
+from pathlib import Path
+import yaml
+import zipfile
 import os
 import glob
-import numpy as np
-from datetime import datetime, timedelta
-
-import pvlib.pvsystem as pv
-import pvlib.location as loc
-import pvlib.modelchain as mc
 import pvlib
+from pvlib.location import Location
+from pvlib.pvsystem import PVSystem
+import pvlib.modelchain as mc
+from timezonefinder import TimezoneFinder
 
 class Solar:
     """
-    A class to handle solar generation data, downloading weather data, calculating solar generation using PVLib,
+    A class to handle solar data: download weather data from ERA5 database, calculate solar generation using PVLib,
     and processing the data for Monte Carlo Simulation (MCS).
     """
 
-    def __init__(self, site_data, directory):
+    def __init__(self, solar_directory):
         """
-        Initializes the Solar class with site data and directory.
+        Initializes the Solar class with directory.
 
         Parameters:
-            site_data (str): Path to the CSV file containing site data.
             directory (str): Directory to save the data.
         """
+        self.solar_directory = solar_directory
+        self.solar_site_data = solar_directory + "/solar_sites.csv"
+        self.sites_df = pd.read_csv(self.solar_site_data)
 
-        self.sites_df = pd.read_csv(site_data)
-        self.n_sites = len(self.sites_df)
-        self.s_zone_no = self.sites_df['zone']
-        self.names = self.sites_df["site_name"]
-        self.lats = self.sites_df["lat"]
-        self.lons = self.sites_df["long"]
-        self.tracking = self.sites_df["tracking"]
-        self.MW = self.sites_df["MW"]
-        self.directory = directory
+        # directory for storing downloaded data
+        self.weather_data_directory = Path(solar_directory + "/solar_weather_data")
+        self.weather_data_directory.mkdir(exist_ok=True)
+
+        # directory for storing solar power generation data
+        self.gen_data_directory = Path(solar_directory + "/solar_gen_data")
+        self.gen_data_directory.mkdir(exist_ok=True)
+
         pass
 
-    def SolarGen(self, api_key, your_name, your_affiliation, your_email, year_start, year_end):
+    def download_solar_data(self, start_year, end_year):
+
+        if not {"lat", "long"}.issubset(self.sites_df.columns):
+            raise ValueError("CSV must contain 'lat' and 'long' columns")
+
+        # --- DATA DESCRIPTION FOR ERA5 ---
+        dataset = "reanalysis-era5-single-levels-timeseries"
+        base_request = {
+            "variable": [
+                "surface_solar_radiation_downwards",
+                "2m_temperature",
+                "10m_u_component_of_wind",
+                "10m_v_component_of_wind",
+            ],
+            "date": [f"{start_year}-01-01/{end_year}-12-31"],
+            "data_format": "csv"
+        }
+
+        client = cdsapi.Client()
+
+        # --- DOWNLOAD LOOP ---
+        for idx, row in self.sites_df.iterrows():
+
+            lat = float(row["lat"])
+            lon = float(row["long"])
+            name = row["site_name"]
+
+            request = base_request.copy()
+            request["location"] = {"longitude": lon, "latitude": lat}
+
+            print(f"Downloading {name} (lat={lat}, lon={lon})...")
+
+            result = client.retrieve(dataset, request)
+            zip_path = Path(result.download())
+
+            final_csv_path = self.weather_data_directory / f"{name}.csv"
+
+            # --- EXTRACT FROM DOWNLOADED ZIP ---
+            with zipfile.ZipFile(zip_path, 'r') as z:
+                csv_files = [f for f in z.namelist() if f.endswith(".csv")]
+
+                if not csv_files:
+                    raise RuntimeError(f"No CSV found in ZIP for {name}")
+
+                extracted_name = csv_files[0]
+                z.extract(extracted_name, self.weather_data_directory)
+
+                extracted_path = self.weather_data_directory / extracted_name
+
+                os.replace(extracted_path, final_csv_path) # rename csv file for convenience
+
+            # --- CLEANUP ---
+            zip_path.unlink()
+
+    def process_solar_data(self, file_path, site):
+        df_weather = pd.read_csv(file_path)
+
+        # change time zone
+        tf = TimezoneFinder()
+        tz = tf.timezone_at(lat=site.lat, lng=site.long)
+
+        # parse time
+        df_weather['valid_time'] = pd.to_datetime(df_weather['valid_time'], utc=True)
+        df_weather['valid_time'] = df_weather['valid_time'].dt.tz_convert(tz)
+        df_weather = df_weather.set_index('valid_time').rename_axis('time')
+
+        # convert variables
+        df_weather['temp_air'] = df_weather['t2m'] - 273.15
+        df_weather['wind_speed'] = np.sqrt(df_weather['u10']**2 + df_weather['v10']**2)
+        df_weather['ghi'] = df_weather['ssrd'] / 3600.0
+        df_weather = df_weather[['temp_air', 'wind_speed', 'ghi']]
+
+        return df_weather, tz
+
+    def add_irradiance_components(self, df_weather, lat, lon):
+        # --- solar position ---
+        solpos = pvlib.solarposition.get_solarposition(
+            time=df_weather.index,
+            latitude=lat,
+            longitude=lon
+        )
+
+        # --- calculate DNI and DHI ---
+        dni_dhi = pvlib.irradiance.erbs(
+            ghi=df_weather['ghi'],
+            zenith=solpos['zenith'],
+            datetime_or_doy=df_weather.index,
+        )
+
+        # add indices to weather dataframe
+        df_weather['dni'] = dni_dhi['dni']
+        df_weather['dhi'] = dni_dhi['dhi']
+
+        return df_weather
+    
+    def run_pv_model(self, df_weather, site, site_id, tz):
+    
+        ac = 1; dc = ac*1.3; tilt = site.lat
+
+        location = Location(site.lat, site.long, tz = tz)
+        system = PVSystem(
+        surface_tilt=tilt,
+        surface_azimuth=180,
+        module_parameters={'pdc0': dc, 'gamma_pdc': -0.004},
+        inverter_parameters={'pdc0': ac},
+        temperature_model_parameters=pvlib.temperature.TEMPERATURE_MODEL_PARAMETERS['sapm']
+        ['open_rack_glass_glass'])
+
+        mchain = mc.ModelChain.with_pvwatts(system, location)
+
+        # prep weather data for mchain
+        weather_sat = df_weather[['dni','ghi','dhi','temp_air','wind_speed']].copy()
+        weather_sat.columns = ['dni','ghi','dhi','temp_air','wind_speed']
+
+        # run mchain model for satellite data
+        mchain.run_model(weather_sat)
+        ac_power_sat = pd.DataFrame(mchain.results.ac)*site.MW
+        ac_power_sat.to_csv(f'{self.gen_data_directory}/{site_id}_gen.csv')
+
+    def combine_site_generation(self, file_pattern):
         """
-        Downloads weather data from NREL NSRDB and calculates solar generation using PVLib.
+        Combine multiple solar generation CSVs into one wide CSV.
 
-        Parameters:
-            api_key (str): API key for NREL NSRDB.
-            your_name (str): Your full name.
-            your_affiliation (str): Your affiliation.
-            your_email (str): Your email address.
-            year_start (int): Start year for data download.
-            year_end (int): End year for data download.
-        """
-        interval = '60'; utc = 'false'; reason = 'beta+testing'; mailing_list = 'false'
+        Parameters
+        ----------
+        input_folder : str or Path
+            Folder containing site generation files.
+        output_file : str
+            Output CSV filename.
+        file_pattern : str
+            Pattern for matching generation files.
 
-        self.year_range = range(year_start, year_end + 1)
-        self.years = [str(num) for num in self.year_range]
-
-        for year in self.years:
-
-            # check if leap year
-            if int(year)%4==0:
-                leap_year = 'true'
-            else:
-                leap_year = 'false'
-
-            for i in range(len(self.sites_df)):
-
-                name = self.names[i]
-                lat = self.lats[i]
-                lon = self.lons[i]
-                
-                # download data for satellite
-                url = 'https://developer.nrel.gov/api/nsrdb/v2/solar/nsrdb-GOES-tmy-v4-0-0-download.csv?wkt=POINT({lon}%20{lat})&names=tmy-{year}&leap_day={leap}&interval={interval}&utc={utc}&full_name={name}&email={email}&affiliation={affiliation}&mailing_list={mailing_list}&reason={reason}&api_key={api}'\
-                    .format(year=year, lat=lat, lon=lon, leap=leap_year, interval=interval, utc=utc, name=your_name, \
-                    email=your_email, mailing_list=mailing_list, affiliation=your_affiliation, reason=reason, \
-                    api=api_key)
-                response = requests.get(url, verify=False)
-
-                # store data in csv file
-                csv_data = response.text
-                if not os.path.exists(f"{self.directory}/solardata/{year}"):
-                    os.makedirs(f"{self.directory}/solardata/{year}")
-                with open(f"{self.directory}/solardata/{year}/{name}.csv", "w") as csv_file:
-                    csv_file.write(csv_data)
-                timezone = pd.read_csv(f'{self.directory}/solardata/{year}/{name}.csv', nrows=1)['Time Zone'][0]
-                dataF = pd.read_csv(f'{self.directory}/solardata/{year}/{name}.csv', skiprows=[0, 1])
-
-                print('NSRDB weather data for', name, 'for the year', year, 'obtained and saved to csv file.')
-
-                # calculate weather data to solar generation data using pvlib
-                ac = 1.04+1/600; dc = ac * 1.3 # Set AC to 1, DC to 1.3 for all projects. Scale up so that once 4% losses applied, get AC=1MW, DC=1.3MW.
-                tilt = round((lat*0.76+3.1), 0)
-
-                system = pv.PVSystem(surface_tilt=tilt, surface_azimuth=180,
-                                module_parameters={'pdc0': dc, 'gamma_pdc': -0.004},
-                                inverter_parameters={'pdc0': ac},
-                                temperature_model_parameters=pvlib.temperature.TEMPERATURE_MODEL_PARAMETERS[
-                                    'sapm']
-                                ['open_rack_glass_glass'])
-
-                location = pvlib.location.Location(lat, lon)
-                mchain = mc.ModelChain.with_pvwatts(system, location)
-
-                # prep weather data for mchain
-                dataF.index = pd.to_datetime(dataF[['Year','Month','Day','Hour','Minute']])
-                dataF.index = dataF.index.tz_localize(int(timezone)*3600)
-                weather_sat = dataF[['DNI','GHI','DHI','Temperature','Wind Speed']].copy()
-                weather_sat.columns = ['dni','ghi','dhi','temp_air','wind_speed']
-                weather_cs = dataF[['Clearsky DNI','Clearsky GHI','Clearsky DHI','Temperature','Wind Speed']].copy()
-                weather_cs.columns = ['dni','ghi','dhi','temp_air','wind_speed']
-
-                # run mchain model for satellite data
-                mchain.run_model(weather_sat)
-                ac_power_sat = pd.DataFrame(mchain.results.ac)*self.MW[i]
-                ac_power_sat.to_csv(f'{self.directory}/solardata/{year}/{name}_sgen_sat.csv')
-
-                # run mchain model for clearsky data
-                mchain.run_model(weather_cs)
-                ac_power_cs = pd.DataFrame(mchain.results.ac)*self.MW[i]
-                ac_power_cs.to_csv(f'{self.directory}/solardata/{year}/{name}_sgen_cs.csv')
-
-    def SolarGenGather(self, year_start, year_end):
-        """
-        Gathers solar generation data from all sites and years, processes it, and saves it to CSV files.
-
-        Parameters:
-            year_start (int): Start year for data gathering.
-            year_end (int): End year for data gathering.
+        Returns
+        -------
+        pd.DataFrame
+            Combined dataframe.
         """
 
-        solar_directory = f'{self.directory}/solardata/'
-        self.year_range = range(year_start, year_end + 1)
-        self.years = [str(num) for num in self.year_range]
+        input_folder = Path(self.gen_data_directory)
 
-        for year in self.years:
+        all_site_series = []
 
-            year_directory = f'{solar_directory}/{year}/'
+        for file_path in sorted(input_folder.glob(file_pattern)):
 
-            file_pattern_sat = '*_sgen_sat.csv'
-            file_pattern_cs = '*_sgen_cs.csv'
+            # Example: 101_PV_1_gen.csv -> 101_PV_1
+            site_id = file_path.stem.replace("_gen", "")
 
-            common_to_remove_sat = '_sgen_sat'
-            common_to_remove_cs = '_sgen_cs'
+            # Read file
+            df = pd.read_csv(file_path)
 
-            file_paths_sat = glob.glob(year_directory + file_pattern_sat)
-            file_paths_cs = glob.glob(year_directory + file_pattern_cs)
+            # Basic validation
+            required_cols = {"time", "p_mp"}
+            if not required_cols.issubset(df.columns):
+                raise ValueError(
+                    f"{file_path.name} missing required columns: {required_cols}"
+                )
 
-            columns_to_extract = ['p_mp']
-            allsites_year_sat = pd.DataFrame()
-            allsites_year_cs = pd.DataFrame()
+            # Parse time
+            df["time"] = pd.to_datetime(df["time"])
 
-            for file_path in file_paths_sat:
+            # Create series named by site_id
+            site_series = (
+                df.set_index("time")["p_mp"]
+                .rename(site_id)
+            )
 
-                file_name = os.path.splitext(os.path.basename(file_path))[0]
-                cleaned_name = file_name.replace(common_to_remove_sat, '')
+            all_site_series.append(site_series)
 
-                df = pd.read_csv(file_path)
-                selected_columns = df[columns_to_extract]
-                allsites_year_sat[cleaned_name] = selected_columns
+        if not all_site_series:
+            raise ValueError(f"No files found in {input_folder}")
 
-            for file_path in file_paths_cs:
+        # Combine all sites on timestamp index
+        combined_df = pd.concat(all_site_series, axis=1)
 
-                file_name = os.path.splitext(os.path.basename(file_path))[0]
-                cleaned_name = file_name.replace(common_to_remove_cs, '')
+        # Optional: sort by time
+        combined_df = combined_df.sort_index()
 
-                df = pd.read_csv(file_path)
-                selected_columns = df[columns_to_extract]
-                allsites_year_cs[cleaned_name] = selected_columns
+        # Save
+        output_file = self.solar_directory + "/gen_all_sites.csv"
+        combined_df.to_csv(output_file)
 
+        print(f"Saved combined data to: {output_file}")
+        print(f"Shape: {combined_df.shape}")
 
-            allsites_year_sat.to_csv(f'{self.directory}/solardata/allsites_sat_{year}.csv', index = False)
-            allsites_year_cs.to_csv(f'{self.directory}/solardata/allsites_cs_{year}.csv', index = False)
-
-        file_pattern_sat_all = 'allsites_sat_*.csv'
-        file_pattern_cs_all = 'allsites_cs_*.csv'
-
-        file_paths_sat_all = glob.glob(solar_directory + file_pattern_sat_all)
-        file_paths_cs_all = glob.glob(solar_directory + file_pattern_cs_all)
-
-        gendata_sat = pd.DataFrame()
-        gendata_cs = pd.DataFrame()
-
-        for file_path in file_paths_sat_all:
-
-            df_sat = pd.read_csv(file_path)
-            selected_columns_all = df_sat[self.names]
-            gendata_sat = pd.concat([gendata_sat, pd.DataFrame(selected_columns_all)], ignore_index=True)
-            os.remove(file_path)
-
-        for file_path_cs in file_paths_cs_all:
-
-            df_cs = pd.read_csv(file_path_cs)
-            selected_columns_all = df_cs[self.names]
-            gendata_cs = pd.concat([gendata_cs, pd.DataFrame(selected_columns_all)], ignore_index=True)
-            os.remove(file_path_cs)
-
-        csi = pd.DataFrame(gendata_sat.values/gendata_cs.values) # calculate clear-sky index
-        csi.columns = self.names
-        csi.fillna(0, inplace=True)
-
-        # Set the start date
-        start_date = datetime(year_start, 1, 1, 0, 0, 0)
-
-        # Set the end date to '2012-12-31'
-        end_date = datetime(year_end, 12, 31, 23, 0, 0)
-        time_step = '1H'
-        datetime_vector = pd.date_range(start=start_date, end=end_date, freq=time_step)
-        datetime_df = pd.DataFrame({'datetime':datetime_vector.strftime('%m/%d/%y %H:%M')})
-        gendata_sat = pd.concat([datetime_df, gendata_sat], axis = 1)
-        csi = pd.concat([datetime_df, csi], axis = 1)
-
-        excel_file_path = f'{self.directory}/solar_data.xlsx'
-
-        with pd.ExcelWriter(excel_file_path, engine='openpyxl') as writer:
-            gendata_sat.to_excel(writer, sheet_name= 'solar_gen', index = False)
-            csi.to_excel(writer, sheet_name = 'csi', index = False)
-
-        print("Solar data download and processing complete! Let's evaluate performance of clusters now ...")
-
-
+        return combined_df
+    
     def GetSolarProfiles(self, solar_prob_data):
         '''
         This function extracts the solar data from clusters and modifies it for the MCS. The solar data is stored in a 4D ndarray where the dimensions are: [cluster, day, hour, site]. The clusters are created using the K-means clustering algorithm. Similar days of solar generation are put in the same cluster.
@@ -242,25 +251,48 @@ class Solar:
 
         return(self.n_sites, self.s_zone_no, self.MW, self.s_profiles, self.solar_prob)
 
-    #-------------------------------------OTHER RENEWABLES (Optional)-------------------------------------------------
-    #-----------------------------(CSP, RTPV, Geothermal, etc.)--------------------------------------------
+    def run_pipeline(self, start_year, end_year):
 
-    # def CSP(self, nh, data_CSP):
-    #     '''This function extracts and returns all system Concentrated Solar Power data'''
-    #     self.CSP = pd.read_csv(data_CSP).values
-    #     self.CSP_all_buses = np.zeros((nh, 3))
-    #     self.CSP_all_buses[:, 1] = self.CSP[:, 4]
+        # # download solar data
+        # self.download_solar_data(start_year, end_year)
 
-    #     return(self.CSP_all_buses)
+        all_files = sorted(Path(self.weather_data_directory).glob('*.csv'))
 
-    # def RTPV(self, nh, data_RTPV):
-    #     '''This function extracts and returns all system Rooftop Solar PV data'''
-    #     self.RTPV = pd.read_csv(data_RTPV).values
-    #     self.RTPV_all_buses = np.zeros((nh, 3))
-    #     self.RTPV_all_buses[:, 0] = np.sum(self.RTPV[:, 24:34], axis = 1)
-    #     self.RTPV_all_buses[:, 1] = self.RTPV[:, 34]
-    #     self.RTPV_all_buses[:, 2] = np.sum(self.RTPV[:, 4:24], axis = 1)
+        for file in all_files:
 
-    #     return(self.RTPV_all_buses)
+            print(f"Processing {file.name}")
+            
+            # Extract site_id from filename
+            site_id = file.stem
+            site_row = self.sites_df[self.sites_df['site_name'] == site_id]
+            site = site_row.iloc[0]
+
+            # convert observations into required indices
+            df, tz = self.process_solar_data(file, site)
+
+            # add irradiance components 
+            df = self.add_irradiance_components(df, site.lat, site.long)
+
+            # run PV model
+            self.run_pv_model(df, site, site_id, tz)
+
+        # combine all generation data
+        self.combine_site_generation(file_pattern="*_gen.csv")
+
+if __name__ == "__main__":
+
+    # --- CONFIG ---
+    input_file = 'input.yaml'
+    with open(input_file, 'r') as f:
+        config = yaml.safe_load(f)
+
+    # --- INPUTS ---
+    solar_directory = config['data']+"/Solar"
+    start_year = config['year_start_s']
+    end_year = config['year_end_s']
+
+    # create instance and run
+    solar = Solar(solar_directory)
+    solar.run_pipeline(start_year, end_year)
 
 
