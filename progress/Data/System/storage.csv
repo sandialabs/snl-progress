@@ -1,2 +1,2 @@
-Name,Bus,Pmax,Pmin,Duration,max_SOC,min_SOC,Efficiency,Discharge Cost,Charge Cost,Units,MTTF,MTTR,Chemistry
-313_STORAGE_1,3,50,0,1,1,0,0.85,0,0,10,100,30,NMC
+Name,Bus No.,Zone,Pmax,Pmin,Duration,max_SOC,min_SOC,Efficiency,Discharge Cost,Charge Cost,Units,MTTF,MTTR,Chemistry
+313_STORAGE_1,61,3,50,0,4,1,0,0.85,20,0,10,2000,30,NMC
