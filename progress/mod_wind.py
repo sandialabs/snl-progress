@@ -25,7 +25,7 @@ class Wind:
         year_list = range(year_start, year_end + 1)
         wind_site_df = pd.read_csv(site_data)
         site_count = len(wind_site_df)
-        name_list = wind_site_df["Farm Name"].tolist()
+        name_list = wind_site_df["Site Name"].tolist()
         wind_site_df["LON_LAT"] = wind_site_df["Longitude"].map(str) + " " + wind_site_df["Latitude"].map(str)
         coord_list = wind_site_df["LON_LAT"].tolist()
         interval = '60'
@@ -83,7 +83,7 @@ class Wind:
 
         wind_speeds_DF.to_csv(directory+f"/windspeed_data.csv")
 
-    def WindFarmsData(self, site_data, pcurve_data):
+    def WindFarmsData(self, site_data, pcurve_data, model):
         """
         Collects wind farm data from user input.
 
@@ -95,11 +95,14 @@ class Wind:
             tuple: Wind farm data including number of sites, farm names, zone numbers, wind classes, turbines, turbine ratings, power classes, output curves, and start speeds.
         """
         self.wind = pd.read_csv(site_data) # read file for wind farm data
-        self.farm_no = self.wind['Farm No.'].values # wind farm numbers
-        self.farm_name = self.wind['Farm Name'] # wind farm names
-        self.w_sites = len(self.farm_no) # number of wind sites
-        self.zone_no = self.wind['Zone No.'].values # zone number for wind farms
-        self.wcap = self.wind['Max Cap'].values # MW capacity of wind farms
+        # self.farm_no = self.wind['Farm No.'].values # wind farm numbers
+        self.farm_name = self.wind['Site Name'] # wind farm names
+        self.w_sites = len(self.farm_name) # number of wind sites
+        if model == 'Nodal':
+            self.zone_no = self.wind['Bus No.'].values # zone number for wind farms
+        else:
+            self.zone_no = self.wind['Zone'].values
+        self.wcap = self.wind['MW_Capacity'].values # MW capacity of wind farms
         self.turbine_rating = self.wind['Turbine Rating'].values
         self.w_turbines = np.ceil(self.wcap/self.turbine_rating).astype(int) # no. of wind turbines
         self.p_class = self.wind['Power Class'].values
@@ -128,8 +131,8 @@ class Wind:
             numpy.ndarray: Transition rate matrices.
         """
         wind = pd.read_csv(site_data) # read file for wind farm data
-        farm_no = wind['Farm No.'].values # wind farm numbers
-        w_sites = len(farm_no) # number of wind sites
+        bus_no = wind['Bus No.'].values # wind farm numbers
+        w_sites = len(bus_no) # number of wind sites
 
         pcurve = pd.read_csv(pcurve_data) # read file for wind power curve data
         start_speed = pcurve['Start (m/s)'].values # start speeds for each wind class

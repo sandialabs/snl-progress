@@ -1,12 +1,14 @@
 import pandas as pd
 import numpy as np
+import string
 
 class RASystemData:
     '''This class extracts, modifies and returns the system data required for resource adequacy assessment'''
 
-    def __init__(self, opt_type):
+    def __init__(self, opt_type, model):
         '''optimization type: single or multi-period'''
         self.opt_type = opt_type
+        self.model = model
 
     def branch(self, data_branch):
         """
@@ -20,6 +22,18 @@ class RASystemData:
         """
 
         self.branch = pd.read_csv(data_branch)
+        # for Zonal model, just use the interzonal lines
+        if self.model == 'Zonal':
+            print("Changing network model to Zonal ...")
+            self.branch = (
+                self.branch.loc[
+                    self.branch['Interzonal'].astype(str).str.upper().str.strip() == 'Y',
+                    ['Branch ID', 'From Bus', 'To Bus', 'R', 'X', 'B',
+                    'Rating', 'MTTF', 'MTTR', 'Tran OutRate']
+                ]
+                .reset_index(drop=True)
+            )
+        
         self.fb = self.branch['From Bus'].values
         self.tb = self.branch['To Bus'].values
         self.nl = len(self.tb)
@@ -44,9 +58,21 @@ class RASystemData:
         """
 
         self.bus = pd.read_csv(data_bus)
-        self.bus_name = self.bus['Bus Name']
-        self.bus_no = self.bus['Bus No.'].values
-        self.nz = len(self.bus_no)
+        if self.model == 'Zonal':
+            print("Aggregating buses ...")
+            unique_zones = sorted(self.bus['Zone'].dropna().unique())
+
+            self.bus_z = pd.DataFrame({
+                'Bus Name': list(string.ascii_uppercase[:len(unique_zones)]),
+                'Bus No.': unique_zones
+            })
+            self.bus_name = self.bus_z['Bus Name']
+            self.bus_no = self.bus_z['Bus No.'].values
+            self.nz = len(self.bus_no)
+        else:
+            self.bus_name = self.bus['Bus Name']
+            self.bus_no = self.bus['Bus No.'].values
+            self.nz = len(self.bus_no)    
 
         return(self.bus_name, self.bus_no, self.nz)
 
@@ -63,7 +89,10 @@ class RASystemData:
         """
 
         self.gen = pd.read_csv(data_gen) # all coventional generator data
-        self.genbus = self.gen['Bus No.'].values # bus at which generator is located
+        if self.model == "Zonal":
+            self.genbus = self.gen['Zone']
+        else:
+            self.genbus = self.gen['Bus No.'].values # bus at which generator is located
         self.ng = len(self.genbus) # no. of generators  
         self.pmax = self.gen['Max Cap'].values # maximum gen. capacity 
         self.pmin = self.gen['Min Cap'].values # minimum gen. capacity
@@ -91,7 +120,10 @@ class RASystemData:
 
         self.storage = pd.read_csv(data_storage)
         self.essname = self.storage['Name']
-        self.essbus = self.storage['Bus'].values # bus at which storage is located
+        if self.model == "Zonal":
+            self.essbus = self.storage['Zone'].values
+        else:
+            self.essbus = self.storage['Bus No.'].values # bus at which storage is located
         self.ness = len(self.essbus) # no. of ESS
         self.ess_pmax = self.storage['Pmax'].values # maximum ESS power output
         self.ess_pmin = self.storage['Pmin'].values # minimum ESS power output
@@ -112,7 +144,7 @@ class RASystemData:
         return(self.essname, self.essbus, self.ness, self.ess_pmax, self.ess_pmin, self.ess_duration, self.ess_socmax, self.ess_socmin, \
                self.ess_eff, self.disch_cost, self.ch_cost, self.MTTF_ess, self.MTTR_ess, self.ess_units, self.ess_chemistry)
 
-    def load(self, bus_name, data_load):
+    def load(self, bus_name, bus_no, data_load):
         """
         Extracts and returns all system load data.
 
@@ -124,6 +156,33 @@ class RASystemData:
             numpy.ndarray: Array containing load data for all regions.
         """
         self.load = pd.read_csv(data_load)
-        self.load_all_regions = self.load[bus_name].values
+
+        if self.model == 'Zonal':
+            print("Aggregating loads ...")
+            # build mapping from bus to zone
+            bus_to_zone = dict(zip(self.bus["Bus Name"], self.bus["Zone"]))
+
+            # Keep only bus columns that exist in both files
+            bus_cols = [c for c in self.load.columns if c in bus_to_zone]
+
+            # Create output starting with datetime
+            out = pd.DataFrame()
+            out["datetime"] = self.load["datetime"]
+
+            # Sum loads by zone
+            zones = sorted(self.bus["Zone"].unique())
+            for z in zones:
+                zone_bus_cols = [bus for bus in bus_cols if bus_to_zone[bus] == z]
+                out[str(z)] = self.load[zone_bus_cols].sum(axis=1)
+
+            # System-wide total = sum of all bus columns
+            out["system_wide"] = self.load[bus_cols].sum(axis=1)
+
+            # Reorder columns to match load.csv style
+            zone_cols = [str(z) for z in zones]
+            out = out[["datetime", "system_wide"] + zone_cols]
+            self.load_all_regions = out[zone_cols].values
+        else:
+            self.load_all_regions = self.load[bus_name].values
 
         return(self.load_all_regions)

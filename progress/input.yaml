@@ -1,7 +1,7 @@
 # ProGRESS Configuration File
 
 # Data file directory
-#data: "path/to/Data" 
+data: "path/to/Data/"
 
 # Inputs for the API
 api_key: "yourapikey"
@@ -9,27 +9,27 @@ email: "youremail"
 affiliation: 'youraffiliation' # no spaces, + can be used instead
 name: 'yourname' # no spaces, + can be used instead
 
-
-# Inputs for Wind
+# Inputs for Wind (check NREL wind toolkit for data availability)
 download_w: 'No' # Yes/No based on whether data needs to be downloaded
-year_start_w: 2007
-year_end_w: 2007
+year_start_w: 2007 # start year for wind data download
+year_end_w: 2014 # end year for wind data download
 
-# Inputs for Solar
+# Inputs for Solar (check ERA5 for data availability)
 download_s: 'No' # Yes/No based on whether data needs to be downloaded
-year_start_s: 2022   
-year_end_s: 2022
-n_clusters: 8
+year_start_s: 2000 # start year for solar data download
+year_end_s: 2025 # start year for solar data download
+n_clusters: 8 # number of K-means clusters for the solar data
 
 # Monte Carlo simulation parameters
-samples: 1
-sim_hours: 1024
-load_factor: 1
-model: 'Zonal' # 'Zonal' or 'Copper Sheet'
+samples: 1 # no. of Monte Carlo samples to run
+sim_hours: 168 # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
+load_factor: 1.75 # tweak to increase/decrease load at all buses; default = 1
+model: 'Zonal' # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zonal' (medium fidelity, nodes within a region/zone aggregated), 'Nodal' (highest fidelity)
 
-# Multi-period and degradation config
-optimization_period: 24 #Set to 1 for single period optimization. For multi-period set to multiples of 24. Recommended: 24 hours. 
-evaluate_degradation: True #Set to True to include BESS degradation in the model.
-degradation_interval: 168 #How often degradation is evaluated in hours. Recommended: 168 hours (1 week) or more .
-detailed_thermal_model: False #Set to True to use detailed PyBAMM thermal model for BESS degradation calculations. Will increase computation time. If false, constant 25 C temp used. 
+# Optimization horizon in hours
+optimization_period: 24 # = 1 for reliability mode; = multiples of 24 for day ahead hourly optimization; Recommended: 24 
 
+# Battery degradation parameters
+evaluate_degradation: False # True/False based on whether user wants to consider battery degradation
+degradation_interval: 1000 # Interval between BESS degradation evaluation. Recommended: 168 hours (1 week) or more .
+detailed_thermal_model: False # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 

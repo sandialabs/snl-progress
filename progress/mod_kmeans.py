@@ -110,7 +110,7 @@ class KMeans_Pipeline:
         if 'selected_sites' in kwargs:
             self.selected_sites = kwargs['selected_sites']
         else:
-            self.selected_sites = self.site_info_df['site_name'].tolist()
+            self.selected_sites = self.site_info_df['Site Name'].tolist()
 
         self.first_light, self.last_light = self.process_flh_and_llh(
             self.solar_gen_df, self.selected_sites
@@ -229,7 +229,7 @@ class KMeans_Pipeline:
             solar_gen_df (DataFrame): DataFrame containing the solar generation data.
                 The DataFrame should have a 'datetime' column and columns for each site's solar generation.
             site_info_df (DataFrame): DataFrame containing information about the sites,
-                including 'site_name' and 'MW' (megawatt capacity).
+                including 'Site Name' and 'MW_Capacity' (megawatt capacity).
             selected_sites (list): List of site names to include in the processing.
 
         Returns:
@@ -246,7 +246,7 @@ class KMeans_Pipeline:
         self.update_progress("Processing Solar Data", 2/9)
 
         # Filter rows in site_df based on selected sites
-        site_df = site_df[site_df['site_name'].isin(selected_sites)].reset_index(drop=True)
+        site_df = site_df[site_df['Site Name'].isin(selected_sites)].reset_index(drop=True)
         self.update_progress("Processing Solar Data", 3/9)
 
         sg_df['datetime'] = pd.to_datetime(sg_df['time'])
@@ -263,13 +263,13 @@ class KMeans_Pipeline:
         self.update_progress("Processing Solar Data", 5/9)
 
         # Get the site wattage for the selected sites
-        site_wattage = site_df[site_df['site_name'].isin(selected_sites)][['site_name', 'MW']]
+        site_wattage = site_df[site_df['Site Name'].isin(selected_sites)][['Site Name', 'MW_Capacity']]
         self.update_progress("Processing Solar Data", 6/9)
 
         # Normalize by wattage limit
         for index, row in site_wattage.iterrows():
-            site_name = row['site_name']
-            wattage_limit = row['MW']
+            site_name = row['Site Name']
+            wattage_limit = row['MW_Capacity']
             sg_df[site_name] = sg_df[site_name] / wattage_limit
             self.update_progress("Processing Solar Data", 7/9)
 
@@ -650,12 +650,12 @@ class KMeans_Pipeline:
         df = df[['time'] + self.selected_sites]
 
         # Gets the site wattage for normalization
-        site_wattage = site_df[['site_name','MW']]
+        site_wattage = site_df[['Site Name','MW_Capacity']]
 
         # Normalize values
         for index, row in site_wattage.iterrows():
-            site_name = row['site_name']
-            wattage_limit = row['MW']
+            site_name = row['Site Name']
+            wattage_limit = row['MW_Capacity']
 
             if site_name in df.columns:
                 df[site_name] = df[site_name] / wattage_limit

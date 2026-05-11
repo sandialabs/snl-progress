@@ -41,6 +41,10 @@ class ProgressMultiProcess:
         wind_directory = config['data'] + '/Wind'
         solar_dir_exists = os.path.exists(solar_directory)
         wind_dir_exists = os.path.exists(wind_directory)
+
+        # model Copper Sheet, Zonal, or Nodal
+        model = config['model']
+
         # Monte Carlo simulation parameters
         samples = config['samples']
         sim_hours = config['sim_hours']
@@ -63,11 +67,11 @@ class ProgressMultiProcess:
         data_storage = system_directory + '/storage.csv'
         BMva = 100
 
-        rasd = RASystemData(optimization_period)
+        rasd = RASystemData(optimization_period, model)
         genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost = rasd.gen(data_gen)
         nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch)
         bus_name, bus_no, nz = rasd.bus(data_bus)
-        load_all_regions = rasd.load(bus_name, data_load)
+        load_all_regions = rasd.load(bus_name, bus_no, data_load)
 
         essname, essbus, ness, ess_pmax, ess_pmin, ess_duration, ess_socmax, ess_socmin, ess_eff, \
             disch_cost, ch_cost, MTTF_ess, MTTR_ess, ess_units, ess_chemistry = rasd.storage(data_storage)
@@ -88,7 +92,7 @@ class ProgressMultiProcess:
             wind = Wind()
                 
             w_sites, farm_name, zone_no, w_classes, w_turbines, r_cap, p_class, out_curve2, out_curve3,\
-                start_speed = wind.WindFarmsData(wind_sites, wind_power_curves)
+                start_speed = wind.WindFarmsData(wind_sites, wind_power_curves, model)
 
             tr_mats = pd.read_excel(wind_tr_rate, sheet_name=None)
             tr_mats = np.array([tr_mats[sheet_name].to_numpy() for sheet_name in tr_mats])
@@ -96,10 +100,9 @@ class ProgressMultiProcess:
         # download and process solar data
         if solar_dir_exists:
 
-            solar_site_data = solar_directory+"/solar_sites.csv"
             solar_prob_data = solar_directory+"/solar_probs.csv"
 
-            solar = Solar(solar_site_data, solar_directory)
+            solar = Solar(solar_directory, model)
 
             s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
 
@@ -232,7 +235,7 @@ class ProgressMultiProcess:
                     def fb_soc(model, i):
                         return(ess_smin[i]/BMva, ess_smax[i]/BMva)
                 
-                    if config['model'] == 'Zonal':
+                    if config['model'] == 'Zonal' or 'Nodal':
                         load_curt, SOC_old, P_dis, P_ch = raut.OptDispatch(ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                             gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost)
                     elif config['model'] == 'Copper Sheet':
@@ -285,7 +288,7 @@ class ProgressMultiProcess:
                         def fb_ren(model, i, t):
                             return(0, holder_dict["ren_limit"][i,t]/BMva)
                         
-                        if config['model'] == 'Zonal':
+                        if config['model'] == 'Zonal' or 'Nodal':
                             load_curt, SOC_profile, P_dis, P_ch = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                             gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = False)
                         elif config['model'] == 'Copper Sheet':
@@ -333,8 +336,8 @@ class ProgressMultiProcess:
                                 SOC_old[ess_idx] = SOC_old[ess_idx] * (1-current_deg_instance.L)
                                 SOC_old_deg[ess_name] = soc_profile_norm[-1]
 
-                    if (n+1)%1000 == 0:
-                        print(f'Hour {n + 1}, Process No.: {self.rank}')
+                if (n+1)%100 == 0:
+                    print(f'Hour {n + 1}, Process No.: {self.rank}')
 
             # collect indices for all samples
             indices_rec = raut.UpdateIndexArrays(indices_rec, var_s, sim_hours, s)

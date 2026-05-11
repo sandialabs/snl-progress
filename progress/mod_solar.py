@@ -18,7 +18,7 @@ class Solar:
     and processing the data for Monte Carlo Simulation (MCS).
     """
 
-    def __init__(self, solar_directory):
+    def __init__(self, solar_directory, model):
         """
         Initializes the Solar class with directory.
 
@@ -28,11 +28,15 @@ class Solar:
         self.solar_directory = solar_directory
         self.solar_site_data = solar_directory + "/solar_sites.csv"
         self.sites_df = pd.read_csv(self.solar_site_data)
+        self.model = model
 
-        self.names = self.sites_df["site_name"]
+        self.names = self.sites_df["Site Name"]
         self.n_sites = len(self.sites_df)
-        self.s_zone_no = self.sites_df['zone']
-        self.MW = self.sites_df["MW"]
+        if model == 'Nodal':
+            self.s_zone_no = self.sites_df['Bus No.']
+        else:
+            self.s_zone_no = self.sites_df['Zone']
+        self.MW = self.sites_df["MW_Capacity"]
 
         # directory for storing downloaded data
         self.weather_data_directory = Path(solar_directory + "/solar_weather_data")
@@ -46,8 +50,8 @@ class Solar:
 
     def download_solar_data(self, start_year, end_year):
 
-        if not {"lat", "long"}.issubset(self.sites_df.columns):
-            raise ValueError("CSV must contain 'lat' and 'long' columns")
+        if not {"Latitude", "Longitude"}.issubset(self.sites_df.columns):
+            raise ValueError("CSV must contain 'Latitude and 'Longitude' columns")
 
         # --- DATA DESCRIPTION FOR ERA5 ---
         dataset = "reanalysis-era5-single-levels-timeseries"
@@ -67,9 +71,9 @@ class Solar:
         # --- DOWNLOAD LOOP ---
         for idx, row in self.sites_df.iterrows():
 
-            lat = float(row["lat"])
-            lon = float(row["long"])
-            name = row["site_name"]
+            lat = float(row["Latitude"])
+            lon = float(row["Longitude"])
+            name = row["Site Name"]
 
             request = base_request.copy()
             request["location"] = {"longitude": lon, "latitude": lat}
@@ -103,7 +107,7 @@ class Solar:
 
         # change time zone
         tf = TimezoneFinder()
-        tz = tf.timezone_at(lat=site.lat, lng=site.long)
+        tz = tf.timezone_at(lat=site.Latitude, lng=site.Longitude)
 
         # parse time
         df_weather['valid_time'] = pd.to_datetime(df_weather['valid_time'], utc=True)
@@ -141,9 +145,9 @@ class Solar:
     
     def run_pv_model(self, df_weather, site, site_id, tz):
     
-        ac = 1; dc = ac*1.3; tilt = site.lat
+        ac = 1; dc = ac*1.3; tilt = site.Latitude
 
-        location = Location(site.lat, site.long, tz = tz)
+        location = Location(site.Latitude, site.Longitude, tz = tz)
         system = PVSystem(
         surface_tilt=tilt,
         surface_azimuth=180,
@@ -160,7 +164,7 @@ class Solar:
 
         # run mchain model for satellite data
         mchain.run_model(weather_sat)
-        ac_power_sat = pd.DataFrame(mchain.results.ac)*site.MW
+        ac_power_sat = pd.DataFrame(mchain.results.ac)*site.MW_Capacity
         ac_power_sat.to_csv(f'{self.gen_data_directory}/{site_id}_gen.csv')
 
     def combine_site_generation(self, file_pattern):
@@ -258,8 +262,8 @@ class Solar:
 
     def run_pipeline(self, start_year, end_year):
 
-        # # download solar data
-        # self.download_solar_data(start_year, end_year)
+        # download solar data
+        self.download_solar_data(start_year, end_year)
 
         all_files = sorted(Path(self.weather_data_directory).glob('*.csv'))
 
@@ -269,14 +273,14 @@ class Solar:
             
             # Extract site_id from filename
             site_id = file.stem
-            site_row = self.sites_df[self.sites_df['site_name'] == site_id]
+            site_row = self.sites_df[self.sites_df['Site Name'] == site_id]
             site = site_row.iloc[0]
 
             # convert observations into required indices
             df, tz = self.process_solar_data(file, site)
 
             # add irradiance components 
-            df = self.add_irradiance_components(df, site.lat, site.long)
+            df = self.add_irradiance_components(df, site.Latitude, site.Longitude)
 
             # run PV model
             self.run_pv_model(df, site, site_id, tz)
@@ -295,9 +299,10 @@ if __name__ == "__main__":
     solar_directory = config['data']+"/Solar"
     start_year = config['year_start_s']
     end_year = config['year_end_s']
+    model = config['model']
 
     # create instance and run
-    solar = Solar(solar_directory)
+    solar = Solar(solar_directory, model)
     solar.run_pipeline(start_year, end_year)
 
 

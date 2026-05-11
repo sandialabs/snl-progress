@@ -313,7 +313,7 @@ class RAUtilities:
         model.renewable_curt = Var(range(nz), bounds = (0, None)) # renewable load curtailment variables
         A_inc_t = np.transpose(A_inc) # transposing incedence matrix
 
-        LOL_cost = 1000 # cost of lost load (set to very high so that system always tries to minimize loss)
+        LOL_cost = 1000000 # cost of lost load (set to very high so that system always tries to minimize loss)
 
         # power balance constraint
         def con_rule1(model,i):
@@ -482,7 +482,7 @@ class RAUtilities:
 
         A_inc_t = np.transpose(A_inc) # transposing incedence matrix
 
-        LOL_cost = 1000 # cost of lost load (set to very high so that system always tries to minimize loss)
+        LOL_cost = 1000000 # cost of lost load (set to very high so that system always tries to minimize loss)
 
         def con_rule1(model):
             return(sum(model.Pg[m] for m in range(ng + ness)) + sum(model.Pc[m] for m in range(ness)) \

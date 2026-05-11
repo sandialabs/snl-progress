@@ -2,10 +2,9 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from progress.mod_wind import Wind
+from mod_wind import Wind
 from mod_solar import Solar
 from mod_kmeans import KMeans_Pipeline
-
 
 class DataProcess:
 
@@ -13,6 +12,8 @@ class DataProcess:
         # open configuration file
         with open(input_file, 'r') as f:
             self.config = yaml.safe_load(f)
+        
+        self.model = self.config['model']
 
     def ProcessWindData(self):
 
@@ -37,7 +38,7 @@ class DataProcess:
                                     self.config['year_start_w'], self.config['year_end_w'])
                 
             w_sites, farm_name, zone_no, w_classes, w_turbines, r_cap, p_class, out_curve2, out_curve3,\
-                start_speed = wind.WindFarmsData(wind_sites, wind_power_curves)
+                start_speed = wind.WindFarmsData(wind_sites, wind_power_curves, self.model)
 
             # calculate transition rates 
             wind.CalWindTrRates(wind_directory, windspeed_data, wind_sites, wind_power_curves)
@@ -60,7 +61,7 @@ class DataProcess:
             solar_site_data = solar_directory+"/solar_sites.csv"
             solar_prob_data = solar_directory+"/solar_probs.csv"
 
-            solar = Solar(solar_directory)
+            solar = Solar(solar_directory, self.model)
 
             if self.config['download_s'] == 'Yes':
 
@@ -88,6 +89,6 @@ class DataProcess:
         
 if __name__ == "__main__":
 
-    data = DataProcess('progress/input.yaml')
+    data = DataProcess('input.yaml')
     data.ProcessWindData()
     data.ProcessSolarData()

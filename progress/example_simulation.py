@@ -7,14 +7,13 @@ import os
 import yaml
 import argparse
 
-from progress.mod_sysdata import RASystemData
+from mod_sysdata import RASystemData
 from mod_solar import Solar
-from progress.mod_wind import Wind
-from progress.mod_utilities import RAUtilities
-from progress.mod_matrices import RAMatrices
-from progress.mod_plot import RAPlotTools
-from progress.mod_kmeans import KMeans_Pipeline
-from progress.mod_degradation import BESS_Degradation
+from mod_wind import Wind
+from mod_utilities import RAUtilities
+from mod_matrices import RAMatrices
+from mod_plot import RAPlotTools
+from mod_degradation import BESS_Degradation
 from datetime import datetime
 
 def MCS(input_file, results_subdir) :   
@@ -30,6 +29,9 @@ def MCS(input_file, results_subdir) :
     wind_directory = config['data'] + '/Wind'
     solar_dir_exists = os.path.exists(solar_directory)
     wind_dir_exists = os.path.exists(wind_directory)
+
+    # model Copper Sheet, Zonal, or Nodal
+    model = config['model']
 
     # Monte Carlo simulation parameters
     samples = config['samples']
@@ -53,11 +55,11 @@ def MCS(input_file, results_subdir) :
     data_storage = system_directory + '/storage.csv'
     BMva = 100
 
-    rasd = RASystemData(optimization_period)
+    rasd = RASystemData(optimization_period, model)
     genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost = rasd.gen(data_gen)
     nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch)
     bus_name, bus_no, nz = rasd.bus(data_bus)
-    load_all_regions = rasd.load(bus_name, data_load)
+    load_all_regions = rasd.load(bus_name, bus_no, data_load)
 
     essname, essbus, ness, ess_pmax, ess_pmin, ess_duration, ess_socmax, ess_socmin, ess_eff, \
         disch_cost, ch_cost, MTTF_ess, MTTR_ess, ess_units, ess_chemistry = rasd.storage(data_storage)
@@ -77,7 +79,7 @@ def MCS(input_file, results_subdir) :
         
         wind = Wind()
         w_sites, farm_name, zone_no, w_classes, w_turbines, r_cap, p_class, out_curve2, out_curve3,\
-            start_speed = wind.WindFarmsData(wind_sites, wind_power_curves)
+            start_speed = wind.WindFarmsData(wind_sites, wind_power_curves, model)
 
         # calculate transition rates 
         if not os.path.exists(wind_tr_rate):
@@ -89,10 +91,9 @@ def MCS(input_file, results_subdir) :
     # download and process solar data
     if solar_dir_exists:
 
-        # solar_site_data = solar_directory+"/solar_sites.csv"
         solar_prob_data = solar_directory+"/solar_probs.csv"
 
-        solar = Solar(solar_directory)
+        solar = Solar(solar_directory,model)
         
         s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
 
@@ -231,7 +232,7 @@ def MCS(input_file, results_subdir) :
                 def fb_soc(model, i):
                     return(ess_smin[i]/BMva, ess_smax[i]/BMva)
             
-                if config['model'] == 'Zonal':
+                if config['model'] == 'Zonal' or 'Nodal':
                     load_curt, SOC_old, P_dis, P_ch = raut.OptDispatch(ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                         gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost)
                 elif config['model'] == 'Copper Sheet':
@@ -281,7 +282,7 @@ def MCS(input_file, results_subdir) :
                     def fb_ren(model, i, t):
                         return(0, holder_dict["ren_limit"][i,t]/BMva)
                     
-                    if config['model'] == 'Zonal':
+                    if config['model'] == 'Zonal' or 'Nodal':
                         load_curt, SOC_profile, P_dis, P_ch = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                         gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = False)
                     elif config['model'] == 'Copper Sheet':
@@ -329,8 +330,8 @@ def MCS(input_file, results_subdir) :
                         SOC_old[ess_idx] = SOC_old[ess_idx] * (1-current_deg_instance.L)
                         SOC_old_deg[ess_name] = soc_profile_norm[-1]
                     
-        if (n+1)%500 == 0:
-            print(f'Hour {n + 1}')
+            if (n+1)%100 == 0:
+                print(f'Hour {n + 1}')
             
         # collect indices for all samples
         indices_rec = raut.UpdateIndexArrays(indices_rec, var_s, sim_hours, s)
@@ -404,8 +405,3 @@ if __name__ == "__main__":
     rapt.PlotCOV(COV_rec, samples, 1)
     if sim_hours == 8760:
         rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
-
-
-    
-
-
