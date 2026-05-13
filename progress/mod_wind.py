@@ -98,7 +98,7 @@ class Wind:
         # self.farm_no = self.wind['Farm No.'].values # wind farm numbers
         self.farm_name = self.wind['Site Name'] # wind farm names
         self.w_sites = len(self.farm_name) # number of wind sites
-        if model == 'Nodal':
+        if model in ['Nodal', 'Copper Sheet']:
             self.zone_no = self.wind['Bus No.'].values # zone number for wind farms
         else:
             self.zone_no = self.wind['Zone'].values

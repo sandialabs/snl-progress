@@ -43,7 +43,7 @@ class ProgressMultiProcess:
         wind_dir_exists = os.path.exists(wind_directory)
 
         # model Copper Sheet, Zonal, or Nodal
-        model = config['model']
+        network_model = config['model']
 
         # Monte Carlo simulation parameters
         samples = config['samples']
@@ -67,7 +67,7 @@ class ProgressMultiProcess:
         data_storage = system_directory + '/storage.csv'
         BMva = 100
 
-        rasd = RASystemData(optimization_period, model)
+        rasd = RASystemData(optimization_period, network_model)
         genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost = rasd.gen(data_gen)
         nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch)
         bus_name, bus_no, nz = rasd.bus(data_bus)
@@ -92,7 +92,7 @@ class ProgressMultiProcess:
             wind = Wind()
                 
             w_sites, farm_name, zone_no, w_classes, w_turbines, r_cap, p_class, out_curve2, out_curve3,\
-                start_speed = wind.WindFarmsData(wind_sites, wind_power_curves, model)
+                start_speed = wind.WindFarmsData(wind_sites, wind_power_curves, network_model)
 
             tr_mats = pd.read_excel(wind_tr_rate, sheet_name=None)
             tr_mats = np.array([tr_mats[sheet_name].to_numpy() for sheet_name in tr_mats])
@@ -102,7 +102,7 @@ class ProgressMultiProcess:
 
             solar_prob_data = solar_directory+"/solar_probs.csv"
 
-            solar = Solar(solar_directory, model)
+            solar = Solar(solar_directory, network_model)
 
             s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
 
@@ -235,10 +235,10 @@ class ProgressMultiProcess:
                     def fb_soc(model, i):
                         return(ess_smin[i]/BMva, ess_smax[i]/BMva)
                 
-                    if config['model'] == 'Zonal' or 'Nodal':
+                    if network_model in ['Zonal', 'Nodal']:
                         load_curt, SOC_old, P_dis, P_ch = raut.OptDispatch(ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                             gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost)
-                    elif config['model'] == 'Copper Sheet':
+                    elif network_model == 'Copper Sheet':
                         load_curt, SOC_old, P_dis, P_ch = raut.OptDispatchLite(ng, nz, ness, fb_ess, fb_soc, BMva, fb_Pg, A_inc, \
                                                                         gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost)
                     
@@ -288,10 +288,10 @@ class ProgressMultiProcess:
                         def fb_ren(model, i, t):
                             return(0, holder_dict["ren_limit"][i,t]/BMva)
                         
-                        if config['model'] == 'Zonal' or 'Nodal':
+                        if network_model in ['Zonal', 'Nodal']:
                             load_curt, SOC_profile, P_dis, P_ch = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                             gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = False)
-                        elif config['model'] == 'Copper Sheet':
+                        elif network_model == 'Copper Sheet':
                             load_curt, SOC_profile, P_dis, P_ch = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                             gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = True)
 
@@ -347,9 +347,9 @@ class ProgressMultiProcess:
             # plot results for each sample
             sample_subdir = os.path.join(main_folder, f'Sample_{s+1}_Process_{self.rank}')
             os.makedirs(sample_subdir, exist_ok=False)
-            rapt = RAPlotTools(sample_subdir)
-            rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_name, s)
-            rapt.PlotWindGen(renewable_rec["wind_rec"], bus_name, s)
+            rapt = RAPlotTools(sample_subdir, network_model)
+            rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_no, s)
+            rapt.PlotWindGen(renewable_rec["wind_rec"], bus_no, s)
             rapt.PlotSOC(SOC_rec, essname, s)
             rapt.PlotESCap(ess_smax_store, essname, s)
             rapt.PlotLoadCurt(curt_rec, s)
@@ -399,10 +399,15 @@ if __name__ == "__main__":
     # run MCS
     rank, SOC_rec, curt_rec, renewable_rec, bus_name, essname, main_folder, sim_hours, \
           mLOLP_rec, COV_rec, samples, size = pmp.MCS(config_file, results_subdir)
+
+    # open configuration file
+    with open(config_file, 'r') as f:
+        config = yaml.safe_load(f)
+    network_model = config['model']
     
     if rank == 0:
         # plot results
-        rapt = RAPlotTools(main_folder)
+        rapt = RAPlotTools(main_folder, network_model)
         rapt.PlotLOLP(mLOLP_rec, samples, size)
         rapt.PlotCOV(COV_rec, samples, size)
         if sim_hours == 8760:

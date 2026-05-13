@@ -32,7 +32,7 @@ class Solar:
 
         self.names = self.sites_df["Site Name"]
         self.n_sites = len(self.sites_df)
-        if model == 'Nodal':
+        if model in ['Nodal', 'Copper Sheet']:
             self.s_zone_no = self.sites_df['Bus No.']
         else:
             self.s_zone_no = self.sites_df['Zone']

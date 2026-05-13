@@ -5,14 +5,15 @@ import numpy as np
 
 class RAPlotTools:
     '''Provides plotting tools for visualizing simulation results.'''
-    def __init__(self, results_subdir):
+    def __init__(self, results_subdir, model):
         """
         Initializes the RAPlotTools class and creates a directory for storing results.
         """
         self.results_subdir = results_subdir
+        self.model = model
         pass
 
-    def PlotSolarGen(self, solar_rec, bus_name, s):
+    def PlotSolarGen(self, solar_rec, bus_no, s):
         """
         Plots solar power generation over time.
 
@@ -20,18 +21,45 @@ class RAPlotTools:
             solar_rec (numpy.ndarray): Solar power generation records.
             bus_name (list): List of bus names.
         """
-        plt.title("Solar Power Generation")
-        plt.xlabel("Hours")
-        plt.ylabel("Output (MW)")
-        plt.plot(solar_rec.T, label = bus_name)
-        plt.legend()
+        if self.model in ['Nodal', 'Copper Sheet']:
+            solar_df = pd.read_csv('Data/Solar/solar_sites.csv')
+            solar_buses = set(solar_df["Bus No."].astype(int))
+
+            plt.title("Solar Power Generation")
+            plt.xlabel("Hours")
+            plt.ylabel("Output (MW)")
+
+            for i, bus in enumerate(bus_no):
+                if int(bus) in solar_buses:
+                    plt.plot(solar_rec[i], label=str(int(bus)))
+
+            plt.legend(
+                title="Bus No.",
+                fontsize=8,
+                title_fontsize=9,
+                loc="upper left",
+                bbox_to_anchor=(1.02, 1)
+            )
+            plt.tight_layout()
+        else:
+            plt.title("Solar Power Generation")
+            plt.xlabel("Hours")
+            plt.ylabel("Output (MW)")
+            plt.plot(solar_rec.T, label = bus_no)
+            plt.legend(title="Zone No.",
+                fontsize=8,
+                title_fontsize=9,
+                loc="upper left",
+                bbox_to_anchor=(1.02, 1)
+            )
+            plt.tight_layout()
 
         pdf_path = os.path.join(self.results_subdir, f'solar_generation_sample_{s+1}.pdf')
 
         plt.savefig(pdf_path)
         plt.close()
 
-    def PlotWindGen(self, wind_rec, bus_name, s):
+    def PlotWindGen(self, wind_rec, bus_no, s):
         """
         Plots wind power generation over time.
 
@@ -39,11 +67,39 @@ class RAPlotTools:
             wind_rec (numpy.ndarray): Wind power generation records.
             bus_name (list): List of bus names.
         """
-        plt.title("Wind Power Generation")
-        plt.xlabel("Hours")
-        plt.ylabel("Output (MW)")
-        plt.plot(wind_rec.T, label = bus_name)
-        plt.legend()
+        if self.model in ['Nodal', 'Copper Sheet']:
+            wind_df = pd.read_csv("Data/Wind/wind_sites.csv")
+            wind_buses = set(wind_df["Bus No."].astype(int))
+
+            plt.figure()
+            plt.title("Wind Power Generation")
+            plt.xlabel("Hours")
+            plt.ylabel("Output (MW)")
+
+            for i, bus in enumerate(bus_no):
+                if int(bus) in wind_buses:
+                    plt.plot(wind_rec[i], label=str(int(bus)))
+
+            plt.legend(
+                title="Bus No.",
+                fontsize=8,
+                title_fontsize=9,
+                loc="upper left",
+                bbox_to_anchor=(1.02, 1)
+            )
+            plt.subplots_adjust(right=0.8)
+        else:
+            plt.title("Wind Power Generation")
+            plt.xlabel("Hours")
+            plt.ylabel("Output (MW)")
+            plt.plot(wind_rec.T, label = bus_no)
+            plt.legend(
+                title="Bus No.",
+                fontsize=8,
+                title_fontsize=9,
+                loc="upper left",
+                bbox_to_anchor=(1.02, 1)
+            )
 
         pdf_path = os.path.join(self.results_subdir, f'wind_generation_sample_{s+1}.pdf')
 

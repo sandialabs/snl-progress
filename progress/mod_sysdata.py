@@ -24,7 +24,6 @@ class RASystemData:
         self.branch = pd.read_csv(data_branch)
         # for Zonal model, just use the interzonal lines
         if self.model == 'Zonal':
-            print("Changing network model to Zonal ...")
             self.branch = (
                 self.branch.loc[
                     self.branch['Interzonal'].astype(str).str.upper().str.strip() == 'Y',
@@ -33,7 +32,6 @@ class RASystemData:
                 ]
                 .reset_index(drop=True)
             )
-        
         self.fb = self.branch['From Bus'].values
         self.tb = self.branch['To Bus'].values
         self.nl = len(self.tb)
@@ -59,7 +57,6 @@ class RASystemData:
 
         self.bus = pd.read_csv(data_bus)
         if self.model == 'Zonal':
-            print("Aggregating buses ...")
             unique_zones = sorted(self.bus['Zone'].dropna().unique())
 
             self.bus_z = pd.DataFrame({
@@ -158,7 +155,6 @@ class RASystemData:
         self.load = pd.read_csv(data_load)
 
         if self.model == 'Zonal':
-            print("Aggregating loads ...")
             # build mapping from bus to zone
             bus_to_zone = dict(zip(self.bus["Bus Name"], self.bus["Zone"]))
 
