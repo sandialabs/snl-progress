@@ -57,7 +57,7 @@ def MCS(input_file, results_subdir) :
 
     rasd = RASystemData(optimization_period, network_model)
     genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost = rasd.gen(data_gen)
-    nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch)
+    nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch, data_bus)
     bus_name, bus_no, nz = rasd.bus(data_bus)
     load_all_regions = rasd.load(bus_name, bus_no, data_load)
 

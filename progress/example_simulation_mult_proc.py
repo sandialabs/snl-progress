@@ -10,14 +10,13 @@ import yaml
 from datetime import datetime
 import argparse
 
-from progress.mod_sysdata import RASystemData
-from progress.mod_solar import Solar
-from progress.mod_wind import Wind
-from progress.mod_utilities import RAUtilities
-from progress.mod_matrices import RAMatrices
-from progress.mod_plot import RAPlotTools
-from progress.mod_kmeans import KMeans_Pipeline
-from progress.mod_degradation import BESS_Degradation
+from mod_sysdata import RASystemData
+from mod_solar import Solar
+from mod_wind import Wind
+from mod_utilities import RAUtilities
+from mod_matrices import RAMatrices
+from mod_plot import RAPlotTools
+from mod_degradation import BESS_Degradation
 
 class ProgressMultiProcess:
 
@@ -69,7 +68,7 @@ class ProgressMultiProcess:
 
         rasd = RASystemData(optimization_period, network_model)
         genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost = rasd.gen(data_gen)
-        nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch)
+        nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch, data_bus)
         bus_name, bus_no, nz = rasd.bus(data_bus)
         load_all_regions = rasd.load(bus_name, bus_no, data_load)
 
@@ -119,6 +118,8 @@ class ProgressMultiProcess:
                             "LOLE_rec": np.zeros(samples),"mLOLP_rec":np.zeros(samples), "COV_rec": np.zeros(samples)}
         
         LOL_track = np.zeros((samples, sim_hours))
+
+        tic = perf_counter()
             
         for s in range(samples):
 
@@ -336,7 +337,7 @@ class ProgressMultiProcess:
                                 SOC_old[ess_idx] = SOC_old[ess_idx] * (1-current_deg_instance.L)
                                 SOC_old_deg[ess_name] = soc_profile_norm[-1]
 
-                if (n+1)%100 == 0:
+                if (n+1)%1000 == 0:
                     print(f'Hour {n + 1}, Process No.: {self.rank}')
 
             # collect indices for all samples
@@ -345,7 +346,7 @@ class ProgressMultiProcess:
             mLOLP_rec, COV_rec = raut.CheckConvergence(s, indices_rec["LOLP_rec"], self.comm, self.rank, self.size, \
                                   indices_rec["mLOLP_rec"], indices_rec["COV_rec"])
             # plot results for each sample
-            sample_subdir = os.path.join(main_folder, f'Sample_{s+1}_Process_{self.rank}')
+            sample_subdir = os.path.join(main_folder, f'Process_{self.rank}', f'Sample_{s+1}')
             os.makedirs(sample_subdir, exist_ok=False)
             rapt = RAPlotTools(sample_subdir, network_model)
             rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_no, s)
@@ -357,6 +358,9 @@ class ProgressMultiProcess:
         # calculate reliability indices for the MCS
         indices = raut.GetReliabilityIndices(indices_rec, sim_hours, samples)
         raut.ParallelProcessing(indices, LOL_track, self.comm, self.rank, self.size, samples, sim_hours,main_folder)
+        
+        toc = perf_counter()
+        print(f"Codes finished in {toc-tic} seconds")
 
         return(self.rank, SOC_rec, curt_rec, renewable_rec, bus_name, essname, main_folder, \
                sim_hours, mLOLP_rec, COV_rec, samples, self.size)

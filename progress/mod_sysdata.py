@@ -10,7 +10,7 @@ class RASystemData:
         self.opt_type = opt_type
         self.model = model
 
-    def branch(self, data_branch):
+    def branch(self, data_branch, data_bus):
         """
         Extracts and returns all system branch data.
 
@@ -32,6 +32,11 @@ class RASystemData:
                 ]
                 .reset_index(drop=True)
             )
+            bus_df = pd.read_csv(data_bus)
+            bus_to_zone = dict(zip(bus_df["Bus No."], bus_df["Zone"]))
+            self.branch["From Bus"] = self.branch["From Bus"].map(bus_to_zone)
+            self.branch["To Bus"] = self.branch["To Bus"].map(bus_to_zone)
+
         self.fb = self.branch['From Bus'].values
         self.tb = self.branch['To Bus'].values
         self.nl = len(self.tb)
