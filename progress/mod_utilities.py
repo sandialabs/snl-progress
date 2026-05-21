@@ -313,7 +313,7 @@ class RAUtilities:
         model.renewable_curt = Var(range(nz), bounds = (0, None)) # renewable load curtailment variables
         A_inc_t = np.transpose(A_inc) # transposing incedence matrix
 
-        LOL_cost = 1000000 # cost of lost load (set to very high so that system always tries to minimize loss)
+        LOL_cost = 10000000 # cost of lost load (set to very high so that system always tries to minimize loss)
 
         # power balance constraint
         def con_rule1(model,i):
@@ -349,12 +349,19 @@ class RAUtilities:
         opt = SolverFactory('glpk')
         opt.solve(model)
         load_curt = sum(np.array(list(model.curt.get_values().values())))
-        # gen = np.array(list(model.Pg.get_values().values()))
+        if load_curt > 0:
+            Pg = np.array(list(model.Pg.get_values().values()))[0:ng]
+            flow = np.array(list(model.flow.get_values().values()))
+            curtbus = np.array(list(model.curt.get_values().values()))
+        else:
+            Pg = 0
+            flow = 0
+            curtbus = 0
 
         SOC_old = np.array(list(model.SOC.get_values().values()))
         P_dis = np.array(list(model.Pg.get_values().values()))[ng::]
         P_ch = np.array(list(model.Pc.get_values().values()))
-        return(load_curt, SOC_old, P_dis, P_ch)
+        return(load_curt, SOC_old, P_dis, P_ch, Pg, flow, curtbus)
 
     def OptDispatchMP(self, ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                     gencost, net_load, SOC_old, ESS_initial_capacitites, ess_pmax, ess_eff, disch_cost, ch_cost, time_period, copper_sheet = False):
@@ -515,11 +522,17 @@ class RAUtilities:
         opt = SolverFactory('glpk')
         opt.solve(model)
         load_curt = sum(np.array(list(model.curt.get_values().values())))
+        if load_curt > 0:
+            Pg = np.array(list(model.Pg.get_values().values()))[0:ng]
+            curtbus = np.array(list(model.curt.get_values().values()))
+        else:
+            Pg = 0
+            curtbus = 0
 
         SOC_old = np.array(list(model.SOC.get_values().values()))
         P_dis = np.array(list(model.Pg.get_values().values()))[ng::]
         P_ch = np.array(list(model.Pc.get_values().values()))
-        return(load_curt, SOC_old, P_dis, P_ch)
+        return(load_curt, SOC_old, P_dis, P_ch, Pg, curtbus)
 
     def TrackLOLStates(self, load_curt, BMva, var_s, LOL_track, s, n):
         """

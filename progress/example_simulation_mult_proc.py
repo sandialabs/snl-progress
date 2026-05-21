@@ -7,7 +7,7 @@ import pandas as pd
 import os
 from mpi4py import MPI
 import yaml
-from datetime import datetime
+from datetime import datetime, timedelta
 import argparse
 
 from mod_sysdata import RASystemData
@@ -67,8 +67,8 @@ class ProgressMultiProcess:
         BMva = 100
 
         rasd = RASystemData(optimization_period, network_model)
-        genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost = rasd.gen(data_gen)
-        nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch, data_bus)
+        genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost, genname = rasd.gen(data_gen)
+        nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans, branchname = rasd.branch(data_branch, data_bus)
         bus_name, bus_no, nz = rasd.bus(data_bus)
         load_all_regions = rasd.load(bus_name, bus_no, data_load)
 
@@ -145,6 +145,15 @@ class ProgressMultiProcess:
             Pdis_rec = np.zeros((ness, sim_hours))
             Pch_rec = np.zeros((ness, sim_hours))
             curt_rec = np.zeros(sim_hours)
+
+            # the following lists will be used to record data during hours of outage
+            out_hours = []
+            Pg_rec = []
+            flow_rec = []
+            curtbus_rec = []
+            ESS_rec = []
+            wind_rec = []
+            solar_rec = []
 
             if optimization_period == "multi_period":
                 def initialize_holder_vars(holder_dict):
@@ -237,10 +246,10 @@ class ProgressMultiProcess:
                         return(ess_smin[i]/BMva, ess_smax[i]/BMva)
                 
                     if network_model in ['Zonal', 'Nodal']:
-                        load_curt, SOC_old, P_dis, P_ch = raut.OptDispatch(ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
+                        load_curt, SOC_old, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatch(ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                             gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost)
                     elif network_model == 'Copper Sheet':
-                        load_curt, SOC_old, P_dis, P_ch = raut.OptDispatchLite(ng, nz, ness, fb_ess, fb_soc, BMva, fb_Pg, A_inc, \
+                        load_curt, SOC_old, P_dis, P_ch, Pg, curtbus = raut.OptDispatchLite(ng, nz, ness, fb_ess, fb_soc, BMva, fb_Pg, A_inc, \
                                                                         gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost)
                     
                     # record values for visualization purposes
@@ -248,6 +257,18 @@ class ProgressMultiProcess:
                     Pdis_rec[:, n] = P_dis*BMva
                     Pch_rec[:, n] = P_ch*BMva
                     curt_rec[n] = load_curt*BMva
+
+                    if load_curt > 0:
+                        out_hours.append((datetime(2001,1,1) + timedelta(hours=n)).strftime("%b %d %H:%M"))
+                        Pg_rec.append(Pg * BMva)
+
+                        if network_model in ['Zonal', 'Nodal']:
+                            flow_rec.append(flow*BMva/cap_trans*100)
+        
+                        curtbus_rec.append(curtbus*BMva)
+                        ESS_rec.append((P_dis + P_ch)*BMva)
+                        wind_rec.append(w_zones)
+                        solar_rec.append(s_zones_t[:, n%24])
 
                     # track loss of load states
                     var_s, LOL_track = raut.TrackLOLStates(load_curt, BMva, var_s, LOL_track, s, n)
@@ -354,6 +375,43 @@ class ProgressMultiProcess:
             rapt.PlotSOC(SOC_rec, essname, s)
             rapt.PlotESCap(ess_smax_store, essname, s)
             rapt.PlotLoadCurt(curt_rec, s)
+
+            # save outage hour data to excel file
+            if sum(curt_rec) > 0:
+                df_Pg = pd.DataFrame(np.transpose(np.vstack(Pg_rec)), index=list(genname))
+                df_Pg.columns = out_hours
+
+                if network_model in ['Zonal', 'Nodal']:
+                    df_flow = pd.DataFrame(np.transpose(np.vstack(flow_rec)), index=list(branchname))
+                    df_flow.columns = out_hours
+
+                df_curt= pd.DataFrame(np.transpose(np.vstack(curtbus_rec)), index=list(bus_name))
+                df_curt.columns = out_hours
+
+                df_ESS= pd.DataFrame(np.transpose(np.vstack(ESS_rec)), index=list(essname))
+                df_ESS.columns = out_hours
+
+                df_wind= pd.DataFrame(np.transpose(np.vstack(wind_rec)), index=list(bus_name))
+                df_wind = df_wind[(df_wind != 0).any(axis=1)]
+                df_wind.columns = out_hours
+
+                df_solar= pd.DataFrame(np.transpose(np.vstack(solar_rec)), index=list(bus_name))
+                df_solar = df_solar[(df_solar != 0).any(axis=1)]
+                df_solar.columns = out_hours
+
+                with pd.ExcelWriter(f"{sample_subdir}/Outage_Records_Sample_{s+1}.xlsx", engine="openpyxl") as writer:
+                    df_Pg.to_excel(writer, sheet_name="conv_gen_MW")
+                    if network_model in ['Zonal', 'Nodal']:
+                        df_flow.to_excel(writer, sheet_name="branch_loading_perc")
+                    df_curt.to_excel(writer, sheet_name="loadcurt_bus")
+                    df_ESS.to_excel(writer, sheet_name="ESS_net_exchange")
+                    df_wind.to_excel(writer, sheet_name="wind_gen_MW")
+                    df_solar.to_excel(writer, sheet_name="solar_gen")
+
+                    for ws in writer.book.worksheets:
+                        for col in ws.columns:
+                            max_len = max(len(str(cell.value)) if cell.value else 0 for cell in col)
+                            ws.column_dimensions[col[0].column_letter].width = max_len + 2
             
         # calculate reliability indices for the MCS
         indices = raut.GetReliabilityIndices(indices_rec, sim_hours, samples)

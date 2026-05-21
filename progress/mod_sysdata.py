@@ -37,6 +37,7 @@ class RASystemData:
             self.branch["From Bus"] = self.branch["From Bus"].map(bus_to_zone)
             self.branch["To Bus"] = self.branch["To Bus"].map(bus_to_zone)
 
+        self.branchname = self.branch['Branch ID']
         self.fb = self.branch['From Bus'].values
         self.tb = self.branch['To Bus'].values
         self.nl = len(self.tb)
@@ -47,7 +48,7 @@ class RASystemData:
         self.MTTR_trans = self.branch['MTTR'].values
         self.MTTF_trans = self.branch['MTTF'].values
 
-        return(self.nl, self.fb, self.tb, self.cap_trans, self.MTTF_trans, self.MTTR_trans)
+        return(self.nl, self.fb, self.tb, self.cap_trans, self.MTTF_trans, self.MTTR_trans, self.branchname)
 
     def bus(self, data_bus):
         """
@@ -96,6 +97,7 @@ class RASystemData:
         else:
             self.genbus = self.gen['Bus No.'].values # bus at which generator is located
         self.ng = len(self.genbus) # no. of generators  
+        self.genname = self.gen['Gen Name']
         self.pmax = self.gen['Max Cap'].values # maximum gen. capacity 
         self.pmin = self.gen['Min Cap'].values # minimum gen. capacity
         self.FOR_gen = self.gen['FOR'].values # forced outage rate
@@ -106,7 +108,7 @@ class RASystemData:
         if self.opt_type == 'multi_period':
             self.gencost = self.gen['Cost'].values # cost of generation 
 
-        return(self.genbus, self.ng, self.pmax, self.pmin, self.FOR_gen, self.MTTF_gen, self.MTTR_gen, self.gencost)
+        return(self.genbus, self.ng, self.pmax, self.pmin, self.FOR_gen, self.MTTF_gen, self.MTTR_gen, self.gencost, self.genname)
 
     def storage(self, data_storage):
         """
