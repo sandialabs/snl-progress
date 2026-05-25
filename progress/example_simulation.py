@@ -302,10 +302,10 @@ def MCS(input_file, results_subdir) :
                         return(0, holder_dict["ren_limit"][i,t]/BMva)
                     
                     if network_model in ['Zonal', 'Nodal']:
-                        load_curt, SOC_profile, P_dis, P_ch = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
+                        load_curt, SOC_profile, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                         gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = False)
                     elif network_model == 'Copper Sheet':
-                        load_curt, SOC_profile, P_dis, P_ch = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
+                        load_curt, SOC_profile, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                                                         gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = True)
 
                     # record values for visualization purposes
@@ -316,6 +316,28 @@ def MCS(input_file, results_subdir) :
                     SOC_old = SOC_profile[:,-1]
                     ESS_initial_capacities = current_cap["max"][ng + nl::]
                     initialize_holder_vars(holder_dict)
+                    
+                    if np.any(load_curt):
+                        curt_hours = np.where(load_curt != 0)[0]
+                        curt_actual = current_day * 24 + curt_hours
+
+                        for i, h in enumerate(curt_actual):
+                            out_hours.append(
+                                (datetime(2001,1,1) + timedelta(hours=int(h))).strftime("%b %d %H:%M")
+                            )
+
+                            ch = curt_hours[i]
+
+                            Pg_rec.append(Pg[:, ch] * BMva)
+
+                            if network_model in ['Zonal', 'Nodal']:
+                                flow_rec.append(flow[:, ch] * BMva/cap_trans*100)
+
+                            curtbus_rec.append(curtbus[:, ch] * BMva)
+                            ESS_rec.append((P_dis[:, ch] + P_ch[:, ch]) * BMva)
+                            wind_rec.append(renewable_rec["wind_rec"][:, h])
+                            solar_rec.append(renewable_rec["solar_rec"][:, h])
+
                     # track loss of load states
                     for i in range(time_periods):
                         start_day = int(current_day+1-time_periods/24)
@@ -369,7 +391,8 @@ def MCS(input_file, results_subdir) :
         rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_no, s)
         rapt.PlotWindGen(renewable_rec["wind_rec"], bus_no, s)
         rapt.PlotSOC(SOC_rec, essname, s)
-        rapt.PlotESCap(ess_smax_store, essname, s)
+        if config['evaluate_degradation'] == 'Yes':
+            rapt.PlotESCap(ess_smax_store, essname, s)
         rapt.PlotLoadCurt(curt_rec, s)
 
         # save outage hour data to excel file

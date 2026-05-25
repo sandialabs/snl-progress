@@ -375,7 +375,7 @@ class RAUtilities:
         model.Pc = Var(range(ness), T, bounds = fb_ess) # charge variables for ESS
         model.SOC = Var(range(ness), T, bounds = fb_soc) # state-of-charge variables for ESS
         model.curt = Var(range(nz), T, bounds = (0, None)) # load curtailment variables
-        model.ren_curt = Var(range(nz), T, bounds = fb_ren)
+        model.ren_curt = Var(range(nz), T, bounds = fb_ren) # renewable curtailment variables
 
         A_inc_t = np.transpose(A_inc) # transposing incedence matrix
 
@@ -440,13 +440,25 @@ class RAUtilities:
         soc_profile = np.zeros((ness, len(T)))
         p_discharge = np.zeros((ness, len(T)))
         p_charge = np.zeros((ness, len(T)))
-        for i in range(ness):
-            for t in T:
+        p_g = np.zeros((ng, len(T)))
+        flow = np.zeros((nl, len(T)))
+        curtbus = np.zeros((nz, len(T)))
+        
+        for t in T:
+            for i in range(ness):
                 soc_profile[i, t] = model.SOC[i, t].value
                 p_discharge[i, t] = model.Pg[ng + i, t].value
                 p_charge[i, t] = model.Pc[i, t].value
+            if np.any(load_curt):
+                for j in range(ng):
+                    p_g[j, t] = model.Pg[j, t].value
+                for k in range(nl):
+                    flow[k, t] = model.flow[k, t].value
+                for l in range(nz):
+                    curtbus[l, t] = model.curt[l, t].value
 
-        return load_curt, soc_profile, p_discharge, p_charge
+        
+        return load_curt, soc_profile, p_discharge, p_charge, p_g, flow, curtbus
 
     def OptDispatchLite(self, ng, nz, ness, fb_ess, fb_soc, BMva, fb_Pg, A_inc, \
                     gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost):
