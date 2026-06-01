@@ -17,6 +17,7 @@ from mod_utilities import RAUtilities
 from mod_matrices import RAMatrices
 from mod_plot import RAPlotTools
 from mod_degradation import BESS_Degradation
+from mod_bus_statistics import bus_statistics
 
 class ProgressMultiProcess:
 
@@ -387,16 +388,17 @@ class ProgressMultiProcess:
 
             mLOLP_rec, COV_rec = raut.CheckConvergence(s, indices_rec["LOLP_rec"], self.comm, self.rank, self.size, \
                                   indices_rec["mLOLP_rec"], indices_rec["COV_rec"])
-            # plot results for each sample
-            sample_subdir = os.path.join(main_folder, f'Process_{self.rank}', f'Sample_{s+1}')
-            os.makedirs(sample_subdir, exist_ok=False)
-            rapt = RAPlotTools(sample_subdir, network_model)
-            rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_no, s)
-            rapt.PlotWindGen(renewable_rec["wind_rec"], bus_no, s)
-            rapt.PlotSOC(SOC_rec, essname, s)
-            if config['evaluate_degradation'] == 'Yes':
-                rapt.PlotESCap(ess_smax_store, essname, s)
-            rapt.PlotLoadCurt(curt_rec, s)
+            # plot results for samples for which there is load curtailment
+            if sum(curt_rec) > 0:
+                sample_subdir = os.path.join(main_folder, f'Process_{self.rank}', f'Sample_{s+1}')
+                os.makedirs(sample_subdir, exist_ok=False)
+                rapt = RAPlotTools(sample_subdir, network_model)
+                rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_no, s)
+                rapt.PlotWindGen(renewable_rec["wind_rec"], bus_no, s)
+                rapt.PlotSOC(SOC_rec, essname, s)
+                if config['evaluate_degradation'] == 'Yes':
+                    rapt.PlotESCap(ess_smax_store, essname, s)
+                rapt.PlotLoadCurt(curt_rec, s)
 
             # save outage hour data to excel file
             if sum(curt_rec) > 0:
@@ -490,6 +492,7 @@ if __name__ == "__main__":
     network_model = config['model']
     
     if rank == 0:
+
         # plot results
         rapt = RAPlotTools(main_folder, network_model)
         rapt.PlotLOLP(mLOLP_rec, samples, size)
@@ -497,3 +500,5 @@ if __name__ == "__main__":
         if sim_hours == 8760:
             rapt.OutageMap(f"{main_folder}/LOL_perc_prob.csv")
 
+        # get outage statistics for affected buses
+        bus_statistics(main_folder)

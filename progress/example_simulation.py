@@ -15,6 +15,7 @@ from mod_matrices import RAMatrices
 from mod_plot import RAPlotTools
 from mod_degradation import BESS_Degradation
 from datetime import datetime, timedelta
+from mod_bus_statistics import bus_statistics
 
 def MCS(input_file, results_subdir) :   
     '''This function performs mixed time sequential MCS using methods from the different RA modules'''
@@ -383,7 +384,7 @@ def MCS(input_file, results_subdir) :
         indices_rec["COV_rec"][s] = np.sqrt(var_LOLP)/indices_rec["mLOLP_rec"][s]
 
         # setting up folder for saving results for each sample
-        sample_subdir = os.path.join(results_subdir, f'Sample {s + 1}')
+        sample_subdir = os.path.join(results_subdir, f'Sample_{s + 1}')
         os.makedirs(sample_subdir, exist_ok=True)
 
         # plot results for each sample
@@ -489,3 +490,6 @@ if __name__ == "__main__":
     rapt.PlotCOV(COV_rec, samples, 1)
     if sim_hours == 8760:
         rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
+
+    # get outage statistics for affected buses
+    bus_statistics(results_subdir)
