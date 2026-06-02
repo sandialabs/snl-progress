@@ -89,7 +89,7 @@ class ProgressMultiProcess:
             # windspeed_data = wind_directory + '/windspeed_data.csv'
             wind_tr_rate = wind_directory + '/t_rate.xlsx'
             
-            wind = Wind()
+            wind = Wind(wind_directory)
                 
             w_sites, farm_name, zone_no, w_classes, w_turbines, r_cap, p_class, out_curve2, out_curve3,\
                 start_speed = wind.WindFarmsData(wind_sites, wind_power_curves, network_model)

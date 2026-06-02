@@ -17,8 +17,6 @@ def bus_statistics(directory):
         or list(root_dir.glob("Sample_*/Outage_Records_Sample_*.xlsx"))
     )
 
-    print(files)
-
     for file in files:
         try:
             # Read sheet
