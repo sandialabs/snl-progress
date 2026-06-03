@@ -36,7 +36,7 @@ class Wind:
                 name = name_list[i]
                 coords = coord_list[i]
                 print(name, " at ", coords)
-                response = requests.get("https://developer.nrel.gov/api/wind-toolkit/v2/wind/wtk-download.csv", params={
+                response = requests.get("https://developer.nlr.gov/api/wind-toolkit/v2/wind/wtk-download.csv", params={
                     "api_key": api_key,
                     "wkt": f"POINT({coords})",
                     "attributes": "windspeed_80m,windspeed_100m",
