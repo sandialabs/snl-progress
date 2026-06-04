@@ -5,10 +5,11 @@ import numpy as np
 
 class RAPlotTools:
     '''Provides plotting tools for visualizing simulation results.'''
-    def __init__(self, results_subdir, model):
+    def __init__(self, data_dir, results_subdir, model):
         """
         Initializes the RAPlotTools class and creates a directory for storing results.
         """
+        self.data_dir = data_dir
         self.results_subdir = results_subdir
         self.model = model
         pass
@@ -22,7 +23,8 @@ class RAPlotTools:
             bus_name (list): List of bus names.
         """
         if self.model in ['Nodal', 'Copper Sheet']:
-            solar_df = pd.read_csv('Data/Solar/solar_sites.csv')
+            solar_df_path = os.path.join(self.data_dir, 'Solar', 'solar_sites.csv')
+            solar_df = pd.read_csv(solar_df_path)
             solar_buses = set(solar_df["Bus No."].astype(int))
 
             plt.title("Solar Power Generation")
@@ -68,7 +70,8 @@ class RAPlotTools:
             bus_name (list): List of bus names.
         """
         if self.model in ['Nodal', 'Copper Sheet']:
-            wind_df = pd.read_csv("Data/Wind/wind_sites.csv")
+            wind_df_path = os.path.join(self.data_dir, 'Wind', 'wind_sites.csv')
+            wind_df = pd.read_csv(wind_df_path)
             wind_buses = set(wind_df["Bus No."].astype(int))
 
             plt.figure()

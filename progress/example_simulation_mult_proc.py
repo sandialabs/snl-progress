@@ -1,4 +1,3 @@
-from networkx import config
 import numpy as np
 from time import perf_counter
 from pyomo.environ import *
@@ -10,14 +9,14 @@ import yaml
 from datetime import datetime, timedelta
 import argparse
 
-from mod_sysdata import RASystemData
-from mod_solar import Solar
-from mod_wind import Wind
-from mod_utilities import RAUtilities
-from mod_matrices import RAMatrices
-from mod_plot import RAPlotTools
-from mod_degradation import BESS_Degradation
-from mod_bus_statistics import bus_statistics
+from progress.mod_sysdata import RASystemData
+from progress.mod_solar import Solar
+from progress.mod_wind import Wind
+from progress.mod_utilities import RAUtilities
+from progress.mod_matrices import RAMatrices
+from progress.mod_plot import RAPlotTools
+from progress.mod_degradation import BESS_Degradation
+from progress.mod_bus_statistics import bus_statistics
 
 class ProgressMultiProcess:
 
@@ -392,7 +391,7 @@ class ProgressMultiProcess:
             if sum(curt_rec) > 0:
                 sample_subdir = os.path.join(main_folder, f'Process_{self.rank}', f'Sample_{s+1}')
                 os.makedirs(sample_subdir, exist_ok=False)
-                rapt = RAPlotTools(sample_subdir, network_model)
+                rapt = RAPlotTools(config["data"], sample_subdir, network_model)
                 rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_no, s)
                 rapt.PlotWindGen(renewable_rec["wind_rec"], bus_no, s)
                 rapt.PlotSOC(SOC_rec, essname, s)
@@ -494,7 +493,7 @@ if __name__ == "__main__":
     if rank == 0:
 
         # plot results
-        rapt = RAPlotTools(main_folder, network_model)
+        rapt = RAPlotTools(config["data"], main_folder, network_model)
         rapt.PlotLOLP(mLOLP_rec, samples, size)
         rapt.PlotCOV(COV_rec, samples, size)
         if sim_hours == 8760:

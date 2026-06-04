@@ -7,15 +7,15 @@ import os
 import yaml
 import argparse
 
-from mod_sysdata import RASystemData
-from mod_solar import Solar
-from mod_wind import Wind
-from mod_utilities import RAUtilities
-from mod_matrices import RAMatrices
-from mod_plot import RAPlotTools
-from mod_degradation import BESS_Degradation
+from progress.mod_sysdata import RASystemData
+from progress.mod_solar import Solar
+from progress.mod_wind import Wind
+from progress.mod_utilities import RAUtilities
+from progress.mod_matrices import RAMatrices
+from progress.mod_plot import RAPlotTools
+from progress.mod_degradation import BESS_Degradation
 from datetime import datetime, timedelta
-from mod_bus_statistics import bus_statistics
+from progress.mod_bus_statistics import bus_statistics
 
 def MCS(input_file, results_subdir) :   
     '''This function performs mixed time sequential MCS using methods from the different RA modules'''
@@ -388,7 +388,7 @@ def MCS(input_file, results_subdir) :
         os.makedirs(sample_subdir, exist_ok=True)
 
         # plot results for each sample
-        rapt = RAPlotTools(sample_subdir, network_model)
+        rapt = RAPlotTools(config["data"], sample_subdir, network_model)
         rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_no, s)
         rapt.PlotWindGen(renewable_rec["wind_rec"], bus_no, s)
         rapt.PlotSOC(SOC_rec, essname, s)
@@ -485,7 +485,7 @@ if __name__ == "__main__":
     network_model = config['model']
     
     # plot indices for all samples after MCS is complete
-    rapt = RAPlotTools(results_subdir, network_model)
+    rapt = RAPlotTools(config["data"], results_subdir, network_model)
     rapt.PlotLOLP(mLOLP_rec, samples, 1)
     rapt.PlotCOV(COV_rec, samples, 1)
     if sim_hours == 8760:
