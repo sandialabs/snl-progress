@@ -29,19 +29,16 @@ class DataProcess:
             windspeed_data = wind_directory + '/windspeed_data.csv'
             wind_tr_rate = wind_directory + '/t_rate.xlsx'
             
-            wind = Wind()
+            wind = Wind(wind_directory)
 
             if self.config['download_w'] == 'Yes':
 
                 # download wind data
-                wind.DownloadWindData(wind_directory, wind_sites, self.config['api_key'], self.config['email'], self.config['affiliation'], \
-                                    self.config['year_start_w'], self.config['year_end_w'])
+                wind.DownloadWindData(self.config['year_start_w'], self.config['year_end_w'])
                 
-            w_sites, farm_name, zone_no, w_classes, w_turbines, r_cap, p_class, out_curve2, out_curve3,\
-                start_speed = wind.WindFarmsData(wind_sites, wind_power_curves, self.model)
 
             # calculate transition rates 
-            wind.CalWindTrRates(wind_directory, windspeed_data, wind_sites, wind_power_curves)
+            wind.CalWindTrRates(wind_directory, windspeed_data, wind_power_curves)
 
             tr_mats = pd.read_excel(wind_tr_rate, sheet_name=None)
             tr_mats = np.array([tr_mats[sheet_name].to_numpy() for sheet_name in tr_mats])

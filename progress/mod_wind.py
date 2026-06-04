@@ -3,85 +3,133 @@ import pandas as pd
 import requests
 import os
 from rex import WindResource as WR
+import yaml
+from pathlib import Path
+import cdsapi
+import zipfile
 
 class Wind:
 
     '''This class contains the methods required for downloading and processing wind data.'''
 
-    def DownloadWindData(self, directory, site_data, api_key, email, affiliation, year_start, year_end):
-        """
-        Downloads wind speed data from the NREL wind toolkit.
+    def __init__(self, wind_directory):
 
-        Parameters:
-            directory (str): Directory to save the data.
-            site_data (str): Path to the CSV file containing site data.
-            api_key (str): API key for NREL.
-            email (str): Your email address.
-            affiliation (str): Your affiliation.
-            year_start (int): Start year for data download.
-            year_end (int): End year for data download.
-        """
+        self.wind_directory = wind_directory
+        
+        # directory for storing downloaded weather data
+        self.weather_data_directory = Path(wind_directory + "/wind_weather_data")
+        self.weather_data_directory.mkdir(exist_ok=True)
 
-        year_list = range(year_start, year_end + 1)
-        wind_site_df = pd.read_csv(site_data)
-        site_count = len(wind_site_df)
-        name_list = wind_site_df["Site Name"].tolist()
-        wind_site_df["LON_LAT"] = wind_site_df["Longitude"].map(str) + " " + wind_site_df["Latitude"].map(str)
-        coord_list = wind_site_df["LON_LAT"].tolist()
-        interval = '60'
+        # get wind sites data
+        self.wind_site_data = wind_directory + "/wind_sites.csv"
+        self.sites_df = pd.read_csv(self.wind_site_data)
 
-        for year in year_list:
-            print("Collecting Data For ", year)
-            for i in range(site_count):
-                name = name_list[i]
-                coords = coord_list[i]
-                print(name, " at ", coords)
-                response = requests.get("https://developer.nrel.gov/api/wind-toolkit/v2/wind/wtk-download.csv", params={
-                    "api_key": api_key,
-                    "wkt": f"POINT({coords})",
-                    "attributes": "windspeed_80m,windspeed_100m",
-                    "interval": interval,
-                    "names": year,
-                    "utc": "true",
-                    "leap_day": "true",
-                    "email": email,
-                    "reason": "R&D",
-                    "affiliation": affiliation,
-                }, verify= False)
-                csv_data = response.text
-                if not os.path.exists(f"{directory}/wtk_data/{year}"):
-                    os.makedirs(f"{directory}/wtk_data/{year}")
-                with open(f"{directory}/wtk_data/{year}/{name}.csv", "w") as csv_file:
-                    csv_file.write(csv_data)
+    def DownloadWindData(self, start_year, end_year):
 
-        HH_list = wind_site_df["Hub Height"].tolist()
-        append_years = list()
-        for year in year_list:
-            print("Processing Data For ", year)
-            current_year_DF = pd.read_csv(directory+f"/wtk_data/{year}/{name_list[0]}.csv", skiprows=1)
-            current_year_DF.drop(columns=["wind speed at 80m (m/s)","wind speed at 100m (m/s)"],inplace=True)
-            for i in range(site_count):
-                name = name_list[i]
-                HH = HH_list[i]
-                current_site_DF = pd.read_csv(directory+f"/wtk_data/{year}/{name}.csv", skiprows=1)
-                if HH == 80:
-                    current_site_DF[name_list[i]] = current_site_DF["wind speed at 80m (m/s)"]
-                elif HH == 100:
-                    current_site_DF[name_list[i]] = current_site_DF["wind speed at 100m (m/s)"]
-                else:
-                    current_site_DF[name_list[i]]=WR.power_law_interp(current_site_DF["wind speed at 80m (m/s)"],80,current_site_DF["wind speed at 100m (m/s)"],100,HH,mean=False)
-                current_year_DF[name_list[i]] = current_site_DF[name_list[i]]
-            append_years.append(current_year_DF)
-        wind_speeds_DF = pd.concat(append_years, axis=0,ignore_index=True)
+        if not {"Latitude", "Longitude"}.issubset(self.sites_df.columns):
+            raise ValueError("CSV must contain 'Latitude and 'Longitude' columns")
 
-        wind_speeds_DF["Minute"] = wind_speeds_DF["Minute"] - 30
-        wind_speeds_DF['datetime'] = pd.to_datetime(wind_speeds_DF[['Year', 'Month', 'Day', 'Hour', 'Minute']])
-        wind_speeds_DF.set_index('datetime', inplace=True)
-        wind_speeds_DF.drop(columns=['Year', 'Month', 'Day', 'Hour', 'Minute'], inplace=True)
+        # --- DATA DESCRIPTION FOR ERA5 ---
+        dataset = "reanalysis-era5-single-levels-timeseries"
+        base_request = {
+            "variable": [
+                "100m_u_component_of_wind",
+                "100m_v_component_of_wind",
+            ],
+            "date": [f"{start_year}-01-01/{end_year}-12-31"],
+            "data_format": "csv"
+        }
 
-        print('Done downloading and processing wind data!')
+        client = cdsapi.Client()
 
-        wind_speeds_DF.to_csv(directory+f"/windspeed_data.csv")
+        # --- DOWNLOAD LOOP ---
+        for idx, row in self.sites_df.iterrows():
+
+            lat = float(row["Latitude"])
+            lon = float(row["Longitude"])
+            name = row["Site Name"]
+
+            request = base_request.copy()
+            request["location"] = {"longitude": lon, "latitude": lat}
+
+            print(f"Downloading {name} (lat={lat}, lon={lon})...")
+
+            result = client.retrieve(dataset, request)
+            zip_path = Path(result.download())
+
+            final_csv_path = self.weather_data_directory / f"{name}.csv"
+
+            # --- EXTRACT FROM DOWNLOADED ZIP ---
+            with zipfile.ZipFile(zip_path, 'r') as z:
+                csv_files = [f for f in z.namelist() if f.endswith(".csv")]
+
+                if not csv_files:
+                    raise RuntimeError(f"No CSV found in ZIP for {name}")
+
+                extracted_name = csv_files[0]
+                z.extract(extracted_name, self.weather_data_directory)
+
+                extracted_path = self.weather_data_directory / extracted_name
+
+                os.replace(extracted_path, final_csv_path) # rename csv file for convenience
+
+            # --- CLEANUP ---
+            zip_path.unlink()
+
+        
+        # ======================================================
+        # consolidate all wind speed data into a single csv file
+        # ======================================================
+        site_dfs = []
+
+        for file in sorted(self.weather_data_directory.glob("*.csv")):
+
+            print(f"Processing {file.name}")
+
+            df = pd.read_csv(file)
+
+            required_cols = ["valid_time", "u100", "v100"]
+
+            missing = [c for c in required_cols if c not in df.columns]
+            if missing:
+                raise ValueError(
+                    f"{file.name} is missing columns: {missing}"
+                )
+
+            windspeed = np.sqrt(
+                df["u100"].astype(float) ** 2 +
+                df["v100"].astype(float) ** 2
+            )
+
+            site_name = file.stem
+
+            site_df = pd.DataFrame({
+                "datetime": pd.to_datetime(df["valid_time"]),
+                site_name: windspeed
+            })
+
+            site_dfs.append(site_df)
+
+        # Merge all sites
+        windspeed_df = site_dfs[0]
+
+        for site_df in site_dfs[1:]:
+            windspeed_df = windspeed_df.merge(
+                site_df,
+                on="datetime",
+                how="outer"
+            )
+
+        windspeed_df = windspeed_df.sort_values("datetime")
+
+        # Remove duplicate timestamps if any exist
+        windspeed_df = windspeed_df.drop_duplicates(
+            subset="datetime",
+            keep="first"
+        )
+
+        windspeed_df.to_csv(f"{self.wind_directory}/windspeed_data.csv", index=False)
+
 
     def WindFarmsData(self, site_data, pcurve_data, model):
         """
@@ -117,7 +165,7 @@ class Wind:
         return(self.w_sites, self.farm_name, self.zone_no, self.w_classes, self.w_turbines, \
                self.turbine_rating, self.p_class, self.out_curve2, self.out_curve3, self.start_speed)
 
-    def CalWindTrRates(self, directory, windspeed_data, site_data, pcurve_data):
+    def CalWindTrRates(self, directory, windspeed_data, pcurve_data):
         """
         Calculates transition rate matrices for the wind farms using wind speed data downloaded from the wind toolkit.
 
@@ -130,7 +178,7 @@ class Wind:
         Returns:
             numpy.ndarray: Transition rate matrices.
         """
-        wind = pd.read_csv(site_data) # read file for wind farm data
+        wind = pd.read_csv(self.wind_site_data) # read file for wind farm data
         bus_no = wind['Bus No.'].values # wind farm numbers
         w_sites = len(bus_no) # number of wind sites
 
@@ -179,3 +227,19 @@ class Wind:
                 k_temp += 1    
         
         return(rate_matrix)
+
+# if __name__ == "__main__":
+
+#     # --- CONFIG ---
+#     input_file = 'input.yaml'
+#     with open(input_file, 'r') as f:
+#         config = yaml.safe_load(f)
+
+#     # --- INPUTS ---
+#     wind_directory = config['data']+"/Wind"
+#     start_year = config['year_start_w']
+#     end_year = config['year_end_w']
+
+#     wind = Wind(wind_directory)
+
+#     wind.DownloadWindData(start_year, end_year)

@@ -3,27 +3,21 @@
 # Data file directory
 data: "path/to/Data/"
 
-# Inputs for the API
-api_key: "yourapikey"
-email: "youremail"
-affiliation: 'youraffiliation' # no spaces, + can be used instead
-name: 'yourname' # no spaces, + can be used instead
-
 # Inputs for Wind (check NREL wind toolkit for data availability)
-download_w: 'No' # Yes/No based on whether data needs to be downloaded
-year_start_w: 2007 # start year for wind data download
-year_end_w: 2014 # end year for wind data download
+download_w: 'Yes' # Yes/No based on whether data needs to be downloaded
+year_start_w: 2000 # start year for wind data download
+year_end_w: 2025 # end year for wind data download
 
 # Inputs for Solar (check ERA5 for data availability)
-download_s: 'No' # Yes/No based on whether data needs to be downloaded
+download_s: 'Yes' # Yes/No based on whether data needs to be downloaded
 year_start_s: 2000 # start year for solar data download
 year_end_s: 2025 # start year for solar data download
 n_clusters: 8 # number of K-means clusters for the solar data
 
 # Monte Carlo simulation parameters
 samples: 1 # no. of Monte Carlo samples to run
-sim_hours: 168 # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
-load_factor: 1.75 # tweak to increase/decrease load at all buses; default = 1
+sim_hours: 8760 # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
+load_factor: 1.25 # tweak to increase/decrease load at all buses; default = 1
 model: 'Zonal' # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zonal' (medium fidelity, nodes within a region/zone aggregated), 'Nodal' (highest fidelity)
 
 # Optimization horizon in hours
