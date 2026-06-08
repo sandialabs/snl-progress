@@ -12,6 +12,8 @@ from progress.ui.pages.solar_page import solar_form
 from progress.ui.pages.wind_page import wind_form
 from progress.ui.pages.simulation_page import sim_form
 from progress.ui.widgets.data_handler import DataHandler
+import sys
+import os
 
 class MainAppWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
