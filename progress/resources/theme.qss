@@ -5,12 +5,6 @@
 /* =======================================================
    Base
    ======================================================= */
-QWidget {
-    background-color: #f5f7fa;
-    color: #1e293b;
-    font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    font-size: 13px;
-}
 QMainWindow {
     background-color: #f5f7fa;
 }
@@ -21,13 +15,15 @@ QMainWindow {
 QFrame#sidebar_frame {
     background-color: #1e293b;
     border: none;
+    font-family: ".AppleSystemUIFont", -apple-system, "Helvetica Neue", Arial, sans-serif;
 }
 QFrame#branding_card {
-    background: transparent;
+    background-color: transparent;
     border: none;
     padding: 16px 12px;
 }
 QLabel#logo_label {
+    background: transparent;
     min-height: 56px;
     max-height: 80px;
 }
@@ -89,6 +85,7 @@ QFrame#header_frame {
     min-height: 70px;
     padding-left: 20px;
     padding-right: 20px;
+    font-family: ".AppleSystemUIFont", -apple-system, "Helvetica Neue", Arial, sans-serif;
 }
 QLabel#page_title {
     font-size: 24px;
@@ -98,105 +95,14 @@ QLabel#page_title {
 QLabel#breadcrumb_label {
     color: #64748b;
     font-size: 13px;
+    background: transparent;
 }
 QLabel#version_label {
     color: #94a3b8;
     font-size: 12px;
     font-weight: 400;
-}
-
-/* =======================================================
-   Cards
-   ======================================================= */
-QFrame#hero_card,
-QFrame#acknowledgement_card,
-QFrame#feature_card_solar,
-QFrame#feature_card_wind,
-QFrame#feature_card_storage,
-QFrame#feature_card_simulation,
-QFrame#feature_card_results,
-QFrame#feature_card_workflow {
-    background-color: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
-}
-QFrame#hero_card {
-    padding: 48px 36px 36px;
-}
-
-/* =======================================================
-   Landing Page — Hero Logo
-   ======================================================= */
-QLabel#hero_logo_label {
-    min-height: 100px;
-    max-height: 160px;
-}
-
-/* =======================================================
-   Landing Page Typography
-   ======================================================= */
-QLabel#title_label {
-    font-size: 28px;
-    font-weight: 700;
-    color: #1e293b;
-}
-QLabel#subtitle_label {
-    font-size: 15px;
-    color: #64748b;
-    font-weight: 400;
-}
-
-/* =======================================================
-   Landing Page Footer
-   ======================================================= */
-QLabel#footer_credits_label {
-    color: #94a3b8;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-}
-
-/* =======================================================
-   Buttons
-   ======================================================= */
-QPushButton {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 24px;
-    font-size: 13px;
-    font-weight: 600;
-    min-height: 24px;
-}
-QPushButton:hover {
-    background-color: #2563eb;
-}
-QPushButton:pressed {
-    background-color: #1d4ed8;
-}
-QPushButton#get_started_button {
-    min-width: 160px;
-}
-QPushButton#documentation_button {
     background: transparent;
-    color: #3b82f6;
-    border: 1px solid #bfdbfe;
-}
-QPushButton#documentation_button:hover {
-    background-color: #eff6ff;
-}
 
-/* =======================================================
-   Feature Cards — hover border
-   ======================================================= */
-QFrame#feature_card_solar:hover,
-QFrame#feature_card_wind:hover,
-QFrame#feature_card_storage:hover,
-QFrame#feature_card_simulation:hover,
-QFrame#feature_card_results:hover,
-QFrame#feature_card_workflow:hover {
-    border: 1px solid #3b82f6;
 }
 
 /* =======================================================
@@ -208,7 +114,6 @@ QFrame#footer_frame {
     margin-top: 12px;
     padding-top: 12px;
 }
-
 /* =======================================================
    Status Bar
    ======================================================= */

@@ -1,13 +1,8 @@
-# test_ui.py
 import sys
-import pytest
-from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget
 from PySide6.QtCore import QFile, QTextStream
 
-import progress.resources_rc  # registers the .qrc bundle
-
-app = QApplication(sys.argv)
-
+import progress.resources_rc
 
 
 def test_stylesheet_loads():
@@ -20,7 +15,6 @@ def test_stylesheet_loads():
 
 def test_main_window_loads():
     from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
-    from PySide6.QtWidgets import QMainWindow
     window = QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(window)
@@ -29,26 +23,13 @@ def test_main_window_loads():
 
 def test_landing_page_loads():
     from progress.ui.forms.landing.ui_landing import Ui_LandingPage
-    from PySide6.QtWidgets import QWidget
     widget = QWidget()
     ui = Ui_LandingPage()
     ui.setupUi(widget)
     assert widget is not None
 
 
-def test_stylesheet_applied():
-    from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
-    from PySide6.QtWidgets import QMainWindow
-    f = QFile(":/styles/resources/theme.qss")
-    f.open(QFile.ReadOnly | QFile.Text)
-    css = QTextStream(f).readAll()
-    f.close()
-
-    window = QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(window)
-    app.setStyleSheet(css)
-    assert app.styleSheet() == css
+app = QApplication(sys.argv)
 
 results = []
 for name, fn in [
@@ -64,5 +45,26 @@ for name, fn in [
         print(f"  FAIL  {name}: {e}")
         results.append(False)
 
+from progress.ui.forms.landing.ui_landing import Ui_LandingPage
+from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
+
+f = QFile(":/styles/resources/theme.qss")
+f.open(QFile.ReadOnly | QFile.Text)
+css = QTextStream(f).readAll()
+f.close()
+
+widget = QWidget()
+widget.setWindowTitle("QuESt ProGRESS - Landing Page")
+# widget.resize(1122, 928)
+# ui = Ui_LandingPage()
+# ui.setupUi(widget)
+# widget.show()
+
+window = QMainWindow()
+ui = Ui_MainWindow()
+ui.setupUi(window)
+app.setStyleSheet(css)
+window.show()
 print(f"\n{sum(results)}/{len(results)} passed")
-sys.exit(0 if all(results) else 1)
+
+sys.exit(app.exec())

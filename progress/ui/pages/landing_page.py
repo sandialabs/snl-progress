@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import QWidget
-from progress.ui.forms.landing.ui_landing import Ui_land
+from progress.ui.forms.landing.ui_landing import Ui_LandingPage
 from PySide6.QtCore import Signal
-class land_form(QWidget, Ui_land):
+class land_form(QWidget, Ui_LandingPage):
     """Landing page widget."""
 
     page_changer = Signal()

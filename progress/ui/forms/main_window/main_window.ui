@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1122</width>
+    <width>1243</width>
     <height>928</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>QuESt ProGRESS</string>
@@ -41,6 +53,12 @@
       <layout class="QVBoxLayout" name="sidebarLayout">
        <item>
         <widget class="QFrame" name="branding_card">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">frame.setStyleSheet(&quot;background-color: transparent;&quot;)</string>
+         </property>
          <layout class="QVBoxLayout" name="brandingLayout">
           <item>
            <widget class="QLabel" name="logo_label">
@@ -134,7 +152,13 @@
     </item>
     <item>
      <widget class="QFrame" name="content_frame">
-      <layout class="QVBoxLayout" name="contentLayout">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>1000</height>
+       </size>
+      </property>
+      <layout class="QVBoxLayout" name="contentLayout" stretch="0,1,0">
        <item>
         <widget class="QFrame" name="header_frame">
          <layout class="QHBoxLayout" name="headerLayout">
@@ -177,10 +201,13 @@
        </item>
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
-         <property name="currentIndex">
-          <number>0</number>
+         <property name="styleSheet">
+          <string notr="true">background-color: transparent;</string>
          </property>
-         <widget class="QWidget" name="page_home"/>
+         <property name="currentIndex">
+          <number>2</number>
+         </property>
+         <widget class="QWidget" name="page_landing"/>
          <widget class="QWidget" name="page_solar"/>
          <widget class="QWidget" name="page_wind"/>
          <widget class="QWidget" name="page_simulation"/>

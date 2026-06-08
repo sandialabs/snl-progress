@@ -24,7 +24,13 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1122, 928)
+        MainWindow.resize(1262, 928)
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
+        MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setMinimumSize(QSize(0, 0))
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.rootLayout = QHBoxLayout(self.centralwidget)
@@ -38,6 +44,8 @@ class Ui_MainWindow(object):
         self.sidebarLayout.setObjectName(u"sidebarLayout")
         self.branding_card = QFrame(self.sidebar_frame)
         self.branding_card.setObjectName(u"branding_card")
+        self.branding_card.setAutoFillBackground(False)
+        self.branding_card.setStyleSheet(u"frame.setStyleSheet(\"background-color: transparent;\")")
         self.brandingLayout = QVBoxLayout(self.branding_card)
         self.brandingLayout.setObjectName(u"brandingLayout")
         self.logo_label = QLabel(self.branding_card)
@@ -96,6 +104,7 @@ class Ui_MainWindow(object):
 
         self.content_frame = QFrame(self.centralwidget)
         self.content_frame.setObjectName(u"content_frame")
+        self.content_frame.setMaximumSize(QSize(16777215, 1000))
         self.contentLayout = QVBoxLayout(self.content_frame)
         self.contentLayout.setObjectName(u"contentLayout")
         self.header_frame = QFrame(self.content_frame)
@@ -126,9 +135,10 @@ class Ui_MainWindow(object):
 
         self.stackedWidget = QStackedWidget(self.content_frame)
         self.stackedWidget.setObjectName(u"stackedWidget")
-        self.page_home = QWidget()
-        self.page_home.setObjectName(u"page_home")
-        self.stackedWidget.addWidget(self.page_home)
+        self.stackedWidget.setStyleSheet(u"background-color: transparent;")
+        self.page_landing = QWidget()
+        self.page_landing.setObjectName(u"page_landing")
+        self.stackedWidget.addWidget(self.page_landing)
         self.page_solar = QWidget()
         self.page_solar.setObjectName(u"page_solar")
         self.stackedWidget.addWidget(self.page_solar)
@@ -171,6 +181,7 @@ class Ui_MainWindow(object):
 
         self.contentLayout.addWidget(self.status_frame)
 
+        self.contentLayout.setStretch(1, 1)
 
         self.rootLayout.addWidget(self.content_frame)
 

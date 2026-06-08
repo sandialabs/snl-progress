@@ -1,21 +1,5 @@
-import os
-import sys
+from pathlib import Path
 
-def get_path():
-    """
-    Determines the base path of the application.
+def get_path() -> Path:
+    return Path(__file__).resolve().parent
 
-    If the application is running in a frozen state (e.g., packaged with PyInstaller),
-    it returns the directory containing the executable. Otherwise, it returns the
-    directory containing the current script.
-
-    :return: The base path of the application.
-    :rtype: str
-    """
-    if getattr(sys, 'frozen', False):
-        exe_path = os.path.dirname(sys.executable)
-        base_path = os.path.join(exe_path, 'lib', 'progress')
-    else:
-        base_path = os.path.dirname(os.path.abspath(__file__))
-
-    return base_path
