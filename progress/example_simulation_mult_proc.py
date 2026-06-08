@@ -387,17 +387,28 @@ class ProgressMultiProcess:
 
             mLOLP_rec, COV_rec = raut.CheckConvergence(s, indices_rec["LOLP_rec"], self.comm, self.rank, self.size, \
                                   indices_rec["mLOLP_rec"], indices_rec["COV_rec"])
-            # plot results for samples for which there is load curtailment
+            
+            # plot and print results for samples for which there is load curtailment
             if sum(curt_rec) > 0:
                 sample_subdir = os.path.join(main_folder, f'Process_{self.rank}', f'Sample_{s+1}')
                 os.makedirs(sample_subdir, exist_ok=False)
                 rapt = RAPlotTools(config["data"], sample_subdir, network_model)
-                rapt.PlotSolarGen(renewable_rec["solar_rec"], bus_no, s)
-                rapt.PlotWindGen(renewable_rec["wind_rec"], bus_no, s)
                 rapt.PlotSOC(SOC_rec, essname, s)
                 if config['evaluate_degradation'] == 'Yes':
                     rapt.PlotESCap(ess_smax_store, essname, s)
                 rapt.PlotLoadCurt(curt_rec, s)
+
+                # print solar gen, wind gen, and ESS SOC in csv files
+                timestamps = pd.date_range(start="2026-01-01 00:00",
+                                            periods=renewable_rec["solar_rec"].T.shape[0],
+                                            freq="h")
+                row_names = " " + timestamps.strftime("%m/%d %H:%M")
+                df_solar_csv = pd.DataFrame(renewable_rec["solar_rec"].T, columns= bus_name, index=row_names)
+                df_solar_csv.to_csv(f"{sample_subdir}/solar_gen.csv", index=True)
+                df_wind_csv = pd.DataFrame(renewable_rec["wind_rec"].T, columns=bus_name, index=row_names)
+                df_wind_csv.to_csv(f"{sample_subdir}/wind_gen.csv", index=True)
+                df_SOC_csv = pd.DataFrame(SOC_rec.T, columns = essname, index=row_names)
+                df_SOC_csv.to_csv(f"{sample_subdir}/ESS_SOC.csv", index=True)                
 
             # save outage hour data to excel file
             if sum(curt_rec) > 0:
