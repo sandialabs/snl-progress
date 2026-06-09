@@ -8,7 +8,8 @@ from progress.paths import get_path
 base_dir = get_path()
 from progress.ui.pages.results_page import results_form
 from progress.ui.pages.about_page import MarkdownWidget
-from progress.ui.pages.solar_page import solar_form
+# from progress.ui.pages.solar_page import solar_form
+from progress.ui.pages.page_solar import solar_form
 from progress.ui.pages.wind_page import wind_form
 from progress.ui.pages.simulation_page import sim_form
 from progress.ui.widgets.data_handler import DataHandler
@@ -28,23 +29,15 @@ class MainAppWindow(QMainWindow, Ui_MainWindow):
         about_layout.addWidget(self.about_page_widget)
 
         # landing page
-        # landing_layout = QVBoxLayout(self.page_landing)
-        # self.landing_page = land_form()
-        # landing_layout.addWidget(self.landing_page)
-
         landing_layout = QVBoxLayout(self.page_landing)
-        # landing_layout.setContentsMargins(0, 0, 0, 0)
-        # landing_layout.setSpacing(0)
-
         self.landing_page = land_form()
         landing_layout.addWidget(self.landing_page)
+        # landing_layout.setContentsMargins(0, 0, 0, 0)
+        # landing_layout.setSpacing(0)
         # self.landing_page.setSizePolicy(
         #     QSizePolicy.Expanding,
         #     QSizePolicy.Expanding,
         # )
-        print(self.page_landing.layout())
-        print(self.page_landing.size())
-        print(self.stackedWidget.size())
         # results_layout = QVBoxLayout(self.page_results)
         # self.results_page = results_form()
         # results_layout.addWidget(self.results_page)

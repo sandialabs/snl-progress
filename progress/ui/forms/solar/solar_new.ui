@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1357</width>
+    <width>1231</width>
     <height>928</height>
    </rect>
   </property>
@@ -180,23 +180,7 @@
                </layout>
               </widget>
              </item>
-             <item row="0" column="2">
-              <widget class="QWidget" name="widget_terminal" native="true">
-               <layout class="QVBoxLayout" name="verticalLayout_4">
-                <item>
-                 <widget class="QPlainTextEdit" name="view_terminal"/>
-                </item>
-                <item>
-                 <widget class="QProgressBar" name="view_progress">
-                  <property name="value">
-                   <number>24</number>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-             <item row="1" column="2">
+             <item row="1" column="0">
               <widget class="QPushButton" name="btn_download_solar">
                <property name="text">
                 <string>Download Solar Data</string>
