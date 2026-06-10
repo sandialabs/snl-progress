@@ -12,7 +12,7 @@ from progress.mod_sysdata import RASystemData
 from progress.ui.widgets.data_handler import DataHandler
 from progress.ui.pages.about_page import MarkdownWidget
 from progress.mod_utilities import RAUtilities
-from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR
+from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR, update_data_path
 import progress.resources_rc
 import sys
 import os
@@ -156,6 +156,7 @@ def main():
     The main entry point for the application.
     Initializes the QApplication, creates and shows the main window, and starts the event loop.
     """
+    update_data_path()
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

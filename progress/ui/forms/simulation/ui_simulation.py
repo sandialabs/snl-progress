@@ -17,7 +17,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGroupBox,
     QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+    QRadioButton, QSizePolicy, QSpacerItem, QVBoxLayout,
+    QWidget)
 
 class Ui_SimulationPage(object):
     def setupUi(self, SimulationPage):
@@ -132,12 +133,112 @@ class Ui_SimulationPage(object):
         self.comboBox_model_type = QComboBox(self.frame_model_type)
         self.comboBox_model_type.addItem("")
         self.comboBox_model_type.addItem("")
+        self.comboBox_model_type.addItem("")
         self.comboBox_model_type.setObjectName(u"comboBox_model_type")
 
         self.horizontalLayout_model_type.addWidget(self.comboBox_model_type)
 
 
         self.verticalLayout_simulation.addWidget(self.frame_model_type)
+
+        self.frame_opt_period = QFrame(self.groupBox_simulation)
+        self.frame_opt_period.setObjectName(u"frame_opt_period")
+        self.frame_opt_period.setFrameShape(QFrame.NoFrame)
+        self.frame_opt_period.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_opt_period)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label_opt_period = QLabel(self.frame_opt_period)
+        self.label_opt_period.setObjectName(u"label_opt_period")
+        self.label_opt_period.setMinimumSize(QSize(140, 0))
+
+        self.horizontalLayout_2.addWidget(self.label_opt_period)
+
+        self.lineEdit_opt_period = QLineEdit(self.frame_opt_period)
+        self.lineEdit_opt_period.setObjectName(u"lineEdit_opt_period")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEdit_opt_period.sizePolicy().hasHeightForWidth())
+        self.lineEdit_opt_period.setSizePolicy(sizePolicy)
+        self.lineEdit_opt_period.setMaxLength(8760)
+        self.lineEdit_opt_period.setCursorPosition(0)
+
+        self.horizontalLayout_2.addWidget(self.lineEdit_opt_period)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_opt_period)
+
+        self.frame_degradation_eval = QFrame(self.groupBox_simulation)
+        self.frame_degradation_eval.setObjectName(u"frame_degradation_eval")
+        self.frame_degradation_eval.setMinimumSize(QSize(140, 0))
+        self.frame_degradation_eval.setFrameShape(QFrame.NoFrame)
+        self.frame_degradation_eval.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_3 = QHBoxLayout(self.frame_degradation_eval)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.label_degradation_eval = QLabel(self.frame_degradation_eval)
+        self.label_degradation_eval.setObjectName(u"label_degradation_eval")
+
+        self.horizontalLayout_3.addWidget(self.label_degradation_eval)
+
+        self.radio_degradation_eval_true = QRadioButton(self.frame_degradation_eval)
+        self.radio_degradation_eval_true.setObjectName(u"radio_degradation_eval_true")
+
+        self.horizontalLayout_3.addWidget(self.radio_degradation_eval_true)
+
+        self.radio_degradation_eval_false = QRadioButton(self.frame_degradation_eval)
+        self.radio_degradation_eval_false.setObjectName(u"radio_degradation_eval_false")
+        self.radio_degradation_eval_false.setChecked(True)
+
+        self.horizontalLayout_3.addWidget(self.radio_degradation_eval_false)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_degradation_eval)
+
+        self.frame_degradation_int = QFrame(self.groupBox_simulation)
+        self.frame_degradation_int.setObjectName(u"frame_degradation_int")
+        self.frame_degradation_int.setFrameShape(QFrame.NoFrame)
+        self.frame_degradation_int.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_4 = QHBoxLayout(self.frame_degradation_int)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.label_degradation_int = QLabel(self.frame_degradation_int)
+        self.label_degradation_int.setObjectName(u"label_degradation_int")
+        self.label_degradation_int.setMinimumSize(QSize(140, 0))
+
+        self.horizontalLayout_4.addWidget(self.label_degradation_int)
+
+        self.lineEdit_degradation_int = QLineEdit(self.frame_degradation_int)
+        self.lineEdit_degradation_int.setObjectName(u"lineEdit_degradation_int")
+
+        self.horizontalLayout_4.addWidget(self.lineEdit_degradation_int)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_degradation_int)
+
+        self.frame_thermal_model = QFrame(self.groupBox_simulation)
+        self.frame_thermal_model.setObjectName(u"frame_thermal_model")
+        self.frame_thermal_model.setFrameShape(QFrame.NoFrame)
+        self.frame_thermal_model.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_5 = QHBoxLayout(self.frame_thermal_model)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.label_detailed_model = QLabel(self.frame_thermal_model)
+        self.label_detailed_model.setObjectName(u"label_detailed_model")
+        self.label_detailed_model.setMinimumSize(QSize(140, 0))
+
+        self.horizontalLayout_5.addWidget(self.label_detailed_model)
+
+        self.radio_detailed_model_true = QRadioButton(self.frame_thermal_model)
+        self.radio_detailed_model_true.setObjectName(u"radio_detailed_model_true")
+
+        self.horizontalLayout_5.addWidget(self.radio_detailed_model_true)
+
+        self.radio_detailed_model_false = QRadioButton(self.frame_thermal_model)
+        self.radio_detailed_model_false.setObjectName(u"radio_detailed_model_false")
+        self.radio_detailed_model_false.setChecked(True)
+
+        self.horizontalLayout_5.addWidget(self.radio_detailed_model_false)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_thermal_model)
 
         self.line_separator_2 = QFrame(self.groupBox_simulation)
         self.line_separator_2.setObjectName(u"line_separator_2")
@@ -188,8 +289,8 @@ class Ui_SimulationPage(object):
 
     def retranslateUi(self, SimulationPage):
         SimulationPage.setWindowTitle(QCoreApplication.translate("SimulationPage", u"Form", None))
-        self.groupBox_simulation.setTitle(QCoreApplication.translate("SimulationPage", u"Simulation Settings", None))
-        self.label_sim_hint.setText(QCoreApplication.translate("SimulationPage", u"Enter the simulation settings below.", None))
+        self.groupBox_simulation.setTitle(QCoreApplication.translate("SimulationPage", u" Monte Carlo Simulation Parameters", None))
+        self.label_sim_hint.setText(QCoreApplication.translate("SimulationPage", u"Enter the simulation parameters below.", None))
         self.label_samples.setText(QCoreApplication.translate("SimulationPage", u"Samples", None))
         self.lineEdit_samples.setPlaceholderText(QCoreApplication.translate("SimulationPage", u"Enter number of samples", None))
         self.label_hours.setText(QCoreApplication.translate("SimulationPage", u"Simulation Hours", None))
@@ -201,7 +302,18 @@ class Ui_SimulationPage(object):
         self.label_model_type.setText(QCoreApplication.translate("SimulationPage", u"Model Type", None))
         self.comboBox_model_type.setItemText(0, QCoreApplication.translate("SimulationPage", u"Zonal Model", None))
         self.comboBox_model_type.setItemText(1, QCoreApplication.translate("SimulationPage", u"Copper Sheet Model", None))
+        self.comboBox_model_type.setItemText(2, QCoreApplication.translate("SimulationPage", u"Nodal", None))
 
+        self.label_opt_period.setText(QCoreApplication.translate("SimulationPage", u"Optimization Period", None))
+        self.lineEdit_opt_period.setPlaceholderText(QCoreApplication.translate("SimulationPage", u"e.g. 24", None))
+        self.label_degradation_eval.setText(QCoreApplication.translate("SimulationPage", u"Evaluate Degradation", None))
+        self.radio_degradation_eval_true.setText(QCoreApplication.translate("SimulationPage", u"True", None))
+        self.radio_degradation_eval_false.setText(QCoreApplication.translate("SimulationPage", u"False", None))
+        self.label_degradation_int.setText(QCoreApplication.translate("SimulationPage", u"Degradation Interval", None))
+        self.lineEdit_degradation_int.setPlaceholderText(QCoreApplication.translate("SimulationPage", u"e.g. 128", None))
+        self.label_detailed_model.setText(QCoreApplication.translate("SimulationPage", u"Detailed Thermal Model ", None))
+        self.radio_detailed_model_true.setText(QCoreApplication.translate("SimulationPage", u"True", None))
+        self.radio_detailed_model_false.setText(QCoreApplication.translate("SimulationPage", u"False", None))
         self.btn_run_simulation.setText(QCoreApplication.translate("SimulationPage", u"Run Simulation", None))
     # retranslateUi
 

@@ -1,7 +1,7 @@
 # ProGRESS Configuration File
 
 # Data file directory
-data: "path/to/Data/"
+data: "/Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data"
 
 # Inputs for Wind (check NREL wind toolkit for data availability)
 download_w: 'Yes' # Yes/No based on whether data needs to be downloaded
@@ -24,6 +24,6 @@ model: 'Zonal' # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zona
 optimization_period: 24 # = 1 for reliability mode; = multiples of 24 for day ahead hourly optimization; Recommended: 24 
 
 # Battery degradation parameters
-evaluate_degradation: False # True/False based on whether user wants to consider battery degradation
+evaluate_degradation: false # True/False based on whether user wants to consider battery degradation
 degradation_interval: 1000 # Interval between BESS degradation evaluation. Recommended: 168 hours (1 week) or more .
-detailed_thermal_model: False # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 
+detailed_thermal_model: false # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 
