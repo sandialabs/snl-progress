@@ -177,28 +177,6 @@ class Ui_SimulationPage(object):
 
         self.verticalLayout_container.addItem(self.verticalSpacer_bottom)
 
-        self.nav_bottom_sim = QWidget(self.frame_main)
-        self.nav_bottom_sim.setObjectName(u"nav_bottom_sim")
-        self.nav_bottom_sim.setMaximumSize(QSize(16777215, 50))
-        self.horizontalLayout_nav = QHBoxLayout(self.nav_bottom_sim)
-        self.horizontalLayout_nav.setObjectName(u"horizontalLayout_nav")
-        self.bottom_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_nav.addItem(self.bottom_spacer)
-
-        self.btn_sim_previous = QPushButton(self.nav_bottom_sim)
-        self.btn_sim_previous.setObjectName(u"btn_sim_previous")
-
-        self.horizontalLayout_nav.addWidget(self.btn_sim_previous)
-
-        self.btn_sim_next = QPushButton(self.nav_bottom_sim)
-        self.btn_sim_next.setObjectName(u"btn_sim_next")
-
-        self.horizontalLayout_nav.addWidget(self.btn_sim_next)
-
-
-        self.verticalLayout_container.addWidget(self.nav_bottom_sim)
-
 
         self.verticalLayout_main.addWidget(self.frame_main)
 
@@ -225,7 +203,5 @@ class Ui_SimulationPage(object):
         self.comboBox_model_type.setItemText(1, QCoreApplication.translate("SimulationPage", u"Copper Sheet Model", None))
 
         self.btn_run_simulation.setText(QCoreApplication.translate("SimulationPage", u"Run Simulation", None))
-        self.btn_sim_previous.setText(QCoreApplication.translate("SimulationPage", u"Prev", None))
-        self.btn_sim_next.setText(QCoreApplication.translate("SimulationPage", u"Next", None))
     # retranslateUi
 

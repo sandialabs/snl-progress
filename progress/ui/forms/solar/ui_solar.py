@@ -194,33 +194,6 @@ class Ui_SolarPage(object):
 
         self.verticalLayout_3.addWidget(self.data_frame)
 
-        self.nav_bottom_data = QWidget(self.main_frame)
-        self.nav_bottom_data.setObjectName(u"nav_bottom_data")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.nav_bottom_data.sizePolicy().hasHeightForWidth())
-        self.nav_bottom_data.setSizePolicy(sizePolicy4)
-        self.nav_bottom_data.setMaximumSize(QSize(16777215, 50))
-        self.horizontalLayout_nav = QHBoxLayout(self.nav_bottom_data)
-        self.horizontalLayout_nav.setObjectName(u"horizontalLayout_nav")
-        self.bottom_spacer_data = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_nav.addItem(self.bottom_spacer_data)
-
-        self.btn_prev_page_data = QPushButton(self.nav_bottom_data)
-        self.btn_prev_page_data.setObjectName(u"btn_prev_page_data")
-
-        self.horizontalLayout_nav.addWidget(self.btn_prev_page_data)
-
-        self.btn_next_page_data = QPushButton(self.nav_bottom_data)
-        self.btn_next_page_data.setObjectName(u"btn_next_page_data")
-
-        self.horizontalLayout_nav.addWidget(self.btn_next_page_data)
-
-
-        self.verticalLayout_3.addWidget(self.nav_bottom_data)
-
 
         self.verticalLayout_2.addWidget(self.main_frame)
 
@@ -268,11 +241,11 @@ class Ui_SolarPage(object):
 
         self.line_seperator_3 = QFrame(self.groupBox_cluster)
         self.line_seperator_3.setObjectName(u"line_seperator_3")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.line_seperator_3.sizePolicy().hasHeightForWidth())
-        self.line_seperator_3.setSizePolicy(sizePolicy5)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.line_seperator_3.sizePolicy().hasHeightForWidth())
+        self.line_seperator_3.setSizePolicy(sizePolicy4)
         self.line_seperator_3.setFrameShape(QFrame.HLine)
         self.line_seperator_3.setFrameShadow(QFrame.Sunken)
 
@@ -292,11 +265,11 @@ class Ui_SolarPage(object):
 
         self.spin_box_num_cluster = QSpinBox(self.frame_num_cluster)
         self.spin_box_num_cluster.setObjectName(u"spin_box_num_cluster")
-        sizePolicy6 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.spin_box_num_cluster.sizePolicy().hasHeightForWidth())
-        self.spin_box_num_cluster.setSizePolicy(sizePolicy6)
+        sizePolicy5 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.spin_box_num_cluster.sizePolicy().hasHeightForWidth())
+        self.spin_box_num_cluster.setSizePolicy(sizePolicy5)
         self.spin_box_num_cluster.setMaximumSize(QSize(300, 16777215))
         self.spin_box_num_cluster.setMinimum(0)
         self.spin_box_num_cluster.setMaximum(20)
@@ -332,8 +305,8 @@ class Ui_SolarPage(object):
 
         self.line_seperator_4 = QFrame(self.groupBox_cluster)
         self.line_seperator_4.setObjectName(u"line_seperator_4")
-        sizePolicy5.setHeightForWidth(self.line_seperator_4.sizePolicy().hasHeightForWidth())
-        self.line_seperator_4.setSizePolicy(sizePolicy5)
+        sizePolicy4.setHeightForWidth(self.line_seperator_4.sizePolicy().hasHeightForWidth())
+        self.line_seperator_4.setSizePolicy(sizePolicy4)
         self.line_seperator_4.setFrameShape(QFrame.HLine)
         self.line_seperator_4.setFrameShadow(QFrame.Sunken)
 
@@ -353,8 +326,8 @@ class Ui_SolarPage(object):
 
         self.spin_box_final_num_cluster = QSpinBox(self.frame_final_cluster)
         self.spin_box_final_num_cluster.setObjectName(u"spin_box_final_num_cluster")
-        sizePolicy6.setHeightForWidth(self.spin_box_final_num_cluster.sizePolicy().hasHeightForWidth())
-        self.spin_box_final_num_cluster.setSizePolicy(sizePolicy6)
+        sizePolicy5.setHeightForWidth(self.spin_box_final_num_cluster.sizePolicy().hasHeightForWidth())
+        self.spin_box_final_num_cluster.setSizePolicy(sizePolicy5)
         self.spin_box_final_num_cluster.setMaximumSize(QSize(300, 16777215))
         self.spin_box_final_num_cluster.setMaximum(20)
 
@@ -427,8 +400,11 @@ class Ui_SolarPage(object):
 
         self.nav_bottom_cluster = QWidget(self.second_frame)
         self.nav_bottom_cluster.setObjectName(u"nav_bottom_cluster")
-        sizePolicy4.setHeightForWidth(self.nav_bottom_cluster.sizePolicy().hasHeightForWidth())
-        self.nav_bottom_cluster.setSizePolicy(sizePolicy4)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.nav_bottom_cluster.sizePolicy().hasHeightForWidth())
+        self.nav_bottom_cluster.setSizePolicy(sizePolicy6)
         self.nav_bottom_cluster.setMaximumSize(QSize(16777215, 50))
         self.horizontalLayout = QHBoxLayout(self.nav_bottom_cluster)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -481,8 +457,6 @@ class Ui_SolarPage(object):
         self.line_edit_end.setPlaceholderText(QCoreApplication.translate("SolarPage", u"e.g. 2023", None))
         self.pushButton_2.setText("")
         self.btn_download_solar.setText(QCoreApplication.translate("SolarPage", u"Download Solar Data", None))
-        self.btn_prev_page_data.setText(QCoreApplication.translate("SolarPage", u"Prev", None))
-        self.btn_next_page_data.setText(QCoreApplication.translate("SolarPage", u"Next", None))
         self.groupBox_cluster.setTitle(QCoreApplication.translate("SolarPage", u"Clustering Method", None))
         self.label_algo_hint.setText(QCoreApplication.translate("SolarPage", u"Select ML Algorithm:", None))
         self.radio_btn_k_means.setText(QCoreApplication.translate("SolarPage", u"K-Means", None))

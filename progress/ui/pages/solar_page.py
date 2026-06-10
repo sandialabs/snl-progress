@@ -22,10 +22,6 @@ class SolarPage(QWidget):
         # UI initialization
         self.ui.spin_box_num_cluster.setValue(0)
         self.ui.solarStackedWidget.setCurrentIndex(0)
-        self.ui.btn_next_page_data.clicked.connect(self._switch_to_cluster_page)
-        self.ui.btn_prev_page_data.clicked.connect(self._switch_to_data_page)
-        self.ui.btn_prev_page_cluster.clicked.connect(self._switch_to_data_page)
-        self.ui.btn_next_page_cluster.clicked.connect(self._switch_to_data_page)
         self.ui.btn_eval_cluster.clicked.connect(self._open_cluster_results)
 
 

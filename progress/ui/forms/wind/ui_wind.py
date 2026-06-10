@@ -199,33 +199,6 @@ class Ui_WindPage(object):
 
         self.verticalLayout_3.addWidget(self.frame_data)
 
-        self.nav_bottom_data = QWidget(self.frame_main)
-        self.nav_bottom_data.setObjectName(u"nav_bottom_data")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.nav_bottom_data.sizePolicy().hasHeightForWidth())
-        self.nav_bottom_data.setSizePolicy(sizePolicy4)
-        self.nav_bottom_data.setMaximumSize(QSize(16777215, 50))
-        self.horizontalLayout_nav = QHBoxLayout(self.nav_bottom_data)
-        self.horizontalLayout_nav.setObjectName(u"horizontalLayout_nav")
-        self.bottom_spacer_data = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout_nav.addItem(self.bottom_spacer_data)
-
-        self.btn_prev_page_data = QPushButton(self.nav_bottom_data)
-        self.btn_prev_page_data.setObjectName(u"btn_prev_page_data")
-
-        self.horizontalLayout_nav.addWidget(self.btn_prev_page_data)
-
-        self.btn_next_page_data = QPushButton(self.nav_bottom_data)
-        self.btn_next_page_data.setObjectName(u"btn_next_page_data")
-
-        self.horizontalLayout_nav.addWidget(self.btn_next_page_data)
-
-
-        self.verticalLayout_3.addWidget(self.nav_bottom_data)
-
 
         self.verticalLayout_2.addWidget(self.frame_main)
 
@@ -259,7 +232,5 @@ class Ui_WindPage(object):
         self.pushButton_2.setText("")
         self.btn_download_wind.setText(QCoreApplication.translate("WindPage", u"Download Wind Data", None))
         self.btn_process_wind.setText(QCoreApplication.translate("WindPage", u"Process Wind Data", None))
-        self.btn_prev_page_data.setText(QCoreApplication.translate("WindPage", u"Prev", None))
-        self.btn_next_page_data.setText(QCoreApplication.translate("WindPage", u"Next", None))
     # retranslateUi
 
