@@ -24,55 +24,40 @@ class Ui_LandingPage(object):
     def setupUi(self, LandingPage):
         if not LandingPage.objectName():
             LandingPage.setObjectName(u"LandingPage")
-        LandingPage.setEnabled(True)
-        LandingPage.resize(1243, 974)
-        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        LandingPage.resize(1163, 908)
+        self.verticalLayout = QVBoxLayout(LandingPage)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.frame_logo = QFrame(LandingPage)
+        self.frame_logo.setObjectName(u"frame_logo")
+        self.frame_logo.setFrameShape(QFrame.NoFrame)
+        self.frame_logo.setFrameShadow(QFrame.Sunken)
+        self.verticalLayout_2 = QVBoxLayout(self.frame_logo)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.frame_2 = QFrame(self.frame_logo)
+        self.frame_2.setObjectName(u"frame_2")
+        self.frame_2.setFrameShape(QFrame.NoFrame)
+        self.frame_2.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_3 = QHBoxLayout(self.frame_2)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.label_progress_logo = QLabel(self.frame_2)
+        self.label_progress_logo.setObjectName(u"label_progress_logo")
+        sizePolicy = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(LandingPage.sizePolicy().hasHeightForWidth())
-        LandingPage.setSizePolicy(sizePolicy)
-        self.mainLayout = QVBoxLayout(LandingPage)
-        self.mainLayout.setSpacing(0)
-        self.mainLayout.setObjectName(u"mainLayout")
-        self.mainLayout.setContentsMargins(0, 0, 0, 0)
-        self.hero_card = QFrame(LandingPage)
-        self.hero_card.setObjectName(u"hero_card")
-        sizePolicy1 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.hero_card.sizePolicy().hasHeightForWidth())
-        self.hero_card.setSizePolicy(sizePolicy1)
-        self.hero_card.setMinimumSize(QSize(0, 600))
-        self.heroLayout = QVBoxLayout(self.hero_card)
-        self.heroLayout.setObjectName(u"heroLayout")
-        self.verticalSpacer_2 = QSpacerItem(20, 30, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy.setHeightForWidth(self.label_progress_logo.sizePolicy().hasHeightForWidth())
+        self.label_progress_logo.setSizePolicy(sizePolicy)
+        self.label_progress_logo.setMaximumSize(QSize(943, 239))
+        self.label_progress_logo.setPixmap(QPixmap(u":/logos/Images/logos/progress_transparent_alt.png"))
+        self.label_progress_logo.setScaledContents(True)
+        self.label_progress_logo.setAlignment(Qt.AlignCenter)
 
-        self.heroLayout.addItem(self.verticalSpacer_2)
+        self.horizontalLayout_3.addWidget(self.label_progress_logo)
 
-        self.hero_logo_label = QLabel(self.hero_card)
-        self.hero_logo_label.setObjectName(u"hero_logo_label")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy2.setHorizontalStretch(0)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.hero_logo_label.sizePolicy().hasHeightForWidth())
-        self.hero_logo_label.setSizePolicy(sizePolicy2)
-        self.hero_logo_label.setMinimumSize(QSize(0, 0))
-        self.hero_logo_label.setMaximumSize(QSize(16777215, 400))
-        self.hero_logo_label.setPixmap(QPixmap(u":/logos/Images/logos/progress_transparent_alt.png"))
-        self.hero_logo_label.setScaledContents(False)
-        self.hero_logo_label.setAlignment(Qt.AlignHCenter|Qt.AlignTop)
-        self.hero_logo_label.setWordWrap(False)
-        self.hero_logo_label.setMargin(0)
 
-        self.heroLayout.addWidget(self.hero_logo_label)
+        self.verticalLayout_2.addWidget(self.frame_2)
 
-        self.title_label = QLabel(self.hero_card)
-        self.title_label.setObjectName(u"title_label")
-        sizePolicy3 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
-        sizePolicy3.setHorizontalStretch(0)
-        sizePolicy3.setVerticalStretch(0)
-        sizePolicy3.setHeightForWidth(self.title_label.sizePolicy().hasHeightForWidth())
-        self.title_label.setSizePolicy(sizePolicy3)
+        self.label_progress_desc = QLabel(self.frame_logo)
+        self.label_progress_desc.setObjectName(u"label_progress_desc")
         palette = QPalette()
         brush = QBrush(QColor(45, 105, 46, 255))
         brush.setStyle(Qt.SolidPattern)
@@ -81,150 +66,135 @@ class Ui_LandingPage(object):
         brush1 = QBrush(QColor(127, 127, 127, 255))
         brush1.setStyle(Qt.SolidPattern)
         palette.setBrush(QPalette.Disabled, QPalette.WindowText, brush1)
-        self.title_label.setPalette(palette)
+        self.label_progress_desc.setPalette(palette)
         font = QFont()
-        font.setPointSize(60)
-        font.setBold(False)
-        font.setKerning(True)
-        self.title_label.setFont(font)
-        self.title_label.setAlignment(Qt.AlignCenter)
-        self.title_label.setWordWrap(True)
-        self.title_label.setMargin(0)
+        font.setPointSize(40)
+        self.label_progress_desc.setFont(font)
+        self.label_progress_desc.setAlignment(Qt.AlignCenter)
+        self.label_progress_desc.setWordWrap(True)
 
-        self.heroLayout.addWidget(self.title_label)
+        self.verticalLayout_2.addWidget(self.label_progress_desc)
 
-        self.verticalSpacer_3 = QSpacerItem(20, 30, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.frame = QFrame(self.frame_logo)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.NoFrame)
+        self.frame.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout = QHBoxLayout(self.frame)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.heroLayout.addItem(self.verticalSpacer_3)
+        self.horizontalLayout.addItem(self.horizontalSpacer)
 
-        self.actionLayout = QHBoxLayout()
-        self.actionLayout.setObjectName(u"actionLayout")
-        self.spacerItem = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.pushButton = QPushButton(self.frame)
+        self.pushButton.setObjectName(u"pushButton")
 
-        self.actionLayout.addItem(self.spacerItem)
+        self.horizontalLayout.addWidget(self.pushButton)
 
-        self.get_started_button = QPushButton(self.hero_card)
-        self.get_started_button.setObjectName(u"get_started_button")
+        self.pushButton_2 = QPushButton(self.frame)
+        self.pushButton_2.setObjectName(u"pushButton_2")
 
-        self.actionLayout.addWidget(self.get_started_button)
+        self.horizontalLayout.addWidget(self.pushButton_2)
 
-        self.documentation_button = QPushButton(self.hero_card)
-        self.documentation_button.setObjectName(u"documentation_button")
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.actionLayout.addWidget(self.documentation_button)
-
-        self.spacerItem1 = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.actionLayout.addItem(self.spacerItem1)
+        self.horizontalLayout.addItem(self.horizontalSpacer_2)
 
 
-        self.heroLayout.addLayout(self.actionLayout)
-
-        self.verticalSpacer = QSpacerItem(20, 30, QSizePolicy.Minimum, QSizePolicy.Expanding)
-
-        self.heroLayout.addItem(self.verticalSpacer)
+        self.verticalLayout_2.addWidget(self.frame)
 
 
-        self.mainLayout.addWidget(self.hero_card)
+        self.verticalLayout.addWidget(self.frame_logo)
 
-        self.acknowledgement_card = QFrame(LandingPage)
-        self.acknowledgement_card.setObjectName(u"acknowledgement_card")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
-        sizePolicy4.setHorizontalStretch(0)
-        sizePolicy4.setVerticalStretch(0)
-        sizePolicy4.setHeightForWidth(self.acknowledgement_card.sizePolicy().hasHeightForWidth())
-        self.acknowledgement_card.setSizePolicy(sizePolicy4)
-        self.acknowledgement_card.setMinimumSize(QSize(0, 200))
-        self.ackLayout = QVBoxLayout(self.acknowledgement_card)
-        self.ackLayout.setObjectName(u"ackLayout")
-        self.ack_layout = QVBoxLayout()
-        self.ack_layout.setSpacing(0)
-        self.ack_layout.setObjectName(u"ack_layout")
-        self.ack_title = QLabel(self.acknowledgement_card)
-        self.ack_title.setObjectName(u"ack_title")
-        sizePolicy2.setHeightForWidth(self.ack_title.sizePolicy().hasHeightForWidth())
-        self.ack_title.setSizePolicy(sizePolicy2)
-        self.ack_title.setMinimumSize(QSize(0, 50))
-        self.ack_title.setMaximumSize(QSize(16777215, 50))
-        self.ack_title.setAlignment(Qt.AlignCenter)
-
-        self.ack_layout.addWidget(self.ack_title)
-
-        self.ack_text = QLabel(self.acknowledgement_card)
-        self.ack_text.setObjectName(u"ack_text")
-        sizePolicy4.setHeightForWidth(self.ack_text.sizePolicy().hasHeightForWidth())
-        self.ack_text.setSizePolicy(sizePolicy4)
-        self.ack_text.setMinimumSize(QSize(0, 70))
-        self.ack_text.setMaximumSize(QSize(16777215, 50))
+        self.frame_ackknowledgement = QFrame(LandingPage)
+        self.frame_ackknowledgement.setObjectName(u"frame_ackknowledgement")
+        self.frame_ackknowledgement.setFrameShape(QFrame.NoFrame)
+        self.frame_ackknowledgement.setFrameShadow(QFrame.Plain)
+        self.verticalLayout_3 = QVBoxLayout(self.frame_ackknowledgement)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.label_3 = QLabel(self.frame_ackknowledgement)
+        self.label_3.setObjectName(u"label_3")
         font1 = QFont()
-        font1.setBold(True)
-        self.ack_text.setFont(font1)
-        self.ack_text.setAlignment(Qt.AlignCenter)
-        self.ack_text.setWordWrap(True)
-        self.ack_text.setMargin(0)
+        font1.setPointSize(18)
+        self.label_3.setFont(font1)
+        self.label_3.setAlignment(Qt.AlignCenter)
+        self.label_3.setWordWrap(True)
 
-        self.ack_layout.addWidget(self.ack_text)
+        self.verticalLayout_3.addWidget(self.label_3)
 
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.ackLayout.addLayout(self.ack_layout)
+        self.verticalLayout_3.addItem(self.horizontalSpacer_7)
 
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.mainLayout.addWidget(self.acknowledgement_card)
+        self.verticalLayout_3.addItem(self.horizontalSpacer_8)
 
-        self.footer_frame = QFrame(LandingPage)
-        self.footer_frame.setObjectName(u"footer_frame")
-        self.footerLayout = QHBoxLayout(self.footer_frame)
-        self.footerLayout.setObjectName(u"footerLayout")
-        self.spacerItem2 = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.label_4 = QLabel(self.frame_ackknowledgement)
+        self.label_4.setObjectName(u"label_4")
+        font2 = QFont()
+        font2.setPointSize(15)
+        font2.setBold(True)
+        self.label_4.setFont(font2)
+        self.label_4.setAlignment(Qt.AlignCenter)
+        self.label_4.setWordWrap(True)
 
-        self.footerLayout.addItem(self.spacerItem2)
-
-        self.sandia_logo_label = QLabel(self.footer_frame)
-        self.sandia_logo_label.setObjectName(u"sandia_logo_label")
-        self.sandia_logo_label.setMinimumSize(QSize(80, 40))
-        self.sandia_logo_label.setMaximumSize(QSize(160, 64))
-        self.sandia_logo_label.setPixmap(QPixmap(u":/logos/Images/logos/Quest_Logo_RGB.png"))
-        self.sandia_logo_label.setScaledContents(True)
-        self.sandia_logo_label.setAlignment(Qt.AlignCenter)
-
-        self.footerLayout.addWidget(self.sandia_logo_label)
-
-        self.spacerItem3 = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.footerLayout.addItem(self.spacerItem3)
-
-        self.doe_logo_label = QLabel(self.footer_frame)
-        self.doe_logo_label.setObjectName(u"doe_logo_label")
-        sizePolicy2.setHeightForWidth(self.doe_logo_label.sizePolicy().hasHeightForWidth())
-        self.doe_logo_label.setSizePolicy(sizePolicy2)
-        self.doe_logo_label.setMinimumSize(QSize(150, 150))
-        self.doe_logo_label.setMaximumSize(QSize(120, 135))
-        self.doe_logo_label.setPixmap(QPixmap(u":/logos/Images/logos/DOE_transparent.png"))
-        self.doe_logo_label.setScaledContents(True)
-        self.doe_logo_label.setAlignment(Qt.AlignCenter)
-
-        self.footerLayout.addWidget(self.doe_logo_label)
-
-        self.spacerItem4 = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.footerLayout.addItem(self.spacerItem4)
-
-        self.quest_logo_label = QLabel(self.footer_frame)
-        self.quest_logo_label.setObjectName(u"quest_logo_label")
-        self.quest_logo_label.setMinimumSize(QSize(80, 40))
-        self.quest_logo_label.setMaximumSize(QSize(180, 100))
-        self.quest_logo_label.setPixmap(QPixmap(u":/logos/Images/logos/SNL_logo.png"))
-        self.quest_logo_label.setScaledContents(True)
-        self.quest_logo_label.setAlignment(Qt.AlignCenter)
-
-        self.footerLayout.addWidget(self.quest_logo_label)
-
-        self.spacerItem5 = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.footerLayout.addItem(self.spacerItem5)
+        self.verticalLayout_3.addWidget(self.label_4)
 
 
-        self.mainLayout.addWidget(self.footer_frame)
+        self.verticalLayout.addWidget(self.frame_ackknowledgement)
+
+        self.frame_footer = QFrame(LandingPage)
+        self.frame_footer.setObjectName(u"frame_footer")
+        self.frame_footer.setFrameShape(QFrame.NoFrame)
+        self.frame_footer.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_footer)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
+
+        self.label_5 = QLabel(self.frame_footer)
+        self.label_5.setObjectName(u"label_5")
+        self.label_5.setMinimumSize(QSize(80, 40))
+        self.label_5.setMaximumSize(QSize(160, 70))
+        self.label_5.setPixmap(QPixmap(u":/logos/Images/logos/Quest_Logo_RGB.png"))
+        self.label_5.setScaledContents(True)
+
+        self.horizontalLayout_2.addWidget(self.label_5)
+
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_4)
+
+        self.label_6 = QLabel(self.frame_footer)
+        self.label_6.setObjectName(u"label_6")
+        self.label_6.setMinimumSize(QSize(150, 150))
+        self.label_6.setMaximumSize(QSize(150, 150))
+        self.label_6.setPixmap(QPixmap(u":/logos/Images/logos/DOE_transparent.png"))
+        self.label_6.setScaledContents(True)
+
+        self.horizontalLayout_2.addWidget(self.label_6)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_5)
+
+        self.label_7 = QLabel(self.frame_footer)
+        self.label_7.setObjectName(u"label_7")
+        self.label_7.setMinimumSize(QSize(80, 40))
+        self.label_7.setMaximumSize(QSize(180, 100))
+        self.label_7.setPixmap(QPixmap(u":/logos/Images/logos/SNL_logo.png"))
+        self.label_7.setScaledContents(True)
+        self.label_7.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+
+        self.horizontalLayout_2.addWidget(self.label_7)
+
+        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_6)
+
+
+        self.verticalLayout.addWidget(self.frame_footer)
 
 
         self.retranslateUi(LandingPage)
@@ -233,15 +203,15 @@ class Ui_LandingPage(object):
     # setupUi
 
     def retranslateUi(self, LandingPage):
-        self.hero_logo_label.setText("")
-        self.title_label.setText(QCoreApplication.translate("LandingPage", u"Probabilistic Grid Reliability Analysis with Energy Storage Systems", None))
-        self.get_started_button.setText(QCoreApplication.translate("LandingPage", u"Get Started", None))
-        self.documentation_button.setText(QCoreApplication.translate("LandingPage", u"Documentation", None))
-        self.ack_title.setText(QCoreApplication.translate("LandingPage", u"A Python-based open-source tool for assessing the resource adequacy of the evolving electric power grid integrated with energy storage systems.", None))
-        self.ack_text.setText(QCoreApplication.translate("LandingPage", u"Acknowledgement: This material is based upon work supported by the U.S. Department of Energy Office of Electricity, Energy Storage Division.", None))
-        self.sandia_logo_label.setText("")
-        self.doe_logo_label.setText("")
-        self.quest_logo_label.setText("")
-        pass
+        LandingPage.setWindowTitle(QCoreApplication.translate("LandingPage", u"Form", None))
+        self.label_progress_logo.setText("")
+        self.label_progress_desc.setText(QCoreApplication.translate("LandingPage", u"Probabilistic Grid Reliability Analysis with Energy Storage Systems", None))
+        self.pushButton.setText(QCoreApplication.translate("LandingPage", u"Get Started", None))
+        self.pushButton_2.setText(QCoreApplication.translate("LandingPage", u"Documentation", None))
+        self.label_3.setText(QCoreApplication.translate("LandingPage", u"A Python-based open-source tool for assessing the resource adequacy of the evolving electric power grid integrated with energy storage systems.", None))
+        self.label_4.setText(QCoreApplication.translate("LandingPage", u"Acknowledgement: This material is based upon work supported by the U.S. Department of Energy Office of Electricity, Energy Storage Division.", None))
+        self.label_5.setText("")
+        self.label_6.setText("")
+        self.label_7.setText("")
     # retranslateUi
 

@@ -1,15 +1,15 @@
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QVBoxLayout
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 from progress.ui.forms.landing.ui_landing import Ui_LandingPage
 from PySide6.QtCore import Signal
-class land_form(QWidget, Ui_LandingPage):
-    """Landing page widget."""
 
-    page_changer = Signal()
-    def __init__(self, parent=None):
-        """Sets up the UI file to show in the application"""
-        super(land_form, self).__init__(parent)
-        self.setupUi(self)
-        self.get_started_button.clicked.connect(self.on_get_started_clicked)
+class LandingPage(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_LandingPage()
+        self.ui.setupUi(self)
 
-    def on_get_started_clicked(self):
-        self.page_changer.emit()
+        self._progress_logo_pixmap = QPixmap(":/logos/Images/logos/progress_transparent_alt.png")
+        self.ui.label_progress_logo.setAlignment(Qt.AlignCenter)
+

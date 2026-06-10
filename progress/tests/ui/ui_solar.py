@@ -25,7 +25,7 @@ class Ui_SolarPage(object):
     def setupUi(self, SolarPage):
         if not SolarPage.objectName():
             SolarPage.setObjectName(u"SolarPage")
-        SolarPage.resize(1231, 928)
+        SolarPage.resize(1163, 908)
         self.verticalLayout = QVBoxLayout(SolarPage)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.solarStackedWidget = QStackedWidget(SolarPage)
@@ -398,19 +398,19 @@ class Ui_SolarPage(object):
 
         self.horizontalLayout_4.addItem(self.horizontalSpacer_3)
 
-        self.pushButton_8 = QPushButton(self.frame_btns_cluster)
-        self.pushButton_8.setObjectName(u"pushButton_8")
-        self.pushButton_8.setFont(font)
+        self.btn_skip = QPushButton(self.frame_btns_cluster)
+        self.btn_skip.setObjectName(u"btn_skip")
+        self.btn_skip.setFont(font)
 
-        self.horizontalLayout_4.addWidget(self.pushButton_8)
+        self.horizontalLayout_4.addWidget(self.btn_skip)
 
-        self.pushButton_9 = QPushButton(self.frame_btns_cluster)
-        self.pushButton_9.setObjectName(u"pushButton_9")
-        self.pushButton_9.setIcon(icon)
-        self.pushButton_9.setIconSize(QSize(40, 40))
-        self.pushButton_9.setFlat(True)
+        self.btn_info_skip = QPushButton(self.frame_btns_cluster)
+        self.btn_info_skip.setObjectName(u"btn_info_skip")
+        self.btn_info_skip.setIcon(icon)
+        self.btn_info_skip.setIconSize(QSize(40, 40))
+        self.btn_info_skip.setFlat(True)
 
-        self.horizontalLayout_4.addWidget(self.pushButton_9)
+        self.horizontalLayout_4.addWidget(self.btn_info_skip)
 
 
         self.verticalLayout_9.addWidget(self.frame_btns_cluster)
@@ -459,7 +459,7 @@ class Ui_SolarPage(object):
 
         self.retranslateUi(SolarPage)
 
-        self.solarStackedWidget.setCurrentIndex(1)
+        self.solarStackedWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(SolarPage)
@@ -467,7 +467,7 @@ class Ui_SolarPage(object):
 
     def retranslateUi(self, SolarPage):
         SolarPage.setWindowTitle(QCoreApplication.translate("SolarPage", u"Form", None))
-        self.groupBox_input.setTitle(QCoreApplication.translate("SolarPage", u"Data Input", None))
+        self.groupBox_input.setTitle(QCoreApplication.translate("SolarPage", u"Solar Data Input", None))
         self.label_source_hint.setText(QCoreApplication.translate("SolarPage", u"Select a data source.", None))
         self.combo_data_source.setItemText(0, QCoreApplication.translate("SolarPage", u"-- Select Option --", None))
         self.combo_data_source.setItemText(1, QCoreApplication.translate("SolarPage", u"Use Your Own Data", None))
@@ -493,8 +493,8 @@ class Ui_SolarPage(object):
         self.label_final_num_cluster.setText(QCoreApplication.translate("SolarPage", u"Final No. of Clusters:", None))
         self.btn_gen_cluster.setText(QCoreApplication.translate("SolarPage", u"Generate", None))
         self.btn_info_final_num_cluster.setText("")
-        self.pushButton_8.setText(QCoreApplication.translate("SolarPage", u"Skip", None))
-        self.pushButton_9.setText("")
+        self.btn_skip.setText(QCoreApplication.translate("SolarPage", u"Skip", None))
+        self.btn_info_skip.setText("")
         self.btn_prev_page_cluster.setText(QCoreApplication.translate("SolarPage", u"Prev", None))
         self.btn_next_page_cluster.setText(QCoreApplication.translate("SolarPage", u"Next", None))
     # retranslateUi

@@ -1,77 +1,86 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QSizePolicy
-from PySide6.QtCore import QFile
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout
+from PySide6.QtCore import QFile, QTextStream, Qt, QSize, QTimer
+from PySide6.QtGui import QPixmap
+from PySide6.QtPdfWidgets import QPdfView
 from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
+from progress.ui.pages.landing_page import LandingPage
+from progress.ui.pages.solar_page import SolarPage
+from progress.ui.pages.wind_page import WindPage
+from progress.ui.pages.simulation_page import SimulationPage
+from progress.ui.pages.results_page import ResultsPage
 from progress.mod_sysdata import RASystemData
-from progress.mod_utilities import RAUtilities
-from progress.ui.pages.landing_page import land_form
-from progress.paths import get_path
-base_dir = get_path()
-from progress.ui.pages.results_page import results_form
-from progress.ui.pages.about_page import MarkdownWidget
-# from progress.ui.pages.solar_page import solar_form
-from progress.ui.pages.page_solar import solar_form
-from progress.ui.pages.wind_page import wind_form
-from progress.ui.pages.simulation_page import sim_form
 from progress.ui.widgets.data_handler import DataHandler
+from progress.ui.pages.about_page import MarkdownWidget
+from progress.mod_utilities import RAUtilities
+from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR
+import progress.resources_rc
 import sys
 import os
 
-class MainAppWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self, parent=None):
-        super(MainAppWindow, self).__init__(parent)
-        self.setupUi(self)
-        self.data_handler = DataHandler()
 
-        # about page
-        md_path = os.path.join(base_dir, '..', 'README.md')
-        self.about_page_widget = MarkdownWidget(md_path)
-        about_layout = QVBoxLayout(self.page_about)
-        about_layout.addWidget(self.about_page_widget)
 
-        # landing page
-        landing_layout = QVBoxLayout(self.page_landing)
-        self.landing_page = land_form()
-        landing_layout.addWidget(self.landing_page)
-        # landing_layout.setContentsMargins(0, 0, 0, 0)
-        # landing_layout.setSpacing(0)
-        # self.landing_page.setSizePolicy(
-        #     QSizePolicy.Expanding,
-        #     QSizePolicy.Expanding,
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+
+        self.landing_page = LandingPage()
+        self.solar_page = SolarPage()
+        self.wind_page = WindPage()
+        self.simulation_page = SimulationPage()
+        self.results_page = ResultsPage()
+        # self.settings_page = SettingsPage()
+        # self.about_page = AboutPage()
+
+        self.ui.stackedWidget.setCurrentWidget(self.ui.page_landing)
+
+        self._mount_page(self.ui.page_landing, self.landing_page)
+        self._mount_page(self.ui.page_solar, self.solar_page)
+        self._mount_page(self.ui.page_wind, self.wind_page)
+        self._mount_page(self.ui.page_simulation, self.simulation_page)
+        self._mount_page(self.ui.page_results, self.results_page)
+        # self._mount_page(self.ui.page_settings, self.settings_page)
+        # self._mount_page(self.ui.page_about, self.about_page)
+
+        self.ui.btn_home.clicked.connect(
+            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_landing)
+        )
+        self.ui.btn_solar.clicked.connect(
+            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_solar)
+        )
+        self.ui.btn_wind.clicked.connect(
+            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_wind)
+        )
+        self.ui.btn_simulation.clicked.connect(
+            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_simulation)
+        )
+        self.ui.btn_results.clicked.connect(
+            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_results)
+        )
+        # self.ui.btn_settings.clicked.connect(
+        #     lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_settings)
         # )
-        # results_layout = QVBoxLayout(self.page_results)
-        # self.results_page = results_form()
-        # results_layout.addWidget(self.results_page)
+        # self.ui.btn_about.clicked.connect(
+        #     lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_about)
+        # )
 
-        # self.landing_page.page_changer.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_solar))
-        # self.stackedWidget.setCurrentIndex(1)
-
-        # solar page
-        # solar_layout = QVBoxLayout(self.page_solar)
-        # self.solar_page = solar_form(self.data_handler)
-        # solar_layout.addWidget(self.solar_page)
-        # self.solar_page.page_changer_next.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_wind))
-        # self.solar_page.page_changer_previous.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_landing))
-        #
-        # # wind page
-        # wind_layout = QVBoxLayout(self.page_wind)
-        # self.wind_page = wind_form(self.data_handler)
-        # wind_layout.addWidget(self.wind_page)
-        # self.wind_page.page_changer_next.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_simulation))
-        # self.wind_page.page_changer_previous.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_solar))
-        #
-        # # sim page
-        # sim_layout = QVBoxLayout(self.page_simulation)
-        # self.sim_page = sim_form(self.data_handler)
-        # sim_layout.addWidget(self.sim_page)
-        # self.sim_page.page_changer_next.connect(lambda: (self.stackedWidget.setCurrentWidget(self.page_results), self.results_page.set_results_path()))
-        # self.sim_page.page_changer_previous.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_wind))
-        #
         #setting up sys dir data
-        self.sys_directory = os.path.join(base_dir, "Data", "System")
+        self.sys_directory = str(SYSTEM_DIR)
         self.load_sys_data()
 
         # load theme
-        self.load_stylesheet(str(base_dir / "resources" / "theme.qss"))
+        # self.load_stylesheet(str(base_dir / "resources" / "theme.qss"))
+
+    def _mount_page(self, container, page_widget) -> None:
+        layout = container.layout()
+        if layout is None:
+            layout = QVBoxLayout(container)
+            layout.setContentsMargins(0, 0, 0, 0)
+            layout.setSpacing(0)
+        layout.addWidget(page_widget)
+
+
 
     def load_sys_data(self):
         try:
@@ -141,22 +150,19 @@ class MainAppWindow(QMainWindow, Ui_MainWindow):
             self.setStyleSheet(stylesheet)
             file.close()
 
+
 def main():
     """
     The main entry point for the application.
-
     Initializes the QApplication, creates and shows the main window, and starts the event loop.
     """
-
     app = QApplication(sys.argv)
-
-    main_window = MainAppWindow()
-
-    main_window.show()
-
+    window = MainWindow()
+    window.show()
     sys.exit(app.exec())
 
 
 
 if __name__ == "__main__":
     main()
+

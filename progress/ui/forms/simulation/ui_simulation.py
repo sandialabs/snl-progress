@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'sim_guigNDqJf.ui'
+## Form generated from reading UI file 'simulation.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.5.2
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,244 +15,217 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QHBoxLayout,
-    QLabel, QLineEdit, QPushButton, QSizePolicy,
-    QSpacerItem, QTextBrowser, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGroupBox,
+    QHBoxLayout, QLabel, QLineEdit, QPushButton,
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
 
-class Ui_sim_widget(object):
-    def setupUi(self, sim_widget):
-        if not sim_widget.objectName():
-            sim_widget.setObjectName(u"sim_widget")
-        sim_widget.resize(1355, 736)
-        sim_widget.setStyleSheet(u"")
-        self.verticalLayout = QVBoxLayout(sim_widget)
-        self.verticalLayout.setSpacing(0)
-        self.verticalLayout.setObjectName(u"verticalLayout")
-        self.verticalLayout.setContentsMargins(9, 0, 9, 0)
-        self.widget_7 = QWidget(sim_widget)
-        self.widget_7.setObjectName(u"widget_7")
-        self.widget_7.setStyleSheet(u"")
-        self.verticalLayout_27 = QVBoxLayout(self.widget_7)
-        self.verticalLayout_27.setSpacing(0)
-        self.verticalLayout_27.setObjectName(u"verticalLayout_27")
-        self.verticalLayout_27.setContentsMargins(0, 0, 0, 0)
-        self.frame_44 = QFrame(self.widget_7)
-        self.frame_44.setObjectName(u"frame_44")
-        self.frame_44.setStyleSheet(u"")
-        self.frame_44.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_44.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_36 = QHBoxLayout(self.frame_44)
-        self.horizontalLayout_36.setSpacing(0)
-        self.horizontalLayout_36.setObjectName(u"horizontalLayout_36")
-        self.horizontalLayout_36.setContentsMargins(0, 9, 0, 0)
-        self.frame_43 = QFrame(self.frame_44)
-        self.frame_43.setObjectName(u"frame_43")
-        self.frame_43.setStyleSheet(u"")
-        self.frame_43.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_43.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_26 = QVBoxLayout(self.frame_43)
-        self.verticalLayout_26.setSpacing(15)
-        self.verticalLayout_26.setObjectName(u"verticalLayout_26")
-        self.verticalLayout_26.setContentsMargins(0, 0, 0, 0)
-        self.sim_frame_37 = QFrame(self.frame_43)
-        self.sim_frame_37.setObjectName(u"sim_frame_37")
-        self.sim_frame_37.setMinimumSize(QSize(0, 30))
-        self.sim_frame_37.setStyleSheet(u"")
-        self.sim_frame_37.setFrameShape(QFrame.Shape.NoFrame)
-        self.sim_frame_37.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_13 = QVBoxLayout(self.sim_frame_37)
-        self.verticalLayout_13.setSpacing(0)
-        self.verticalLayout_13.setObjectName(u"verticalLayout_13")
-        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
-        self.label_12 = QLabel(self.sim_frame_37)
-        self.label_12.setObjectName(u"label_12")
+class Ui_SimulationPage(object):
+    def setupUi(self, SimulationPage):
+        if not SimulationPage.objectName():
+            SimulationPage.setObjectName(u"SimulationPage")
+        SimulationPage.resize(1163, 908)
+        self.verticalLayout_main = QVBoxLayout(SimulationPage)
+        self.verticalLayout_main.setObjectName(u"verticalLayout_main")
+        self.frame_main = QFrame(SimulationPage)
+        self.frame_main.setObjectName(u"frame_main")
+        self.frame_main.setFrameShape(QFrame.NoFrame)
+        self.frame_main.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_container = QVBoxLayout(self.frame_main)
+        self.verticalLayout_container.setObjectName(u"verticalLayout_container")
+        self.verticalSpacer_top = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout_13.addWidget(self.label_12)
+        self.verticalLayout_container.addItem(self.verticalSpacer_top)
 
-        self.lineEdit_4 = QLineEdit(self.sim_frame_37)
-        self.lineEdit_4.setObjectName(u"lineEdit_4")
-
-        self.verticalLayout_13.addWidget(self.lineEdit_4)
-
-
-        self.verticalLayout_26.addWidget(self.sim_frame_37)
-
-        self.sim_frame_38 = QFrame(self.frame_43)
-        self.sim_frame_38.setObjectName(u"sim_frame_38")
-        self.sim_frame_38.setStyleSheet(u"")
-        self.sim_frame_38.setFrameShape(QFrame.Shape.NoFrame)
-        self.sim_frame_38.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_28 = QVBoxLayout(self.sim_frame_38)
-        self.verticalLayout_28.setSpacing(0)
-        self.verticalLayout_28.setObjectName(u"verticalLayout_28")
-        self.verticalLayout_28.setContentsMargins(0, 0, 0, 0)
-        self.label_17 = QLabel(self.sim_frame_38)
-        self.label_17.setObjectName(u"label_17")
-
-        self.verticalLayout_28.addWidget(self.label_17)
-
-        self.lineEdit_5 = QLineEdit(self.sim_frame_38)
-        self.lineEdit_5.setObjectName(u"lineEdit_5")
-        self.lineEdit_5.setMinimumSize(QSize(0, 30))
-
-        self.verticalLayout_28.addWidget(self.lineEdit_5)
-
-
-        self.verticalLayout_26.addWidget(self.sim_frame_38)
-
-        self.sim_frame_39 = QFrame(self.frame_43)
-        self.sim_frame_39.setObjectName(u"sim_frame_39")
-        self.sim_frame_39.setStyleSheet(u"")
-        self.sim_frame_39.setFrameShape(QFrame.Shape.NoFrame)
-        self.sim_frame_39.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_29 = QVBoxLayout(self.sim_frame_39)
-        self.verticalLayout_29.setSpacing(0)
-        self.verticalLayout_29.setObjectName(u"verticalLayout_29")
-        self.verticalLayout_29.setContentsMargins(0, 0, 0, 0)
-        self.label_19 = QLabel(self.sim_frame_39)
-        self.label_19.setObjectName(u"label_19")
-
-        self.verticalLayout_29.addWidget(self.label_19)
-
-        self.lineEdit_6 = QLineEdit(self.sim_frame_39)
-        self.lineEdit_6.setObjectName(u"lineEdit_6")
-        self.lineEdit_6.setMinimumSize(QSize(0, 30))
-
-        self.verticalLayout_29.addWidget(self.lineEdit_6)
-
-
-        self.verticalLayout_26.addWidget(self.sim_frame_39)
-
-        self.sim_frame_40 = QFrame(self.frame_43)
-        self.sim_frame_40.setObjectName(u"sim_frame_40")
-        self.sim_frame_40.setStyleSheet(u"")
-        self.sim_frame_40.setFrameShape(QFrame.Shape.NoFrame)
-        self.sim_frame_40.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_30 = QVBoxLayout(self.sim_frame_40)
-        self.verticalLayout_30.setSpacing(0)
-        self.verticalLayout_30.setObjectName(u"verticalLayout_30")
-        self.verticalLayout_30.setContentsMargins(0, 0, 0, 0)
-        self.label_18 = QLabel(self.sim_frame_40)
-        self.label_18.setObjectName(u"label_18")
-
-        self.verticalLayout_30.addWidget(self.label_18)
-
-        self.comboBox = QComboBox(self.sim_frame_40)
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.setObjectName(u"comboBox")
-        self.comboBox.setMinimumSize(QSize(0, 30))
-        self.comboBox.setStyleSheet(u"")
-        self.comboBox.setEditable(False)
-        self.comboBox.setMaxVisibleItems(10)
-
-        self.verticalLayout_30.addWidget(self.comboBox)
-
-
-        self.verticalLayout_26.addWidget(self.sim_frame_40)
-
-        self.frame_41 = QFrame(self.frame_43)
-        self.frame_41.setObjectName(u"frame_41")
-        self.frame_41.setStyleSheet(u"")
-        self.frame_41.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_41.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_35 = QHBoxLayout(self.frame_41)
-        self.horizontalLayout_35.setSpacing(0)
-        self.horizontalLayout_35.setObjectName(u"horizontalLayout_35")
-        self.horizontalLayout_35.setContentsMargins(0, 0, 0, 0)
-        self.horizontalSpacer_19 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_35.addItem(self.horizontalSpacer_19)
-
-        self.pushButton_5 = QPushButton(self.frame_41)
-        self.pushButton_5.setObjectName(u"pushButton_5")
+        self.frame_simulation = QFrame(self.frame_main)
+        self.frame_simulation.setObjectName(u"frame_simulation")
+        self.frame_simulation.setFrameShape(QFrame.NoFrame)
+        self.frame_simulation.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout = QHBoxLayout(self.frame_simulation)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.groupBox_simulation = QGroupBox(self.frame_simulation)
+        self.groupBox_simulation.setObjectName(u"groupBox_simulation")
         font = QFont()
-        font.setFamilies([u"Arial"])
-        font.setPointSize(18)
-        font.setBold(False)
-        font.setItalic(False)
-        self.pushButton_5.setFont(font)
-        self.pushButton_5.setStyleSheet(u"")
+        font.setPointSize(16)
+        self.groupBox_simulation.setFont(font)
+        self.verticalLayout_simulation = QVBoxLayout(self.groupBox_simulation)
+        self.verticalLayout_simulation.setObjectName(u"verticalLayout_simulation")
+        self.label_sim_hint = QLabel(self.groupBox_simulation)
+        self.label_sim_hint.setObjectName(u"label_sim_hint")
 
-        self.horizontalLayout_35.addWidget(self.pushButton_5)
+        self.verticalLayout_simulation.addWidget(self.label_sim_hint)
 
-        self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.line_separator_1 = QFrame(self.groupBox_simulation)
+        self.line_separator_1.setObjectName(u"line_separator_1")
+        self.line_separator_1.setFrameShape(QFrame.HLine)
+        self.line_separator_1.setFrameShadow(QFrame.Sunken)
 
-        self.horizontalLayout_35.addItem(self.horizontalSpacer_12)
+        self.verticalLayout_simulation.addWidget(self.line_separator_1)
 
+        self.frame_samples = QFrame(self.groupBox_simulation)
+        self.frame_samples.setObjectName(u"frame_samples")
+        self.frame_samples.setFrameShape(QFrame.NoFrame)
+        self.horizontalLayout_samples = QHBoxLayout(self.frame_samples)
+        self.horizontalLayout_samples.setObjectName(u"horizontalLayout_samples")
+        self.label_samples = QLabel(self.frame_samples)
+        self.label_samples.setObjectName(u"label_samples")
+        self.label_samples.setMinimumSize(QSize(140, 0))
 
-        self.verticalLayout_26.addWidget(self.frame_41, 0, Qt.AlignmentFlag.AlignTop)
+        self.horizontalLayout_samples.addWidget(self.label_samples)
 
+        self.lineEdit_samples = QLineEdit(self.frame_samples)
+        self.lineEdit_samples.setObjectName(u"lineEdit_samples")
 
-        self.horizontalLayout_36.addWidget(self.frame_43)
-
-        self.horizontalSpacer_24 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_36.addItem(self.horizontalSpacer_24)
-
-        self.textBrowser_2 = QTextBrowser(self.frame_44)
-        self.textBrowser_2.setObjectName(u"textBrowser_2")
-        self.textBrowser_2.setStyleSheet(u"")
-
-        self.horizontalLayout_36.addWidget(self.textBrowser_2)
-
-        self.horizontalLayout_36.setStretch(0, 1)
-        self.horizontalLayout_36.setStretch(2, 3)
-
-        self.verticalLayout_27.addWidget(self.frame_44)
-
-        self.frame_42 = QFrame(self.widget_7)
-        self.frame_42.setObjectName(u"frame_42")
-        self.frame_42.setStyleSheet(u"")
-        self.frame_42.setFrameShape(QFrame.Shape.NoFrame)
-        self.frame_42.setFrameShadow(QFrame.Shadow.Raised)
-        self.horizontalLayout_37 = QHBoxLayout(self.frame_42)
-        self.horizontalLayout_37.setSpacing(0)
-        self.horizontalLayout_37.setObjectName(u"horizontalLayout_37")
-        self.horizontalLayout_37.setContentsMargins(0, 0, 0, 0)
-        self.pushButton_sim_previous = QPushButton(self.frame_42)
-        self.pushButton_sim_previous.setObjectName(u"pushButton_sim_previous")
-        self.pushButton_sim_previous.setFont(font)
-        self.pushButton_sim_previous.setStyleSheet(u"")
-
-        self.horizontalLayout_37.addWidget(self.pushButton_sim_previous)
-
-        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout_37.addItem(self.horizontalSpacer_10)
-
-        self.pushButton_6 = QPushButton(self.frame_42)
-        self.pushButton_6.setObjectName(u"pushButton_6")
-        self.pushButton_6.setFont(font)
-        self.pushButton_6.setStyleSheet(u"")
-
-        self.horizontalLayout_37.addWidget(self.pushButton_6)
+        self.horizontalLayout_samples.addWidget(self.lineEdit_samples)
 
 
-        self.verticalLayout_27.addWidget(self.frame_42)
+        self.verticalLayout_simulation.addWidget(self.frame_samples)
 
-        self.verticalLayout_27.setStretch(0, 1)
+        self.frame_hours = QFrame(self.groupBox_simulation)
+        self.frame_hours.setObjectName(u"frame_hours")
+        self.frame_hours.setFrameShape(QFrame.NoFrame)
+        self.horizontalLayout_hours = QHBoxLayout(self.frame_hours)
+        self.horizontalLayout_hours.setObjectName(u"horizontalLayout_hours")
+        self.label_hours = QLabel(self.frame_hours)
+        self.label_hours.setObjectName(u"label_hours")
+        self.label_hours.setMinimumSize(QSize(140, 0))
 
-        self.verticalLayout.addWidget(self.widget_7)
+        self.horizontalLayout_hours.addWidget(self.label_hours)
+
+        self.lineEdit_hours = QLineEdit(self.frame_hours)
+        self.lineEdit_hours.setObjectName(u"lineEdit_hours")
+
+        self.horizontalLayout_hours.addWidget(self.lineEdit_hours)
 
 
-        self.retranslateUi(sim_widget)
+        self.verticalLayout_simulation.addWidget(self.frame_hours)
 
-        QMetaObject.connectSlotsByName(sim_widget)
+        self.frame_load_factor = QFrame(self.groupBox_simulation)
+        self.frame_load_factor.setObjectName(u"frame_load_factor")
+        self.frame_load_factor.setFrameShape(QFrame.NoFrame)
+        self.horizontalLayout_load_factor = QHBoxLayout(self.frame_load_factor)
+        self.horizontalLayout_load_factor.setObjectName(u"horizontalLayout_load_factor")
+        self.label_load_factor = QLabel(self.frame_load_factor)
+        self.label_load_factor.setObjectName(u"label_load_factor")
+        self.label_load_factor.setMinimumSize(QSize(140, 0))
+
+        self.horizontalLayout_load_factor.addWidget(self.label_load_factor)
+
+        self.lineEdit_load_factor = QLineEdit(self.frame_load_factor)
+        self.lineEdit_load_factor.setObjectName(u"lineEdit_load_factor")
+
+        self.horizontalLayout_load_factor.addWidget(self.lineEdit_load_factor)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_load_factor)
+
+        self.frame_model_type = QFrame(self.groupBox_simulation)
+        self.frame_model_type.setObjectName(u"frame_model_type")
+        self.frame_model_type.setFrameShape(QFrame.NoFrame)
+        self.horizontalLayout_model_type = QHBoxLayout(self.frame_model_type)
+        self.horizontalLayout_model_type.setObjectName(u"horizontalLayout_model_type")
+        self.label_model_type = QLabel(self.frame_model_type)
+        self.label_model_type.setObjectName(u"label_model_type")
+        self.label_model_type.setMinimumSize(QSize(140, 0))
+
+        self.horizontalLayout_model_type.addWidget(self.label_model_type)
+
+        self.comboBox_model_type = QComboBox(self.frame_model_type)
+        self.comboBox_model_type.addItem("")
+        self.comboBox_model_type.addItem("")
+        self.comboBox_model_type.setObjectName(u"comboBox_model_type")
+
+        self.horizontalLayout_model_type.addWidget(self.comboBox_model_type)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_model_type)
+
+        self.line_separator_2 = QFrame(self.groupBox_simulation)
+        self.line_separator_2.setObjectName(u"line_separator_2")
+        self.line_separator_2.setFrameShape(QFrame.HLine)
+        self.line_separator_2.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_simulation.addWidget(self.line_separator_2)
+
+        self.frame_run_button = QFrame(self.groupBox_simulation)
+        self.frame_run_button.setObjectName(u"frame_run_button")
+        self.frame_run_button.setFrameShape(QFrame.NoFrame)
+        self.horizontalLayout_run_button = QHBoxLayout(self.frame_run_button)
+        self.horizontalLayout_run_button.setObjectName(u"horizontalLayout_run_button")
+        self.horizontalSpacer_left = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_run_button.addItem(self.horizontalSpacer_left)
+
+        self.btn_run_simulation = QPushButton(self.frame_run_button)
+        self.btn_run_simulation.setObjectName(u"btn_run_simulation")
+
+        self.horizontalLayout_run_button.addWidget(self.btn_run_simulation)
+
+        self.horizontalSpacer_right = QSpacerItem(40, 20, QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_run_button.addItem(self.horizontalSpacer_right)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_run_button)
+
+
+        self.horizontalLayout.addWidget(self.groupBox_simulation)
+
+
+        self.verticalLayout_container.addWidget(self.frame_simulation)
+
+        self.verticalSpacer_bottom = QSpacerItem(20, 20, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_container.addItem(self.verticalSpacer_bottom)
+
+        self.nav_bottom_sim = QWidget(self.frame_main)
+        self.nav_bottom_sim.setObjectName(u"nav_bottom_sim")
+        self.nav_bottom_sim.setMaximumSize(QSize(16777215, 50))
+        self.horizontalLayout_nav = QHBoxLayout(self.nav_bottom_sim)
+        self.horizontalLayout_nav.setObjectName(u"horizontalLayout_nav")
+        self.bottom_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_nav.addItem(self.bottom_spacer)
+
+        self.btn_sim_previous = QPushButton(self.nav_bottom_sim)
+        self.btn_sim_previous.setObjectName(u"btn_sim_previous")
+
+        self.horizontalLayout_nav.addWidget(self.btn_sim_previous)
+
+        self.btn_sim_next = QPushButton(self.nav_bottom_sim)
+        self.btn_sim_next.setObjectName(u"btn_sim_next")
+
+        self.horizontalLayout_nav.addWidget(self.btn_sim_next)
+
+
+        self.verticalLayout_container.addWidget(self.nav_bottom_sim)
+
+
+        self.verticalLayout_main.addWidget(self.frame_main)
+
+
+        self.retranslateUi(SimulationPage)
+
+        QMetaObject.connectSlotsByName(SimulationPage)
     # setupUi
 
-    def retranslateUi(self, sim_widget):
-        sim_widget.setWindowTitle(QCoreApplication.translate("sim_widget", u"Form", None))
-        self.label_12.setText(QCoreApplication.translate("sim_widget", u"Samples:", None))
-        self.label_17.setText(QCoreApplication.translate("sim_widget", u"Simulation hours:", None))
-        self.lineEdit_5.setText(QCoreApplication.translate("sim_widget", u"8760", None))
-        self.label_19.setText(QCoreApplication.translate("sim_widget", u"Load Factor", None))
-        self.lineEdit_6.setText(QCoreApplication.translate("sim_widget", u"1", None))
-        self.label_18.setText(QCoreApplication.translate("sim_widget", u"Model type:", None))
-        self.comboBox.setItemText(0, QCoreApplication.translate("sim_widget", u"Zonal Model", None))
-        self.comboBox.setItemText(1, QCoreApplication.translate("sim_widget", u"Copper Sheet Model", None))
+    def retranslateUi(self, SimulationPage):
+        SimulationPage.setWindowTitle(QCoreApplication.translate("SimulationPage", u"Form", None))
+        self.groupBox_simulation.setTitle(QCoreApplication.translate("SimulationPage", u"Simulation Settings", None))
+        self.label_sim_hint.setText(QCoreApplication.translate("SimulationPage", u"Enter the simulation settings below.", None))
+        self.label_samples.setText(QCoreApplication.translate("SimulationPage", u"Samples", None))
+        self.lineEdit_samples.setPlaceholderText(QCoreApplication.translate("SimulationPage", u"Enter number of samples", None))
+        self.label_hours.setText(QCoreApplication.translate("SimulationPage", u"Simulation Hours", None))
+        self.lineEdit_hours.setText("")
+        self.lineEdit_hours.setPlaceholderText(QCoreApplication.translate("SimulationPage", u"e.g. 8000", None))
+        self.label_load_factor.setText(QCoreApplication.translate("SimulationPage", u"Load Factor", None))
+        self.lineEdit_load_factor.setText("")
+        self.lineEdit_load_factor.setPlaceholderText(QCoreApplication.translate("SimulationPage", u"e.g. 1", None))
+        self.label_model_type.setText(QCoreApplication.translate("SimulationPage", u"Model Type", None))
+        self.comboBox_model_type.setItemText(0, QCoreApplication.translate("SimulationPage", u"Zonal Model", None))
+        self.comboBox_model_type.setItemText(1, QCoreApplication.translate("SimulationPage", u"Copper Sheet Model", None))
 
-        self.pushButton_5.setText(QCoreApplication.translate("sim_widget", u"Run Simulation", None))
-        self.pushButton_sim_previous.setText(QCoreApplication.translate("sim_widget", u"Previous", None))
-        self.pushButton_6.setText(QCoreApplication.translate("sim_widget", u"Next", None))
+        self.btn_run_simulation.setText(QCoreApplication.translate("SimulationPage", u"Run Simulation", None))
+        self.btn_sim_previous.setText(QCoreApplication.translate("SimulationPage", u"Prev", None))
+        self.btn_sim_next.setText(QCoreApplication.translate("SimulationPage", u"Next", None))
     # retranslateUi
+

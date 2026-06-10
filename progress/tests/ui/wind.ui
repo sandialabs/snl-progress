@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1231</width>
-    <height>928</height>
+    <width>1163</width>
+    <height>908</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
      <widget class="QWidget" name="page_data">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QFrame" name="main_frame">
+        <widget class="QFrame" name="frame_main">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -40,7 +40,7 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <item>
-           <widget class="QFrame" name="data_frame">
+           <widget class="QFrame" name="frame_data">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -75,7 +75,7 @@
                 </font>
                </property>
                <property name="title">
-                <string>Data Input</string>
+                <string>Wind Data Input</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
@@ -87,7 +87,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>Select a data source, or upload a CSV file below.</string>
+                   <string>Select a data source.</string>
                   </property>
                  </widget>
                 </item>
@@ -273,7 +273,7 @@
                   <property name="frameShape">
                    <enum>QFrame::NoFrame</enum>
                   </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_buttons">
+                  <layout class="QVBoxLayout" name="verticalLayout_6">
                    <item>
                     <widget class="QPushButton" name="btn_download_wind">
                      <property name="sizePolicy">
@@ -284,6 +284,13 @@
                      </property>
                      <property name="text">
                       <string>Download Wind Data</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btn_process_wind">
+                     <property name="text">
+                      <string>Process Wind Data</string>
                      </property>
                     </widget>
                    </item>

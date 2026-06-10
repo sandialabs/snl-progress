@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1357</width>
-    <height>928</height>
+    <width>1163</width>
+    <height>908</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -59,20 +59,20 @@
          <property name="styleSheet">
           <string notr="true">frame.setStyleSheet(&quot;background-color: transparent;&quot;)</string>
          </property>
-         <layout class="QVBoxLayout" name="brandingLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
            <widget class="QLabel" name="logo_label">
             <property name="maximumSize">
              <size>
-              <width>120</width>
-              <height>50</height>
+              <width>70</width>
+              <height>120</height>
              </size>
             </property>
             <property name="text">
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="../../../resources.qrc">:/logos/Images/logos/progress_transparent_alt.png</pixmap>
+             <pixmap resource="../../resources.qrc">:/icons/Images/icons/progress_icon_up.png</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -170,13 +170,6 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="breadcrumb_label">
-            <property name="text">
-             <string>Home</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <spacer name="headerSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -201,11 +194,17 @@
        </item>
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true">background-color: transparent;</string>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page_landing"/>
          <widget class="QWidget" name="page_solar"/>
@@ -217,32 +216,44 @@
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="status_frame">
-         <layout class="QHBoxLayout" name="statusLayout">
+        <widget class="QFrame" name="frame">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QLabel" name="status_label">
-            <property name="text">
-             <string>Ready</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="statusSpacer">
+           <spacer name="horizontalSpacer">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>0</width>
-              <height>0</height>
+              <width>40</width>
+              <height>20</height>
              </size>
             </property>
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="project_label">
+           <widget class="QPushButton" name="pushButton_2">
             <property name="text">
-             <string>No Project Loaded</string>
+             <string>Previous</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Next</string>
             </property>
            </widget>
           </item>
@@ -256,7 +267,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="../../../resources.qrc"/>
+  <include location="../../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

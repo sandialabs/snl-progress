@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'solar_new.ui'
+## Form generated from reading UI file 'solar.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.5.2
 ##
@@ -15,20 +15,22 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGridLayout,
+from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QGroupBox,
     QHBoxLayout, QLabel, QLineEdit, QPushButton,
-    QRadioButton, QSizePolicy, QSpacerItem, QStackedWidget,
-    QTextBrowser, QVBoxLayout, QWidget)
+    QRadioButton, QSizePolicy, QSpacerItem, QSpinBox,
+    QStackedWidget, QVBoxLayout, QWidget)
+import resources_rc
 
 class Ui_SolarPage(object):
     def setupUi(self, SolarPage):
         if not SolarPage.objectName():
             SolarPage.setObjectName(u"SolarPage")
-        SolarPage.resize(1231, 928)
+        SolarPage.resize(1163, 908)
         self.verticalLayout = QVBoxLayout(SolarPage)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.solarStackedWidget = QStackedWidget(SolarPage)
         self.solarStackedWidget.setObjectName(u"solarStackedWidget")
+        self.solarStackedWidget.setContextMenuPolicy(Qt.DefaultContextMenu)
         self.page_data = QWidget()
         self.page_data.setObjectName(u"page_data")
         self.verticalLayout_2 = QVBoxLayout(self.page_data)
@@ -40,7 +42,7 @@ class Ui_SolarPage(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.main_frame.sizePolicy().hasHeightForWidth())
         self.main_frame.setSizePolicy(sizePolicy)
-        self.main_frame.setFrameShape(QFrame.StyledPanel)
+        self.main_frame.setFrameShape(QFrame.NoFrame)
         self.main_frame.setFrameShadow(QFrame.Raised)
         self.verticalLayout_3 = QVBoxLayout(self.main_frame)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
@@ -51,124 +53,173 @@ class Ui_SolarPage(object):
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.data_frame.sizePolicy().hasHeightForWidth())
         self.data_frame.setSizePolicy(sizePolicy1)
-        self.data_frame.setFrameShape(QFrame.StyledPanel)
+        self.data_frame.setFrameShape(QFrame.NoFrame)
         self.data_frame.setFrameShadow(QFrame.Raised)
-        self.gridLayout = QGridLayout(self.data_frame)
-        self.gridLayout.setObjectName(u"gridLayout")
-        self.widget_input = QWidget(self.data_frame)
-        self.widget_input.setObjectName(u"widget_input")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.MinimumExpanding)
+        self.verticalLayout_4 = QVBoxLayout(self.data_frame)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer_2)
+
+        self.groupBox_input = QGroupBox(self.data_frame)
+        self.groupBox_input.setObjectName(u"groupBox_input")
+        font = QFont()
+        font.setPointSize(16)
+        self.groupBox_input.setFont(font)
+        self.verticalLayout_5 = QVBoxLayout(self.groupBox_input)
+        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.label_source_hint = QLabel(self.groupBox_input)
+        self.label_source_hint.setObjectName(u"label_source_hint")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
         sizePolicy2.setHorizontalStretch(0)
         sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.widget_input.sizePolicy().hasHeightForWidth())
-        self.widget_input.setSizePolicy(sizePolicy2)
-        self.verticalLayout_5 = QVBoxLayout(self.widget_input)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.frame_solar_input = QFrame(self.widget_input)
-        self.frame_solar_input.setObjectName(u"frame_solar_input")
-        self.frame_solar_input.setFrameShape(QFrame.StyledPanel)
-        self.frame_solar_input.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_6 = QVBoxLayout(self.frame_solar_input)
-        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
-        self.label_data_input = QLabel(self.frame_solar_input)
-        self.label_data_input.setObjectName(u"label_data_input")
-        sizePolicy.setHeightForWidth(self.label_data_input.sizePolicy().hasHeightForWidth())
-        self.label_data_input.setSizePolicy(sizePolicy)
-        self.label_data_input.setMaximumSize(QSize(16777215, 100))
+        sizePolicy2.setHeightForWidth(self.label_source_hint.sizePolicy().hasHeightForWidth())
+        self.label_source_hint.setSizePolicy(sizePolicy2)
 
-        self.verticalLayout_6.addWidget(self.label_data_input)
+        self.verticalLayout_5.addWidget(self.label_source_hint)
 
-        self.combo_data_source = QComboBox(self.frame_solar_input)
+        self.combo_data_source = QComboBox(self.groupBox_input)
+        self.combo_data_source.addItem("")
+        self.combo_data_source.addItem("")
+        self.combo_data_source.addItem("")
+        self.combo_data_source.addItem("")
         self.combo_data_source.setObjectName(u"combo_data_source")
 
-        self.verticalLayout_6.addWidget(self.combo_data_source)
+        self.verticalLayout_5.addWidget(self.combo_data_source)
 
-        self.btn_upload_data = QPushButton(self.frame_solar_input)
-        self.btn_upload_data.setObjectName(u"btn_upload_data")
+        self.line_separator_1 = QFrame(self.groupBox_input)
+        self.line_separator_1.setObjectName(u"line_separator_1")
+        self.line_separator_1.setFrameShape(QFrame.HLine)
+        self.line_separator_1.setFrameShadow(QFrame.Sunken)
 
-        self.verticalLayout_6.addWidget(self.btn_upload_data)
+        self.verticalLayout_5.addWidget(self.line_separator_1)
 
-
-        self.verticalLayout_5.addWidget(self.frame_solar_input)
-
-        self.frame_start_date = QFrame(self.widget_input)
+        self.frame_start_date = QFrame(self.groupBox_input)
         self.frame_start_date.setObjectName(u"frame_start_date")
-        self.frame_start_date.setFrameShape(QFrame.StyledPanel)
-        self.frame_start_date.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_2 = QHBoxLayout(self.frame_start_date)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.frame_start_date.setFrameShape(QFrame.NoFrame)
+        self.horizontalLayout_start = QHBoxLayout(self.frame_start_date)
+        self.horizontalLayout_start.setObjectName(u"horizontalLayout_start")
         self.label_start_year = QLabel(self.frame_start_date)
         self.label_start_year.setObjectName(u"label_start_year")
+        self.label_start_year.setMinimumSize(QSize(80, 0))
 
-        self.horizontalLayout_2.addWidget(self.label_start_year)
+        self.horizontalLayout_start.addWidget(self.label_start_year)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.horizontalSpacer_start = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
 
-        self.horizontalLayout_2.addItem(self.horizontalSpacer)
+        self.horizontalLayout_start.addItem(self.horizontalSpacer_start)
 
         self.line_edit_start = QLineEdit(self.frame_start_date)
         self.line_edit_start.setObjectName(u"line_edit_start")
 
-        self.horizontalLayout_2.addWidget(self.line_edit_start)
+        self.horizontalLayout_start.addWidget(self.line_edit_start)
+
+        self.btn_start_info = QPushButton(self.frame_start_date)
+        self.btn_start_info.setObjectName(u"btn_start_info")
+        icon = QIcon()
+        icon.addFile(u":/icons/Images/icons/about.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.btn_start_info.setIcon(icon)
+        self.btn_start_info.setIconSize(QSize(40, 40))
+        self.btn_start_info.setFlat(True)
+
+        self.horizontalLayout_start.addWidget(self.btn_start_info)
 
 
         self.verticalLayout_5.addWidget(self.frame_start_date)
 
-        self.frame_end_date = QFrame(self.widget_input)
+        self.frame_end_date = QFrame(self.groupBox_input)
         self.frame_end_date.setObjectName(u"frame_end_date")
-        self.frame_end_date.setFrameShape(QFrame.StyledPanel)
-        self.frame_end_date.setFrameShadow(QFrame.Raised)
-        self.horizontalLayout_3 = QHBoxLayout(self.frame_end_date)
-        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.frame_end_date.setFrameShape(QFrame.NoFrame)
+        self.horizontalLayout_end = QHBoxLayout(self.frame_end_date)
+        self.horizontalLayout_end.setObjectName(u"horizontalLayout_end")
         self.label_end_year = QLabel(self.frame_end_date)
         self.label_end_year.setObjectName(u"label_end_year")
+        self.label_end_year.setMinimumSize(QSize(80, 0))
 
-        self.horizontalLayout_3.addWidget(self.label_end_year)
+        self.horizontalLayout_end.addWidget(self.label_end_year)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.horizontalSpacer_end = QSpacerItem(40, 20, QSizePolicy.Minimum, QSizePolicy.Minimum)
 
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
+        self.horizontalLayout_end.addItem(self.horizontalSpacer_end)
 
         self.line_edit_end = QLineEdit(self.frame_end_date)
         self.line_edit_end.setObjectName(u"line_edit_end")
 
-        self.horizontalLayout_3.addWidget(self.line_edit_end)
+        self.horizontalLayout_end.addWidget(self.line_edit_end)
+
+        self.pushButton_2 = QPushButton(self.frame_end_date)
+        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.pushButton_2.setIcon(icon)
+        self.pushButton_2.setIconSize(QSize(40, 40))
+        self.pushButton_2.setFlat(True)
+
+        self.horizontalLayout_end.addWidget(self.pushButton_2)
 
 
         self.verticalLayout_5.addWidget(self.frame_end_date)
 
+        self.line_separator_2 = QFrame(self.groupBox_input)
+        self.line_separator_2.setObjectName(u"line_separator_2")
+        self.line_separator_2.setFrameShape(QFrame.HLine)
+        self.line_separator_2.setFrameShadow(QFrame.Sunken)
 
-        self.gridLayout.addWidget(self.widget_input, 0, 0, 1, 1)
+        self.verticalLayout_5.addWidget(self.line_separator_2)
 
-        self.btn_download_solar = QPushButton(self.data_frame)
+        self.frame_btns_data = QFrame(self.groupBox_input)
+        self.frame_btns_data.setObjectName(u"frame_btns_data")
+        self.frame_btns_data.setEnabled(True)
+        self.frame_btns_data.setFrameShape(QFrame.NoFrame)
+        self.horizontalLayout_buttons = QHBoxLayout(self.frame_btns_data)
+        self.horizontalLayout_buttons.setObjectName(u"horizontalLayout_buttons")
+        self.btn_download_solar = QPushButton(self.frame_btns_data)
         self.btn_download_solar.setObjectName(u"btn_download_solar")
+        sizePolicy3 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        sizePolicy3.setHorizontalStretch(1)
+        sizePolicy3.setVerticalStretch(0)
+        sizePolicy3.setHeightForWidth(self.btn_download_solar.sizePolicy().hasHeightForWidth())
+        self.btn_download_solar.setSizePolicy(sizePolicy3)
 
-        self.gridLayout.addWidget(self.btn_download_solar, 1, 0, 1, 1)
+        self.horizontalLayout_buttons.addWidget(self.btn_download_solar)
+
+
+        self.verticalLayout_5.addWidget(self.frame_btns_data)
+
+
+        self.verticalLayout_4.addWidget(self.groupBox_input)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_4.addItem(self.verticalSpacer)
 
 
         self.verticalLayout_3.addWidget(self.data_frame)
 
-        self.nav_bottom = QWidget(self.main_frame)
-        self.nav_bottom.setObjectName(u"nav_bottom")
-        self.nav_bottom.setMaximumSize(QSize(16777215, 30))
-        self.horizontalLayout = QHBoxLayout(self.nav_bottom)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.bottom_spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.nav_bottom_data = QWidget(self.main_frame)
+        self.nav_bottom_data.setObjectName(u"nav_bottom_data")
+        sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
+        sizePolicy4.setHorizontalStretch(0)
+        sizePolicy4.setVerticalStretch(0)
+        sizePolicy4.setHeightForWidth(self.nav_bottom_data.sizePolicy().hasHeightForWidth())
+        self.nav_bottom_data.setSizePolicy(sizePolicy4)
+        self.nav_bottom_data.setMaximumSize(QSize(16777215, 50))
+        self.horizontalLayout_nav = QHBoxLayout(self.nav_bottom_data)
+        self.horizontalLayout_nav.setObjectName(u"horizontalLayout_nav")
+        self.bottom_spacer_data = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout.addItem(self.bottom_spacer)
+        self.horizontalLayout_nav.addItem(self.bottom_spacer_data)
 
-        self.btn_prev_page = QPushButton(self.nav_bottom)
-        self.btn_prev_page.setObjectName(u"btn_prev_page")
+        self.btn_prev_page_data = QPushButton(self.nav_bottom_data)
+        self.btn_prev_page_data.setObjectName(u"btn_prev_page_data")
 
-        self.horizontalLayout.addWidget(self.btn_prev_page)
+        self.horizontalLayout_nav.addWidget(self.btn_prev_page_data)
 
-        self.btn_next_page = QPushButton(self.nav_bottom)
-        self.btn_next_page.setObjectName(u"btn_next_page")
+        self.btn_next_page_data = QPushButton(self.nav_bottom_data)
+        self.btn_next_page_data.setObjectName(u"btn_next_page_data")
 
-        self.horizontalLayout.addWidget(self.btn_next_page)
+        self.horizontalLayout_nav.addWidget(self.btn_next_page_data)
 
 
-        self.verticalLayout_3.addWidget(self.nav_bottom)
+        self.verticalLayout_3.addWidget(self.nav_bottom_data)
 
 
         self.verticalLayout_2.addWidget(self.main_frame)
@@ -176,111 +227,230 @@ class Ui_SolarPage(object):
         self.solarStackedWidget.addWidget(self.page_data)
         self.page_cluster = QWidget()
         self.page_cluster.setObjectName(u"page_cluster")
-        self.gridLayout_2 = QGridLayout(self.page_cluster)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.frame = QFrame(self.page_cluster)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.StyledPanel)
-        self.frame.setFrameShadow(QFrame.Raised)
-        self.gridLayout_3 = QGridLayout(self.frame)
-        self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.widget = QWidget(self.frame)
-        self.widget.setObjectName(u"widget")
-        self.verticalLayout_7 = QVBoxLayout(self.widget)
+        self.verticalLayout_6 = QVBoxLayout(self.page_cluster)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.second_frame = QFrame(self.page_cluster)
+        self.second_frame.setObjectName(u"second_frame")
+        self.second_frame.setFrameShape(QFrame.NoFrame)
+        self.second_frame.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_7 = QVBoxLayout(self.second_frame)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
-        self.textBrowser = QTextBrowser(self.widget)
-        self.textBrowser.setObjectName(u"textBrowser")
-
-        self.verticalLayout_7.addWidget(self.textBrowser)
-
-
-        self.gridLayout_3.addWidget(self.widget, 0, 2, 1, 1)
-
-        self.widget_2 = QWidget(self.frame)
-        self.widget_2.setObjectName(u"widget_2")
-        self.verticalLayout_8 = QVBoxLayout(self.widget_2)
+        self.cluster_frame = QFrame(self.second_frame)
+        self.cluster_frame.setObjectName(u"cluster_frame")
+        self.cluster_frame.setFrameShape(QFrame.NoFrame)
+        self.cluster_frame.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_8 = QVBoxLayout(self.cluster_frame)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
-        self.textBrowser_2 = QTextBrowser(self.widget_2)
-        self.textBrowser_2.setObjectName(u"textBrowser_2")
+        self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
-        self.verticalLayout_8.addWidget(self.textBrowser_2)
+        self.verticalLayout_8.addItem(self.verticalSpacer_3)
 
-
-        self.gridLayout_3.addWidget(self.widget_2, 0, 1, 1, 1)
-
-        self.widget_3 = QWidget(self.frame)
-        self.widget_3.setObjectName(u"widget_3")
-        self.verticalLayout_9 = QVBoxLayout(self.widget_3)
+        self.groupBox_cluster = QGroupBox(self.cluster_frame)
+        self.groupBox_cluster.setObjectName(u"groupBox_cluster")
+        self.groupBox_cluster.setFont(font)
+        self.verticalLayout_9 = QVBoxLayout(self.groupBox_cluster)
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
-        self.frame_2 = QFrame(self.widget_3)
-        self.frame_2.setObjectName(u"frame_2")
-        self.frame_2.setFrameShape(QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_10 = QVBoxLayout(self.frame_2)
-        self.verticalLayout_10.setObjectName(u"verticalLayout_10")
-        self.radioButton = QRadioButton(self.frame_2)
-        self.radioButton.setObjectName(u"radioButton")
+        self.label_algo_hint = QLabel(self.groupBox_cluster)
+        self.label_algo_hint.setObjectName(u"label_algo_hint")
+        sizePolicy2.setHeightForWidth(self.label_algo_hint.sizePolicy().hasHeightForWidth())
+        self.label_algo_hint.setSizePolicy(sizePolicy2)
+        self.label_algo_hint.setFont(font)
 
-        self.verticalLayout_10.addWidget(self.radioButton)
+        self.verticalLayout_9.addWidget(self.label_algo_hint)
+
+        self.radio_btn_k_means = QRadioButton(self.groupBox_cluster)
+        self.radio_btn_k_means.setObjectName(u"radio_btn_k_means")
+        self.radio_btn_k_means.setFont(font)
+        self.radio_btn_k_means.setCheckable(True)
+        self.radio_btn_k_means.setChecked(True)
+
+        self.verticalLayout_9.addWidget(self.radio_btn_k_means)
+
+        self.line_seperator_3 = QFrame(self.groupBox_cluster)
+        self.line_seperator_3.setObjectName(u"line_seperator_3")
+        sizePolicy5 = QSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.line_seperator_3.sizePolicy().hasHeightForWidth())
+        self.line_seperator_3.setSizePolicy(sizePolicy5)
+        self.line_seperator_3.setFrameShape(QFrame.HLine)
+        self.line_seperator_3.setFrameShadow(QFrame.Sunken)
+
+        self.verticalLayout_9.addWidget(self.line_seperator_3)
+
+        self.frame_num_cluster = QFrame(self.groupBox_cluster)
+        self.frame_num_cluster.setObjectName(u"frame_num_cluster")
+        self.frame_num_cluster.setFrameShape(QFrame.NoFrame)
+        self.frame_num_cluster.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_num_cluster)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label_num_cluster = QLabel(self.frame_num_cluster)
+        self.label_num_cluster.setObjectName(u"label_num_cluster")
+        self.label_num_cluster.setFont(font)
+
+        self.horizontalLayout_2.addWidget(self.label_num_cluster)
+
+        self.spin_box_num_cluster = QSpinBox(self.frame_num_cluster)
+        self.spin_box_num_cluster.setObjectName(u"spin_box_num_cluster")
+        sizePolicy6 = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.spin_box_num_cluster.sizePolicy().hasHeightForWidth())
+        self.spin_box_num_cluster.setSizePolicy(sizePolicy6)
+        self.spin_box_num_cluster.setMaximumSize(QSize(300, 16777215))
+        self.spin_box_num_cluster.setMinimum(0)
+        self.spin_box_num_cluster.setMaximum(20)
+
+        self.horizontalLayout_2.addWidget(self.spin_box_num_cluster)
+
+        self.horizontalSpacer = QSpacerItem(50, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer)
+
+        self.btn_eval_cluster = QPushButton(self.frame_num_cluster)
+        self.btn_eval_cluster.setObjectName(u"btn_eval_cluster")
+        self.btn_eval_cluster.setFont(font)
+
+        self.horizontalLayout_2.addWidget(self.btn_eval_cluster)
+
+        self.btn_open_results = QPushButton(self.frame_num_cluster)
+        self.btn_open_results.setObjectName(u"btn_open_results")
+        self.btn_open_results.setFont(font)
+
+        self.horizontalLayout_2.addWidget(self.btn_open_results)
+
+        self.btn_info_num_cluster = QPushButton(self.frame_num_cluster)
+        self.btn_info_num_cluster.setObjectName(u"btn_info_num_cluster")
+        self.btn_info_num_cluster.setIcon(icon)
+        self.btn_info_num_cluster.setIconSize(QSize(40, 40))
+        self.btn_info_num_cluster.setFlat(True)
+
+        self.horizontalLayout_2.addWidget(self.btn_info_num_cluster)
 
 
-        self.verticalLayout_9.addWidget(self.frame_2)
+        self.verticalLayout_9.addWidget(self.frame_num_cluster)
 
-        self.frame_3 = QFrame(self.widget_3)
-        self.frame_3.setObjectName(u"frame_3")
-        self.frame_3.setFrameShape(QFrame.StyledPanel)
-        self.frame_3.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_11 = QVBoxLayout(self.frame_3)
-        self.verticalLayout_11.setObjectName(u"verticalLayout_11")
-        self.radioButton_2 = QRadioButton(self.frame_3)
-        self.radioButton_2.setObjectName(u"radioButton_2")
+        self.line_seperator_4 = QFrame(self.groupBox_cluster)
+        self.line_seperator_4.setObjectName(u"line_seperator_4")
+        sizePolicy5.setHeightForWidth(self.line_seperator_4.sizePolicy().hasHeightForWidth())
+        self.line_seperator_4.setSizePolicy(sizePolicy5)
+        self.line_seperator_4.setFrameShape(QFrame.HLine)
+        self.line_seperator_4.setFrameShadow(QFrame.Sunken)
 
-        self.verticalLayout_11.addWidget(self.radioButton_2)
+        self.verticalLayout_9.addWidget(self.line_seperator_4)
+
+        self.frame_final_cluster = QFrame(self.groupBox_cluster)
+        self.frame_final_cluster.setObjectName(u"frame_final_cluster")
+        self.frame_final_cluster.setFrameShape(QFrame.NoFrame)
+        self.frame_final_cluster.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_3 = QHBoxLayout(self.frame_final_cluster)
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.label_final_num_cluster = QLabel(self.frame_final_cluster)
+        self.label_final_num_cluster.setObjectName(u"label_final_num_cluster")
+        self.label_final_num_cluster.setFont(font)
+
+        self.horizontalLayout_3.addWidget(self.label_final_num_cluster)
+
+        self.spin_box_final_num_cluster = QSpinBox(self.frame_final_cluster)
+        self.spin_box_final_num_cluster.setObjectName(u"spin_box_final_num_cluster")
+        sizePolicy6.setHeightForWidth(self.spin_box_final_num_cluster.sizePolicy().hasHeightForWidth())
+        self.spin_box_final_num_cluster.setSizePolicy(sizePolicy6)
+        self.spin_box_final_num_cluster.setMaximumSize(QSize(300, 16777215))
+        self.spin_box_final_num_cluster.setMaximum(20)
+
+        self.horizontalLayout_3.addWidget(self.spin_box_final_num_cluster)
+
+        self.horizontalSpacer_2 = QSpacerItem(50, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
+
+        self.btn_gen_cluster = QPushButton(self.frame_final_cluster)
+        self.btn_gen_cluster.setObjectName(u"btn_gen_cluster")
+        self.btn_gen_cluster.setFont(font)
+
+        self.horizontalLayout_3.addWidget(self.btn_gen_cluster)
+
+        self.btn_info_final_num_cluster = QPushButton(self.frame_final_cluster)
+        self.btn_info_final_num_cluster.setObjectName(u"btn_info_final_num_cluster")
+        self.btn_info_final_num_cluster.setIcon(icon)
+        self.btn_info_final_num_cluster.setIconSize(QSize(40, 40))
+        self.btn_info_final_num_cluster.setFlat(True)
+
+        self.horizontalLayout_3.addWidget(self.btn_info_final_num_cluster)
 
 
-        self.verticalLayout_9.addWidget(self.frame_3)
+        self.verticalLayout_9.addWidget(self.frame_final_cluster)
 
-        self.frame_4 = QFrame(self.widget_3)
-        self.frame_4.setObjectName(u"frame_4")
-        self.frame_4.setFrameShape(QFrame.StyledPanel)
-        self.frame_4.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_12 = QVBoxLayout(self.frame_4)
-        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
-        self.pushButton = QPushButton(self.frame_4)
-        self.pushButton.setObjectName(u"pushButton")
+        self.line_seperator_5 = QFrame(self.groupBox_cluster)
+        self.line_seperator_5.setObjectName(u"line_seperator_5")
+        self.line_seperator_5.setFrameShape(QFrame.HLine)
+        self.line_seperator_5.setFrameShadow(QFrame.Sunken)
 
-        self.verticalLayout_12.addWidget(self.pushButton)
+        self.verticalLayout_9.addWidget(self.line_seperator_5)
 
-
-        self.verticalLayout_9.addWidget(self.frame_4)
-
-
-        self.gridLayout_3.addWidget(self.widget_3, 0, 0, 1, 1)
-
-        self.nav_bottom_2 = QWidget(self.frame)
-        self.nav_bottom_2.setObjectName(u"nav_bottom_2")
-        self.nav_bottom_2.setMaximumSize(QSize(16777215, 30))
-        self.horizontalLayout_4 = QHBoxLayout(self.nav_bottom_2)
+        self.frame_btns_cluster = QFrame(self.groupBox_cluster)
+        self.frame_btns_cluster.setObjectName(u"frame_btns_cluster")
+        self.frame_btns_cluster.setFrameShape(QFrame.Panel)
+        self.frame_btns_cluster.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_4 = QHBoxLayout(self.frame_btns_cluster)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.bottom_spacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        self.horizontalLayout_4.addItem(self.bottom_spacer_2)
+        self.horizontalLayout_4.addItem(self.horizontalSpacer_3)
 
-        self.btn_prev_page_2 = QPushButton(self.nav_bottom_2)
-        self.btn_prev_page_2.setObjectName(u"btn_prev_page_2")
+        self.btn_skip = QPushButton(self.frame_btns_cluster)
+        self.btn_skip.setObjectName(u"btn_skip")
+        self.btn_skip.setFont(font)
 
-        self.horizontalLayout_4.addWidget(self.btn_prev_page_2)
+        self.horizontalLayout_4.addWidget(self.btn_skip)
 
-        self.btn_next_page_2 = QPushButton(self.nav_bottom_2)
-        self.btn_next_page_2.setObjectName(u"btn_next_page_2")
+        self.btn_info_skip = QPushButton(self.frame_btns_cluster)
+        self.btn_info_skip.setObjectName(u"btn_info_skip")
+        self.btn_info_skip.setIcon(icon)
+        self.btn_info_skip.setIconSize(QSize(40, 40))
+        self.btn_info_skip.setFlat(True)
 
-        self.horizontalLayout_4.addWidget(self.btn_next_page_2)
+        self.horizontalLayout_4.addWidget(self.btn_info_skip)
 
 
-        self.gridLayout_3.addWidget(self.nav_bottom_2, 1, 0, 1, 3)
+        self.verticalLayout_9.addWidget(self.frame_btns_cluster)
 
 
-        self.gridLayout_2.addWidget(self.frame, 0, 0, 1, 1)
+        self.verticalLayout_8.addWidget(self.groupBox_cluster)
+
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.verticalLayout_8.addItem(self.verticalSpacer_4)
+
+
+        self.verticalLayout_7.addWidget(self.cluster_frame)
+
+        self.nav_bottom_cluster = QWidget(self.second_frame)
+        self.nav_bottom_cluster.setObjectName(u"nav_bottom_cluster")
+        sizePolicy4.setHeightForWidth(self.nav_bottom_cluster.sizePolicy().hasHeightForWidth())
+        self.nav_bottom_cluster.setSizePolicy(sizePolicy4)
+        self.nav_bottom_cluster.setMaximumSize(QSize(16777215, 50))
+        self.horizontalLayout = QHBoxLayout(self.nav_bottom_cluster)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.bottom_spacer_cluster = QSpacerItem(987, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.bottom_spacer_cluster)
+
+        self.btn_prev_page_cluster = QPushButton(self.nav_bottom_cluster)
+        self.btn_prev_page_cluster.setObjectName(u"btn_prev_page_cluster")
+
+        self.horizontalLayout.addWidget(self.btn_prev_page_cluster)
+
+        self.btn_next_page_cluster = QPushButton(self.nav_bottom_cluster)
+        self.btn_next_page_cluster.setObjectName(u"btn_next_page_cluster")
+
+        self.horizontalLayout.addWidget(self.btn_next_page_cluster)
+
+
+        self.verticalLayout_7.addWidget(self.nav_bottom_cluster)
+
+
+        self.verticalLayout_6.addWidget(self.second_frame)
 
         self.solarStackedWidget.addWidget(self.page_cluster)
 
@@ -297,17 +467,35 @@ class Ui_SolarPage(object):
 
     def retranslateUi(self, SolarPage):
         SolarPage.setWindowTitle(QCoreApplication.translate("SolarPage", u"Form", None))
-        self.label_data_input.setText(QCoreApplication.translate("SolarPage", u"Data Input:", None))
-        self.btn_upload_data.setText(QCoreApplication.translate("SolarPage", u"PushButton", None))
-        self.label_start_year.setText(QCoreApplication.translate("SolarPage", u"Start Year:", None))
-        self.label_end_year.setText(QCoreApplication.translate("SolarPage", u"End Year:", None))
+        self.groupBox_input.setTitle(QCoreApplication.translate("SolarPage", u"Solar Data Input", None))
+        self.label_source_hint.setText(QCoreApplication.translate("SolarPage", u"Select a data source.", None))
+        self.combo_data_source.setItemText(0, QCoreApplication.translate("SolarPage", u"-- Select Option --", None))
+        self.combo_data_source.setItemText(1, QCoreApplication.translate("SolarPage", u"Use Your Own Data", None))
+        self.combo_data_source.setItemText(2, QCoreApplication.translate("SolarPage", u"Download Solar Data from ERA5", None))
+        self.combo_data_source.setItemText(3, QCoreApplication.translate("SolarPage", u"No Solar Data", None))
+
+        self.label_start_year.setText(QCoreApplication.translate("SolarPage", u"Start Year", None))
+        self.line_edit_start.setPlaceholderText(QCoreApplication.translate("SolarPage", u"e.g. 2018", None))
+        self.btn_start_info.setText("")
+        self.label_end_year.setText(QCoreApplication.translate("SolarPage", u"End Year", None))
+        self.line_edit_end.setPlaceholderText(QCoreApplication.translate("SolarPage", u"e.g. 2023", None))
+        self.pushButton_2.setText("")
         self.btn_download_solar.setText(QCoreApplication.translate("SolarPage", u"Download Solar Data", None))
-        self.btn_prev_page.setText(QCoreApplication.translate("SolarPage", u"Prev", None))
-        self.btn_next_page.setText(QCoreApplication.translate("SolarPage", u"Next", None))
-        self.radioButton.setText(QCoreApplication.translate("SolarPage", u"RadioButton", None))
-        self.radioButton_2.setText(QCoreApplication.translate("SolarPage", u"RadioButton", None))
-        self.pushButton.setText(QCoreApplication.translate("SolarPage", u"PushButton", None))
-        self.btn_prev_page_2.setText(QCoreApplication.translate("SolarPage", u"Prev", None))
-        self.btn_next_page_2.setText(QCoreApplication.translate("SolarPage", u"Next", None))
+        self.btn_prev_page_data.setText(QCoreApplication.translate("SolarPage", u"Prev", None))
+        self.btn_next_page_data.setText(QCoreApplication.translate("SolarPage", u"Next", None))
+        self.groupBox_cluster.setTitle(QCoreApplication.translate("SolarPage", u"Clustering Method", None))
+        self.label_algo_hint.setText(QCoreApplication.translate("SolarPage", u"Select ML Algorithm:", None))
+        self.radio_btn_k_means.setText(QCoreApplication.translate("SolarPage", u"K-Means", None))
+        self.label_num_cluster.setText(QCoreApplication.translate("SolarPage", u"No. of Clusters:", None))
+        self.btn_eval_cluster.setText(QCoreApplication.translate("SolarPage", u"Evaluate", None))
+        self.btn_open_results.setText(QCoreApplication.translate("SolarPage", u"Open Results", None))
+        self.btn_info_num_cluster.setText("")
+        self.label_final_num_cluster.setText(QCoreApplication.translate("SolarPage", u"Final No. of Clusters:", None))
+        self.btn_gen_cluster.setText(QCoreApplication.translate("SolarPage", u"Generate", None))
+        self.btn_info_final_num_cluster.setText("")
+        self.btn_skip.setText(QCoreApplication.translate("SolarPage", u"Skip", None))
+        self.btn_info_skip.setText("")
+        self.btn_prev_page_cluster.setText(QCoreApplication.translate("SolarPage", u"Prev", None))
+        self.btn_next_page_cluster.setText(QCoreApplication.translate("SolarPage", u"Next", None))
     # retranslateUi
 

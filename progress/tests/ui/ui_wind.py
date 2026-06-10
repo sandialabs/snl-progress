@@ -25,7 +25,7 @@ class Ui_WindPage(object):
     def setupUi(self, WindPage):
         if not WindPage.objectName():
             WindPage.setObjectName(u"WindPage")
-        WindPage.resize(1231, 928)
+        WindPage.resize(1163, 908)
         self.verticalLayout = QVBoxLayout(WindPage)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.windStackedWidget = QStackedWidget(WindPage)
@@ -35,33 +35,33 @@ class Ui_WindPage(object):
         self.page_data.setObjectName(u"page_data")
         self.verticalLayout_2 = QVBoxLayout(self.page_data)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
-        self.main_frame = QFrame(self.page_data)
-        self.main_frame.setObjectName(u"main_frame")
+        self.frame_main = QFrame(self.page_data)
+        self.frame_main.setObjectName(u"frame_main")
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.main_frame.sizePolicy().hasHeightForWidth())
-        self.main_frame.setSizePolicy(sizePolicy)
-        self.main_frame.setFrameShape(QFrame.NoFrame)
-        self.main_frame.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_3 = QVBoxLayout(self.main_frame)
+        sizePolicy.setHeightForWidth(self.frame_main.sizePolicy().hasHeightForWidth())
+        self.frame_main.setSizePolicy(sizePolicy)
+        self.frame_main.setFrameShape(QFrame.NoFrame)
+        self.frame_main.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_3 = QVBoxLayout(self.frame_main)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.data_frame = QFrame(self.main_frame)
-        self.data_frame.setObjectName(u"data_frame")
+        self.frame_data = QFrame(self.frame_main)
+        self.frame_data.setObjectName(u"frame_data")
         sizePolicy1 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.data_frame.sizePolicy().hasHeightForWidth())
-        self.data_frame.setSizePolicy(sizePolicy1)
-        self.data_frame.setFrameShape(QFrame.NoFrame)
-        self.data_frame.setFrameShadow(QFrame.Raised)
-        self.verticalLayout_4 = QVBoxLayout(self.data_frame)
+        sizePolicy1.setHeightForWidth(self.frame_data.sizePolicy().hasHeightForWidth())
+        self.frame_data.setSizePolicy(sizePolicy1)
+        self.frame_data.setFrameShape(QFrame.NoFrame)
+        self.frame_data.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_4 = QVBoxLayout(self.frame_data)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout_4.addItem(self.verticalSpacer_2)
 
-        self.groupBox_input = QGroupBox(self.data_frame)
+        self.groupBox_input = QGroupBox(self.frame_data)
         self.groupBox_input.setObjectName(u"groupBox_input")
         font = QFont()
         font.setPointSize(16)
@@ -169,8 +169,8 @@ class Ui_WindPage(object):
         self.frame_btns_data.setObjectName(u"frame_btns_data")
         self.frame_btns_data.setEnabled(True)
         self.frame_btns_data.setFrameShape(QFrame.NoFrame)
-        self.horizontalLayout_buttons = QHBoxLayout(self.frame_btns_data)
-        self.horizontalLayout_buttons.setObjectName(u"horizontalLayout_buttons")
+        self.verticalLayout_6 = QVBoxLayout(self.frame_btns_data)
+        self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.btn_download_wind = QPushButton(self.frame_btns_data)
         self.btn_download_wind.setObjectName(u"btn_download_wind")
         sizePolicy3 = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -179,7 +179,12 @@ class Ui_WindPage(object):
         sizePolicy3.setHeightForWidth(self.btn_download_wind.sizePolicy().hasHeightForWidth())
         self.btn_download_wind.setSizePolicy(sizePolicy3)
 
-        self.horizontalLayout_buttons.addWidget(self.btn_download_wind)
+        self.verticalLayout_6.addWidget(self.btn_download_wind)
+
+        self.btn_process_wind = QPushButton(self.frame_btns_data)
+        self.btn_process_wind.setObjectName(u"btn_process_wind")
+
+        self.verticalLayout_6.addWidget(self.btn_process_wind)
 
 
         self.verticalLayout_5.addWidget(self.frame_btns_data)
@@ -192,9 +197,9 @@ class Ui_WindPage(object):
         self.verticalLayout_4.addItem(self.verticalSpacer)
 
 
-        self.verticalLayout_3.addWidget(self.data_frame)
+        self.verticalLayout_3.addWidget(self.frame_data)
 
-        self.nav_bottom_data = QWidget(self.main_frame)
+        self.nav_bottom_data = QWidget(self.frame_main)
         self.nav_bottom_data.setObjectName(u"nav_bottom_data")
         sizePolicy4 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
         sizePolicy4.setHorizontalStretch(0)
@@ -222,7 +227,7 @@ class Ui_WindPage(object):
         self.verticalLayout_3.addWidget(self.nav_bottom_data)
 
 
-        self.verticalLayout_2.addWidget(self.main_frame)
+        self.verticalLayout_2.addWidget(self.frame_main)
 
         self.windStackedWidget.addWidget(self.page_data)
 
@@ -239,8 +244,8 @@ class Ui_WindPage(object):
 
     def retranslateUi(self, WindPage):
         WindPage.setWindowTitle(QCoreApplication.translate("WindPage", u"Form", None))
-        self.groupBox_input.setTitle(QCoreApplication.translate("WindPage", u"Data Input", None))
-        self.label_source_hint.setText(QCoreApplication.translate("WindPage", u"Select a data source, or upload a CSV file below.", None))
+        self.groupBox_input.setTitle(QCoreApplication.translate("WindPage", u"Wind Data Input", None))
+        self.label_source_hint.setText(QCoreApplication.translate("WindPage", u"Select a data source.", None))
         self.combo_data_source.setItemText(0, QCoreApplication.translate("WindPage", u"-- Select Option --", None))
         self.combo_data_source.setItemText(1, QCoreApplication.translate("WindPage", u"Use Your Own Data", None))
         self.combo_data_source.setItemText(2, QCoreApplication.translate("WindPage", u"Download Wind Data from ERA5", None))
@@ -253,6 +258,7 @@ class Ui_WindPage(object):
         self.line_edit_end.setPlaceholderText(QCoreApplication.translate("WindPage", u"e.g. 2023", None))
         self.pushButton_2.setText("")
         self.btn_download_wind.setText(QCoreApplication.translate("WindPage", u"Download Wind Data", None))
+        self.btn_process_wind.setText(QCoreApplication.translate("WindPage", u"Process Wind Data", None))
         self.btn_prev_page_data.setText(QCoreApplication.translate("WindPage", u"Prev", None))
         self.btn_next_page_data.setText(QCoreApplication.translate("WindPage", u"Next", None))
     # retranslateUi

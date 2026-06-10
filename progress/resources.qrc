@@ -15,7 +15,8 @@
   <qresource prefix="icons">
     <file>Images/icons/qmark.png</file>
     <file>Images/icons/about.png</file>
-    <file>Images/icons/progress_icon.png</file>
+    <file>Images/icons/progress_icon_up.png</file>
+    <file>Images/icons/progress_icon_down.png</file>
     <file>Images/icons/more_options.png</file>
     <file>Images/icons/more_options_2.png</file>
   </qresource>

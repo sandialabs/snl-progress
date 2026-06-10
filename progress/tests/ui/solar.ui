@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1231</width>
-    <height>928</height>
+    <width>1163</width>
+    <height>908</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <enum>Qt::DefaultContextMenu</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_data">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -75,7 +75,7 @@
                 </font>
                </property>
                <property name="title">
-                <string>Data Input</string>
+                <string>Solar Data Input</string>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_5">
                 <item>
@@ -701,7 +701,7 @@
                     </spacer>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_8">
+                    <widget class="QPushButton" name="btn_skip">
                      <property name="font">
                       <font>
                        <pointsize>16</pointsize>
@@ -713,7 +713,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="pushButton_9">
+                    <widget class="QPushButton" name="btn_info_skip">
                      <property name="text">
                       <string/>
                      </property>
