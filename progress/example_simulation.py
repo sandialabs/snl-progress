@@ -496,8 +496,9 @@ if __name__ == "__main__":
     
     # plot indices for all samples after MCS is complete
     rapt = RAPlotTools(config["data"], results_subdir, network_model)
-    rapt.PlotLOLP(mLOLP_rec, samples, 1)
-    rapt.PlotCOV(COV_rec, samples, 1)
+    if samples > 1 and sum(mLOLP_rec) > 0:
+        rapt.PlotLOLP(mLOLP_rec, samples, 1)
+        rapt.PlotCOV(COV_rec, samples, 1)
     if sim_hours == 8760:
         rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
 
