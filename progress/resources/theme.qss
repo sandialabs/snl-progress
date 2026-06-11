@@ -1,0 +1,139 @@
+/* =======================================================
+   QuESt ProGRESS v3 Design System
+   ======================================================= */
+
+/* =======================================================
+   Base
+   ======================================================= */
+QMainWindow {
+    background-color: #f5f7fa;
+}
+
+/* =======================================================
+   Sidebar
+   ======================================================= */
+QFrame#sidebar_frame {
+    background-color: #1e293b;
+    border: none;
+    font-family: ".AppleSystemUIFont", -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+QFrame#branding_card {
+    background-color: transparent;
+    border: none;
+    padding: 16px 12px;
+}
+QLabel#logo_label {
+    background: transparent;
+    min-height: 56px;
+    max-height: 80px;
+}
+
+/* =======================================================
+   Navigation Buttons
+   ======================================================= */
+QPushButton#btn_home,
+QPushButton#btn_api,
+QPushButton#btn_solar,
+QPushButton#btn_wind,
+QPushButton#btn_simulation,
+QPushButton#btn_results,
+QPushButton#btn_settings,
+QPushButton#btn_about {
+    background: transparent;
+    color: #94a3b8;
+    border: none;
+    border-left: 3px solid transparent;
+    text-align: left;
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 24px;
+}
+QPushButton#btn_home:hover,
+QPushButton#btn_api:hover,
+QPushButton#btn_solar:hover,
+QPushButton#btn_wind:hover,
+QPushButton#btn_simulation:hover,
+QPushButton#btn_results:hover,
+QPushButton#btn_settings:hover,
+QPushButton#btn_about:hover {
+    background-color: #2d3a4d;
+    color: #ffffff;
+}
+/* Apply dynamically in Python:  button.setProperty("active", True) */
+QPushButton[active="true"] {
+    background-color: #334155;
+    color: white;
+    border-left: 3px solid #3b82f6;
+}
+
+/* =======================================================
+   Main Content Area
+   ======================================================= */
+QFrame#content_frame {
+    background-color: #f5f7fa;
+    border: none;
+}
+
+/* =======================================================
+   Header
+   ======================================================= */
+QFrame#header_frame {
+    background-color: #ffffff;
+    border: none;
+    border-bottom: 1px solid #e2e8f0;
+    min-height: 70px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-family: ".AppleSystemUIFont", -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+QLabel#page_title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+}
+QLabel#breadcrumb_label {
+    color: #64748b;
+    font-size: 13px;
+    background: transparent;
+}
+QLabel#version_label {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 400;
+    background: transparent;
+
+}
+
+/* =======================================================
+   Footer
+   ======================================================= */
+QFrame#footer_frame {
+    background: transparent;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 12px;
+    padding-top: 12px;
+}
+/* =======================================================
+   Status Bar
+   ======================================================= */
+QFrame#status_frame {
+    background-color: white;
+    border-top: 1px solid #e2e8f0;
+    min-height: 36px;
+}
+QLabel#status_label,
+QLabel#project_label {
+    color: #64748b;
+    font-size: 12px;
+}
+
+/* =======================================================
+   Stacked Widget
+   ======================================================= */
+QStackedWidget {
+    border: none;
+    background: transparent;
+}
+
+
