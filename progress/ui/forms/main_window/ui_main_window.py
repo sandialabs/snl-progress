@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
     QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
     QStackedWidget, QVBoxLayout, QWidget)
 import resources_rc
+import resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -37,50 +38,50 @@ class Ui_MainWindow(object):
         self.rootLayout.setSpacing(0)
         self.rootLayout.setObjectName(u"rootLayout")
         self.rootLayout.setContentsMargins(0, 0, 0, 0)
-        self.sidebar_frame = QFrame(self.centralwidget)
-        self.sidebar_frame.setObjectName(u"sidebar_frame")
-        self.sidebar_frame.setMinimumSize(QSize(150, 0))
-        self.sidebarLayout = QVBoxLayout(self.sidebar_frame)
+        self.frame_ribbon = QFrame(self.centralwidget)
+        self.frame_ribbon.setObjectName(u"frame_ribbon")
+        self.frame_ribbon.setMinimumSize(QSize(150, 0))
+        self.sidebarLayout = QVBoxLayout(self.frame_ribbon)
         self.sidebarLayout.setObjectName(u"sidebarLayout")
-        self.branding_card = QFrame(self.sidebar_frame)
+        self.branding_card = QFrame(self.frame_ribbon)
         self.branding_card.setObjectName(u"branding_card")
         self.branding_card.setAutoFillBackground(False)
         self.branding_card.setStyleSheet(u"frame.setStyleSheet(\"background-color: transparent;\")")
         self.horizontalLayout = QHBoxLayout(self.branding_card)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.logo_label = QLabel(self.branding_card)
-        self.logo_label.setObjectName(u"logo_label")
-        self.logo_label.setMaximumSize(QSize(70, 120))
-        self.logo_label.setPixmap(QPixmap(u":/icons/Images/icons/progress_icon_up.png"))
-        self.logo_label.setScaledContents(True)
-        self.logo_label.setAlignment(Qt.AlignCenter)
+        self.label_logo = QLabel(self.branding_card)
+        self.label_logo.setObjectName(u"label_logo")
+        self.label_logo.setMaximumSize(QSize(70, 120))
+        self.label_logo.setPixmap(QPixmap(u":/icons/Images/icons/progress_icon_up.png"))
+        self.label_logo.setScaledContents(True)
+        self.label_logo.setAlignment(Qt.AlignCenter)
 
-        self.horizontalLayout.addWidget(self.logo_label)
+        self.horizontalLayout.addWidget(self.label_logo)
 
 
         self.sidebarLayout.addWidget(self.branding_card)
 
-        self.btn_home = QPushButton(self.sidebar_frame)
+        self.btn_home = QPushButton(self.frame_ribbon)
         self.btn_home.setObjectName(u"btn_home")
 
         self.sidebarLayout.addWidget(self.btn_home)
 
-        self.btn_solar = QPushButton(self.sidebar_frame)
+        self.btn_solar = QPushButton(self.frame_ribbon)
         self.btn_solar.setObjectName(u"btn_solar")
 
         self.sidebarLayout.addWidget(self.btn_solar)
 
-        self.btn_wind = QPushButton(self.sidebar_frame)
+        self.btn_wind = QPushButton(self.frame_ribbon)
         self.btn_wind.setObjectName(u"btn_wind")
 
         self.sidebarLayout.addWidget(self.btn_wind)
 
-        self.btn_simulation = QPushButton(self.sidebar_frame)
+        self.btn_simulation = QPushButton(self.frame_ribbon)
         self.btn_simulation.setObjectName(u"btn_simulation")
 
         self.sidebarLayout.addWidget(self.btn_simulation)
 
-        self.btn_results = QPushButton(self.sidebar_frame)
+        self.btn_results = QPushButton(self.frame_ribbon)
         self.btn_results.setObjectName(u"btn_results")
 
         self.sidebarLayout.addWidget(self.btn_results)
@@ -89,46 +90,46 @@ class Ui_MainWindow(object):
 
         self.sidebarLayout.addItem(self.navSpacer)
 
-        self.btn_settings = QPushButton(self.sidebar_frame)
+        self.btn_settings = QPushButton(self.frame_ribbon)
         self.btn_settings.setObjectName(u"btn_settings")
 
         self.sidebarLayout.addWidget(self.btn_settings)
 
-        self.btn_about = QPushButton(self.sidebar_frame)
+        self.btn_about = QPushButton(self.frame_ribbon)
         self.btn_about.setObjectName(u"btn_about")
 
         self.sidebarLayout.addWidget(self.btn_about)
 
 
-        self.rootLayout.addWidget(self.sidebar_frame)
+        self.rootLayout.addWidget(self.frame_ribbon)
 
-        self.content_frame = QFrame(self.centralwidget)
-        self.content_frame.setObjectName(u"content_frame")
-        self.content_frame.setMaximumSize(QSize(16777215, 1000))
-        self.contentLayout = QVBoxLayout(self.content_frame)
+        self.frame_content = QFrame(self.centralwidget)
+        self.frame_content.setObjectName(u"frame_content")
+        self.frame_content.setMaximumSize(QSize(16777215, 1000))
+        self.contentLayout = QVBoxLayout(self.frame_content)
         self.contentLayout.setObjectName(u"contentLayout")
-        self.header_frame = QFrame(self.content_frame)
-        self.header_frame.setObjectName(u"header_frame")
-        self.headerLayout = QHBoxLayout(self.header_frame)
+        self.frame_info = QFrame(self.frame_content)
+        self.frame_info.setObjectName(u"frame_info")
+        self.headerLayout = QHBoxLayout(self.frame_info)
         self.headerLayout.setObjectName(u"headerLayout")
-        self.page_title = QLabel(self.header_frame)
-        self.page_title.setObjectName(u"page_title")
+        self.label_page_title = QLabel(self.frame_info)
+        self.label_page_title.setObjectName(u"label_page_title")
 
-        self.headerLayout.addWidget(self.page_title)
+        self.headerLayout.addWidget(self.label_page_title)
 
         self.headerSpacer = QSpacerItem(0, 0, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.headerLayout.addItem(self.headerSpacer)
 
-        self.version_label = QLabel(self.header_frame)
-        self.version_label.setObjectName(u"version_label")
+        self.label_version = QLabel(self.frame_info)
+        self.label_version.setObjectName(u"label_version")
 
-        self.headerLayout.addWidget(self.version_label)
+        self.headerLayout.addWidget(self.label_version)
 
 
-        self.contentLayout.addWidget(self.header_frame)
+        self.contentLayout.addWidget(self.frame_info)
 
-        self.stackedWidget = QStackedWidget(self.content_frame)
+        self.stackedWidget = QStackedWidget(self.frame_content)
         self.stackedWidget.setObjectName(u"stackedWidget")
         self.stackedWidget.setMinimumSize(QSize(0, 0))
         self.stackedWidget.setStyleSheet(u"background-color: transparent;")
@@ -156,39 +157,39 @@ class Ui_MainWindow(object):
 
         self.contentLayout.addWidget(self.stackedWidget)
 
-        self.frame = QFrame(self.content_frame)
-        self.frame.setObjectName(u"frame")
-        self.frame.setMaximumSize(QSize(16777215, 40))
-        self.frame.setFrameShape(QFrame.NoFrame)
-        self.frame.setFrameShadow(QFrame.Plain)
-        self.horizontalLayout_2 = QHBoxLayout(self.frame)
+        self.frame_nav_btns = QFrame(self.frame_content)
+        self.frame_nav_btns.setObjectName(u"frame_nav_btns")
+        self.frame_nav_btns.setMaximumSize(QSize(16777215, 40))
+        self.frame_nav_btns.setFrameShape(QFrame.NoFrame)
+        self.frame_nav_btns.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_nav_btns)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
-        self.pushButton_2 = QPushButton(self.frame)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.btn_prev = QPushButton(self.frame_nav_btns)
+        self.btn_prev.setObjectName(u"btn_prev")
 
-        self.horizontalLayout_2.addWidget(self.pushButton_2)
+        self.horizontalLayout_2.addWidget(self.btn_prev)
 
-        self.pushButton = QPushButton(self.frame)
-        self.pushButton.setObjectName(u"pushButton")
+        self.btn_next = QPushButton(self.frame_nav_btns)
+        self.btn_next.setObjectName(u"btn_next")
 
-        self.horizontalLayout_2.addWidget(self.pushButton)
+        self.horizontalLayout_2.addWidget(self.btn_next)
 
 
-        self.contentLayout.addWidget(self.frame)
+        self.contentLayout.addWidget(self.frame_nav_btns)
 
         self.contentLayout.setStretch(1, 1)
 
-        self.rootLayout.addWidget(self.content_frame)
+        self.rootLayout.addWidget(self.frame_content)
 
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
 
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(MainWindow)
@@ -196,7 +197,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"QuESt ProGRESS", None))
-        self.logo_label.setText("")
+        self.label_logo.setText("")
         self.btn_home.setText(QCoreApplication.translate("MainWindow", u"Home", None))
         self.btn_solar.setText(QCoreApplication.translate("MainWindow", u"Solar Data", None))
         self.btn_wind.setText(QCoreApplication.translate("MainWindow", u"Wind Data", None))
@@ -204,9 +205,9 @@ class Ui_MainWindow(object):
         self.btn_results.setText(QCoreApplication.translate("MainWindow", u"Results", None))
         self.btn_settings.setText(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.btn_about.setText(QCoreApplication.translate("MainWindow", u"About", None))
-        self.page_title.setText(QCoreApplication.translate("MainWindow", u"Dashboard", None))
-        self.version_label.setText(QCoreApplication.translate("MainWindow", u"v1.0.0", None))
-        self.pushButton_2.setText(QCoreApplication.translate("MainWindow", u"Previous", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"Next", None))
+        self.label_page_title.setText(QCoreApplication.translate("MainWindow", u"Dashboard", None))
+        self.label_version.setText(QCoreApplication.translate("MainWindow", u"v1.0.0", None))
+        self.btn_prev.setText(QCoreApplication.translate("MainWindow", u"Previous", None))
+        self.btn_next.setText(QCoreApplication.translate("MainWindow", u"Next", None))
     # retranslateUi
 

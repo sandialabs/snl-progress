@@ -17,8 +17,6 @@ import progress.resources_rc
 import sys
 import os
 
-
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -33,7 +31,12 @@ class MainWindow(QMainWindow):
         # self.settings_page = SettingsPage()
         # self.about_page = AboutPage()
 
-        self.ui.stackedWidget.setCurrentWidget(self.ui.page_landing)
+        self._page_sequence = [
+            self.ui.page_solar,
+            self.ui.page_wind,
+            self.ui.page_simulation,
+            self.ui.page_results,
+        ]
 
         self._mount_page(self.ui.page_landing, self.landing_page)
         self._mount_page(self.ui.page_solar, self.solar_page)
@@ -43,28 +46,37 @@ class MainWindow(QMainWindow):
         # self._mount_page(self.ui.page_settings, self.settings_page)
         # self._mount_page(self.ui.page_about, self.about_page)
 
+        # signals and connections
+        self.landing_page.getting_started_clicked.connect(self._handle_landing_getting_started)
+        self.ui.btn_prev.clicked.connect(self._go_previous_page)
+        self.ui.btn_next.clicked.connect(self._go_next_page)
+        self.ui.stackedWidget.setCurrentWidget(self.ui.page_landing)
+        self.ui.stackedWidget.currentChanged.connect(self._update_navigation_ui)
+        self._update_navigation_ui(self.ui.stackedWidget.currentIndex())
+
         self.ui.btn_home.clicked.connect(
-            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_landing)
+            lambda checked=False: self._go_to_page(self.ui.page_landing)
         )
         self.ui.btn_solar.clicked.connect(
-            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_solar)
+            lambda checked=False: self._go_to_page(self.ui.page_solar)
         )
         self.ui.btn_wind.clicked.connect(
-            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_wind)
+            lambda checked=False: self._go_to_page(self.ui.page_wind)
         )
         self.ui.btn_simulation.clicked.connect(
-            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_simulation)
+            lambda checked=False: self._go_to_page(self.ui.page_simulation)
         )
         self.ui.btn_results.clicked.connect(
-            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_results)
+            lambda checked=False: self._go_to_page(self.ui.page_results)
         )
-        # self.ui.btn_settings.clicked.connect(
-        #     lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_settings)
-        # )
-        # self.ui.btn_about.clicked.connect(
-        #     lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_about)
+
+        # TODO: ADD SETTINGS and ABOUT PAGES
+
+        # self.solar_page.ui.btn_getting_started.clicked.connect(
+        #     lambda checked=False: self._go_to_page(self.ui.page_landing)
         # )
 
+       
         #setting up sys dir data
         self.sys_directory = str(SYSTEM_DIR)
         self.load_sys_data()
@@ -80,7 +92,46 @@ class MainWindow(QMainWindow):
             layout.setSpacing(0)
         layout.addWidget(page_widget)
 
+    def _go_to_page(self, page) -> None:
+        self.ui.stackedWidget.setCurrentWidget(page)
 
+        # NAV LOGIC
+    def _go_previous_page(self, checked: bool = False) -> None:
+        current_page = self.ui.stackedWidget.currentWidget()
+        if current_page in self._page_sequence:
+            index = self._page_sequence.index(current_page)
+            if index > 0:
+                self.ui.stackedWidget.setCurrentWidget(self._page_sequence[index - 1])
+
+    def _go_next_page(self, checked: bool = False) -> None:
+        current_page = self.ui.stackedWidget.currentWidget()
+        if current_page in self._page_sequence:
+            index = self._page_sequence.index(current_page)
+            if index < len(self._page_sequence) - 1:
+                self.ui.stackedWidget.setCurrentWidget(self._page_sequence[index + 1])
+
+    def _update_navigation_ui(self, _index: int) -> None:
+        current_page = self.ui.stackedWidget.currentWidget()
+        on_landing = current_page is self.ui.page_landing
+
+        self.ui.btn_prev.setVisible(not on_landing)
+        self.ui.btn_next.setVisible(not on_landing)
+
+        if on_landing:
+            self.ui.btn_prev.setEnabled(False)
+            self.ui.btn_next.setEnabled(False)
+            return
+
+        if current_page in self._page_sequence:
+            seq_index = self._page_sequence.index(current_page)
+            self.ui.btn_prev.setEnabled(seq_index > 0)
+            self.ui.btn_next.setEnabled(seq_index < len(self._page_sequence) - 1)
+        else:
+            self.ui.btn_prev.setEnabled(False)
+            self.ui.btn_next.setEnabled(False)
+
+    def _handle_landing_getting_started(self) -> None:
+        self.ui.stackedWidget.setCurrentWidget(self.ui.page_solar)
 
     def load_sys_data(self):
         try:
@@ -150,7 +201,6 @@ class MainWindow(QMainWindow):
             self.setStyleSheet(stylesheet)
             file.close()
 
-
 def main():
     """
     The main entry point for the application.
@@ -162,8 +212,5 @@ def main():
     window.show()
     sys.exit(app.exec())
 
-
-
 if __name__ == "__main__":
     main()
-

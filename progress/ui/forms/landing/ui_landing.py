@@ -19,6 +19,7 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
     QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout,
     QWidget)
 import resources_rc
+import resources_rc
 
 class Ui_LandingPage(object):
     def setupUi(self, LandingPage):
@@ -75,32 +76,32 @@ class Ui_LandingPage(object):
 
         self.verticalLayout_2.addWidget(self.label_progress_desc)
 
-        self.frame = QFrame(self.frame_logo)
-        self.frame.setObjectName(u"frame")
-        self.frame.setFrameShape(QFrame.NoFrame)
-        self.frame.setFrameShadow(QFrame.Plain)
-        self.horizontalLayout = QHBoxLayout(self.frame)
+        self.frame_nav_btns = QFrame(self.frame_logo)
+        self.frame_nav_btns.setObjectName(u"frame_nav_btns")
+        self.frame_nav_btns.setFrameShape(QFrame.NoFrame)
+        self.frame_nav_btns.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout = QHBoxLayout(self.frame_nav_btns)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
-        self.pushButton = QPushButton(self.frame)
-        self.pushButton.setObjectName(u"pushButton")
+        self.btn_getting_started = QPushButton(self.frame_nav_btns)
+        self.btn_getting_started.setObjectName(u"btn_getting_started")
 
-        self.horizontalLayout.addWidget(self.pushButton)
+        self.horizontalLayout.addWidget(self.btn_getting_started)
 
-        self.pushButton_2 = QPushButton(self.frame)
-        self.pushButton_2.setObjectName(u"pushButton_2")
+        self.btn_documentation = QPushButton(self.frame_nav_btns)
+        self.btn_documentation.setObjectName(u"btn_documentation")
 
-        self.horizontalLayout.addWidget(self.pushButton_2)
+        self.horizontalLayout.addWidget(self.btn_documentation)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_2)
 
 
-        self.verticalLayout_2.addWidget(self.frame)
+        self.verticalLayout_2.addWidget(self.frame_nav_btns)
 
 
         self.verticalLayout.addWidget(self.frame_logo)
@@ -111,15 +112,15 @@ class Ui_LandingPage(object):
         self.frame_ackknowledgement.setFrameShadow(QFrame.Plain)
         self.verticalLayout_3 = QVBoxLayout(self.frame_ackknowledgement)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.label_3 = QLabel(self.frame_ackknowledgement)
-        self.label_3.setObjectName(u"label_3")
+        self.label_desc = QLabel(self.frame_ackknowledgement)
+        self.label_desc.setObjectName(u"label_desc")
         font1 = QFont()
         font1.setPointSize(18)
-        self.label_3.setFont(font1)
-        self.label_3.setAlignment(Qt.AlignCenter)
-        self.label_3.setWordWrap(True)
+        self.label_desc.setFont(font1)
+        self.label_desc.setAlignment(Qt.AlignCenter)
+        self.label_desc.setWordWrap(True)
 
-        self.verticalLayout_3.addWidget(self.label_3)
+        self.verticalLayout_3.addWidget(self.label_desc)
 
         self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -129,16 +130,16 @@ class Ui_LandingPage(object):
 
         self.verticalLayout_3.addItem(self.horizontalSpacer_8)
 
-        self.label_4 = QLabel(self.frame_ackknowledgement)
-        self.label_4.setObjectName(u"label_4")
+        self.label_ack_doe = QLabel(self.frame_ackknowledgement)
+        self.label_ack_doe.setObjectName(u"label_ack_doe")
         font2 = QFont()
         font2.setPointSize(15)
         font2.setBold(True)
-        self.label_4.setFont(font2)
-        self.label_4.setAlignment(Qt.AlignCenter)
-        self.label_4.setWordWrap(True)
+        self.label_ack_doe.setFont(font2)
+        self.label_ack_doe.setAlignment(Qt.AlignCenter)
+        self.label_ack_doe.setWordWrap(True)
 
-        self.verticalLayout_3.addWidget(self.label_4)
+        self.verticalLayout_3.addWidget(self.label_ack_doe)
 
 
         self.verticalLayout.addWidget(self.frame_ackknowledgement)
@@ -153,41 +154,41 @@ class Ui_LandingPage(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
 
-        self.label_5 = QLabel(self.frame_footer)
-        self.label_5.setObjectName(u"label_5")
-        self.label_5.setMinimumSize(QSize(80, 40))
-        self.label_5.setMaximumSize(QSize(160, 70))
-        self.label_5.setPixmap(QPixmap(u":/logos/Images/logos/Quest_Logo_RGB.png"))
-        self.label_5.setScaledContents(True)
+        self.label_quest_logo = QLabel(self.frame_footer)
+        self.label_quest_logo.setObjectName(u"label_quest_logo")
+        self.label_quest_logo.setMinimumSize(QSize(80, 40))
+        self.label_quest_logo.setMaximumSize(QSize(160, 70))
+        self.label_quest_logo.setPixmap(QPixmap(u":/logos/Images/logos/Quest_Logo_RGB.png"))
+        self.label_quest_logo.setScaledContents(True)
 
-        self.horizontalLayout_2.addWidget(self.label_5)
+        self.horizontalLayout_2.addWidget(self.label_quest_logo)
 
         self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_4)
 
-        self.label_6 = QLabel(self.frame_footer)
-        self.label_6.setObjectName(u"label_6")
-        self.label_6.setMinimumSize(QSize(150, 150))
-        self.label_6.setMaximumSize(QSize(150, 150))
-        self.label_6.setPixmap(QPixmap(u":/logos/Images/logos/DOE_transparent.png"))
-        self.label_6.setScaledContents(True)
+        self.label_doe_logo = QLabel(self.frame_footer)
+        self.label_doe_logo.setObjectName(u"label_doe_logo")
+        self.label_doe_logo.setMinimumSize(QSize(150, 150))
+        self.label_doe_logo.setMaximumSize(QSize(150, 150))
+        self.label_doe_logo.setPixmap(QPixmap(u":/logos/Images/logos/DOE_transparent.png"))
+        self.label_doe_logo.setScaledContents(True)
 
-        self.horizontalLayout_2.addWidget(self.label_6)
+        self.horizontalLayout_2.addWidget(self.label_doe_logo)
 
         self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_5)
 
-        self.label_7 = QLabel(self.frame_footer)
-        self.label_7.setObjectName(u"label_7")
-        self.label_7.setMinimumSize(QSize(80, 40))
-        self.label_7.setMaximumSize(QSize(180, 100))
-        self.label_7.setPixmap(QPixmap(u":/logos/Images/logos/SNL_logo.png"))
-        self.label_7.setScaledContents(True)
-        self.label_7.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.label_snl_logo = QLabel(self.frame_footer)
+        self.label_snl_logo.setObjectName(u"label_snl_logo")
+        self.label_snl_logo.setMinimumSize(QSize(80, 40))
+        self.label_snl_logo.setMaximumSize(QSize(180, 100))
+        self.label_snl_logo.setPixmap(QPixmap(u":/logos/Images/logos/SNL_logo.png"))
+        self.label_snl_logo.setScaledContents(True)
+        self.label_snl_logo.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
-        self.horizontalLayout_2.addWidget(self.label_7)
+        self.horizontalLayout_2.addWidget(self.label_snl_logo)
 
         self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
@@ -206,12 +207,12 @@ class Ui_LandingPage(object):
         LandingPage.setWindowTitle(QCoreApplication.translate("LandingPage", u"Form", None))
         self.label_progress_logo.setText("")
         self.label_progress_desc.setText(QCoreApplication.translate("LandingPage", u"Probabilistic Grid Reliability Analysis with Energy Storage Systems", None))
-        self.pushButton.setText(QCoreApplication.translate("LandingPage", u"Get Started", None))
-        self.pushButton_2.setText(QCoreApplication.translate("LandingPage", u"Documentation", None))
-        self.label_3.setText(QCoreApplication.translate("LandingPage", u"A Python-based open-source tool for assessing the resource adequacy of the evolving electric power grid integrated with energy storage systems.", None))
-        self.label_4.setText(QCoreApplication.translate("LandingPage", u"Acknowledgement: This material is based upon work supported by the U.S. Department of Energy Office of Electricity, Energy Storage Division.", None))
-        self.label_5.setText("")
-        self.label_6.setText("")
-        self.label_7.setText("")
+        self.btn_getting_started.setText(QCoreApplication.translate("LandingPage", u"Get Started", None))
+        self.btn_documentation.setText(QCoreApplication.translate("LandingPage", u"Documentation", None))
+        self.label_desc.setText(QCoreApplication.translate("LandingPage", u"A Python-based open-source tool for assessing the resource adequacy of the evolving electric power grid integrated with energy storage systems.", None))
+        self.label_ack_doe.setText(QCoreApplication.translate("LandingPage", u"Acknowledgement: This material is based upon work supported by the U.S. Department of Energy Office of Electricity, Energy Storage Division.", None))
+        self.label_quest_logo.setText("")
+        self.label_doe_logo.setText("")
+        self.label_snl_logo.setText("")
     # retranslateUi
 

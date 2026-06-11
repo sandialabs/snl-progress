@@ -50,7 +50,7 @@
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../../resources.qrc">:/logos/Images/logos/progress_transparent_alt.png</pixmap>
+            <pixmap resource="../../../resources.qrc">:/logos/Images/logos/progress_transparent_alt.png</pixmap>
            </property>
            <property name="scaledContents">
             <bool>true</bool>
@@ -119,7 +119,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="frame">
+       <widget class="QFrame" name="frame_nav_btns">
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -141,14 +141,14 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="btn_getting_started">
            <property name="text">
             <string>Get Started</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="btn_documentation">
            <property name="text">
             <string>Documentation</string>
            </property>
@@ -183,7 +183,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="label_desc">
         <property name="font">
          <font>
           <pointsize>18</pointsize>
@@ -227,7 +227,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="label_ack_doe">
         <property name="font">
          <font>
           <pointsize>15</pointsize>
@@ -272,7 +272,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_5">
+       <widget class="QLabel" name="label_quest_logo">
         <property name="minimumSize">
          <size>
           <width>80</width>
@@ -289,7 +289,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/logos/Images/logos/Quest_Logo_RGB.png</pixmap>
+         <pixmap resource="../../../resources.qrc">:/logos/Images/logos/Quest_Logo_RGB.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -310,7 +310,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="label_doe_logo">
         <property name="minimumSize">
          <size>
           <width>150</width>
@@ -327,7 +327,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/logos/Images/logos/DOE_transparent.png</pixmap>
+         <pixmap resource="../../../resources.qrc">:/logos/Images/logos/DOE_transparent.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -348,7 +348,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QLabel" name="label_7">
+       <widget class="QLabel" name="label_snl_logo">
         <property name="minimumSize">
          <size>
           <width>80</width>
@@ -365,7 +365,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="../../resources.qrc">:/logos/Images/logos/SNL_logo.png</pixmap>
+         <pixmap resource="../../../resources.qrc">:/logos/Images/logos/SNL_logo.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -394,6 +394,7 @@
   </layout>
  </widget>
  <resources>
+  <include location="../../../resources.qrc"/>
   <include location="../../resources.qrc"/>
  </resources>
  <connections/>

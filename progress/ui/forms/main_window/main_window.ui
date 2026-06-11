@@ -43,7 +43,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QFrame" name="sidebar_frame">
+     <widget class="QFrame" name="frame_ribbon">
       <property name="minimumSize">
        <size>
         <width>150</width>
@@ -61,7 +61,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
-           <widget class="QLabel" name="logo_label">
+           <widget class="QLabel" name="label_logo">
             <property name="maximumSize">
              <size>
               <width>70</width>
@@ -72,7 +72,7 @@
              <string/>
             </property>
             <property name="pixmap">
-             <pixmap resource="../../resources.qrc">:/icons/Images/icons/progress_icon_up.png</pixmap>
+             <pixmap resource="../../../resources.qrc">:/icons/Images/icons/progress_icon_up.png</pixmap>
             </property>
             <property name="scaledContents">
              <bool>true</bool>
@@ -151,7 +151,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QFrame" name="content_frame">
+     <widget class="QFrame" name="frame_content">
       <property name="maximumSize">
        <size>
         <width>16777215</width>
@@ -160,10 +160,10 @@
       </property>
       <layout class="QVBoxLayout" name="contentLayout" stretch="0,1,0">
        <item>
-        <widget class="QFrame" name="header_frame">
+        <widget class="QFrame" name="frame_info">
          <layout class="QHBoxLayout" name="headerLayout">
           <item>
-           <widget class="QLabel" name="page_title">
+           <widget class="QLabel" name="label_page_title">
             <property name="text">
              <string>Dashboard</string>
             </property>
@@ -183,7 +183,7 @@
            </spacer>
           </item>
           <item>
-           <widget class="QLabel" name="version_label">
+           <widget class="QLabel" name="label_version">
             <property name="text">
              <string>v1.0.0</string>
             </property>
@@ -204,7 +204,7 @@
           <string notr="true">background-color: transparent;</string>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_landing"/>
          <widget class="QWidget" name="page_solar"/>
@@ -216,7 +216,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QFrame" name="frame">
+        <widget class="QFrame" name="frame_nav_btns">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -244,14 +244,14 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton_2">
+           <widget class="QPushButton" name="btn_prev">
             <property name="text">
              <string>Previous</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="pushButton">
+           <widget class="QPushButton" name="btn_next">
             <property name="text">
              <string>Next</string>
             </property>
@@ -267,6 +267,7 @@
   </widget>
  </widget>
  <resources>
+  <include location="../../../resources.qrc"/>
   <include location="../../resources.qrc"/>
  </resources>
  <connections/>
