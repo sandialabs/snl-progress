@@ -6,6 +6,6 @@ progress/ui/__pycache__
 **/*.egg-info/
 **/__pycache__/
 *.pyc
-progress/Data/*
+progress/Data/
 progress/Results
 progress/input.yaml
