@@ -505,9 +505,8 @@ if __name__ == "__main__":
 
         # plot results
         rapt = RAPlotTools(config["data"], main_folder, network_model)
-        if samples > 1 and sum(mLOLP_rec) > 0:
-            rapt.PlotLOLP(mLOLP_rec, samples, size)
-            rapt.PlotCOV(COV_rec, samples, size)
+        rapt.PlotLOLP(mLOLP_rec, samples, size)
+        rapt.PlotCOV(COV_rec, samples, size)
         if sim_hours == 8760:
             rapt.OutageMap(f"{main_folder}/LOL_perc_prob.csv")
 
