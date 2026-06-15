@@ -6,6 +6,7 @@ progress/ui/__pycache__
 **/*.egg-info/
 **/__pycache__/
 *.pyc
-progress/Data/
 progress/Results
 progress/input.yaml
+.DS_Store
+progress/.DS_Store
