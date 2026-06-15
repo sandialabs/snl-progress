@@ -11,6 +11,8 @@
     <file>Images/logos/New_DOE_Logo_Color.png</file>
     <file>Images/logos/New_DOE_Logo_Black.png</file>
     <file>Images/logos/SNL_logo.png</file>
+    <file>Images/logos/progress_bold_clean.svg</file>
+    <file>Images/logos/progress_bold_s.svg</file>
   </qresource>
   <qresource prefix="icons">
     <file>Images/icons/qmark.png</file>

@@ -94,7 +94,13 @@ class Ui_WindPage(object):
 
         self.verticalLayout_5.addWidget(self.line_separator_1)
 
-        self.frame_start_date = QFrame(self.groupBox_input)
+        self.frame_date_range = QFrame(self.groupBox_input)
+        self.frame_date_range.setObjectName(u"frame_date_range")
+        self.frame_date_range.setFrameShape(QFrame.NoFrame)
+        self.frame_date_range.setFrameShadow(QFrame.Plain)
+        self.verticalLayout_7 = QVBoxLayout(self.frame_date_range)
+        self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.frame_start_date = QFrame(self.frame_date_range)
         self.frame_start_date.setObjectName(u"frame_start_date")
         self.frame_start_date.setFrameShape(QFrame.NoFrame)
         self.horizontalLayout_start = QHBoxLayout(self.frame_start_date)
@@ -125,9 +131,9 @@ class Ui_WindPage(object):
         self.horizontalLayout_start.addWidget(self.btn_start_info)
 
 
-        self.verticalLayout_5.addWidget(self.frame_start_date)
+        self.verticalLayout_7.addWidget(self.frame_start_date)
 
-        self.frame_end_date = QFrame(self.groupBox_input)
+        self.frame_end_date = QFrame(self.frame_date_range)
         self.frame_end_date.setObjectName(u"frame_end_date")
         self.frame_end_date.setFrameShape(QFrame.NoFrame)
         self.horizontalLayout_end = QHBoxLayout(self.frame_end_date)
@@ -147,16 +153,19 @@ class Ui_WindPage(object):
 
         self.horizontalLayout_end.addWidget(self.line_edit_end)
 
-        self.pushButton_2 = QPushButton(self.frame_end_date)
-        self.pushButton_2.setObjectName(u"pushButton_2")
-        self.pushButton_2.setIcon(icon)
-        self.pushButton_2.setIconSize(QSize(40, 40))
-        self.pushButton_2.setFlat(True)
+        self.btn_end_info = QPushButton(self.frame_end_date)
+        self.btn_end_info.setObjectName(u"btn_end_info")
+        self.btn_end_info.setIcon(icon)
+        self.btn_end_info.setIconSize(QSize(40, 40))
+        self.btn_end_info.setFlat(True)
 
-        self.horizontalLayout_end.addWidget(self.pushButton_2)
+        self.horizontalLayout_end.addWidget(self.btn_end_info)
 
 
-        self.verticalLayout_5.addWidget(self.frame_end_date)
+        self.verticalLayout_7.addWidget(self.frame_end_date)
+
+
+        self.verticalLayout_5.addWidget(self.frame_date_range)
 
         self.line_separator_2 = QFrame(self.groupBox_input)
         self.line_separator_2.setObjectName(u"line_separator_2")
@@ -181,6 +190,11 @@ class Ui_WindPage(object):
 
         self.verticalLayout_6.addWidget(self.btn_download_wind)
 
+        self.btn_validate_own_data = QPushButton(self.frame_btns_data)
+        self.btn_validate_own_data.setObjectName(u"btn_validate_own_data")
+
+        self.verticalLayout_6.addWidget(self.btn_validate_own_data)
+
         self.btn_process_wind = QPushButton(self.frame_btns_data)
         self.btn_process_wind.setObjectName(u"btn_process_wind")
 
@@ -188,6 +202,11 @@ class Ui_WindPage(object):
 
 
         self.verticalLayout_5.addWidget(self.frame_btns_data)
+
+        self.label_hint_selection = QLabel(self.groupBox_input)
+        self.label_hint_selection.setObjectName(u"label_hint_selection")
+
+        self.verticalLayout_5.addWidget(self.label_hint_selection)
 
 
         self.verticalLayout_4.addWidget(self.groupBox_input)
@@ -229,8 +248,10 @@ class Ui_WindPage(object):
         self.btn_start_info.setText("")
         self.label_end_year.setText(QCoreApplication.translate("WindPage", u"End Year", None))
         self.line_edit_end.setPlaceholderText(QCoreApplication.translate("WindPage", u"e.g. 2023", None))
-        self.pushButton_2.setText("")
+        self.btn_end_info.setText("")
         self.btn_download_wind.setText(QCoreApplication.translate("WindPage", u"Download Wind Data", None))
+        self.btn_validate_own_data.setText(QCoreApplication.translate("WindPage", u"Validate Uploaded Data", None))
         self.btn_process_wind.setText(QCoreApplication.translate("WindPage", u"Process Wind Data", None))
+        self.label_hint_selection.setText(QCoreApplication.translate("WindPage", u"Please select an option.", None))
     # retranslateUi
 

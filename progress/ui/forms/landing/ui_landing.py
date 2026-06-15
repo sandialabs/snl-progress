@@ -19,7 +19,6 @@ from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
     QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout,
     QWidget)
 import resources_rc
-import resources_rc
 
 class Ui_LandingPage(object):
     def setupUi(self, LandingPage):
@@ -42,14 +41,13 @@ class Ui_LandingPage(object):
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.label_progress_logo = QLabel(self.frame_2)
         self.label_progress_logo.setObjectName(u"label_progress_logo")
-        sizePolicy = QSizePolicy(QSizePolicy.Ignored, QSizePolicy.Expanding)
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_progress_logo.sizePolicy().hasHeightForWidth())
         self.label_progress_logo.setSizePolicy(sizePolicy)
-        self.label_progress_logo.setMaximumSize(QSize(943, 239))
-        self.label_progress_logo.setPixmap(QPixmap(u":/logos/Images/logos/progress_transparent_alt.png"))
-        self.label_progress_logo.setScaledContents(True)
+        self.label_progress_logo.setMaximumSize(QSize(1000, 260))
+        self.label_progress_logo.setScaledContents(False)
         self.label_progress_logo.setAlignment(Qt.AlignCenter)
 
         self.horizontalLayout_3.addWidget(self.label_progress_logo)
