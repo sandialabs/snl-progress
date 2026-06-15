@@ -2,11 +2,11 @@
 config.ini
 **/build/
 **/dist/
-progress/ui/__pycache__
 **/*.egg-info/
 **/__pycache__/
 *.pyc
+progress/ui/__pycache__
 progress/Results
 progress/input.yaml
-.DS_Store
 progress/.DS_Store
+progress/Data
