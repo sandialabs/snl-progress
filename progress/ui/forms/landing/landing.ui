@@ -35,25 +35,22 @@
          <item>
           <widget class="QLabel" name="label_progress_logo">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="maximumSize">
             <size>
-             <width>943</width>
-             <height>239</height>
+             <width>1000</width>
+             <height>260</height>
             </size>
            </property>
            <property name="text">
             <string/>
            </property>
-           <property name="pixmap">
-            <pixmap resource="../../../resources.qrc">:/logos/Images/logos/progress_transparent_alt.png</pixmap>
-           </property>
            <property name="scaledContents">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -395,7 +392,6 @@
  </widget>
  <resources>
   <include location="../../../resources.qrc"/>
-  <include location="../../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

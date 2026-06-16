@@ -16,9 +16,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
-    QHeaderView, QLabel, QLineEdit, QScrollArea,
-    QSizePolicy, QSpacerItem, QStackedWidget, QTableWidget,
-    QTableWidgetItem, QTreeView, QVBoxLayout, QWidget)
+    QHeaderView, QLabel, QLineEdit, QPushButton,
+    QScrollArea, QSizePolicy, QSpacerItem, QStackedWidget,
+    QTableWidget, QTableWidgetItem, QTreeView, QVBoxLayout,
+    QWidget)
 
 class Ui_FilePreviewPage(object):
     def setupUi(self, FilePreviewPage):
@@ -35,6 +36,11 @@ class Ui_FilePreviewPage(object):
         self.horizontalLayout_main.setObjectName(u"horizontalLayout_main")
         self.frame_file_browser = QFrame(self.main_frame)
         self.frame_file_browser.setObjectName(u"frame_file_browser")
+        sizePolicy = QSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame_file_browser.sizePolicy().hasHeightForWidth())
+        self.frame_file_browser.setSizePolicy(sizePolicy)
         self.frame_file_browser.setMinimumSize(QSize(300, 0))
         self.frame_file_browser.setMaximumSize(QSize(380, 16777215))
         self.frame_file_browser.setFrameShape(QFrame.StyledPanel)
@@ -57,10 +63,45 @@ class Ui_FilePreviewPage(object):
 
         self.verticalLayout_file_browser.addWidget(self.line_separator_browser)
 
-        self.lineEdit_path = QLineEdit(self.frame_file_browser)
+        self.frame_file_path_search = QFrame(self.frame_file_browser)
+        self.frame_file_path_search.setObjectName(u"frame_file_path_search")
+        self.frame_file_path_search.setFrameShape(QFrame.NoFrame)
+        self.frame_file_path_search.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout = QHBoxLayout(self.frame_file_path_search)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.lineEdit_path = QLineEdit(self.frame_file_path_search)
         self.lineEdit_path.setObjectName(u"lineEdit_path")
 
-        self.verticalLayout_file_browser.addWidget(self.lineEdit_path)
+        self.horizontalLayout.addWidget(self.lineEdit_path)
+
+        self.btn_clear_search = QPushButton(self.frame_file_path_search)
+        self.btn_clear_search.setObjectName(u"btn_clear_search")
+
+        self.horizontalLayout.addWidget(self.btn_clear_search)
+
+
+        self.verticalLayout_file_browser.addWidget(self.frame_file_path_search)
+
+        self.frame_dir_options = QFrame(self.frame_file_browser)
+        self.frame_dir_options.setObjectName(u"frame_dir_options")
+        self.frame_dir_options.setFrameShape(QFrame.NoFrame)
+        self.frame_dir_options.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_dir_options)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.btn_home_dir = QPushButton(self.frame_dir_options)
+        self.btn_home_dir.setObjectName(u"btn_home_dir")
+
+        self.horizontalLayout_2.addWidget(self.btn_home_dir)
+
+        self.btn_results_dir = QPushButton(self.frame_dir_options)
+        self.btn_results_dir.setObjectName(u"btn_results_dir")
+
+        self.horizontalLayout_2.addWidget(self.btn_results_dir)
+
+
+        self.verticalLayout_file_browser.addWidget(self.frame_dir_options)
 
         self.treeView_files = QTreeView(self.frame_file_browser)
         self.treeView_files.setObjectName(u"treeView_files")
@@ -207,6 +248,9 @@ class Ui_FilePreviewPage(object):
         FilePreviewPage.setWindowTitle(QCoreApplication.translate("FilePreviewPage", u"File Preview", None))
         self.label_browser_title.setText(QCoreApplication.translate("FilePreviewPage", u"File Browser", None))
         self.lineEdit_path.setPlaceholderText(QCoreApplication.translate("FilePreviewPage", u"Optional path or filter...", None))
+        self.btn_clear_search.setText(QCoreApplication.translate("FilePreviewPage", u"Clear", None))
+        self.btn_home_dir.setText(QCoreApplication.translate("FilePreviewPage", u"Set to Home Directory", None))
+        self.btn_results_dir.setText(QCoreApplication.translate("FilePreviewPage", u"Set to Results Directory", None))
         self.groupBox_preview.setTitle(QCoreApplication.translate("FilePreviewPage", u"Preview", None))
         self.label_empty.setText(QCoreApplication.translate("FilePreviewPage", u"No file selected for preview.", None))
         self.label_pdf_title.setText(QCoreApplication.translate("FilePreviewPage", u"PDF Preview", None))

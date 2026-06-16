@@ -1,6 +1,9 @@
 from pathlib import Path
 from ruamel.yaml import YAML
 import yaml
+import logging 
+
+logger = logging.getLogger(__name__)
 
 def get_path() -> Path:
     return Path(__file__).resolve().parent
@@ -23,15 +26,21 @@ def get_system_data_path() -> Path:
 def get_wind_data_path() -> Path:
     return get_data_path() / "Wind"
 
+def get_results_path() -> Path:
+    return get_path() / "Results"
+
 BASE_DIR = get_path()
+HOME_DIR = get_home_dir()
 DATA_DIR = get_data_path()
 SOLAR_DIR = get_solar_data_path()
 SYSTEM_DIR = get_system_data_path()
 WIND_DIR = get_wind_data_path()
+RESULTS_DIR = get_results_path()
 # /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data
 # /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data/Solar
 # /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data/System
 # /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data/Wind
+# /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Results
 
 def update_data_path() -> None:
     data_path = get_data_path()
@@ -69,6 +78,5 @@ def update_data_path() -> None:
     # write the changes back to the file (comments are preserved)
     with open(yaml_file_path, "w") as file:
         yaml.dump(config_data, file)
-
     # safely print the confirmation using mixed quotes
-    print(f"Successfully updated the data path, data path is now: {config_data['data']}")
+    logger.info(f"Successfully updated the data path, data path is now: {config_data['data']}")

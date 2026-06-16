@@ -126,130 +126,142 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QFrame" name="frame_start_date">
+                 <widget class="QFrame" name="frame_date_range">
                   <property name="frameShape">
                    <enum>QFrame::NoFrame</enum>
                   </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_start">
-                   <item>
-                    <widget class="QLabel" name="label_start_year">
-                     <property name="minimumSize">
-                      <size>
-                       <width>80</width>
-                       <height>0</height>
-                      </size>
-                     </property>
-                     <property name="text">
-                      <string>Start Year</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <spacer name="horizontalSpacer_start">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
-                     </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Minimum</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="line_edit_start">
-                     <property name="placeholderText">
-                      <string>e.g. 2018</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="btn_start_info">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../../../resources.qrc">
-                       <normaloff>:/icons/Images/icons/about.png</normaloff>:/icons/Images/icons/about.png</iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>40</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QFrame" name="frame_end_date">
-                  <property name="frameShape">
-                   <enum>QFrame::NoFrame</enum>
+                  <property name="frameShadow">
+                   <enum>QFrame::Plain</enum>
                   </property>
-                  <layout class="QHBoxLayout" name="horizontalLayout_end">
+                  <layout class="QVBoxLayout" name="verticalLayout_7">
                    <item>
-                    <widget class="QLabel" name="label_end_year">
-                     <property name="minimumSize">
-                      <size>
-                       <width>80</width>
-                       <height>0</height>
-                      </size>
+                    <widget class="QFrame" name="frame_start_date">
+                     <property name="frameShape">
+                      <enum>QFrame::NoFrame</enum>
                      </property>
-                     <property name="text">
-                      <string>End Year</string>
-                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_start">
+                      <item>
+                       <widget class="QLabel" name="label_start_year">
+                        <property name="minimumSize">
+                         <size>
+                          <width>80</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>Start Year</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_start">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                         <enum>QSizePolicy::Minimum</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="line_edit_start">
+                        <property name="placeholderText">
+                         <string>e.g. 2018</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="btn_start_info">
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../../../resources.qrc">
+                          <normaloff>:/icons/Images/icons/about.png</normaloff>:/icons/Images/icons/about.png</iconset>
+                        </property>
+                        <property name="iconSize">
+                         <size>
+                          <width>40</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                        <property name="flat">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
                     </widget>
                    </item>
                    <item>
-                    <spacer name="horizontalSpacer_end">
-                     <property name="orientation">
-                      <enum>Qt::Horizontal</enum>
+                    <widget class="QFrame" name="frame_end_date">
+                     <property name="frameShape">
+                      <enum>QFrame::NoFrame</enum>
                      </property>
-                     <property name="sizeType">
-                      <enum>QSizePolicy::Minimum</enum>
-                     </property>
-                     <property name="sizeHint" stdset="0">
-                      <size>
-                       <width>40</width>
-                       <height>20</height>
-                      </size>
-                     </property>
-                    </spacer>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="line_edit_end">
-                     <property name="placeholderText">
-                      <string>e.g. 2023</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="pushButton_2">
-                     <property name="text">
-                      <string/>
-                     </property>
-                     <property name="icon">
-                      <iconset resource="../../../resources.qrc">
-                       <normaloff>:/icons/Images/icons/about.png</normaloff>:/icons/Images/icons/about.png</iconset>
-                     </property>
-                     <property name="iconSize">
-                      <size>
-                       <width>40</width>
-                       <height>40</height>
-                      </size>
-                     </property>
-                     <property name="flat">
-                      <bool>true</bool>
-                     </property>
+                     <layout class="QHBoxLayout" name="horizontalLayout_end">
+                      <item>
+                       <widget class="QLabel" name="label_end_year">
+                        <property name="minimumSize">
+                         <size>
+                          <width>80</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>End Year</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_end">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                         <enum>QSizePolicy::Minimum</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="line_edit_end">
+                        <property name="placeholderText">
+                         <string>e.g. 2023</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QPushButton" name="btn_end_info">
+                        <property name="text">
+                         <string/>
+                        </property>
+                        <property name="icon">
+                         <iconset resource="../../../resources.qrc">
+                          <normaloff>:/icons/Images/icons/about.png</normaloff>:/icons/Images/icons/about.png</iconset>
+                        </property>
+                        <property name="iconSize">
+                         <size>
+                          <width>40</width>
+                          <height>40</height>
+                         </size>
+                        </property>
+                        <property name="flat">
+                         <bool>true</bool>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
                     </widget>
                    </item>
                   </layout>
@@ -288,6 +300,13 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="QPushButton" name="btn_validate_own_data">
+                     <property name="text">
+                      <string>Validate Uploaded Data</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <widget class="QPushButton" name="btn_process_wind">
                      <property name="text">
                       <string>Process Wind Data</string>
@@ -295,6 +314,13 @@
                     </widget>
                    </item>
                   </layout>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_hint_selection">
+                  <property name="text">
+                   <string>Please select an option.</string>
+                  </property>
                  </widget>
                 </item>
                </layout>

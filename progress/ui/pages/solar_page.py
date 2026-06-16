@@ -43,6 +43,7 @@ class SolarPage(QWidget):
         self.ui.btn_info_num_cluster.clicked.connect(self._display_cluster_help)
         self.ui.btn_info_final_num_cluster.clicked.connect(self._display_cluster_final_help)
         self.ui.btn_info_skip.clicked.connect(self._display_skip_btn_info)
+        self.ui.btn_validate_own_data.clicked.connect(self._validate_user_data)
 
     def _switch_to_cluster_page(self, checked: bool = False) -> None:
         self.ui.solarStackedWidget.setCurrentWidget(self.ui.page_cluster)
@@ -71,7 +72,7 @@ class SolarPage(QWidget):
         self._update_solar_page_options()
 
     def _validate_user_data(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "User Data Validation", "User Data is validated good to proceed.")
+        QMessageBox.information(self, "User Solar Data Validation", "User Solar Data is validated good to proceed.")
         self._cluster_page_unlocked = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
 
@@ -101,7 +102,6 @@ class SolarPage(QWidget):
             self.ui.frame_data_range.setVisible(False)
             self.ui.frame_data_nav.setVisible(True)
             self.ui.btn_validate_own_data.setVisible(True)
-            self.ui.btn_validate_own_data.clicked.connect(self._validate_user_data)
         elif selection == "Download Solar Data from ERA5":
             self.ui.label_hint_selection.setVisible(False)
             self.ui.frame_btns_data.setVisible(True)
@@ -116,7 +116,7 @@ class SolarPage(QWidget):
             self.ui.btn_validate_own_data.setVisible(False)
             self._cluster_page_unlocked = False
         else:
-            self.ui.label_hint_selection.setVisible(False)
+            self.ui.label_hint_selection.setVisible(True)
             self.ui.frame_data_nav.setVisible(False)
             self.ui.frame_btns_data.setVisible(False)
             self.ui.frame_data_range.setVisible(False)

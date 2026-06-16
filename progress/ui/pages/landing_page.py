@@ -1,6 +1,7 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout
-from PySide6.QtCore import Qt
-from PySide6.QtGui import QPixmap
+from PySide6.QtWidgets import QWidget
+from PySide6.QtCore import Qt, Signal, QRectF
+from PySide6.QtGui import QPixmap, QPainter, QIcon
+from PySide6.QtSvg import QSvgRenderer
 from progress.ui.forms.landing.ui_landing import Ui_LandingPage
 from PySide6.QtCore import Signal
 
@@ -12,10 +13,42 @@ class LandingPage(QWidget):
         self.ui = Ui_LandingPage()
         self.ui.setupUi(self)
 
-        self._progress_logo_pixmap = QPixmap(":/logos/Images/logos/progress_transparent_alt.png")
+        self._progress_logo_icon = QSvgRenderer(":/logos/Images/logos/progress_bold_s.svg")
         self.ui.label_progress_logo.setAlignment(Qt.AlignCenter)
 
+        self._update_logo()
+
         self.ui.btn_getting_started.clicked.connect(self._on_getting_started_clicked)
+
+    def _update_logo(self):
+        label = self.ui.label_progress_logo
+        label_size = label.size()
+
+        # Get the SVG's native aspect ratio
+        svg_size = self._progress_logo_icon.defaultSize()  # QSize
+        scaled = svg_size.scaled(label_size, Qt.KeepAspectRatio)
+
+        pixmap = QPixmap(label_size)
+        pixmap.fill(Qt.transparent)
+
+        # Center the SVG rect within the label
+        x = (label_size.width() - scaled.width()) // 2
+        y = (label_size.height() - scaled.height()) // 2
+        target_rect = QRectF(x, y, scaled.width(), scaled.height())
+
+        painter = QPainter(pixmap)
+        painter.setRenderHint(QPainter.Antialiasing)
+        self._progress_logo_icon.render(painter, target_rect)
+        painter.end()
+
+        label.setPixmap(pixmap)
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._update_logo()
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self._update_logo()
 
     def _on_getting_started_clicked(self, checked: bool = False) -> None:
         self.getting_started_clicked.emit()

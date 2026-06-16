@@ -25,6 +25,12 @@
      <layout class="QHBoxLayout" name="horizontalLayout_main">
       <item>
        <widget class="QFrame" name="frame_file_browser">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="minimumSize">
          <size>
           <width>300</width>
@@ -69,10 +75,79 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="lineEdit_path">
-           <property name="placeholderText">
-            <string>Optional path or filter...</string>
+          <widget class="QFrame" name="frame_file_path_search">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
            </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_path">
+              <property name="placeholderText">
+               <string>Optional path or filter...</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_clear_search">
+              <property name="text">
+               <string>Clear</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QFrame" name="frame_dir_options">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="btn_home_dir">
+              <property name="text">
+               <string>Set to Home Directory</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btn_results_dir">
+              <property name="text">
+               <string>Set to Results Directory</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -95,7 +170,7 @@
          <item>
           <widget class="QStackedWidget" name="stackedWidget_preview">
            <property name="currentIndex">
-            <number>0</number>
+            <number>3</number>
            </property>
            <widget class="QWidget" name="page_empty">
             <layout class="QVBoxLayout" name="verticalLayout_empty">
@@ -220,8 +295,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>424</width>
-                  <height>324</height>
+                  <width>663</width>
+                  <height>771</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_scroll_image">
@@ -268,6 +343,9 @@
              </item>
              <item>
               <widget class="QTableWidget" name="tableWidget_csv">
+               <property name="showGrid">
+                <bool>true</bool>
+               </property>
                <property name="rowCount">
                 <number>5</number>
                </property>
