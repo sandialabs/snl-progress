@@ -5,6 +5,8 @@ import pandas as pd
 import calendar
 import os
 from datetime import datetime
+import glob
+import random
 
 #np.random.seed(42)  
 class RAUtilities:
@@ -269,7 +271,76 @@ class RAUtilities:
 
 
         return(np.transpose(self.s_zones))
+    
+    def data_center_load(self, load_df, system_directory, network_model):
 
+        # input folder
+        if network_model == "Zonal":
+            DC_folder = system_directory + '/data_center_load/zone_profiles'
+        else:
+            DC_folder = system_directory + '/data_center_load'
+
+        DC_profiles = glob.glob(os.path.join(DC_folder, "profile_*.csv"))
+
+        # choose a profile randomly
+        chosen_profile = random.choice(DC_profiles)
+        chosen_profile_df = pd.read_csv(chosen_profile)
+
+        # identify the load columns
+        datetime_cols = {"datetime", "date", "time", "timestamp", "hour", "month", "hour_of_day"}
+        profile_bus_cols = [c for c in chosen_profile_df.columns if c not in datetime_cols]
+        common_cols = [c for c in profile_bus_cols if c in load_df.columns]
+
+        load_updated = load_df.copy()
+        load_updated[common_cols] = (
+            load_updated[common_cols]
+            .add(chosen_profile_df[common_cols], fill_value=0)
+        )
+
+        return load_updated
+
+    def DC_zonal(self, system_directory):
+
+        profile_folder = system_directory + '/data_center_load'
+        output_folder = os.path.join(profile_folder, "zone_profiles")
+        if os.path.exists(output_folder):
+            print(f"{output_folder} already exists. Skipping zone profile generation.")
+        else:
+            os.makedirs(output_folder)
+
+        bus_df = pd.read_csv(f"{system_directory}/bus.csv")
+
+        bus_to_zone = {
+            str(bus).strip(): f"{zone}"
+            for bus, zone in zip(bus_df["Bus Name"], bus_df["Zone"])
+        }
+
+        datetime_cols = ["hour", "month", "hour_of_day"]
+
+        for profile_file in glob.glob(os.path.join(profile_folder, "profile_*.csv")):
+
+            df = pd.read_csv(profile_file)
+
+            # Separate datetime columns
+            time_df = df[[c for c in datetime_cols if c in df.columns]]
+
+            # Bus columns that have mappings
+            bus_cols = [c for c in df.columns if c in bus_to_zone]
+
+            # Rename buses to zones
+            zone_df = df[bus_cols].rename(columns=bus_to_zone)
+
+            # Sum buses belonging to the same zone
+            zone_df = zone_df.T.groupby(level=0).sum().T
+
+            result = pd.concat([time_df, zone_df], axis=1)
+
+            output_file = os.path.join(
+                output_folder,
+                os.path.basename(profile_file)
+            )
+
+            result.to_csv(output_file, index=False)
 
     def OptDispatch(self, ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
                     gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost):

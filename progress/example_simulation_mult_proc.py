@@ -70,15 +70,19 @@ class ProgressMultiProcess:
         genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost, genname = rasd.gen(data_gen)
         nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans, branchname = rasd.branch(data_branch, data_bus)
         bus_name, bus_no, nz = rasd.bus(data_bus)
-        load_all_regions = rasd.load(bus_name, bus_no, data_load)
-
         essname, essbus, ness, ess_pmax, ess_pmin, ess_duration, ess_socmax, ess_socmin, ess_eff, \
             disch_cost, ch_cost, MTTF_ess, MTTR_ess, ess_units, ess_chemistry = rasd.storage(data_storage)
         ess_sbase = ess_pmax*ess_duration
 
+        # calculate transition rates and capacities for all components
         raut = RAUtilities()
         mu_tot, lambda_tot = raut.reltrates(MTTF_gen, MTTF_trans, MTTR_gen, MTTR_trans, MTTF_ess, MTTR_ess)
         cap_max, cap_min = raut.capacities(nl, pmax, pmin, ess_pmax, ess_pmin, cap_trans) # calling this function to get values of cap_max and cap_min
+
+        # load electric load data and modify data center load for zonal model
+        load_all_regions = rasd.load(bus_name, bus_no, data_load)
+        if config["DC_load"] == True and network_model == "Zonal":
+            raut.DC_zonal(system_directory)
 
         # download and process wind data
         if wind_dir_exists:
@@ -182,6 +186,10 @@ class ProgressMultiProcess:
                     temp_holder[ess_name] = np.zeros(sim_hours)
                     SOC_old_deg[ess_name] = 0.5
 
+            # add data center load to relevant buses
+            if config['DC_load']==True:
+                load_plus_DC = raut.data_center_load(load_all_regions, system_directory, network_model)
+
             for n in range(sim_hours):
 
                 # get current states(up/down) and capacities of all system components
@@ -206,9 +214,10 @@ class ProgressMultiProcess:
                     s_zones_t = np.transpose(s_zones)
                     renewable_rec["solar_rec"][:, n] = s_zones_t[:, n%24]
 
-                # recalculate net load (for distribution side resources, optional)
-                part_netload = config['load_factor']*load_all_regions
+                # scale load with load factor (for distribution side resources, optional)
+                part_netload = config['load_factor']*load_plus_DC.values
 
+                # calculate net load by subtracting wind and solar power generation
                 if solar_dir_exists and wind_dir_exists:
                     net_load =  part_netload[n] - w_zones - s_zones[n%24]
                     tot_ren = w_zones + s_zones[n%24]
