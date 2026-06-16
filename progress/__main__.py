@@ -12,17 +12,24 @@ from progress.mod_sysdata import RASystemData
 from progress.ui.widgets.data_handler import DataHandler
 from progress.ui.pages.about_page import MarkdownWidget
 from progress.mod_utilities import RAUtilities
+from progress.ui.pages.log_window import LogWindow
 from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR, update_data_path
 import progress.resources_rc
+import logging
 import sys
 import os
+
+logger = logging.getLogger(__name__)
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
+        logging.info("Main window initialized")
+        # Install app logger once the UI exists.
+        # After this, logging and print output go to self.ui.log_window.
+        # logs from the other pages get captured.
         self.landing_page = LandingPage()
         self.solar_page = SolarPage()
         self.wind_page = WindPage()
@@ -149,8 +156,22 @@ class MainWindow(QMainWindow):
             essname, essbus, ness, ess_pmax, ess_pmin, ess_duration, ess_socmax, ess_socmin, ess_eff, disch_cost, ch_cost, MTTF_ess, MTTR_ess, ess_units = rasd.storage(data_storage)
 
             raut = RAUtilities()
-            mu_tot, lambda_tot = raut.reltrates(MTTF_gen, MTTF_trans, MTTR_gen, MTTR_trans, MTTF_ess, MTTR_ess)
-            cap_max, cap_min = raut.capacities(nl, pmax, pmin, ess_pmax, ess_pmin, cap_trans)
+            mu_tot, lambda_tot = raut.reltrates(
+                MTTF_gen,
+                MTTF_trans,
+                MTTR_gen,
+                MTTR_trans,
+                MTTF_ess,
+                MTTR_ess,
+            )
+            cap_max, cap_min = raut.capacities(
+                nl,
+                pmax,
+                pmin,
+                ess_pmax,
+                ess_pmin,
+                cap_trans,
+            )
 
             # Set data in DataHandler
             self.data_handler.set_genbus(genbus)
@@ -190,8 +211,11 @@ class MainWindow(QMainWindow):
             self.data_handler.set_cap_max(cap_max)
             self.data_handler.set_cap_min(cap_min)
             self.data_handler.set_raut(raut)
-        except Exception as e:
-            print("ERROR LOADING CSV")
+
+            logger.info("System data loaded successfully")
+
+        except Exception:
+            logger.exception("Error loading system CSV data")
 
     def load_stylesheet(self, filename):
         """Load a QSS stylesheet from a file."""
@@ -201,15 +225,57 @@ class MainWindow(QMainWindow):
             self.setStyleSheet(stylesheet)
             file.close()
 
+
+class AppController:
+    """Manages and displays both windows simultaneously."""
+    def __init__(self):
+        # Storing them as attributes keeps them alive in memory
+         self.log_window = LogWindow()
+         self.main_window = MainWindow()
+         logging.info("Application started")
+    def show_all(self):
+        # Call .show() on both instances to display them together
+        screen = QApplication.primaryScreen()
+        available = screen.availableGeometry()
+
+        screen_x = available.x()
+        screen_y = available.y()
+        screen_w = available.width()
+        screen_h = available.height()
+
+        gap = 20
+
+        main_w = int(screen_w * 0.65)
+        log_w = screen_w - main_w - gap
+        height = int(screen_h * 0.9)
+
+        self.main_window.setGeometry(
+            screen_x,
+            screen_y,
+            main_w,
+            height,
+        )
+
+        self.log_window.setGeometry(
+            screen_x + main_w + gap,
+            screen_y,
+            log_w,
+            height,
+        )
+
+        self.log_window.show()
+        self.main_window.show()
+
+
 def main():
     """
     The main entry point for the application.
     Initializes the QApplication, creates and shows the main window, and starts the event loop.
     """
-    update_data_path()
     app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    window = AppController()
+    update_data_path()
+    window.show_all()
     sys.exit(app.exec())
 
 if __name__ == "__main__":

@@ -1,7 +1,9 @@
 <RCC>
+  <!-- 
   <qresource prefix="/styles">
     <file alias="theme.qss">resources/theme.qss</file>
-  </qresource>
+  </qresource> 
+  -->
   <qresource prefix="logos">
     <file>Images/logos/progress_transparent_alt.png</file>
     <file>Images/logos/progress_bold.png</file>

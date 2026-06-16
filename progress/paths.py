@@ -1,6 +1,9 @@
 from pathlib import Path
 from ruamel.yaml import YAML
 import yaml
+import logging 
+
+logger = logging.getLogger(__name__)
 
 def get_path() -> Path:
     return Path(__file__).resolve().parent
@@ -76,4 +79,4 @@ def update_data_path() -> None:
     with open(yaml_file_path, "w") as file:
         yaml.dump(config_data, file)
     # safely print the confirmation using mixed quotes
-    print(f"Successfully updated the data path, data path is now: {config_data['data']}")
+    logger.info(f"Successfully updated the data path, data path is now: {config_data['data']}")
