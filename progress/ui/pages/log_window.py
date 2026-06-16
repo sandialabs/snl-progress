@@ -8,6 +8,14 @@ from PySide6.QtWidgets import QWidget, QPlainTextEdit
 
 from progress.ui.forms.log_window.ui_log_window import Ui_LogPage
 
+""" LOGGING LAYERS:
+logger.debug("Detailed developer/debug message")
+logger.info("Normal application event")
+logger.warning("Something unusual happened")
+logger.error("Something failed")
+logger.exception("Something failed with traceback")
+"""
+
 
 class _LogEmitter(QObject):
     """
@@ -16,13 +24,14 @@ class _LogEmitter(QObject):
     text_written = Signal(str)
 
 
-class _QtLogHandler(logging.Handler):
+class _QtLogHandler(QObject, logging.Handler):
     """
     Logging handler that writes Python logging messages to the app log window.
     """
 
     def __init__(self, log_widget: QPlainTextEdit):
-        super().__init__()
+        QObject.__init__(self)
+        logging.Handler.__init__(self)
         self.log_widget = log_widget
 
         # Signal used to update the GUI safely.
@@ -30,24 +39,16 @@ class _QtLogHandler(logging.Handler):
         self.emitter.text_written.connect(self._append_text)
 
     def emit(self, record: logging.LogRecord) -> None:
-        """
-        Called by the logging module when a log message is created.
-        """
         try:
             message = self.format(record)
-            self.emitter.text_written.emit(message + "\n")
+            self._append_text(message + "\n")
         except Exception:
             self.handleError(record)
 
-    @Slot(str)
     def _append_text(self, text: str) -> None:
-        """
-        Adds log text to the bottom of the log window.
-        """
         cursor = self.log_widget.textCursor()
         cursor.movePosition(QTextCursor.MoveOperation.End)
         self.log_widget.setTextCursor(cursor)
-
         self.log_widget.insertPlainText(text)
         self.log_widget.ensureCursorVisible()
 
@@ -77,6 +78,7 @@ class LogWindowController(QObject):
         level: int = logging.INFO,
         capture_print: bool = True,
         remove_existing_handlers: bool = True,
+        defer_capture: bool = False,
     ):
         super().__init__()
 
@@ -100,7 +102,7 @@ class LogWindowController(QObject):
         # Configure root logger so logs from all modules go here.
         root_logger = logging.getLogger()
 
-        if remove_existing_handlers:
+        if not defer_capture and remove_existing_handlers:
             for handler in list(root_logger.handlers):
                 root_logger.removeHandler(handler)
 
@@ -109,8 +111,8 @@ class LogWindowController(QObject):
 
         self.print_stream = None
         self.error_stream = None
+        self._capture_enabled = False
 
-        # Redirect print and stderr to the log window.
         if capture_print:
             self.print_stream = _QtPrintStream()
             self.error_stream = _QtPrintStream()
@@ -118,8 +120,26 @@ class LogWindowController(QObject):
             self.print_stream.text_written.connect(self._append_plain_text)
             self.error_stream.text_written.connect(self._append_plain_text)
 
+            if not defer_capture:
+                sys.stdout = self.print_stream
+                sys.stderr = self.error_stream
+                self._capture_enabled = True
+
+    def enable_capture(self) -> None:
+        """Redirect stdout/stderr to the log window and optionally clean up terminal handlers."""
+        if self._capture_enabled:
+            return
+
+        if self.print_stream and self.error_stream:
             sys.stdout = self.print_stream
             sys.stderr = self.error_stream
+
+        root_logger = logging.getLogger()
+        for handler in list(root_logger.handlers):
+            if handler is not self.log_handler:
+                root_logger.removeHandler(handler)
+
+        self._capture_enabled = True
 
     @Slot(str)
     def _append_plain_text(self, text: str) -> None:
@@ -158,6 +178,7 @@ def install_log_window(
     level: int = logging.INFO,
     capture_print: bool = True,
     remove_existing_handlers: bool = True,
+    defer_capture: bool = False,
 ) -> LogWindowController:
     """
     Installs the logger once and returns the controller.
@@ -170,6 +191,7 @@ def install_log_window(
             level=level,
             capture_print=capture_print,
             remove_existing_handlers=remove_existing_handlers,
+            defer_capture=defer_capture,
         )
 
     return _log_controller
@@ -197,7 +219,9 @@ class LogWindow(QWidget):
         self.setWindowTitle("Progress Logs")
 
         # Install logging onto the QPlainTextEdit named log_window.
-        self.log_controller = install_log_window(self.ui.log_window)
+        # Defer capture so startup output goes to the terminal; enable_capture()
+        # is called later in AppController.show_all() just before windows appear.
+        self.log_controller = install_log_window(self.ui.log_window, defer_capture=True)
 
     def clear_logs(self) -> None:
         self.log_controller.clear()

@@ -44,24 +44,6 @@ RESULTS_DIR = get_results_path()
 
 def update_data_path() -> None:
     data_path = get_data_path()
-
-    # # Read the existing YAML file
-    # yaml_file_path = str(Path(__file__).resolve().parent / "input.yaml")
-    # with open(yaml_file_path, "r") as file:
-    #     # Use safe_load to safely parse existing data into a dictionary
-    #     config_data = yaml.safe_load(file) or {}
-    #
-    # # Update ONLY the target key with the string version of the path
-    # config_data["data"] = str(data_path)
-    #
-    # # Write the updated data back to the file
-    # with open(yaml_file_path, "w") as file:
-    #     yaml.dump(config_data, file, default_flow_style=False)
-    #
-    # print(f"Successfully updated the data path, data path is now: {config_data['data']}")
-
-
-
     yaml_file_path = str(Path(__file__).resolve().parent / "input.yaml")
 
     # initialize the round-trip YAML parser
@@ -80,3 +62,13 @@ def update_data_path() -> None:
         yaml.dump(config_data, file)
     # safely print the confirmation using mixed quotes
     logger.info(f"Successfully updated the data path, data path is now: {config_data['data']}")
+
+def check_era_api_key_existence() -> bool:
+    api_key_file = get_home_dir() / ".cdsapirc"
+    if api_key_file.is_file():
+        logger.info(f"API KEY LOCATION: {api_key_file}")
+        return True
+    else:
+        logger.error("NO API KEY EXISTS")
+        return False
+

@@ -2,8 +2,8 @@ from PySide6.QtWidgets import QWidget
 from PySide6.QtCore import Qt, Signal, QRectF
 from PySide6.QtGui import QPixmap, QPainter, QIcon
 from PySide6.QtSvg import QSvgRenderer
-from progress.ui.forms.landing.ui_landing import Ui_LandingPage
 from PySide6.QtCore import Signal
+from progress.ui.forms.landing.ui_landing import Ui_LandingPage
 
 class LandingPage(QWidget):
     getting_started_clicked = Signal()
@@ -42,6 +42,7 @@ class LandingPage(QWidget):
         painter.end()
 
         label.setPixmap(pixmap)
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._update_logo()

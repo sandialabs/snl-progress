@@ -1,7 +1,7 @@
 # ProGRESS Configuration File
 
 # Data file directory
-data: "path/to/Data"
+data: "/Users/eecabre/projects/QuESt/quest-apps/snl-progress/progress/Data"
 
 # Inputs for Wind (check ERA5 for data availability)
 download_w: 'Yes' # Yes/No based on whether data needs to be downloaded
@@ -29,4 +29,4 @@ degradation_interval: 1000 # Interval between BESS degradation evaluation. Recom
 detailed_thermal_model: false # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 
 
 # Data center load 
-DC_load: True # True/False based on whether data centers exist in the system
+DC_load: true # True/False based on whether data centers exist in the system

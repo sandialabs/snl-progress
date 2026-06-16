@@ -3,6 +3,9 @@ from PySide6.QtCore import Signal
 from progress.ui.forms.solar.ui_solar import Ui_SolarPage 
 from progress.ui.forms.solar.ui_solar_results import Ui_SolarResults 
 from enum import Enum 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class SolarResultsPage(QWidget):
     def __init__(self):
@@ -16,6 +19,9 @@ class SolarPage(QWidget):
         self.ui = Ui_SolarPage()
         self.results_window = SolarResultsPage()
         self.ui.setupUi(self)
+
+        logger.info("SolarPage logger test")
+
 
         # STATE FLAG for download solar data to download
         self._cluster_page_unlocked = False
@@ -60,6 +66,7 @@ class SolarPage(QWidget):
         self._cluster_page_unlocked = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self.ui.frame_data_nav.setVisible(True)
+        logger.info("successfully downloaded solar data")
 
     def _update_page_navigation_ui(self, _index: int) -> None:
         current_page = self.ui.solarStackedWidget.currentWidget()

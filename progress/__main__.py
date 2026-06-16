@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox
 from PySide6.QtCore import QFile, QTextStream, Qt, QSize, QTimer
 from PySide6.QtGui import QPixmap
 from PySide6.QtPdfWidgets import QPdfView
@@ -12,8 +12,8 @@ from progress.mod_sysdata import RASystemData
 from progress.ui.widgets.data_handler import DataHandler
 from progress.ui.pages.about_page import MarkdownWidget
 from progress.mod_utilities import RAUtilities
-from progress.ui.pages.log_window import LogWindow
-from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR, update_data_path
+from progress.ui.pages.log_window import LogWindow, get_log_window
+from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR, update_data_path, check_era_api_key_existence
 import progress.resources_rc
 import logging
 import sys
@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        logging.info("Main window initialized")
+        logger.info("Main window initialized")
         # Install app logger once the UI exists.
         # After this, logging and print output go to self.ui.log_window.
         # logs from the other pages get captured.
@@ -44,6 +44,17 @@ class MainWindow(QMainWindow):
             self.ui.page_simulation,
             self.ui.page_results,
         ]
+
+        # ERA5 API KEY CHECK
+        api_key_exists = check_era_api_key_existence()
+        if not api_key_exists:
+            QMessageBox.critical(self, "ERA5 API KEY ISSUE", "Please check README instructions to get ERA5 API KEY")
+            logging.error(f"api key DOESNT EXIST: {api_key_exists}")
+        else:
+            logging.info(f"api key exists: {api_key_exists}")
+
+
+
 
         self._mount_page(self.ui.page_landing, self.landing_page)
         self._mount_page(self.ui.page_solar, self.solar_page)
@@ -142,7 +153,7 @@ class MainWindow(QMainWindow):
 
     def load_sys_data(self):
         try:
-            rasd = RASystemData()
+            rasd = RASystemData('single_period', 'Zonal')
             data_gen = self.sys_directory + '/gen.csv'
             data_branch = self.sys_directory + '/branch.csv'
             data_bus = self.sys_directory + '/bus.csv'
@@ -232,8 +243,15 @@ class AppController:
         # Storing them as attributes keeps them alive in memory
          self.log_window = LogWindow()
          self.main_window = MainWindow()
-         logging.info("Application started")
+         logger.info("Application started")
+         logger.info("Inside APP controller")
     def show_all(self):
+        # Enable log window capture so all subsequent output goes to the GUI log.
+        # Startup output (imports, init) still printed to terminal.
+        log_controller = get_log_window()
+        if log_controller is not None:
+            log_controller.enable_capture()
+
         # Call .show() on both instances to display them together
         screen = QApplication.primaryScreen()
         available = screen.availableGeometry()
@@ -263,8 +281,9 @@ class AppController:
             height,
         )
 
-        self.log_window.show()
         self.main_window.show()
+        self.log_window.show()
+
 
 
 def main():
