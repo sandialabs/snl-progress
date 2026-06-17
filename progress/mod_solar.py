@@ -11,6 +11,9 @@ from pvlib.location import Location
 from pvlib.pvsystem import PVSystem
 import pvlib.modelchain as mc
 from timezonefinder import TimezoneFinder
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Solar:
     """

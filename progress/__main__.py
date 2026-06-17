@@ -9,7 +9,7 @@ from progress.ui.pages.wind_page import WindPage
 from progress.ui.pages.simulation_page import SimulationPage
 from progress.ui.pages.results_page import ResultsPage
 from progress.mod_sysdata import RASystemData
-from progress.ui.widgets.data_handler import DataHandler
+from progress.ui.utils.data_handler import DataHandler
 from progress.ui.pages.about_page import MarkdownWidget
 from progress.mod_utilities import RAUtilities
 from progress.ui.pages.log_window import LogWindow, get_log_window

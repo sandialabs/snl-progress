@@ -2,8 +2,10 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox
 from PySide6.QtCore import Signal
 from progress.ui.forms.solar.ui_solar import Ui_SolarPage 
 from progress.ui.forms.solar.ui_solar_results import Ui_SolarResults 
-from progress.utils.worker import WorkerThread
-from enum import Enum 
+from progress.ui.utils.worker import WorkerThread
+from progress.paths import get_path
+from progress.mod_solar import Solar
+import yaml
 import logging
 import datetime
 
@@ -21,6 +23,7 @@ class SolarPage(QWidget):
         self.ui = Ui_SolarPage()
         self.results_window = SolarResultsPage()
         self.ui.setupUi(self)
+
 
         # STATE FLAG for download solar data to download
         self._cluster_page_unlocked = False
@@ -95,33 +98,34 @@ class SolarPage(QWidget):
             logger.warning("End year was empty or invalid. Defaulting to current year, please enter a valid year.")
             return
 
-
-        from progress.utils.config import get_config  # or inline yaml load
-        from progress.mod_solar import Solar
-        # Read config once in __init__ and store on self, or inline:
-        config_path = Path(__file__).resolve().parent.parent.parent / "input.yaml"
-        with open(config_path) as f:
-            config = yaml.safe_load(f)
-
-        solar = Solar(config['data'] + '/Solar', config['model'])
-
-        self.worker = WorkerThread(solar.download_solar_data, self.start_year, self.end_year)
-        self.worker.error.connect(self._on_download_error)  # need to add
+        self.ui.btn_download_solar.setEnabled(False)
+        self.worker = WorkerThread(self._run_solar_download)
+        self.worker.success.connect(self._on_download_success)
+        self.worker.error.connect(self._on_download_error)
         self.worker.finished.connect(self._on_download_finished)
         self.worker.start()
 
-        self.ui.btn_download_solar.setEnabled(False)
         logger.info(f"Start Year Value: {self.start_year}")
         logger.info(f"End Year Value: {self.end_year}")
-        logger.info("successfully downloaded solar data")
 
-    def _on_download_error(self, error_msg: str) -> None:
+    def _run_solar_download(self) -> None:
+        config_path = get_path() / "input.yaml"
+        with open(config_path) as f:
+            config = yaml.safe_load(f)
+            solar = Solar(config['data'] + '/Solar', config['model'])
+            solar.download_solar_data(self.start_year, self.end_year)
+
+    def _on_download_success(self) -> None:
+        self._cluster_page_unlocked = True
+        self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self.ui.btn_download_solar.setEnabled(True)
-        QMessageBox.critical(self, "Download Error", f"Solar data download failed:\n{error_msg}")
+        QMessageBox.information(self, "Solar Data Download", "Successfully downloaded data can proceed")
 
     def _on_download_finished(self) -> None:
         self.ui.btn_download_solar.setEnabled(True)
-        QMessageBox.information(self, "Solar Data Download", "Successfully downloaded data can proceed")
+
+    def _on_download_error(self, error_msg: str) -> None:
+        QMessageBox.critical(self, "Download Error", f"Solar data download failed:\n{error_msg}")
 
     def _update_page_navigation_ui(self, _index: int) -> None:
         current_page = self.ui.solarStackedWidget.currentWidget()

@@ -7,13 +7,20 @@ logger = logging.getLogger(__name__)
 class WorkerThread(QThread):
     finished = Signal()
     error = Signal(str)       
+    success = Signal()       # emitted only on success
     output_updated = Signal(str)
+
+    def __init__(self, method, *args):
+        super().__init__()
+        self.method = method
+        self.args = args
 
     def run(self):
         stdout_buffer = StdoutBuffer(self)
         sys.stdout = stdout_buffer
         try:
             self.method(*self.args)
+            self.success.emit()
         except Exception as e:
             self.error.emit(str(e))
             logger.exception("Worker thread failed")

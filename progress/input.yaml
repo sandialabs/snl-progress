@@ -4,15 +4,15 @@
 data: "/Users/eecabre/projects/QuESt/quest-apps/snl-progress/progress/Data"
 
 # Inputs for Wind (check ERA5 for data availability)
-download_w: 'Yes' # Yes/No based on whether data needs to be downloaded
+download_w: 'No' # Yes/No based on whether data needs to be downloaded
 year_start_w: 2000 # start year for wind data download
 year_end_w: 2025 # end year for wind data download
 
 # Inputs for Solar (check ERA5 for data availability)
 download_s: 'Yes' # Yes/No based on whether data needs to be downloaded
-year_start_s: 2000 # start year for solar data download
-year_end_s: 2025 # start year for solar data download
-n_clusters: 8 # number of K-means clusters for the solar data
+year_start_s: 2024 # start year for solar data download
+year_end_s: 2024 # start year for solar data download
+n_clusters: 2 # number of K-means clusters for the solar data
 
 # Monte Carlo simulation parameters
 samples: 5 # no. of Monte Carlo samples to run
