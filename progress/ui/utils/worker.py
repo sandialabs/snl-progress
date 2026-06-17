@@ -1,26 +1,25 @@
 import sys
+import logging
 from PySide6.QtCore import Signal, QThread
 
+logger = logging.getLogger(__name__)
 
 class WorkerThread(QThread):
     finished = Signal()
+    error = Signal(str)       
     output_updated = Signal(str)
-
-    def __init__(self, method, *args):
-        super().__init__()
-        self.method = method
-        self.args = args
 
     def run(self):
         stdout_buffer = StdoutBuffer(self)
         sys.stdout = stdout_buffer
-
-        self.method(*self.args)
-
-        sys.stdout = sys.__stdout__
-
-        self.finished.emit()
-
+        try:
+            self.method(*self.args)
+        except Exception as e:
+            self.error.emit(str(e))
+            logger.exception("Worker thread failed")
+        finally:
+            sys.stdout = sys.__stdout__
+            self.finished.emit()
 
 class StdoutBuffer:
     def __init__(self, worker_thread):

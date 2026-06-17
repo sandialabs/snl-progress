@@ -78,7 +78,7 @@ class Solar:
             request = base_request.copy()
             request["location"] = {"longitude": lon, "latitude": lat}
 
-            print(f"Downloading {name} (lat={lat}, lon={lon})...")
+            logger.info(f"Downloading {name} (lat={lat}, lon={lon})...")
 
             result = client.retrieve(dataset, request)
             zip_path = Path(result.download())
@@ -229,8 +229,8 @@ class Solar:
         output_file = self.solar_directory + "/gen_all_sites.csv"
         combined_df.to_csv(output_file)
 
-        print(f"Saved combined data to: {output_file}")
-        print(f"Shape: {combined_df.shape}")
+        logger.info(f"Saved combined data to: {output_file}")
+        logger.info(f"Shape: {combined_df.shape}")
 
         return combined_df
     
@@ -269,7 +269,7 @@ class Solar:
 
         for file in all_files:
 
-            print(f"Processing {file.name}")
+            logger.info(f"Processing {file.name}")
             
             # Extract site_id from filename
             site_id = file.stem
