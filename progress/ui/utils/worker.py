@@ -16,6 +16,7 @@ class WorkerThread(QThread):
         self.args = args
 
     def run(self):
+        original_stdout = sys.stdout
         stdout_buffer = StdoutBuffer(self)
         sys.stdout = stdout_buffer
         try:
@@ -25,7 +26,7 @@ class WorkerThread(QThread):
             self.error.emit(str(e))
             logger.exception("Worker thread failed")
         finally:
-            sys.stdout = sys.__stdout__
+            sys.stdout = original_stdout    
             self.finished.emit()
 
 class StdoutBuffer:

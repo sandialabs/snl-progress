@@ -51,7 +51,7 @@ class Solar:
 
         pass
 
-    def download_solar_data(self, start_year, end_year):
+    def download_solar_data(self, start_year, end_year, progress_callback=None):
 
         if not {"Latitude", "Longitude"}.issubset(self.sites_df.columns):
             raise ValueError("CSV must contain 'Latitude and 'Longitude' columns")
@@ -104,6 +104,9 @@ class Solar:
 
             # --- CLEANUP ---
             zip_path.unlink()
+
+            if progress_callback:
+                progress_callback()
 
     def process_solar_data(self, file_path, site):
         df_weather = pd.read_csv(file_path)

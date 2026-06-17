@@ -1,8 +1,6 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox
-from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QApplication
 from progress.ui.forms.solar.ui_solar import Ui_SolarPage 
 from progress.ui.forms.solar.ui_solar_results import Ui_SolarResults 
-from progress.ui.utils.worker import WorkerThread
 from progress.paths import get_path
 from progress.mod_solar import Solar
 import yaml
@@ -23,6 +21,7 @@ class SolarPage(QWidget):
         self.ui = Ui_SolarPage()
         self.results_window = SolarResultsPage()
         self.ui.setupUi(self)
+
 
 
         # STATE FLAG for download solar data to download
@@ -99,32 +98,35 @@ class SolarPage(QWidget):
             return
 
         self.ui.btn_download_solar.setEnabled(False)
-        self.worker = WorkerThread(self._run_solar_download)
-        self.worker.success.connect(self._on_download_success)
-        self.worker.error.connect(self._on_download_error)
-        self.worker.finished.connect(self._on_download_finished)
-        self.worker.start()
+        self.ui.btn_download_solar.setText("Downloading...")
+        QApplication.processEvents()
+
+        try:
+            self._run_solar_download(self.start_year, self.end_year)
+            self._on_download_success()
+        except Exception as e:
+            self._on_download_error(str(e))
 
         logger.info(f"Start Year Value: {self.start_year}")
         logger.info(f"End Year Value: {self.end_year}")
 
-    def _run_solar_download(self) -> None:
+    def _run_solar_download(self, start_year: int, end_year: int) -> None:
         config_path = get_path() / "input.yaml"
         with open(config_path) as f:
             config = yaml.safe_load(f)
-            solar = Solar(config['data'] + '/Solar', config['model'])
-            solar.download_solar_data(self.start_year, self.end_year)
+        solar = Solar(config['data'] + '/Solar', config['model'])
+        solar.download_solar_data(start_year, end_year, progress_callback=QApplication.processEvents)
 
     def _on_download_success(self) -> None:
         self._cluster_page_unlocked = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self.ui.btn_download_solar.setEnabled(True)
-        QMessageBox.information(self, "Solar Data Download", "Successfully downloaded data can proceed")
-
-    def _on_download_finished(self) -> None:
-        self.ui.btn_download_solar.setEnabled(True)
+        self.ui.btn_download_solar.setText("Download Solar Data")
+        QMessageBox.information(self, "Solar Data Download", "Successfully downloaded data")
 
     def _on_download_error(self, error_msg: str) -> None:
+        self.ui.btn_download_solar.setEnabled(True)
+        self.ui.btn_download_solar.setText("Download Solar Data")
         QMessageBox.critical(self, "Download Error", f"Solar data download failed:\n{error_msg}")
 
     def _update_page_navigation_ui(self, _index: int) -> None:
