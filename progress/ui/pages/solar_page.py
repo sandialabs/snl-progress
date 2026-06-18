@@ -1,6 +1,8 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QApplication
+from PySide6.QtCore import QTimer
 from progress.ui.forms.solar.ui_solar import Ui_SolarPage 
 from progress.ui.forms.solar.ui_solar_results import Ui_SolarResults 
+from progress.ui.utils.worker import WorkerThread
 from progress.paths import get_path
 from progress.mod_solar import Solar
 import yaml
@@ -42,6 +44,7 @@ class SolarPage(QWidget):
         self.ui.solarStackedWidget.currentChanged.connect(self._update_page_navigation_ui)
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self.ui.btn_download_solar.clicked.connect(self._handle_download_solar)
+        self.ui.btn_validate_own_data.clicked.connect(self._validate_user_data)
         self.ui.btn_eval_cluster.clicked.connect(self._open_cluster_results)
         self.ui.btn_data_page.clicked.connect(self._switch_to_data_page)
         self.ui.btn_clusters_page.clicked.connect(self._switch_to_cluster_page)
@@ -51,7 +54,6 @@ class SolarPage(QWidget):
         self.ui.btn_info_num_cluster.clicked.connect(self._display_cluster_help)
         self.ui.btn_info_final_num_cluster.clicked.connect(self._display_cluster_final_help)
         self.ui.btn_info_skip.clicked.connect(self._display_skip_btn_info)
-        self.ui.btn_validate_own_data.clicked.connect(self._validate_user_data)
 
         # init values
         self.start_year: int = 2020
@@ -101,11 +103,24 @@ class SolarPage(QWidget):
         self.ui.btn_download_solar.setText("Downloading...")
         QApplication.processEvents()
 
-        try:
-            self._run_solar_download(self.start_year, self.end_year)
-            self._on_download_success()
-        except Exception as e:
-            self._on_download_error(str(e))
+        msg = QMessageBox(self)
+        msg.setIcon(QMessageBox.Information)
+        msg.setWindowTitle("Downloading Solar Data")
+        msg.setText(
+            "The latest solar data must be downloaded before continuing.\n\n"
+            "We’re downloading the latest solar data. The app may pause briefly and will resume automatically when the download is complete.\n\n"
+        )
+        msg.setStandardButtons(QMessageBox.Ok)
+        result = msg.exec_()
+
+        if result == QMessageBox.Ok:
+            QApplication.processEvents()
+            # QTimer.singleShot(100, self._start_solar_download)
+            try:
+                self._run_solar_download(self.start_year, self.end_year)
+                self._on_download_success()
+            except Exception as e:
+                self._on_download_error(str(e))
 
         logger.info(f"Start Year Value: {self.start_year}")
         logger.info(f"End Year Value: {self.end_year}")
@@ -143,6 +158,31 @@ class SolarPage(QWidget):
         QMessageBox.information(self, "User Solar Data Validation", "User Solar Data is validated good to proceed.")
         self._cluster_page_unlocked = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
+        self._run_solar_processing()   
+
+    def _run_solar_processing(self) -> None:
+        config_path = get_path() / "input.yaml"
+        with open(config_path) as f:
+            config = yaml.safe_load(f)
+        solar = Solar(config['data'] + '/Solar', config['model'])
+
+        self._processing_thread = WorkerThread(solar.run_pipeline_gui)
+        self._processing_thread.success.connect(self._on_processing_success)
+        self._processing_thread.error.connect(self._on_processing_error)
+        self._processing_thread.start()
+
+
+    def _on_processing_success(self) -> None:
+        self._cluster_page_unlocked = True
+        self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
+        self.ui.btn_download_solar.setEnabled(True)
+        self.ui.btn_download_solar.setText("Download Solar Data")
+        QMessageBox.information(self, "Solar Processing", "Solar generation data processed successfully.")
+
+    def _on_processing_error(self, error_msg: str) -> None:
+        self.ui.btn_download_solar.setEnabled(True)
+        self.ui.btn_download_solar.setText("Download Solar Data")
+        QMessageBox.critical(self, "Processing Error", f"Solar data processing failed:\n{error_msg}")
 
     def _display_start_year_info(self, checked: bool = False) -> None:
          QMessageBox.information(self, "ERA5 Start Year", "Start year for Solar data download.")

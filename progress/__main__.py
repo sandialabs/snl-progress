@@ -1,7 +1,6 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox
 from PySide6.QtCore import QFile, QTextStream, Qt, QSize, QTimer
 from PySide6.QtGui import QPixmap
-from PySide6.QtPdfWidgets import QPdfView
 from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
 from progress.ui.pages.landing_page import LandingPage
 from progress.ui.pages.solar_page import SolarPage
@@ -94,7 +93,8 @@ class MainWindow(QMainWindow):
         #     lambda checked=False: self._go_to_page(self.ui.page_landing)
         # )
 
-       
+
+        self.data = DataHandler() 
         #setting up sys dir data
         self.sys_directory = str(SYSTEM_DIR)
         self.load_sys_data()
@@ -160,11 +160,12 @@ class MainWindow(QMainWindow):
             data_load = self.sys_directory + '/load.csv'
             data_storage = self.sys_directory + '/storage.csv'
 
-            genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost = rasd.gen(data_gen)
-            nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans = rasd.branch(data_branch)
+            genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost, genname = rasd.gen(data_gen)
+            nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans, branchname = rasd.branch(data_branch, data_bus)
+            data_bus = self.sys_directory + '/bus.csv'
             bus_name, bus_no, nz = rasd.bus(data_bus)
-            load_all_regions = rasd.load(bus_name, data_load)
-            essname, essbus, ness, ess_pmax, ess_pmin, ess_duration, ess_socmax, ess_socmin, ess_eff, disch_cost, ch_cost, MTTF_ess, MTTR_ess, ess_units = rasd.storage(data_storage)
+            load_all_regions = rasd.load(bus_name, bus_no, data_load) 
+            essname, essbus, ness, ess_pmax, ess_pmin, ess_duration, ess_socmax, ess_socmin, ess_eff, disch_cost, ch_cost, MTTF_ess, MTTR_ess, ess_units, ess_chemistry = rasd.storage(data_storage)
 
             raut = RAUtilities()
             mu_tot, lambda_tot = raut.reltrates(
@@ -185,44 +186,43 @@ class MainWindow(QMainWindow):
             )
 
             # Set data in DataHandler
-            self.data_handler.set_genbus(genbus)
-            self.data_handler.set_ng(ng)
-            self.data_handler.set_pmax(pmax)
-            self.data_handler.set_pmin(pmin)
-            self.data_handler.set_FOR_gen(FOR_gen)
-            self.data_handler.set_MTTF_gen(MTTF_gen)
-            self.data_handler.set_MTTR_gen(MTTR_gen)
-            self.data_handler.set_gencost(gencost)
-            self.data_handler.set_nl(nl)
-            self.data_handler.set_fb(fb)
-            self.data_handler.set_tb(tb)
-            self.data_handler.set_cap_trans(cap_trans)
-            self.data_handler.set_MTTF_trans(MTTF_trans)
-            self.data_handler.set_MTTR_trans(MTTR_trans)
-            self.data_handler.set_bus_name(bus_name)
-            self.data_handler.set_bus_no(bus_no)
-            self.data_handler.set_nz(nz)
-            self.data_handler.set_load_all_regions(load_all_regions)
-            self.data_handler.set_essname(essname)
-            self.data_handler.set_essbus(essbus)
-            self.data_handler.set_ness(ness)
-            self.data_handler.set_ess_pmax(ess_pmax)
-            self.data_handler.set_ess_pmin(ess_pmin)
-            self.data_handler.set_ess_duration(ess_duration)
-            self.data_handler.set_ess_socmax(ess_socmax)
-            self.data_handler.set_ess_socmin(ess_socmin)
-            self.data_handler.set_ess_eff(ess_eff)
-            self.data_handler.set_disch_cost(disch_cost)
-            self.data_handler.set_ch_cost(ch_cost)
-            self.data_handler.set_MTTF_ess(MTTF_ess)
-            self.data_handler.set_MTTR_ess(MTTR_ess)
-            self.data_handler.set_ess_units(ess_units)
-            self.data_handler.set_mu_tot(mu_tot)
-            self.data_handler.set_lambda_tot(lambda_tot)
-            self.data_handler.set_cap_max(cap_max)
-            self.data_handler.set_cap_min(cap_min)
-            self.data_handler.set_raut(raut)
-
+            self.data.genbus = genbus
+            self.data.ng = ng
+            self.data.pmax = pmax
+            self.data.pmin = pmin
+            self.data.FOR_gen = FOR_gen
+            self.data.MTTF_gen = MTTF_gen
+            self.data.MTTR_gen = MTTR_gen
+            self.data.gencost = gencost
+            self.data.nl = nl
+            self.data.fb = fb
+            self.data.tb = tb
+            self.data.cap_trans = cap_trans
+            self.data.MTTF_trans = MTTF_trans
+            self.data.MTTR_trans = MTTR_trans
+            self.data.bus_name = bus_name
+            self.data.bus_no = bus_no
+            self.data.nz = nz
+            self.data.load_all_regions = load_all_regions
+            self.data.essname = essname
+            self.data.essbus = essbus
+            self.data.ness = ness
+            self.data.ess_pmax = ess_pmax
+            self.data.ess_pmin = ess_pmin
+            self.data.ess_duration = ess_duration
+            self.data.ess_socmax = ess_socmax
+            self.data.ess_socmin = ess_socmin
+            self.data.ess_eff = ess_eff
+            self.data.disch_cost = disch_cost
+            self.data.ch_cost = ch_cost
+            self.data.MTTF_ess = MTTF_ess
+            self.data.MTTR_ess = MTTR_ess
+            self.data.ess_units = ess_units
+            self.data.mu_tot = mu_tot
+            self.data.lambda_tot = lambda_tot
+            self.data.cap_max = cap_max
+            self.data.cap_min = cap_min
+            self.data.raut = raut
             logger.info("System data loaded successfully")
 
         except Exception:

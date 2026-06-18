@@ -294,6 +294,23 @@ class Solar:
         # combine all generation data
         self.combine_site_generation(file_pattern="*_gen.csv")
 
+    def run_pipeline_gui(self, progress_callback=None):
+        all_files = sorted(Path(self.weather_data_directory).glob('*.csv'))
+
+        for file in all_files:
+            logger.info(f"Processing {file.name}")
+            site_id = file.stem
+            site_row = self.sites_df[self.sites_df['Site Name'] == site_id]
+            site = site_row.iloc[0]
+            df, tz = self.process_solar_data(file, site)
+            df = self.add_irradiance_components(df, site.Latitude, site.Longitude)
+            self.run_pv_model(df, site, site_id, tz)
+
+            if progress_callback:
+                progress_callback()
+
+        self.combine_site_generation(file_pattern="*_gen.csv")
+
 if __name__ == "__main__":
 
     # --- CONFIG ---
