@@ -374,6 +374,8 @@ class KMeans_Pipeline:
 
         """
         n_clusters = kwargs.get('n_clusters', 11)  # Default value is 11
+        # method mutates self.kmeans_df in place via reset_index(inplace=True) so create copy to edit in GUI 
+        kmeans_df = kmeans_df.copy()      
 
         #reset index
         kmeans_df.reset_index(inplace=True)
@@ -574,7 +576,8 @@ class KMeans_Pipeline:
         """
         cluster_labels = self.predicted_labels
         kmeans_df = self.kmeans_df
-
+        # method mutates self.kmeans_df in place via reset_index(inplace=True) so create copy to edit in GUI 
+        kmeans_df = kmeans_df.copy()      
         kmeans_df.reset_index(inplace=True)
 
         # Extract the month from the date column in the kmeans_df
@@ -767,7 +770,8 @@ class KMeans_Pipeline:
             "clusters that are dense internally.\n"
         )
         # Call the find_elbow method to get the elbow point and SSE
-        elbow, sse, silhouette_scores = self.find_elbow(self.kmeans_df, clust_eval)
+        # .copy() preserves the original DataFrame for subsequent calls.
+        elbow, sse, silhouette_scores = self.find_elbow(self.kmeans_df.copy(), clust_eval)
 
         # Open 'results.txt' for writing
         with open(f"{self.directory}/clustering_results.txt", "w") as f:

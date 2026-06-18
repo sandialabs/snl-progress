@@ -12,11 +12,28 @@ from progress.ui.utils.data_handler import DataHandler
 from progress.ui.pages.about_page import MarkdownWidget
 from progress.mod_utilities import RAUtilities
 from progress.ui.pages.log_window import LogWindow, get_log_window
+from progress.paths import get_path
 from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR, update_data_path, check_era_api_key_existence
 import progress.resources_rc
 import logging
 import sys
 import os
+
+root = logging.getLogger()
+for h in list(root.handlers):
+    root.removeHandler(h)
+
+fh = logging.FileHandler(str(get_path() / "logs" / "progress_debug.log"))
+fh.setLevel(logging.DEBUG)
+fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s - %(message)s"))
+root.addHandler(fh)
+
+ch = logging.StreamHandler(sys.stderr)
+ch.setLevel(logging.INFO)
+ch.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+root.addHandler(ch)
+
+root.setLevel(logging.DEBUG)
 
 logger = logging.getLogger(__name__)
 
@@ -29,8 +46,12 @@ class MainWindow(QMainWindow):
         # Install app logger once the UI exists.
         # After this, logging and print output go to self.ui.log_window.
         # logs from the other pages get captured.
+        self.data = DataHandler()
+        self.sys_directory = str(SYSTEM_DIR)
+        self.load_sys_data()
+
         self.landing_page = LandingPage()
-        self.solar_page = SolarPage()
+        self.solar_page = SolarPage(data_handler=self.data)
         self.wind_page = WindPage()
         self.simulation_page = SimulationPage()
         self.results_page = ResultsPage()
@@ -88,16 +109,9 @@ class MainWindow(QMainWindow):
         )
 
         # TODO: ADD SETTINGS and ABOUT PAGES
-
         # self.solar_page.ui.btn_getting_started.clicked.connect(
         #     lambda checked=False: self._go_to_page(self.ui.page_landing)
         # )
-
-
-        self.data = DataHandler() 
-        #setting up sys dir data
-        self.sys_directory = str(SYSTEM_DIR)
-        self.load_sys_data()
 
         # load theme
         # self.load_stylesheet(str(base_dir / "resources" / "theme.qss"))
@@ -162,7 +176,6 @@ class MainWindow(QMainWindow):
 
             genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost, genname = rasd.gen(data_gen)
             nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans, branchname = rasd.branch(data_branch, data_bus)
-            data_bus = self.sys_directory + '/bus.csv'
             bus_name, bus_no, nz = rasd.bus(data_bus)
             load_all_regions = rasd.load(bus_name, bus_no, data_load) 
             essname, essbus, ness, ess_pmax, ess_pmin, ess_duration, ess_socmax, ess_socmin, ess_eff, disch_cost, ch_cost, MTTF_ess, MTTR_ess, ess_units, ess_chemistry = rasd.storage(data_storage)
@@ -241,50 +254,49 @@ class AppController:
     """Manages and displays both windows simultaneously."""
     def __init__(self):
         # Storing them as attributes keeps them alive in memory
-         self.log_window = LogWindow()
          self.main_window = MainWindow()
-         logger.info("Application started")
-         logger.info("Inside APP controller")
+
     def show_all(self):
         # Enable log window capture so all subsequent output goes to the GUI log.
         # Startup output (imports, init) still printed to terminal.
-        log_controller = get_log_window()
-        if log_controller is not None:
-            log_controller.enable_capture()
-
-        # Call .show() on both instances to display them together
-        screen = QApplication.primaryScreen()
-        available = screen.availableGeometry()
-
-        screen_x = available.x()
-        screen_y = available.y()
-        screen_w = available.width()
-        screen_h = available.height()
-
-        gap = 20
-
-        main_w = int(screen_w * 0.65)
-        log_w = screen_w - main_w - gap
-        height = int(screen_h * 0.9)
-
-        self.main_window.setGeometry(
-            screen_x,
-            screen_y,
-            main_w,
-            height,
-        )
-
-        self.log_window.setGeometry(
-            screen_x + main_w + gap,
-            screen_y,
-            log_w,
-            height,
-        )
-
+        # keep this code when you add log window
+        # log_controller = get_log_window()
+        # if log_controller is not None:
+        #     log_controller.enable_capture()
+        #
+        # # Call .show() on both instances to display them together
+        # screen = QApplication.primaryScreen()
+        # available = screen.availableGeometry()
+        #
+        # screen_x = available.x()
+        # screen_y = available.y()
+        # screen_w = available.width()
+        # screen_h = available.height()
+        #
+        # gap = 20
+        #
+        # main_w = int(screen_w * 0.65)
+        # log_w = screen_w - main_w - gap
+        # height = int(screen_h * 0.9)
+        #
+        # self.main_window.setGeometry(
+        #     screen_x,
+        #     screen_y,
+        #     main_w,
+        #     height,
+        # )
+        #
+        # self.log_window.setGeometry(
+        #     screen_x + main_w + gap,
+        #     screen_y,
+        #     log_w,
+        #     height,
+        # )
+        #
+        # self.main_window.show()
+        # self.log_window.show()
+        #
         self.main_window.show()
-        self.log_window.show()
-
-
 
 def main():
     """

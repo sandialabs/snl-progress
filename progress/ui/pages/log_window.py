@@ -102,13 +102,15 @@ class LogWindowController(QObject):
         # Configure root logger so logs from all modules go here.
         root_logger = logging.getLogger()
 
-        if not defer_capture and remove_existing_handlers:
-            for handler in list(root_logger.handlers):
-                root_logger.removeHandler(handler)
-
+        # comment out both handler-removal loops
+        # if not defer_capture and remove_existing_handlers:
+        #     for handler in list(root_logger.handlers):
+        #         if isinstance(handler, logging.FileHandler):
+        #             continue
+        #         root_logger.removeHandler(handler)
+        #
         root_logger.addHandler(self.log_handler)
         root_logger.setLevel(level)
-
         self.print_stream = None
         self.error_stream = None
         self._capture_enabled = False
@@ -127,6 +129,7 @@ class LogWindowController(QObject):
 
     def enable_capture(self) -> None:
         """Redirect stdout/stderr to the log window and optionally clean up terminal handlers."""
+
         if self._capture_enabled:
             return
 
@@ -135,9 +138,18 @@ class LogWindowController(QObject):
             sys.stderr = self.error_stream
 
         root_logger = logging.getLogger()
+        # comment out both handler-removal loops
+        # for handler in list(root_logger.handlers):
+        #     if handler is self.log_handler:      # keep the Qt handler
+        #         continue
+        #     if isinstance(handler, logging.FileHandler):  # keep file handlers
+        #         continue
+        #     root_logger.removeHandler(handler)
+        root_logger = logging.getLogger()
         for handler in list(root_logger.handlers):
-            if handler is not self.log_handler:
-                root_logger.removeHandler(handler)
+            if isinstance(handler, logging.FileHandler):
+                continue  # don't remove file handlers
+            root_logger.removeHandler(handler)
 
         self._capture_enabled = True
 

@@ -69,7 +69,11 @@ class Solar:
             "data_format": "csv"
         }
 
-        client = cdsapi.Client()
+        client = cdsapi.Client(
+            timeout=60,
+            retry_max=2,
+            sleep_max=10
+        )
 
         # --- DOWNLOAD LOOP ---
         for idx, row in self.sites_df.iterrows():
@@ -109,23 +113,31 @@ class Solar:
                 progress_callback()
 
     def process_solar_data(self, file_path, site):
+        logger.info("  read_csv...")
         df_weather = pd.read_csv(file_path)
 
-        # change time zone
+        logger.info("  TimezoneFinder()...")
         tf = TimezoneFinder()
+
+        logger.info("  timezone_at...")
         tz = tf.timezone_at(lat=site.Latitude, lng=site.Longitude)
 
-        # parse time
+        logger.info("  parse time...")
         df_weather['valid_time'] = pd.to_datetime(df_weather['valid_time'], utc=True)
+
+        logger.info("  tz_convert...")
         df_weather['valid_time'] = df_weather['valid_time'].dt.tz_convert(tz)
+
+        logger.info("  set_index...")
         df_weather = df_weather.set_index('valid_time').rename_axis('time')
 
-        # convert variables
+        logger.info("  convert variables...")
         df_weather['temp_air'] = df_weather['t2m'] - 273.15
         df_weather['wind_speed'] = np.sqrt(df_weather['u10']**2 + df_weather['v10']**2)
         df_weather['ghi'] = df_weather['ssrd'] / 3600.0
         df_weather = df_weather[['temp_air', 'wind_speed', 'ghi']]
 
+        logger.info("  process_solar_data done")
         return df_weather, tz
 
     def add_irradiance_components(self, df_weather, lat, lon):
@@ -212,7 +224,7 @@ class Solar:
                 )
 
             # Parse time
-            df["time"] = pd.to_datetime(df["time"])
+            df["time"] = pd.to_datetime(df["time"], utc=True)
 
             # Create series named by site_id
             site_series = (
@@ -294,21 +306,21 @@ class Solar:
         # combine all generation data
         self.combine_site_generation(file_pattern="*_gen.csv")
 
-    def run_pipeline_gui(self, progress_callback=None):
+    def run_pipeline_gui(self):
         all_files = sorted(Path(self.weather_data_directory).glob('*.csv'))
-
         for file in all_files:
-            logger.info(f"Processing {file.name}")
-            site_id = file.stem
-            site_row = self.sites_df[self.sites_df['Site Name'] == site_id]
-            site = site_row.iloc[0]
-            df, tz = self.process_solar_data(file, site)
-            df = self.add_irradiance_components(df, site.Latitude, site.Longitude)
-            self.run_pv_model(df, site, site_id, tz)
-
-            if progress_callback:
-                progress_callback()
-
+                logger.info(f"Processing {file.name}")
+                site_id = file.stem
+                site_row = self.sites_df[self.sites_df['Site Name'] == site_id]
+                site = site_row.iloc[0]
+                logger.info("  Reading weather data...")
+                df, tz = self.process_solar_data(file, site)
+                logger.info("  Computing irradiance...")
+                df = self.add_irradiance_components(df, site.Latitude, site.Longitude)
+                logger.info("  Running PV model...")
+                self.run_pv_model(df, site, site_id, tz)
+                logger.info("  Done")
+        logger.info("Combining site generation...")
         self.combine_site_generation(file_pattern="*_gen.csv")
 
 if __name__ == "__main__":

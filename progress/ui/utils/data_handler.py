@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pathlib import Path
 import numpy as np
 
 @dataclass
@@ -44,14 +45,14 @@ class DataHandler:
     cap_min: dict | None = None
     raut: object | None = None
     # solar fields
-    solar_directory: str | None = None
+    solar_directory: Path | None = None
     s_sites: object | None = None
     s_zone_no: object | None = None
     s_max: np.ndarray | None = None
     s_profiles: object | None = None
     solar_prob: np.ndarray | None = None
     # wind fields
-    wind_directory: str | None = None
+    wind_directory: Path | None = None
     w_sites: int | None = None
     farm_name: object | None = None
     zone_no: object | None = None
