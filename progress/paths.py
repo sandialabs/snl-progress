@@ -1,5 +1,6 @@
 from pathlib import Path
 from ruamel.yaml import YAML
+from typing import Any
 import yaml
 import logging 
 
@@ -72,3 +73,8 @@ def check_era_api_key_existence() -> bool:
         logger.error("NO API KEY EXISTS")
         return False
 
+def load_config() -> dict[str, Any]:
+    config_path = get_path() / "input.yaml"
+
+    with open(config_path, encoding="utf-8") as f:
+        return yaml.safe_load(f) or {}

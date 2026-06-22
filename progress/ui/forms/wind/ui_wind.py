@@ -195,10 +195,32 @@ class Ui_WindPage(object):
 
         self.verticalLayout_6.addWidget(self.btn_validate_own_data)
 
-        self.btn_process_wind = QPushButton(self.frame_btns_data)
+        self.frame_process_wind = QFrame(self.frame_btns_data)
+        self.frame_process_wind.setObjectName(u"frame_process_wind")
+        self.frame_process_wind.setFrameShape(QFrame.NoFrame)
+        self.frame_process_wind.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout = QHBoxLayout(self.frame_process_wind)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.btn_process_wind = QPushButton(self.frame_process_wind)
         self.btn_process_wind.setObjectName(u"btn_process_wind")
 
-        self.verticalLayout_6.addWidget(self.btn_process_wind)
+        self.horizontalLayout.addWidget(self.btn_process_wind)
+
+        self.btn_process_info = QPushButton(self.frame_process_wind)
+        self.btn_process_info.setObjectName(u"btn_process_info")
+        self.btn_process_info.setIcon(icon)
+        self.btn_process_info.setIconSize(QSize(40, 40))
+        self.btn_process_info.setFlat(True)
+
+        self.horizontalLayout.addWidget(self.btn_process_info)
+
+
+        self.verticalLayout_6.addWidget(self.frame_process_wind)
 
 
         self.verticalLayout_5.addWidget(self.frame_btns_data)
@@ -252,6 +274,7 @@ class Ui_WindPage(object):
         self.btn_download_wind.setText(QCoreApplication.translate("WindPage", u"Download Wind Data", None))
         self.btn_validate_own_data.setText(QCoreApplication.translate("WindPage", u"Validate Uploaded Data", None))
         self.btn_process_wind.setText(QCoreApplication.translate("WindPage", u"Process Wind Data", None))
+        self.btn_process_info.setText("")
         self.label_hint_selection.setText(QCoreApplication.translate("WindPage", u"Please select an option.", None))
     # retranslateUi
 

@@ -4,7 +4,7 @@ from PySide6.QtGui import QPixmap
 from progress.ui.forms.solar.ui_solar import Ui_SolarPage 
 from progress.ui.forms.solar.ui_solar_results import Ui_SolarResults 
 from progress.ui.utils.worker import WorkerThread, ProcessingThread
-from progress.paths import get_path
+from progress.paths import get_path, load_config
 from progress.mod_solar import Solar
 from progress.mod_kmeans import KMeans_Pipeline
 from progress.ui.utils.data_handler import DataHandler
@@ -227,13 +227,11 @@ class SolarPage(QWidget):
 
         if result == QMessageBox.Ok:
             self._run_solar_download(self.start_year, self.end_year)
-        logger.info(f"Start Year Value: {self.start_year}")
-        logger.info(f"End Year Value: {self.end_year}")
+        logger.info(f"Solar Start Year Value: {self.start_year}")
+        logger.info(f"Solar End Year Value: {self.end_year}")
 
     def _run_solar_download(self, start_year: int, end_year: int) -> None:
-        config_path = get_path() / "input.yaml"
-        with open(config_path) as f:
-            config = yaml.safe_load(f)
+        config = load_config()
         solar_dir = Path(config['data']) / 'Solar'
         self._solar = Solar(str(solar_dir), config['model'])
         self.data_handler.solar_directory = solar_dir
@@ -274,9 +272,7 @@ class SolarPage(QWidget):
         self._run_solar_processing()   
 
     def _run_solar_processing(self) -> None:
-        config_path = get_path() / "input.yaml"
-        with open(config_path) as f:
-            config = yaml.safe_load(f)
+        config = load_config()
         solar_dir = Path(config['data']) / 'Solar'
         self._solar = Solar(str(solar_dir), config['model'])
         self.data_handler.solar_directory = solar_dir

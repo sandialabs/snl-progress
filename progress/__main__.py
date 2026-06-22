@@ -73,9 +73,6 @@ class MainWindow(QMainWindow):
         else:
             logging.info(f"api key exists: {api_key_exists}")
 
-
-
-
         self._mount_page(self.ui.page_landing, self.landing_page)
         self._mount_page(self.ui.page_solar, self.solar_page)
         self._mount_page(self.ui.page_wind, self.wind_page)

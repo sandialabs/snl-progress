@@ -7,6 +7,9 @@ import yaml
 from pathlib import Path
 import cdsapi
 import zipfile
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Wind:
 
@@ -40,7 +43,11 @@ class Wind:
             "data_format": "csv"
         }
 
-        client = cdsapi.Client()
+        client = cdsapi.Client(
+            timeout=60,
+            retry_max=2,
+            sleep_max=10
+        )
 
         # --- DOWNLOAD LOOP ---
         for idx, row in self.sites_df.iterrows():
@@ -52,7 +59,7 @@ class Wind:
             request = base_request.copy()
             request["location"] = {"longitude": lon, "latitude": lat}
 
-            print(f"Downloading {name} (lat={lat}, lon={lon})...")
+            logger.info(f"Downloading {name} (lat={lat}, lon={lon})...")
 
             result = client.retrieve(dataset, request)
             zip_path = Path(result.download())
@@ -84,7 +91,7 @@ class Wind:
 
         for file in sorted(self.weather_data_directory.glob("*.csv")):
 
-            print(f"Processing {file.name}")
+            logger.info(f"Processing {file.name}")
 
             df = pd.read_csv(file)
 
@@ -129,6 +136,7 @@ class Wind:
         )
 
         windspeed_df.to_csv(f"{self.wind_directory}/windspeed_data.csv", index=False)
+        logger.info("FINISHED DOWNLOADING WIND DATA")
 
 
     def WindFarmsData(self, site_data, pcurve_data, model):
@@ -226,6 +234,7 @@ class Wind:
                 df.to_excel(writer, sheet_name=sheet_name, index=False)
                 k_temp += 1    
         
+        logger.info("Completed processing wind data and returning transition rate matrices")
         return(rate_matrix)
 
 # if __name__ == "__main__":
