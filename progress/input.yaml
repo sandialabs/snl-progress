@@ -16,16 +16,16 @@ n_clusters: 2 # number of K-means clusters for the solar data
 
 # Monte Carlo simulation parameters
 samples: 5 # no. of Monte Carlo samples to run
-sim_hours: 100  # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
-load_factor: 1.25 # tweak to increase/decrease load at all buses; default = 1
+sim_hours: 8760 # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
+load_factor: 1.15 # tweak to increase/decrease load at all buses; default = 1
 model: 'Zonal' # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zonal' (medium fidelity, nodes within a region/zone aggregated), 'Nodal' (highest fidelity)
 
 # Optimization horizon in hours
-optimization_period: 1  # = 1 for reliability mode; = multiples of 24 for day ahead hourly optimization; Recommended: 24 
+optimization_period: 24 # = 1 for reliability mode; = multiples of 24 for day ahead hourly optimization; Recommended: 24 
 
 # Battery degradation parameters
 evaluate_degradation: false # True/False based on whether user wants to consider battery degradation
-degradation_interval: 1    # Interval between BESS degradation evaluation. Recommended: 168 hours (1 week) or more .
+degradation_interval: 0    # Interval between BESS degradation evaluation. Recommended: 168 hours (1 week) or more .
 detailed_thermal_model: false # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 
 
 # Data center load 

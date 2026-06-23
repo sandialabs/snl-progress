@@ -1,41 +1,22 @@
 import sys
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QTextBrowser
 import markdown
+from progress.paths import get_path
+from progress.ui.forms.about.ui_about import Ui_AboutPage
 
-class MarkdownWidget(QWidget):
-    def __init__(self, markdown_file):
+class AboutPage(QWidget):
+    def __init__(self):
         super().__init__()
-
-        layout = QVBoxLayout(self)
-
-        self.text_browser = QTextBrowser(self)
-        layout.addWidget(self.text_browser)
-
-        self.load_markdown(markdown_file)
-
-    def load_markdown(self, markdown_file):
-        with open(markdown_file, 'r', encoding='utf-8') as file:
-            markdown_text = file.read()
-
-        html = markdown.markdown(markdown_text, extensions=['tables'])
-        self.text_browser.setHtml(html)
-        self.text_browser.setOpenExternalLinks(True)
-
-
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-
-    markdown_file_path = 'example.md'
-
-    main_window = QWidget()
-    main_window.setWindowTitle("Markdown Viewer")
-    main_layout = QVBoxLayout(main_window)
-
-    markdown_widget = MarkdownWidget(markdown_file_path)
-    main_layout.addWidget(markdown_widget)
-
-    main_window.resize(800, 600)
-    main_window.show()
-
-    sys.exit(app.exec())
+        self.ui = Ui_AboutPage()
+        self.ui.setupUi(self)
+        readme_path = get_path().parent / "README.md"
+        with open(readme_path, encoding="utf-8") as f:
+            html = markdown.markdown(f.read(), extensions=["tables"])
+        styled_html = f"""<html><body style="font-size: 14px;">
+            {html}
+            <style>
+                img {{ display: block; margin: 0 auto; max-width: 100%; height: auto; }}
+            </style>
+        </body></html>"""
+        self.ui.text_browser.setHtml(styled_html)
+        self.ui.text_browser.setOpenExternalLinks(True)

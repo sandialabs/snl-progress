@@ -7,6 +7,8 @@ from progress.ui.forms.landing.ui_landing import Ui_LandingPage
 
 class LandingPage(QWidget):
     getting_started_clicked = Signal()
+    documentation_clicked = Signal()          
+
 
     def __init__(self):
         super().__init__()
@@ -19,6 +21,7 @@ class LandingPage(QWidget):
         self._update_logo()
 
         self.ui.btn_getting_started.clicked.connect(self._on_getting_started_clicked)
+        self.ui.btn_documentation.clicked.connect(self._on_documentation_clicked)
 
     def _update_logo(self):
         label = self.ui.label_progress_logo
@@ -53,3 +56,6 @@ class LandingPage(QWidget):
 
     def _on_getting_started_clicked(self, checked: bool = False) -> None:
         self.getting_started_clicked.emit()
+
+    def _on_documentation_clicked(self, checked: bool = False) -> None:
+        self.documentation_clicked.emit()

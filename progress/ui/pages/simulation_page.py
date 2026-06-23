@@ -73,7 +73,7 @@ class SimulationPage(QWidget):
         self.ui.radio_degradation_eval_true.clicked.connect(self._update_frame_visibility)
         self.ui.radio_degradation_eval_false.clicked.connect(self._update_frame_visibility)
         self.ui.btn_run_simulation.clicked.connect(self._display_sim_results)
-        self.ui.btn_save_config.clicked.connect(self._save_sim_configs)
+        self.ui.btn_save_config.clicked.connect(self._on_save_config)
 
         self._populate_gui()
         self._update_frame_visibility()

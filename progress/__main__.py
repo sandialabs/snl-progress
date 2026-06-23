@@ -7,9 +7,9 @@ from progress.ui.pages.solar_page import SolarPage
 from progress.ui.pages.wind_page import WindPage
 from progress.ui.pages.simulation_page import SimulationPage
 from progress.ui.pages.results_page import ResultsPage
+from progress.ui.pages.about_page import AboutPage
 from progress.mod_sysdata import RASystemData
 from progress.ui.utils.data_handler import DataHandler
-from progress.ui.pages.about_page import MarkdownWidget
 from progress.mod_utilities import RAUtilities
 from progress.ui.pages.log_window import LogWindow, get_log_window
 from progress.paths import get_path
@@ -55,8 +55,8 @@ class MainWindow(QMainWindow):
         self.wind_page = WindPage()
         self.simulation_page = SimulationPage()
         self.results_page = ResultsPage()
+        self.about_page = AboutPage()
         # self.settings_page = SettingsPage()
-        # self.about_page = AboutPage()
 
         self._page_sequence = [
             self.ui.page_solar,
@@ -78,11 +78,14 @@ class MainWindow(QMainWindow):
         self._mount_page(self.ui.page_wind, self.wind_page)
         self._mount_page(self.ui.page_simulation, self.simulation_page)
         self._mount_page(self.ui.page_results, self.results_page)
+        self._mount_page(self.ui.page_about, self.about_page)
         # self._mount_page(self.ui.page_settings, self.settings_page)
-        # self._mount_page(self.ui.page_about, self.about_page)
 
         # signals and connections
         self.landing_page.getting_started_clicked.connect(self._handle_landing_getting_started)
+        self.landing_page.documentation_clicked.connect(          
+            lambda: self._go_to_page(self.ui.page_about)
+        )
         self.ui.btn_prev.clicked.connect(self._go_previous_page)
         self.ui.btn_next.clicked.connect(self._go_next_page)
         self.ui.stackedWidget.setCurrentWidget(self.ui.page_landing)
@@ -105,10 +108,9 @@ class MainWindow(QMainWindow):
             lambda checked=False: self._go_to_page(self.ui.page_results)
         )
 
-        # TODO: ADD SETTINGS and ABOUT PAGES
-        # self.solar_page.ui.btn_getting_started.clicked.connect(
-        #     lambda checked=False: self._go_to_page(self.ui.page_landing)
-        # )
+        self.ui.btn_about.clicked.connect(
+            lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_about)
+        )
 
         # load theme
         # self.load_stylesheet(str(base_dir / "resources" / "theme.qss"))
