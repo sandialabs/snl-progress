@@ -306,6 +306,7 @@ QFrame#frame_nav_btns {
 }
 
 QPushButton#btn_getting_started {
+    background-color: transparent;
     border: 1px solid #387a3d;
     color: #387a3d;
     min-height: 30px;
@@ -316,11 +317,13 @@ QPushButton#btn_getting_started {
 QPushButton#btn_getting_started:hover {
     background-color: #2d6a30;
     border-color: #2d6a30;
+    color: #ffffff;
 }
 
 QPushButton#btn_getting_started:pressed {
     background-color: #235827;
     border-color: #235827;
+    color: #ffffff;
 }
 
 /* =======================================================
@@ -473,6 +476,28 @@ QRadioButton {
     font-size: 13px;
     color: #0f172a;
     min-height: 24px;
+}
+
+QRadioButton::indicator {
+    width: 16px;
+    height: 16px;
+    border: 2px solid #cbd5e1;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+
+QRadioButton::indicator:hover {
+    border-color: #94a3b8;
+}
+
+QRadioButton::indicator:checked {
+    border-color: #387a3d;
+    background-color: #387a3d;
+}
+
+QRadioButton::indicator:checked:hover {
+    border-color: #2d6a30;
+    background-color: #2d6a30;
 }
 
 /* =======================================================
@@ -904,18 +929,6 @@ QLabel#label_empty {
     background: transparent;
 }
 
-QFrame#frame_pdf_placeholder {
-    background-color: #f8fafc;
-    border: 2px dashed #e2e8f0;
-    border-radius: 8px;
-    min-height: 200px;
-}
-
-QLabel#label_pdf_placeholder {
-    color: #94a3b8;
-    font-size: 14px;
-}
-
 QLabel#label_image_preview {
     background-color: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -929,6 +942,14 @@ QLabel#label_image_preview {
 QPushButton#btn_save_config,
 QPushButton#btn_run_simulation,
 QPushButton#btn_download_solar,
+QPushButton#btn_clusters_page,
+QPushButton#btn_data_page,
+QPushButton#btn_eval_cluster,
+QPushButton#btn_open_results,
+QPushButton#btn_gen_cluster,
+QPushButton#btn_skip,
+QPushButton#btn_process_wind,
+QPushButton#btn_clear_search,
 QPushButton#btn_download_wind {
     background-color: #387a3d;
     color: #387a3d;
@@ -943,6 +964,14 @@ QPushButton#btn_download_wind {
 QPushButton#btn_save_config:hover,
 QPushButton#btn_run_simulation:hover,
 QPushButton#btn_download_solar:hover,
+QPushButton#btn_clusters_page,
+QPushButton#btn_data_page,
+QPushButton#btn_eval_cluster,
+QPushButton#btn_open_results,
+QPushButton#btn_gen_cluster,
+QPushButton#btn_skip,
+QPushButton#btn_process_wind,
+QPushButton#btn_clear_search,
 QPushButton#btn_download_wind:hover {
     background-color: #2d6a30;
     border-color: #2d6a30;
@@ -951,6 +980,14 @@ QPushButton#btn_download_wind:hover {
 QPushButton#btn_save_config:pressed,
 QPushButton#btn_run_simulation:pressed,
 QPushButton#btn_download_solar:pressed,
+QPushButton#btn_clusters_page,
+QPushButton#btn_data_page,
+QPushButton#btn_eval_cluster,
+QPushButton#btn_open_results,
+QPushButton#btn_gen_cluster,
+QPushButton#btn_skip,
+QPushButton#btn_process_wind,
+QPushButton#btn_clear_search,
 QPushButton#btn_download_wind:pressed {
     background-color: #235827;
     border-color: #235827;

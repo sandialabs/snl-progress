@@ -239,34 +239,6 @@
                </property>
               </widget>
              </item>
-             <item>
-              <widget class="QFrame" name="frame_pdf_placeholder">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Sunken</enum>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_pdf_placeholder">
-                <item>
-                 <widget class="QLabel" name="label_pdf_placeholder">
-                  <property name="font">
-                   <font>
-                    <pointsize>14</pointsize>
-                   </font>
-                  </property>
-                  <property name="text">
-                   <string>PDF viewer goes here
-(e.g. QPdfView in code)</string>
-                  </property>
-                  <property name="alignment">
-                   <set>Qt::AlignCenter</set>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
             </layout>
            </widget>
            <widget class="QWidget" name="page_image">

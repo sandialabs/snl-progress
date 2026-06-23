@@ -156,22 +156,6 @@ class Ui_FilePreviewPage(object):
 
         self.verticalLayout_pdf.addWidget(self.label_pdf_title)
 
-        self.frame_pdf_placeholder = QFrame(self.page_pdf)
-        self.frame_pdf_placeholder.setObjectName(u"frame_pdf_placeholder")
-        self.frame_pdf_placeholder.setFrameShape(QFrame.StyledPanel)
-        self.frame_pdf_placeholder.setFrameShadow(QFrame.Sunken)
-        self.verticalLayout_pdf_placeholder = QVBoxLayout(self.frame_pdf_placeholder)
-        self.verticalLayout_pdf_placeholder.setObjectName(u"verticalLayout_pdf_placeholder")
-        self.label_pdf_placeholder = QLabel(self.frame_pdf_placeholder)
-        self.label_pdf_placeholder.setObjectName(u"label_pdf_placeholder")
-        self.label_pdf_placeholder.setFont(font1)
-        self.label_pdf_placeholder.setAlignment(Qt.AlignCenter)
-
-        self.verticalLayout_pdf_placeholder.addWidget(self.label_pdf_placeholder)
-
-
-        self.verticalLayout_pdf.addWidget(self.frame_pdf_placeholder)
-
         self.stackedWidget_preview.addWidget(self.page_pdf)
         self.page_image = QWidget()
         self.page_image.setObjectName(u"page_image")
@@ -220,6 +204,7 @@ class Ui_FilePreviewPage(object):
         if (self.tableWidget_csv.rowCount() < 5):
             self.tableWidget_csv.setRowCount(5)
         self.tableWidget_csv.setObjectName(u"tableWidget_csv")
+        self.tableWidget_csv.setShowGrid(True)
         self.tableWidget_csv.setRowCount(5)
         self.tableWidget_csv.setColumnCount(4)
 
@@ -238,7 +223,7 @@ class Ui_FilePreviewPage(object):
 
         self.retranslateUi(FilePreviewPage)
 
-        self.stackedWidget_preview.setCurrentIndex(0)
+        self.stackedWidget_preview.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(FilePreviewPage)
@@ -254,8 +239,6 @@ class Ui_FilePreviewPage(object):
         self.groupBox_preview.setTitle(QCoreApplication.translate("FilePreviewPage", u"Preview", None))
         self.label_empty.setText(QCoreApplication.translate("FilePreviewPage", u"No file selected for preview.", None))
         self.label_pdf_title.setText(QCoreApplication.translate("FilePreviewPage", u"PDF Preview", None))
-        self.label_pdf_placeholder.setText(QCoreApplication.translate("FilePreviewPage", u"PDF viewer goes here\n"
-"(e.g. QPdfView in code)", None))
         self.label_image_title.setText(QCoreApplication.translate("FilePreviewPage", u"PNG Preview", None))
         self.label_image_preview.setText(QCoreApplication.translate("FilePreviewPage", u"Image preview goes here", None))
         self.label_csv_title.setText(QCoreApplication.translate("FilePreviewPage", u"CSV Preview", None))
