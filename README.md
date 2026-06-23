@@ -338,9 +338,10 @@ Once the API information is saved, users can move on to the `Solar` tab.
 
 Results are stored in a distinct folder for each run, the timestamp included in the folder name indicating a particular run. Some results, including load curtailment, solar and wind generation, and ESS SOC evolution are stored for each sample of the run in distinct folders within the directory created for that run. Other results, including system reliability indices, evolution of the LOLP (bottom right) and Coefficient of Variation (COV) across all samples, and heat maps of outages across different months of the year and hours of the day are stored in a separate folder titled `Indices`. These results are indicators of overall system reliability health while the results for the individual samples provide insight into the conditions that led to outages for those samples. 
 
-    |<img src = "progress/Images/workflow/res_heatmap.png" width="500" height="300" alt="Results" /> | <img src = "progress/Images/workflow/res_ess.png" width="500" height="300" alt="Results" /> |
-    |<img src = "progress/Images/workflow/res_loadcurt.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/res_wind.png" width="500" height="300" alt="Results" />|
-    |<img src = "progress/Images/workflow/n_res_COV.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/n_res_LOLP.png" width="500" height="300" alt="Results" />|
+|<img src = "progress/Images/workflow/res_heatmap.png" width="500" height="300" alt="Results" /> | <img src = "progress/Images/workflow/res_ess.png" width="500" height="300" alt="Results" /> |
+|<img src = "progress/Images/workflow/res_loadcurt.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/res_wind.png" width="500" height="300" alt="Results" />|
+|<img src = "progress/Images/workflow/n_res_COV.png" width="500" height="300" alt="Results" /> |<img src = "progress/Images/workflow/n_res_LOLP.png" width="500" height="300" alt="Results" />|
+
 
 ### B. Instructions for Running Simulations using the Command-Line on Local or Remote Computers/Servers
 
