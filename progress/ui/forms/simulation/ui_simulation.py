@@ -256,6 +256,11 @@ class Ui_SimulationPage(object):
 
         self.horizontalLayout_run_button.addItem(self.horizontalSpacer_left)
 
+        self.btn_save_config = QPushButton(self.frame_run_button)
+        self.btn_save_config.setObjectName(u"btn_save_config")
+
+        self.horizontalLayout_run_button.addWidget(self.btn_save_config)
+
         self.btn_run_simulation = QPushButton(self.frame_run_button)
         self.btn_run_simulation.setObjectName(u"btn_run_simulation")
 
@@ -314,6 +319,7 @@ class Ui_SimulationPage(object):
         self.label_detailed_model.setText(QCoreApplication.translate("SimulationPage", u"Detailed Thermal Model ", None))
         self.radio_detailed_model_true.setText(QCoreApplication.translate("SimulationPage", u"True", None))
         self.radio_detailed_model_false.setText(QCoreApplication.translate("SimulationPage", u"False", None))
+        self.btn_save_config.setText(QCoreApplication.translate("SimulationPage", u"Save Config", None))
         self.btn_run_simulation.setText(QCoreApplication.translate("SimulationPage", u"Run Simulation", None))
     # retranslateUi
 

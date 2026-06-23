@@ -6,7 +6,7 @@ import pandas as pd
 import os
 import yaml
 import argparse
-
+import logging
 from progress.mod_sysdata import RASystemData
 from progress.mod_solar import Solar
 from progress.mod_wind import Wind
@@ -16,6 +16,8 @@ from progress.mod_plot import RAPlotTools
 from progress.mod_degradation import BESS_Degradation
 from datetime import datetime, timedelta
 from progress.mod_bus_statistics import bus_statistics
+
+logger = logging.getLogger(__name__)
 
 def MCS(input_file, results_subdir) :   
     '''This function performs mixed time sequential MCS using methods from the different RA modules'''
@@ -102,7 +104,7 @@ def MCS(input_file, results_subdir) :
         
         s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
 
-        # print("Solar data processing complete!")
+        # logger.info("Solar data processing complete!")
 
     # matrices required for optimization
     ramat = RAMatrices(nz)
@@ -122,7 +124,7 @@ def MCS(input_file, results_subdir) :
         
     for s in range(samples):
 
-        print(f'Sample: {s+1}')
+        logger.info(f'Sample: {s+1}')
 
         # temp variables to be used for each sample
         var_s = {"t_min": 0, "LLD": 0, "curtailment": np.zeros(sim_hours), "label_LOLF": np.zeros(sim_hours), "freq_LOLF": 0, "LOL_days": 0, \
@@ -183,8 +185,14 @@ def MCS(input_file, results_subdir) :
                 SOC_old_deg[ess_name] = 0.5
 
         # add data center load to relevant buses
-        if config['DC_load']==True:
+        # if config['DC_load']==True:
+        #     load_plus_DC = raut.data_center_load(load_all_regions, system_directory, network_model)
+
+        # FALLBACK IF IT IS FALSE
+        if config.get('DC_load', False):
             load_plus_DC = raut.data_center_load(load_all_regions, system_directory, network_model)
+        else:
+            load_plus_DC = load_all_regions
 
         for n in range(sim_hours):
 
@@ -383,7 +391,7 @@ def MCS(input_file, results_subdir) :
                         SOC_old_deg[ess_name] = soc_profile_norm[-1]
                     
             if (n+1)%100 == 0:
-                print(f'Hour {n + 1}')
+                logger.info(f'Hour {n + 1}')
         
         # collect indices for all samples
         indices_rec = raut.UpdateIndexArrays(indices_rec, var_s, sim_hours, s)
@@ -464,7 +472,7 @@ def MCS(input_file, results_subdir) :
         raut.OutageHeatMap(LOL_track, 1, samples, results_subdir)
 
     toc = perf_counter()
-    print(f"Codes finished in {toc-tic} seconds")
+    logger.info(f"Codes finished in {toc-tic} seconds")
 
     return(indices, SOC_rec, curt_rec, renewable_rec, bus_name, essname, sim_hours, \
            samples, indices_rec["mLOLP_rec"], indices_rec["COV_rec"])

@@ -397,6 +397,13 @@
                 </spacer>
                </item>
                <item>
+                <widget class="QPushButton" name="btn_save_config">
+                 <property name="text">
+                  <string>Save Config</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <widget class="QPushButton" name="btn_run_simulation">
                  <property name="text">
                   <string>Run Simulation</string>
