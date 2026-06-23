@@ -113,7 +113,7 @@ class MainWindow(QMainWindow):
         )
 
         # load theme
-        # self.load_stylesheet(str(base_dir / "resources" / "theme.qss"))
+        self.load_stylesheet(str(BASE_DIR / "resources" / "theme.qss"))
 
     def _mount_page(self, container, page_widget) -> None:
         layout = container.layout()

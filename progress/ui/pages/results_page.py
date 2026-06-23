@@ -46,7 +46,7 @@ class ResultsPage(QWidget):
             0,
             QHeaderView.Stretch
         )
-        self.ui.page_csv.setStyleSheet("background-color: white;")
+        # self.ui.page_csv.setStyleSheet("background-color: white;")
 
         # Build preview widgets inside your stacked widget pages
         self._setup_csv_preview()
@@ -66,30 +66,7 @@ class ResultsPage(QWidget):
         self.csv_table.setAlternatingRowColors(True)
         self.csv_table.setSortingEnabled(True)
 
-        self.csv_table.setStyleSheet("""
-            QTableWidget {
-                background-color: white;
-                color: black;
-                gridline-color: #d0d0d0;
-            }
-
-            QTableWidget::item {
-                background-color: white;
-                color: black;
-            }
-
-            QTableWidget::item:selected {
-                background-color: #3874f2;
-                color: white;
-            }
-
-            QHeaderView::section {
-                background-color: #f0f0f0;
-                color: black;
-                border: 1px solid #d0d0d0;
-                padding: 4px;
-            }
-        """)
+        # Table styling handled via theme.qss
 
         self.csv_table.horizontalHeader().setStretchLastSection(True)
         self.csv_table.verticalHeader().setVisible(False)

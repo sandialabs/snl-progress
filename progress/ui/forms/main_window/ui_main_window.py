@@ -25,7 +25,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(1163, 908)
+        MainWindow.resize(1183, 928)
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -159,7 +159,7 @@ class Ui_MainWindow(object):
 
         self.frame_nav_btns = QFrame(self.frame_content)
         self.frame_nav_btns.setObjectName(u"frame_nav_btns")
-        self.frame_nav_btns.setMaximumSize(QSize(16777215, 40))
+        self.frame_nav_btns.setMaximumSize(QSize(16777215, 60))
         self.frame_nav_btns.setFrameShape(QFrame.NoFrame)
         self.frame_nav_btns.setFrameShadow(QFrame.Plain)
         self.horizontalLayout_2 = QHBoxLayout(self.frame_nav_btns)

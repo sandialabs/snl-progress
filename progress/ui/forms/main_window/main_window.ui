@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1163</width>
-    <height>908</height>
+    <width>1183</width>
+    <height>928</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -220,7 +220,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>40</height>
+           <height>50</height>
           </size>
          </property>
          <property name="frameShape">
@@ -268,7 +268,7 @@
  </widget>
  <resources>
   <include location="../../../resources.qrc"/>
-  <include location="../../resources.qrc"/>
+  <include location="../../../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

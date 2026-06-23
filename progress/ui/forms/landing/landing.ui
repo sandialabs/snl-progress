@@ -43,7 +43,7 @@
            <property name="maximumSize">
             <size>
              <width>1000</width>
-             <height>260</height>
+             <height>280</height>
             </size>
            </property>
            <property name="text">
@@ -101,7 +101,7 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>40</pointsize>
+          <pointsize>36</pointsize>
          </font>
         </property>
         <property name="text">

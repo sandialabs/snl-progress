@@ -24,7 +24,7 @@ class Ui_LandingPage(object):
     def setupUi(self, LandingPage):
         if not LandingPage.objectName():
             LandingPage.setObjectName(u"LandingPage")
-        LandingPage.resize(1163, 908)
+        LandingPage.resize(1183, 928)
         self.verticalLayout = QVBoxLayout(LandingPage)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.frame_logo = QFrame(LandingPage)
@@ -46,7 +46,7 @@ class Ui_LandingPage(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.label_progress_logo.sizePolicy().hasHeightForWidth())
         self.label_progress_logo.setSizePolicy(sizePolicy)
-        self.label_progress_logo.setMaximumSize(QSize(1000, 260))
+        self.label_progress_logo.setMaximumSize(QSize(1000, 280))
         self.label_progress_logo.setScaledContents(False)
         self.label_progress_logo.setAlignment(Qt.AlignCenter)
 
@@ -67,7 +67,7 @@ class Ui_LandingPage(object):
         palette.setBrush(QPalette.Disabled, QPalette.WindowText, brush1)
         self.label_progress_desc.setPalette(palette)
         font = QFont()
-        font.setPointSize(40)
+        font.setPointSize(36)
         self.label_progress_desc.setFont(font)
         self.label_progress_desc.setAlignment(Qt.AlignCenter)
         self.label_progress_desc.setWordWrap(True)
