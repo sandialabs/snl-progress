@@ -101,7 +101,9 @@
         </property>
         <property name="font">
          <font>
-          <pointsize>36</pointsize>
+          <pointsize>45</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -172,6 +174,11 @@
    </item>
    <item>
     <widget class="QFrame" name="frame_ackknowledgement">
+     <property name="font">
+      <font>
+       <pointsize>25</pointsize>
+      </font>
+     </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -183,7 +190,7 @@
        <widget class="QLabel" name="label_desc">
         <property name="font">
          <font>
-          <pointsize>18</pointsize>
+          <pointsize>25</pointsize>
          </font>
         </property>
         <property name="text">

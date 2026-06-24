@@ -8,6 +8,7 @@ import shutil
 import yaml
 import argparse
 import logging
+from pathlib import Path
 from progress.mod_sysdata import RASystemData
 from progress.mod_solar import Solar
 from progress.mod_wind import Wind
@@ -20,7 +21,12 @@ from progress.mod_bus_statistics import bus_statistics
 
 logger = logging.getLogger(__name__)
 
-def MCS(input_file, results_subdir) :   
+
+class StopSimulation(Exception):
+    """Raised when the user requests the simulation to stop."""
+
+
+def MCS(input_file, results_subdir, stop_event=None) :   
     '''This function performs mixed time sequential MCS using methods from the different RA modules'''
  
     # open configuration file
@@ -124,6 +130,9 @@ def MCS(input_file, results_subdir) :
     tic = perf_counter()
         
     for s in range(samples):
+
+        if stop_event and stop_event.is_set():
+            raise StopSimulation()
 
         logger.info(f'Sample: {s+1}')
 
@@ -473,7 +482,16 @@ def MCS(input_file, results_subdir) :
         raut.OutageHeatMap(LOL_track, 1, samples, results_subdir)
 
     # save config file alongside results for reproducibility
-    shutil.copy2(input_file, os.path.join(results_subdir, "config.txt"))
+    config_out = Path(results_subdir) / "config.txt"
+    with open(input_file) as f_in, open(config_out, "w") as f_out:
+        for line in f_in:
+            stripped = line.lstrip()
+            if stripped.startswith("#") or stripped.startswith("data:"):
+                continue
+            comment_pos = line.find(" #")
+            if comment_pos != -1:
+                line = line[:comment_pos] + "\n"
+            f_out.write(line)
 
     toc = perf_counter()
     logger.info(f"Codes finished in {toc-tic} seconds")

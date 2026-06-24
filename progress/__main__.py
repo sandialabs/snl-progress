@@ -23,6 +23,7 @@ root = logging.getLogger()
 for h in list(root.handlers):
     root.removeHandler(h)
 
+os.makedirs(get_path() / "logs", exist_ok=True)
 fh = logging.FileHandler(str(get_path() / "logs" / "progress_debug.log"))
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(name)s - %(message)s"))
@@ -52,7 +53,7 @@ class MainWindow(QMainWindow):
 
         self.landing_page = LandingPage()
         self.solar_page = SolarPage(data_handler=self.data)
-        self.wind_page = WindPage()
+        self.wind_page = WindPage(data_handler=self.data)
         self.simulation_page = SimulationPage()
         self.results_page = ResultsPage()
         self.about_page = AboutPage()
@@ -85,6 +86,18 @@ class MainWindow(QMainWindow):
         self.landing_page.getting_started_clicked.connect(self._handle_landing_getting_started)
         self.landing_page.documentation_clicked.connect(          
             lambda: self._go_to_page(self.ui.page_about)
+        )
+        self.solar_page.clusters_skipped.connect(
+            lambda: self._go_to_page(self.ui.page_wind)
+        )
+        self.solar_page.clusters_generated.connect(
+            lambda: self._update_navigation_ui(self.ui.stackedWidget.currentIndex())
+        )
+        self.solar_page.clusters_skipped.connect(
+            lambda: self._update_navigation_ui(self.ui.stackedWidget.currentIndex())
+        )
+        self.wind_page.wind_ready.connect(
+            lambda: self._update_navigation_ui(self.ui.stackedWidget.currentIndex())
         )
         self.ui.btn_prev.clicked.connect(self._go_previous_page)
         self.ui.btn_next.clicked.connect(self._go_next_page)
@@ -139,6 +152,18 @@ class MainWindow(QMainWindow):
         if current_page in self._page_sequence:
             index = self._page_sequence.index(current_page)
             if index < len(self._page_sequence) - 1:
+                if current_page is self.ui.page_solar and not self.solar_page.is_ready_for_simulation():
+                    QMessageBox.information(
+                        self, "Clusters Required",
+                        "Please generate or skip clustering before proceeding to the next step."
+                    )
+                    return
+                if current_page is self.ui.page_wind and not self.wind_page.is_ready_for_simulation():
+                    QMessageBox.information(
+                        self, "Wind Data Required",
+                        "Please process wind data to generate t_rate.xlsx before proceeding to simulation."
+                    )
+                    return
                 self.ui.stackedWidget.setCurrentWidget(self._page_sequence[index + 1])
 
     def _update_navigation_ui(self, _index: int) -> None:
@@ -156,7 +181,13 @@ class MainWindow(QMainWindow):
         if current_page in self._page_sequence:
             seq_index = self._page_sequence.index(current_page)
             self.ui.btn_prev.setEnabled(seq_index > 0)
-            self.ui.btn_next.setEnabled(seq_index < len(self._page_sequence) - 1)
+            can_next = seq_index < len(self._page_sequence) - 1
+            if can_next:
+                if current_page is self.ui.page_solar:
+                    can_next = self.solar_page.is_ready_for_simulation()
+                elif current_page is self.ui.page_wind:
+                    can_next = self.wind_page.is_ready_for_simulation()
+            self.ui.btn_next.setEnabled(can_next)
         else:
             self.ui.btn_prev.setEnabled(False)
             self.ui.btn_next.setEnabled(False)

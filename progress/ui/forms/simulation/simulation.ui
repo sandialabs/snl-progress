@@ -411,6 +411,13 @@
                 </widget>
                </item>
                <item>
+                <widget class="QPushButton" name="btn_stop_simulation">
+                 <property name="text">
+                  <string>Stop Simulation</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
                 <spacer name="horizontalSpacer_right">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>

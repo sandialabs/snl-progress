@@ -2,6 +2,7 @@ import sys
 import threading
 import logging
 from PySide6.QtCore import Signal, QThread
+from progress.example_simulation import StopSimulation
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,19 @@ class WorkerThread(QThread):
 class ProcessingThread:
     """Thread for heavy CPU work — no Qt involvement (avoids M-chip segfaults)."""
     def __init__(self, method, *args):
-        self._thread = threading.Thread(target=method, args=args, daemon=True)
+        self.stop_event = threading.Event()
+        self._thread = threading.Thread(
+            target=self._run, args=(method, *args), daemon=True
+        )
+
+    def _run(self, method, *args):
+        try:
+            method(*args, stop_event=self.stop_event)
+        except StopSimulation:
+            pass
+
+    def stop(self):
+        self.stop_event.set()
 
     def start(self):
         self._thread.start()

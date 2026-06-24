@@ -1,5 +1,5 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QApplication
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, Signal
 from PySide6.QtGui import QPixmap
 from progress.ui.forms.solar.ui_solar import Ui_SolarPage 
 from progress.ui.forms.solar.ui_solar_results import Ui_SolarResults 
@@ -25,6 +25,9 @@ class SolarResultsPage(QWidget):
         self.ui.setupUi(self)
 
 class SolarPage(QWidget):
+    clusters_skipped = Signal()
+    clusters_generated = Signal()
+
     def __init__(self, data_handler: DataHandler):
         super().__init__()
         self.ui = Ui_SolarPage()
@@ -35,8 +38,10 @@ class SolarPage(QWidget):
         self._kmeans_pipeline: Optional[KMeans_Pipeline] = None
         self._active_threads: list[WorkerThread] = []
 
-        # STATE FLAG for download solar data to download
+        # STATE FLAGS
         self._cluster_page_unlocked = False
+        self._clusters_ready = False
+        self._processing = False
 
         # UI initialization
         self.ui.spin_box_num_cluster.setValue(0)
@@ -164,6 +169,8 @@ class SolarPage(QWidget):
 
     def _on_gen_done(self) -> None:
         self._on_thread_finished("btn_gen_cluster", "Generate")
+        self._clusters_ready = True
+        self.clusters_generated.emit()
         QMessageBox.information(self, "Clustering Complete", "Clustering has been completed successfully.")
 
     def _on_gen_error(self, error_msg: str) -> None:
@@ -176,6 +183,18 @@ class SolarPage(QWidget):
             btn.setEnabled(True)
             btn.setText(btn_text)
 
+    def _check_clusters_exist(self) -> bool:
+        solar_dir = self.data_handler.solar_directory
+        if not solar_dir:
+            return False
+        clusters_dir = solar_dir / 'Clusters'
+        if not clusters_dir.exists() or not clusters_dir.is_dir():
+            return False
+        try:
+            return any(clusters_dir.iterdir())
+        except (PermissionError, OSError):
+            return False
+
     def _skip_clustering(self, checked: bool = False) -> None:
         reply = QMessageBox.question(
             self, "Skip Clustering",
@@ -183,7 +202,16 @@ class SolarPage(QWidget):
             QMessageBox.Yes | QMessageBox.No,
         )
         if reply == QMessageBox.Yes:
-            self._switch_to_data_page()
+            if not self._check_clusters_exist():
+                QMessageBox.critical(
+                    self, "Clusters Not Found",
+                    "Cannot skip clustering. No pre-existing cluster data was found.\n\n"
+                    "Please generate clusters first, or place your existing cluster files "
+                    "in the 'Clusters' directory under your solar data folder."
+                )
+                return
+            self._clusters_ready = True
+            self.clusters_skipped.emit()
 
     # ========= THREAD LIFECYCLE HELPERS =========
     def _track_thread(self, thread: WorkerThread) -> None:
@@ -203,10 +231,8 @@ class SolarPage(QWidget):
 
     # ========= DATA PAGE LOGIC =========
     def _handle_download_solar(self, checked=False) -> None:
-        # download logic here
-        self._cluster_page_unlocked = True
-        self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self.ui.frame_data_nav.setVisible(True)
+        self._processing = True
 
         current_year = datetime.datetime.now().year
         try:
@@ -266,6 +292,7 @@ class SolarPage(QWidget):
 
 
     def _on_download_success(self) -> None:
+        self._processing = False
         self._cluster_page_unlocked = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self.ui.btn_download_solar.setEnabled(True)
@@ -273,6 +300,7 @@ class SolarPage(QWidget):
         QMessageBox.information(self, "Solar Data Download", "Successfully downloaded/processed data can proceed to clustering page if needed")
 
     def _on_download_error(self, error_msg: str) -> None:
+        self._processing = False
         self.ui.btn_download_solar.setEnabled(True)
         self.ui.btn_download_solar.setText("Download Solar Data")
         QMessageBox.critical(self, "Download Error", f"Solar data download failed:\n{error_msg}")
@@ -282,10 +310,20 @@ class SolarPage(QWidget):
 
         self.ui.btn_data_page.setEnabled(current_page is not self.ui.page_data)
         self.ui.btn_clusters_page.setEnabled(
-            self._cluster_page_unlocked and current_page is not self.ui.page_cluster
+            self._cluster_page_unlocked and not self._processing and current_page is not self.ui.page_cluster
         )
+    def is_ready_for_simulation(self) -> bool:
+        if self._processing:
+            return False
+        selection = self.ui.combo_data_source.currentText()
+        if selection == "No Solar Data":
+            return True
+        return self._clusters_ready
+
     def _on_data_source_changed(self, _index: int) -> None:
         self._update_solar_page_options()
+        if self.ui.combo_data_source.currentText() == "No Solar Data":
+            self.clusters_generated.emit()
 
     def _validate_user_data(self, checked: bool = False) -> None:
         config = load_config()
@@ -305,7 +343,7 @@ class SolarPage(QWidget):
         else:
             QMessageBox.information(self, "Solar Data Validation", "Solar data is valid.")
 
-        self._cluster_page_unlocked = True
+        self._processing = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self._run_solar_processing()
 
@@ -323,9 +361,13 @@ class SolarPage(QWidget):
         self._processing_thread.start()
 
     def _on_processing_success(self) -> None:
+        self._processing = False
+        self._cluster_page_unlocked = True
+        self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         QMessageBox.information(self, "Solar Processing", "Solar data processing completed.")
 
     def _on_processing_error(self, error_msg: str) -> None:
+        self._processing = False
         QMessageBox.critical(self, "Solar Processing Error", f"Solar data processing failed:\n{error_msg}")
 
     def _display_start_year_info(self, checked: bool = False) -> None:

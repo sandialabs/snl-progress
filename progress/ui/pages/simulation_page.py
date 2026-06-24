@@ -68,13 +68,16 @@ class SimulationPage(QWidget):
         self.ui = Ui_SimulationPage()
         self.ui.setupUi(self)
         self.config = MCSConfig.from_yaml()
+        self._sim_stopped = False
 
         # ==== connections ====
         self.ui.radio_degradation_eval_true.clicked.connect(self._update_frame_visibility)
         self.ui.radio_degradation_eval_false.clicked.connect(self._update_frame_visibility)
         self.ui.btn_run_simulation.clicked.connect(self._display_sim_results)
+        self.ui.btn_stop_simulation.clicked.connect(self._stop_simulation)
         self.ui.btn_save_config.clicked.connect(self._on_save_config)
 
+        self.ui.btn_stop_simulation.setEnabled(False)
         self._populate_gui()
         self._update_frame_visibility()
 
@@ -106,20 +109,30 @@ class SimulationPage(QWidget):
         yaml_path = get_path() / "input.yaml"
         results_dir = get_results_path() / datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         results_dir.mkdir(parents=True, exist_ok=True)
+        self._sim_stopped = False
         self._sim_thread = ProcessingThread(MCS, str(yaml_path), str(results_dir))
         self.ui.btn_run_simulation.setText("Running...")
         self.ui.btn_run_simulation.setEnabled(False)
+        self.ui.btn_stop_simulation.setEnabled(True)
         self._sim_thread.start()
         self._poll_timer = QTimer()
         self._poll_timer.timeout.connect(self._check_sim_done)
         self._poll_timer.start(500)
+
+    def _stop_simulation(self):
+        self._sim_stopped = True
+        self._sim_thread.stop()
+        self.ui.btn_stop_simulation.setEnabled(False)
 
     def _check_sim_done(self):
         if self._sim_thread.isFinished():
             self._poll_timer.stop()
             self.ui.btn_run_simulation.setText("Run Simulation")
             self.ui.btn_run_simulation.setEnabled(True)
-            QMessageBox.information(self, "Simulation Complete", "Simulation ran successfully and results saved.")
+            if self._sim_stopped:
+                QMessageBox.information(self, "Simulation Stopped", "Simulation was cancelled by user.")
+            else:
+                QMessageBox.information(self, "Simulation Complete", "Simulation ran successfully and results saved.")
 
     def _save_sim_configs(self) -> MCSConfig | None:
         try:

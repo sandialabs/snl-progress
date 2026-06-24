@@ -17,12 +17,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 class WindPage(QWidget):
-    def __init__(self):
+    wind_ready = Signal()
+
+    def __init__(self, data_handler: DataHandler):
         super().__init__()
         self.ui = Ui_WindPage()
         self.ui.setupUi(self)
-        self.data_handler = DataHandler
+        self.data_handler = data_handler
         self._wind: Optional[Wind] = None
+        self._t_rate_ready = False
+        self._processing = False
 
         self.ui.frame_process_wind.setVisible(False)
         self.ui.frame_date_range.setVisible(False)
@@ -39,6 +43,20 @@ class WindPage(QWidget):
         self.start_year: int = 2020
         self.end_year: int = 2021
 
+    def is_ready_for_simulation(self) -> bool:
+        if self._processing:
+            return False
+        selection = self.ui.combo_data_source.currentText()
+        if selection == "No Wind Data":
+            return True
+        if self._t_rate_ready:
+            return True
+        wind_dir = self.data_handler.wind_directory
+        if wind_dir and (Path(wind_dir) / 't_rate.xlsx').exists():
+            self._t_rate_ready = True
+            return True
+        return False
+
     # ========= DATA PAGE LOGIC =========
 
     def _display_start_year_info(self, checked: bool = False) -> None:
@@ -52,6 +70,8 @@ class WindPage(QWidget):
 
     def _on_data_source_changed(self, _index: int) -> None:
         self._update_wind_page_options()
+        if self.ui.combo_data_source.currentText() == "No Wind Data":
+            self.wind_ready.emit()
 
     def _update_wind_page_options(self) -> None:
         selection = self.ui.combo_data_source.currentText()
@@ -128,7 +148,8 @@ class WindPage(QWidget):
         wind_dir = Path(config['data']) / 'Wind'
         self.data_handler.wind_directory = wind_dir
         self._wind = Wind(str(wind_dir))
-        
+        self._processing = True
+
         self._download_thread = WorkerThread(
             self._wind.DownloadWindData,
             start_year, 
@@ -140,6 +161,7 @@ class WindPage(QWidget):
         self._download_thread.start()
 
     def _on_wind_download_success(self) -> None:
+        self._processing = False
         self.ui.btn_download_wind.setEnabled(True)
         self.ui.btn_download_wind.setText("Download Wind Data")
         self.ui.frame_process_wind.setVisible(True)
@@ -147,6 +169,7 @@ class WindPage(QWidget):
         QMessageBox.critical(self, "Wind Data Download", f"Successfully downloaded data can proceed to process data")
 
     def _on_wind_download_error(self, error_msg: str) -> None:
+        self._processing = False
         self.ui.btn_download_wind.setEnabled(True)
         self.ui.btn_download_wind.setText("Download Wind Data")
         QMessageBox.critical(self, "Download Error", f"Wind Data download failed:\n{error_msg}")
@@ -172,6 +195,7 @@ class WindPage(QWidget):
         wind_dir = Path(config['data']) / 'Wind'
         self.data_handler.wind_directory = wind_dir
         self._wind = Wind(str(wind_dir))
+        self._processing = True
         self.wind_sites: str = str(wind_dir / 'wind_sites.csv')
         self.wind_power_curves: str = str(wind_dir / 'w_power_curves.csv')
         self.windspeed_data: str = str(wind_dir / 'windspeed_data.csv')
@@ -192,14 +216,18 @@ class WindPage(QWidget):
 
 
     def _on_wind_process_success(self, wind_tr_rate: str) -> None:
+        self._processing = False
         self.ui.btn_process_wind.setEnabled(True)
         self.ui.btn_process_wind.setText("Process Wind Data")
         tr_mats = pd.read_excel(wind_tr_rate, sheet_name=None)
         self.data_handler.tr_mats = np.array([tr_mats[sheet].to_numpy() for sheet in tr_mats])
+        self._t_rate_ready = True
+        self.wind_ready.emit()
         logger.info("Successfully processed data can proceed to simulation")
         QMessageBox.critical(self, "Wind Data Download", f"Successfully processed data can proceed to simulation")
 
     def _on_wind_process_error(self, error_msg: str) -> None:
+        self._processing = False
         self.ui.btn_process_wind.setEnabled(True)
         self.ui.btn_process_wind.setText("Process Wind Data")
         QMessageBox.critical(self, "Process Error", f"Wind Data process failed:\n{error_msg}")
@@ -229,6 +257,7 @@ class WindPage(QWidget):
         wind_dir = Path(config['data']) / 'Wind'
         self.data_handler.wind_directory = wind_dir
         self._wind = Wind(str(wind_dir))
+        self._processing = True
         self.wind_sites: str = str(wind_dir / 'wind_sites.csv')
         self.wind_power_curves: str = str(wind_dir / 'w_power_curves.csv')
         self.windspeed_data: str = str(wind_dir / 'windspeed_data.csv')
@@ -248,13 +277,17 @@ class WindPage(QWidget):
         self._process_thread.start()
 
     def _on_wind_process_user_data_success(self, wind_tr_rate: str) -> None:
+        self._processing = False
         self.ui.btn_process_wind.setEnabled(True)
         self.ui.btn_process_wind.setText("Process Wind Data")
         tr_mats = pd.read_excel(wind_tr_rate, sheet_name=None)
         self.data_handler.tr_mats = np.array([tr_mats[sheet].to_numpy() for sheet in tr_mats])
+        self._t_rate_ready = True
+        self.wind_ready.emit()
         QMessageBox.critical(self, "Wind Data Download", f"Successfully processed data can proceed to simulation")
 
     def _on_wind_process_user_data_error(self, error_msg: str) -> None:
+        self._processing = False
         self.ui.btn_process_wind.setEnabled(True)
         self.ui.btn_process_wind.setText("Process Wind Data")
         QMessageBox.critical(self, "Process Error", f"Wind Data process failed:\n{error_msg}")

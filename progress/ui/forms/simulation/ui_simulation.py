@@ -24,7 +24,7 @@ class Ui_SimulationPage(object):
     def setupUi(self, SimulationPage):
         if not SimulationPage.objectName():
             SimulationPage.setObjectName(u"SimulationPage")
-        SimulationPage.resize(1163, 908)
+        SimulationPage.resize(1183, 928)
         self.verticalLayout_main = QVBoxLayout(SimulationPage)
         self.verticalLayout_main.setObjectName(u"verticalLayout_main")
         self.frame_main = QFrame(SimulationPage)
@@ -266,6 +266,11 @@ class Ui_SimulationPage(object):
 
         self.horizontalLayout_run_button.addWidget(self.btn_run_simulation)
 
+        self.btn_stop_simulation = QPushButton(self.frame_run_button)
+        self.btn_stop_simulation.setObjectName(u"btn_stop_simulation")
+
+        self.horizontalLayout_run_button.addWidget(self.btn_stop_simulation)
+
         self.horizontalSpacer_right = QSpacerItem(40, 20, QSizePolicy.MinimumExpanding, QSizePolicy.Minimum)
 
         self.horizontalLayout_run_button.addItem(self.horizontalSpacer_right)
@@ -321,5 +326,6 @@ class Ui_SimulationPage(object):
         self.radio_detailed_model_false.setText(QCoreApplication.translate("SimulationPage", u"False", None))
         self.btn_save_config.setText(QCoreApplication.translate("SimulationPage", u"Save Config", None))
         self.btn_run_simulation.setText(QCoreApplication.translate("SimulationPage", u"Run Simulation", None))
+        self.btn_stop_simulation.setText(QCoreApplication.translate("SimulationPage", u"Stop Simulation", None))
     # retranslateUi
 
