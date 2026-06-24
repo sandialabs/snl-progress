@@ -7,6 +7,7 @@ from progress.ui.utils.worker import WorkerThread, ProcessingThread
 from progress.paths import get_path, load_config
 from progress.mod_solar import Solar
 from progress.mod_kmeans import KMeans_Pipeline
+from typing import Optional
 from progress.ui.utils.data_handler import DataHandler
 from progress.utils.data_validator import validate_domain
 import yaml
@@ -30,8 +31,8 @@ class SolarPage(QWidget):
         self.results_window = SolarResultsPage()
         self.ui.setupUi(self)
         self.data_handler = data_handler
-        self._solar: Solar | None = None
-        self._kmeans_pipeline: KMeans_Pipeline | None = None
+        self._solar: Optional[Solar] = None
+        self._kmeans_pipeline: Optional[KMeans_Pipeline] = None
         self._active_threads: list[WorkerThread] = []
 
         # STATE FLAG for download solar data to download
@@ -189,7 +190,7 @@ class SolarPage(QWidget):
         self._active_threads.append(thread)
         thread.finished.connect(lambda t=thread: self._active_threads.remove(t))
 
-    def _stop_thread(self, thread: WorkerThread | None) -> None:
+    def _stop_thread(self, thread: Optional[WorkerThread]) -> None:
         if thread is not None and thread.isRunning():
             thread.quit()
             thread.wait(3000)

@@ -4,6 +4,7 @@ from progress.ui.utils.worker import WorkerThread, ProcessingThread
 from progress.ui.forms.wind.ui_wind import Ui_WindPage
 from progress.paths import get_path, load_config
 from progress.mod_wind import Wind
+from typing import Optional
 from progress.ui.utils.data_handler import DataHandler
 from progress.utils.data_validator import validate_domain
 from pathlib import Path
@@ -21,7 +22,7 @@ class WindPage(QWidget):
         self.ui = Ui_WindPage()
         self.ui.setupUi(self)
         self.data_handler = DataHandler
-        self._wind: Wind | None = None
+        self._wind: Optional[Wind] = None
 
         self.ui.frame_process_wind.setVisible(False)
         self.ui.frame_date_range.setVisible(False)
