@@ -253,8 +253,8 @@ class AppController:
     """Manages and displays both windows simultaneously."""
     def __init__(self):
         # Storing them as attributes keeps them alive in memory
-        self.main_window = MainWindow()
         self.log_window = LogWindow()
+        self.main_window = MainWindow()
     def show_all(self):
         # Enable log window capture so all subsequent output goes to the GUI log.
         # Startup output (imports, init) still printed to terminal.
