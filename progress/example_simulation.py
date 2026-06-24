@@ -4,6 +4,7 @@ from pyomo.environ import *
 import copy
 import pandas as pd
 import os
+import shutil
 import yaml
 import argparse
 import logging
@@ -470,6 +471,9 @@ def MCS(input_file, results_subdir) :
 
     if sim_hours == 8760:
         raut.OutageHeatMap(LOL_track, 1, samples, results_subdir)
+
+    # save config file alongside results for reproducibility
+    shutil.copy2(input_file, os.path.join(results_subdir, "config.txt"))
 
     toc = perf_counter()
     logger.info(f"Codes finished in {toc-tic} seconds")

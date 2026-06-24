@@ -253,49 +253,48 @@ class AppController:
     """Manages and displays both windows simultaneously."""
     def __init__(self):
         # Storing them as attributes keeps them alive in memory
-         self.main_window = MainWindow()
-
+        self.main_window = MainWindow()
+        self.log_window = LogWindow()
     def show_all(self):
         # Enable log window capture so all subsequent output goes to the GUI log.
         # Startup output (imports, init) still printed to terminal.
         # keep this code when you add log window
-        # log_controller = get_log_window()
-        # if log_controller is not None:
-        #     log_controller.enable_capture()
-        #
-        # # Call .show() on both instances to display them together
-        # screen = QApplication.primaryScreen()
-        # available = screen.availableGeometry()
-        #
-        # screen_x = available.x()
-        # screen_y = available.y()
-        # screen_w = available.width()
-        # screen_h = available.height()
-        #
-        # gap = 20
-        #
-        # main_w = int(screen_w * 0.65)
-        # log_w = screen_w - main_w - gap
-        # height = int(screen_h * 0.9)
-        #
-        # self.main_window.setGeometry(
-        #     screen_x,
-        #     screen_y,
-        #     main_w,
-        #     height,
-        # )
-        #
-        # self.log_window.setGeometry(
-        #     screen_x + main_w + gap,
-        #     screen_y,
-        #     log_w,
-        #     height,
-        # )
-        #
-        # self.main_window.show()
-        # self.log_window.show()
-        #
+        log_controller = get_log_window()
+        if log_controller is not None:
+            log_controller.enable_capture()
+
+        # Call .show() on both instances to display them together
+        screen = QApplication.primaryScreen()
+        available = screen.availableGeometry()
+
+        screen_x = available.x()
+        screen_y = available.y()
+        screen_w = available.width()
+        screen_h = available.height()
+
+        gap = 20
+
+        main_w = int(screen_w * 0.65)
+        log_w = screen_w - main_w - gap
+        height = int(screen_h * 0.9)
+
+        self.main_window.setGeometry(
+            screen_x,
+            screen_y,
+            main_w,
+            height,
+        )
+
+        self.log_window.setGeometry(
+            screen_x + main_w + gap,
+            screen_y,
+            log_w,
+            height,
+        )
+
         self.main_window.show()
+        self.log_window.show()
+
 
 def main():
     """

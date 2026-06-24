@@ -8,6 +8,7 @@ from progress.paths import get_path, load_config
 from progress.mod_solar import Solar
 from progress.mod_kmeans import KMeans_Pipeline
 from progress.ui.utils.data_handler import DataHandler
+from progress.utils.data_validator import validate_domain
 import yaml
 import os
 from pathlib import Path
@@ -31,6 +32,7 @@ class SolarPage(QWidget):
         self.data_handler = data_handler
         self._solar: Solar | None = None
         self._kmeans_pipeline: KMeans_Pipeline | None = None
+        self._active_threads: list[WorkerThread] = []
 
         # STATE FLAG for download solar data to download
         self._cluster_page_unlocked = False
@@ -45,6 +47,8 @@ class SolarPage(QWidget):
         self.ui.btn_validate_own_data.setVisible(False)
         self.ui.combo_data_source.setCurrentText("-- Select Option --")
         self.ui.label_hint_selection.setVisible(True)
+
+        self.destroyed.connect(self._cleanup_worker_threads)
 
         # ========= CONNECTIONS =========
         # ---- data page connections ----
@@ -180,6 +184,22 @@ class SolarPage(QWidget):
         if reply == QMessageBox.Yes:
             self._switch_to_data_page()
 
+    # ========= THREAD LIFECYCLE HELPERS =========
+    def _track_thread(self, thread: WorkerThread) -> None:
+        self._active_threads.append(thread)
+        thread.finished.connect(lambda t=thread: self._active_threads.remove(t))
+
+    def _stop_thread(self, thread: WorkerThread | None) -> None:
+        if thread is not None and thread.isRunning():
+            thread.quit()
+            thread.wait(3000)
+
+    def _cleanup_worker_threads(self) -> None:
+        for t in list(self._active_threads):
+            if t.isRunning():
+                t.quit()
+                t.wait(3000)
+
     # ========= DATA PAGE LOGIC =========
     def _handle_download_solar(self, checked=False) -> None:
         # download logic here
@@ -236,11 +256,12 @@ class SolarPage(QWidget):
         self._solar = Solar(str(solar_dir), config['model'])
         self.data_handler.solar_directory = solar_dir
 
+        self._stop_thread(getattr(self, '_download_thread', None))
         self._download_thread = WorkerThread(self._solar.run_pipeline, start_year, end_year)
-        self._download_thread.start()
-
         self._download_thread.success.connect(self._on_download_success)
         self._download_thread.error.connect(self._on_download_error)
+        self._track_thread(self._download_thread)
+        self._download_thread.start()
 
 
     def _on_download_success(self) -> None:
@@ -266,18 +287,45 @@ class SolarPage(QWidget):
         self._update_solar_page_options()
 
     def _validate_user_data(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "User Solar Data Validation", "User Solar Data is validated good to proceed.")
+        config = load_config()
+        data_dir = Path(config['data'])
+        errors, warnings = validate_domain(data_dir, "solar")
+
+        if errors:
+            msg = "Solar data validation failed:\n\n" + "\n".join(f"• {e}" for e in errors)
+            if warnings:
+                msg += "\n\nWarnings:\n" + "\n".join(f"• {w}" for w in warnings)
+            QMessageBox.critical(self, "Solar Data Validation", msg)
+            return
+
+        if warnings:
+            msg = "Solar data is valid with warnings:\n\n" + "\n".join(f"• {w}" for w in warnings)
+            QMessageBox.warning(self, "Solar Data Validation", msg)
+        else:
+            QMessageBox.information(self, "Solar Data Validation", "Solar data is valid.")
+
         self._cluster_page_unlocked = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
-        self._run_solar_processing()   
+        self._run_solar_processing()
 
     def _run_solar_processing(self) -> None:
         config = load_config()
         solar_dir = Path(config['data']) / 'Solar'
         self._solar = Solar(str(solar_dir), config['model'])
         self.data_handler.solar_directory = solar_dir
+
+        self._stop_thread(getattr(self, '_processing_thread', None))
         self._processing_thread = WorkerThread(self._solar.run_pipeline_gui)
+        self._processing_thread.success.connect(self._on_processing_success)
+        self._processing_thread.error.connect(self._on_processing_error)
+        self._track_thread(self._processing_thread)
         self._processing_thread.start()
+
+    def _on_processing_success(self) -> None:
+        QMessageBox.information(self, "Solar Processing", "Solar data processing completed.")
+
+    def _on_processing_error(self, error_msg: str) -> None:
+        QMessageBox.critical(self, "Solar Processing Error", f"Solar data processing failed:\n{error_msg}")
 
     def _display_start_year_info(self, checked: bool = False) -> None:
          QMessageBox.information(self, "ERA5 Start Year", "Start year for Solar data download.")

@@ -5,6 +5,7 @@ from progress.ui.forms.wind.ui_wind import Ui_WindPage
 from progress.paths import get_path, load_config
 from progress.mod_wind import Wind
 from progress.ui.utils.data_handler import DataHandler
+from progress.utils.data_validator import validate_domain
 from pathlib import Path
 import datetime
 import pandas as pd
@@ -194,6 +195,7 @@ class WindPage(QWidget):
         self.ui.btn_process_wind.setText("Process Wind Data")
         tr_mats = pd.read_excel(wind_tr_rate, sheet_name=None)
         self.data_handler.tr_mats = np.array([tr_mats[sheet].to_numpy() for sheet in tr_mats])
+        logger.info("Successfully processed data can proceed to simulation")
         QMessageBox.critical(self, "Wind Data Download", f"Successfully processed data can proceed to simulation")
 
     def _on_wind_process_error(self, error_msg: str) -> None:
@@ -202,8 +204,23 @@ class WindPage(QWidget):
         QMessageBox.critical(self, "Process Error", f"Wind Data process failed:\n{error_msg}")
 
     def _validate_user_data(self, checked: bool = False) -> None:
-        # TODO: add a check files functions to ensure correct files and structures
-        QMessageBox.information(self, "User Wind Data Validation", "User Wind Data is validated good to proceed.")
+        config = load_config()
+        data_dir = Path(config['data'])
+        errors, warnings = validate_domain(data_dir, "wind")
+
+        if errors:
+            msg = "Wind data validation failed:\n\n" + "\n".join(f"• {e}" for e in errors)
+            if warnings:
+                msg += "\n\nWarnings:\n" + "\n".join(f"• {w}" for w in warnings)
+            QMessageBox.critical(self, "Wind Data Validation", msg)
+            return
+
+        if warnings:
+            msg = "Wind data is valid with warnings:\n\n" + "\n".join(f"• {w}" for w in warnings)
+            QMessageBox.warning(self, "Wind Data Validation", msg)
+        else:
+            QMessageBox.information(self, "Wind Data Validation", "Wind data is valid.")
+
         self.ui.frame_process_wind.setVisible(True)
     
     def _user_data_run_wind_process(self) -> None:

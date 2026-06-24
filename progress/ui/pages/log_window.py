@@ -22,26 +22,17 @@ class _LogEmitter(QObject):
     Sends log text safely to the Qt widget.
     """
     text_written = Signal(str)
-
-
-class _QtLogHandler(QObject, logging.Handler):
-    """
-    Logging handler that writes Python logging messages to the app log window.
-    """
-
+class _QtLogHandler(logging.Handler):
     def __init__(self, log_widget: QPlainTextEdit):
-        QObject.__init__(self)
         logging.Handler.__init__(self)
         self.log_widget = log_widget
-
-        # Signal used to update the GUI safely.
         self.emitter = _LogEmitter()
         self.emitter.text_written.connect(self._append_text)
 
     def emit(self, record: logging.LogRecord) -> None:
         try:
             message = self.format(record)
-            self._append_text(message + "\n")
+            self.emitter.text_written.emit(message + "\n")  # ← thread-safe via signal
         except Exception:
             self.handleError(record)
 
@@ -138,17 +129,11 @@ class LogWindowController(QObject):
             sys.stderr = self.error_stream
 
         root_logger = logging.getLogger()
-        # comment out both handler-removal loops
-        # for handler in list(root_logger.handlers):
-        #     if handler is self.log_handler:      # keep the Qt handler
-        #         continue
-        #     if isinstance(handler, logging.FileHandler):  # keep file handlers
-        #         continue
-        #     root_logger.removeHandler(handler)
-        root_logger = logging.getLogger()
         for handler in list(root_logger.handlers):
+            if handler is self.log_handler:
+                continue
             if isinstance(handler, logging.FileHandler):
-                continue  # don't remove file handlers
+                continue
             root_logger.removeHandler(handler)
 
         self._capture_enabled = True

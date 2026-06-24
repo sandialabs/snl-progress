@@ -1,5 +1,8 @@
 from progress.ui.forms.results.ui_results import Ui_FilePreviewPage
-from PySide6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLabel, QScrollArea, QSizePolicy, QMenu, QTableWidget, QTableWidgetItem, QTreeView, QFileSystemModel, QVBoxLayout, QHeaderView, QSizePolicy
+from PySide6.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QWidget,
+    QLabel, QScrollArea, QSizePolicy, QMenu, QTableWidget, QTableWidgetItem,
+    QTreeView, QFileSystemModel, QVBoxLayout, QHeaderView, QSizePolicy,
+    QPlainTextEdit)
 from PySide6.QtCore import Qt
 from PySide6.QtPdf import QPdfDocument
 from PySide6.QtPdfWidgets import QPdfView
@@ -31,7 +34,7 @@ class ResultsPage(QWidget):
             | QDir.Filter.Files
             | QDir.Filter.NoDotAndDotDot
         )
-        self.file_model.setNameFilters(["*.csv", "*.pdf", "*.png"])
+        self.file_model.setNameFilters(["*.csv", "*.pdf", "*.png", "*.txt"])
         self.file_model.setNameFilterDisables(False)
             
         # Hide Size, Type, and Date Modified columns
@@ -52,6 +55,7 @@ class ResultsPage(QWidget):
         self._setup_csv_preview()
         self._setup_pdf_preview()
         self._setup_png_preview()
+        self._setup_txt_preview()
 
         # connections 
         self.ui.btn_home_dir.clicked.connect(self._set_file_paths_to_home)
@@ -95,6 +99,25 @@ class ResultsPage(QWidget):
 
         layout.addWidget(self.png_label)
 
+    def _setup_txt_preview(self) -> None:
+        self.page_txt = QWidget()
+        self.ui.stackedWidget_preview.addWidget(self.page_txt)
+
+        self.txt_edit = QPlainTextEdit(self.page_txt)
+        self.txt_edit.setReadOnly(True)
+        self.txt_edit.setStyleSheet("background-color: white; color: black; font-family: monospace;")
+
+        layout = QVBoxLayout(self.page_txt)
+        layout.addWidget(self.txt_edit)
+
+    def _preview_txt(self, file_path: Path) -> None:
+        try:
+            text = file_path.read_text(encoding="utf-8")
+            self.txt_edit.setPlainText(text)
+            logger.info(f"Text file loaded: {file_path}")
+        except Exception as exc:
+            logger.exception(f"Failed to load text file {file_path}: {exc}")
+
     def _set_file_paths_to_home(self) -> None:
         home_path = str(HOME_DIR)
         self.file_model.setRootPath(home_path)
@@ -135,6 +158,10 @@ class ResultsPage(QWidget):
         elif suffix == ".png":
             self._preview_png(file_path)
             self.ui.stackedWidget_preview.setCurrentWidget(self.ui.page_image)
+
+        elif suffix == ".txt":
+            self._preview_txt(file_path)
+            self.ui.stackedWidget_preview.setCurrentWidget(self.page_txt)
 
         else:
             print(f"Unsupported file type: {suffix}")

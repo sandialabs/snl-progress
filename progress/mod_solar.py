@@ -13,7 +13,17 @@ import pvlib.modelchain as mc
 from timezonefinder import TimezoneFinder
 import logging
 
+from progress.utils.data_validator import validate_file_columns, SOLAR_SCHEMAS
+
 logger = logging.getLogger(__name__)
+
+def _validate_csv(filepath: str, fname: str, schemas: dict) -> None:
+    sc = schemas.get(fname)
+    if sc:
+        errors = validate_file_columns(Path(filepath), sc["columns"], sc["allow_extra"])
+        if errors:
+            raise ValueError(f"Invalid {fname}: " + "; ".join(errors))
+
 
 class Solar:
     """
@@ -32,6 +42,8 @@ class Solar:
         self.solar_site_data = solar_directory + "/solar_sites.csv"
         self.sites_df = pd.read_csv(self.solar_site_data)
         self.model = model
+
+        _validate_csv(self.solar_site_data, "solar_sites.csv", SOLAR_SCHEMAS)
 
         self.names = self.sites_df["Site Name"]
         self.n_sites = len(self.sites_df)
@@ -52,10 +64,6 @@ class Solar:
         pass
 
     def download_solar_data(self, start_year, end_year, progress_callback=None):
-
-        if not {"Latitude", "Longitude"}.issubset(self.sites_df.columns):
-            raise ValueError("CSV must contain 'Latitude and 'Longitude' columns")
-
         # --- DATA DESCRIPTION FOR ERA5 ---
         dataset = "reanalysis-era5-single-levels-timeseries"
         base_request = {
@@ -249,6 +257,8 @@ class Solar:
 
         logger.info(f"Saved combined data to: {output_file}")
         logger.info(f"Shape: {combined_df.shape}")
+
+        _validate_csv(output_file, "gen_all_sites.csv", SOLAR_SCHEMAS)
 
         return combined_df
     

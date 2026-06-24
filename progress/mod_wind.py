@@ -9,7 +9,17 @@ import cdsapi
 import zipfile
 import logging
 
+from progress.utils.data_validator import validate_file_columns, WIND_SCHEMAS
+
 logger = logging.getLogger(__name__)
+
+
+def _validate_csv(filepath: str, fname: str) -> None:
+    sc = WIND_SCHEMAS.get(fname)
+    if sc:
+        errors = validate_file_columns(Path(filepath), sc["columns"], sc["allow_extra"])
+        if errors:
+            raise ValueError(f"Invalid {fname}: " + "; ".join(errors))
 
 class Wind:
 
@@ -26,11 +36,9 @@ class Wind:
         # get wind sites data
         self.wind_site_data = wind_directory + "/wind_sites.csv"
         self.sites_df = pd.read_csv(self.wind_site_data)
+        _validate_csv(self.wind_site_data, "wind_sites.csv")
 
     def DownloadWindData(self, start_year, end_year):
-
-        if not {"Latitude", "Longitude"}.issubset(self.sites_df.columns):
-            raise ValueError("CSV must contain 'Latitude and 'Longitude' columns")
 
         # --- DATA DESCRIPTION FOR ERA5 ---
         dataset = "reanalysis-era5-single-levels-timeseries"
@@ -135,7 +143,9 @@ class Wind:
             keep="first"
         )
 
-        windspeed_df.to_csv(f"{self.wind_directory}/windspeed_data.csv", index=False)
+        out_path = f"{self.wind_directory}/windspeed_data.csv"
+        windspeed_df.to_csv(out_path, index=False)
+        _validate_csv(out_path, "windspeed_data.csv")
         logger.info("FINISHED DOWNLOADING WIND DATA")
 
 
@@ -163,7 +173,8 @@ class Wind:
         self.w_turbines = np.ceil(self.wcap/self.turbine_rating).astype(int) # no. of wind turbines
         self.p_class = self.wind['Power Class'].values
         
-        self.pcurve = pd.read_csv(pcurve_data) # read file for wind power curve data
+        self.pcurve = pd.read_csv(pcurve_data)
+        _validate_csv(pcurve_data, "w_power_curves.csv")
         self.start_speed = self.pcurve['Start (m/s)'].values # start speeds for each wind class
         self.end_speed = self.pcurve['End (m/s)'].values # end speed for each wind class
         self.w_classes = len(self.start_speed) # no. of wind classes
@@ -190,12 +201,14 @@ class Wind:
         bus_no = wind['Bus No.'].values # wind farm numbers
         w_sites = len(bus_no) # number of wind sites
 
-        pcurve = pd.read_csv(pcurve_data) # read file for wind power curve data
+        pcurve = pd.read_csv(pcurve_data)
+        _validate_csv(pcurve_data, "w_power_curves.csv")
         start_speed = pcurve['Start (m/s)'].values # start speeds for each wind class
         w_classes = len(start_speed) # no. of wind classes
 
         speed_bins = start_speed
         wdata_df = pd.read_csv(windspeed_data, index_col=0)
+        _validate_csv(windspeed_data, "windspeed_data.csv")
 
         wdata = {col: wdata_df[col].to_numpy() for col in wdata_df.columns}
         keys = list(wdata.keys())
