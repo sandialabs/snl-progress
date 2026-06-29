@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 # from quest import __version__
 
-DISTNAME = "ProGRESS"
+DISTNAME = "snl-progress"
 VERSION = "1.2.0"
 PYTHON_REQUIRES = ">=3.9, <3.12"
 DESCRIPTION = "Probabilistic Grid Reliability Analysis with Energy Storage Systems"
