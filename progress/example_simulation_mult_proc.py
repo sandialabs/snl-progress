@@ -10,12 +10,9 @@ from datetime import datetime, timedelta
 import argparse
 
 from progress.mod_sysdata import RASystemData
-from progress.mod_solar import Solar
-from progress.mod_wind import Wind
 from progress.mod_utilities import RAUtilities
-from progress.mod_matrices import RAMatrices
+from progress.mod_mcs_utils import MCS_utils, MCS_samples, MCS_hourly
 from progress.mod_plot import RAPlotTools
-from progress.mod_degradation import BESS_Degradation
 from progress.mod_bus_statistics import bus_statistics
 
 class ProgressMultiProcess:
@@ -29,270 +26,107 @@ class ProgressMultiProcess:
 
     def MCS(self, input_file, main_folder) :   
         '''This function performs mixed time sequential MCS using methods from the different RA modules'''
-
+ 
         # open configuration file
         with open(input_file, 'r') as f:
             config = yaml.safe_load(f)
 
-        # data file locations
-        system_directory = config['data'] + '/System'
-        solar_directory = config['data'] + '/Solar'
-        wind_directory = config['data'] + '/Wind'
-        solar_dir_exists = os.path.exists(solar_directory)
-        wind_dir_exists = os.path.exists(wind_directory)
+        mcs_params = MCS_utils(config)
+        if mcs_params.enable_pcm:
+            ValueError("Currently PCM runs are not supported for multi-processing")
+        bus_params, gen_params, line_params, load_all_regions, ess_params = mcs_params.initialize_params()
 
-        # model Copper Sheet, Zonal, or Nodal
-        network_model = config['model']
-
-        # Monte Carlo simulation parameters
-        samples = config['samples']
-        sim_hours = config['sim_hours']
-        time_periods = config['optimization_period']
-        if time_periods == 1:
-            optimization_period = "single_period"
-        else:
-            if time_periods % 24 != 0:
-                raise ValueError("For multi-period optimization, the optimization_period should be a multiple of 24.")
-            optimization_period = "multi_period"
-        evaluate_degradation = config.get('evaluate_degradation', False)
-        detailed_thermal_model = config.get('detailed_thermal_model', False)
-        degradation_interval = config.get('degradation_interval', 168)
-
-        # system data
-        data_gen = system_directory + '/gen.csv'
-        data_branch = system_directory + '/branch.csv'
-        data_bus = system_directory + '/bus.csv'
-        data_load = system_directory + '/load.csv'
-        data_storage = system_directory + '/storage.csv'
-        BMva = 100
-
-        rasd = RASystemData(optimization_period, network_model)
-        genbus, ng, pmax, pmin, FOR_gen, MTTF_gen, MTTR_gen, gencost, genname = rasd.gen(data_gen)
-        nl, fb, tb, cap_trans, MTTF_trans, MTTR_trans, branchname = rasd.branch(data_branch, data_bus)
-        bus_name, bus_no, nz = rasd.bus(data_bus)
-        essname, essbus, ness, ess_pmax, ess_pmin, ess_duration, ess_socmax, ess_socmin, ess_eff, \
-            disch_cost, ch_cost, MTTF_ess, MTTR_ess, ess_units, ess_chemistry = rasd.storage(data_storage)
-        ess_sbase = ess_pmax*ess_duration
-
-        # calculate transition rates and capacities for all components
-        raut = RAUtilities()
-        mu_tot, lambda_tot = raut.reltrates(MTTF_gen, MTTF_trans, MTTR_gen, MTTR_trans, MTTF_ess, MTTR_ess)
-        cap_max, cap_min = raut.capacities(nl, pmax, pmin, ess_pmax, ess_pmin, cap_trans) # calling this function to get values of cap_max and cap_min
-
-        # load electric load data and modify data center load for zonal model
-        load_all_regions = rasd.load(bus_name, bus_no, data_load)
-        if config["DC_load"] == True and network_model == "Zonal":
-            raut.DC_zonal(system_directory)
-
-        # download and process wind data
-        if wind_dir_exists:
-
-            wind_sites = wind_directory + '/wind_sites.csv'
-            wind_power_curves = wind_directory + '/w_power_curves.csv'
-            # windspeed_data = wind_directory + '/windspeed_data.csv'
-            wind_tr_rate = wind_directory + '/t_rate.xlsx'
-            
-            wind = Wind(wind_directory)
-                
-            w_sites, farm_name, zone_no, w_classes, w_turbines, r_cap, p_class, out_curve2, out_curve3,\
-                start_speed = wind.WindFarmsData(wind_sites, wind_power_curves, network_model)
-
-            tr_mats = pd.read_excel(wind_tr_rate, sheet_name=None)
-            tr_mats = np.array([tr_mats[sheet_name].to_numpy() for sheet_name in tr_mats])
-
-        # download and process solar data
-        if solar_dir_exists:
-
-            solar_prob_data = solar_directory+"/solar_probs.csv"
-
-            solar = Solar(solar_directory, network_model)
-
-            s_sites, s_zone_no, s_max, s_profiles, solar_prob = solar.GetSolarProfiles(solar_prob_data)
-
-        # matrices required for optimization
-        ramat = RAMatrices(nz)
-        gen_mat = ramat.genmat(ng, genbus, ness, essbus)
-        ch_mat = ramat.chmat(ness, essbus, nz)
-        A_inc = ramat.Ainc(nl, fb, tb)
-        curt_mat = ramat.curtmat(nz)
-
-        # dictionary for storing temp. index values
-        indices_rec = {"LOLP_rec": np.zeros(samples), "EUE_rec": np.zeros(samples), "MDT_rec": np.zeros(samples), \
-                        "LOLF_rec": np.zeros(samples), "EPNS_rec": np.zeros(samples), "LOLP_hr": np.zeros(sim_hours), \
-                            "LOLE_rec": np.zeros(samples),"mLOLP_rec":np.zeros(samples), "COV_rec": np.zeros(samples)}
+        #Extract some commonly used parameters
+        samples = mcs_params.samples
+        sim_hours = mcs_params.sim_hours
+        ng = gen_params["ng"]
+        nl = line_params["nl"]
+        ness = ess_params["ness"]
+        nz = mcs_params.bus_params["nz"]
+        BMva = mcs_params.BMva
+    
+        optimization_period = mcs_params.optimization_period
+        time_periods = mcs_params.time_periods
+        network_model = mcs_params.network_model
         
-        LOL_track = np.zeros((samples, sim_hours))
+        mcs_params.process_renewable_data()
+        gen_mat, ch_mat, A_inc, curt_mat, indices_rec, LOL_track = mcs_params.process_matrices()
+
+        # Instanciate commonly used classes
+        raut = RAUtilities()
 
         tic = perf_counter()
             
         for s in range(samples):
 
             print(f'Sample: {s+1}, Process No.: {self.rank}')
+            sample_instance= MCS_samples(mcs_params)
+            sample_instance.initialize_sample_data()
+            if optimization_period == "multi_period":
+                holder_dict = sample_instance.holder_dict
+                ess_smax_store = np.zeros((ness,sim_hours))
 
+            # initalize sample components that will be modified within the hourly loop
+            current_state = np.ones(ng + nl + ness) # all gens and TLs in up state at the start of the year
             # temp variables to be used for each sample
             var_s = {"t_min": 0, "LLD": 0, "curtailment": np.zeros(sim_hours), "label_LOLF": np.zeros(sim_hours), "freq_LOLF": 0, "LOL_days": 0, \
                     "outage_day": np.zeros(365)}
-
-            # current states of components
-            current_state = np.ones(ng + nl + ness) # all gens and TLs in up state at the start of the year
-
-            if wind_directory:
-                current_w_class = np.floor(np.random.uniform(0, 1, w_sites)*w_classes).astype(int) # starting wind speed class for each site (random)
-
-            # record data for plotting and exporting (optional)
-            renewable_rec = {"wind_rec": np.zeros((nz, sim_hours)), "solar_rec": np.zeros((nz, sim_hours)), "congen_temp": 0, \
-                            "rengen_temp": 0}
-
-            SOC_old = 0.5*(np.multiply(np.multiply(ess_pmax, ess_duration), ess_socmax))/BMva
-            ESS_initial_capacities = copy.deepcopy(ess_pmax)
-            SOC_rec = np.zeros((ness, sim_hours))
-            Pdis_rec = np.zeros((ness, sim_hours))
-            Pch_rec = np.zeros((ness, sim_hours))
-            curt_rec = np.zeros(sim_hours)
-
-            # the following lists will be used to record data during hours of outage
-            out_hours = []
-            Pg_rec = []
-            flow_rec = []
-            curtbus_rec = []
-            ESS_rec = []
-            wind_rec = []
-            solar_rec = []
-
-            if optimization_period == "multi_period":
-                def initialize_holder_vars(holder_dict):
-                    holder_dict["g_limit"] = {}
-                    holder_dict["capacity"] = {}
-                    holder_dict["net_load"] = np.zeros((nz, time_periods))
-                    holder_dict["ren_limit"] = np.zeros((nz, time_periods))
-                    holder_dict["ess_min"] = np.zeros((ness, time_periods))
-                    holder_dict["ess_max"] = np.zeros((ness, time_periods))
-                holder_dict = {}
-                initialize_holder_vars(holder_dict)
-            ess_duration_temp = ess_duration.astype(float).copy()
-            ess_smax_store = np.zeros((ness, sim_hours))
-
-            # Form the degradation instances for all ESS
-            degradation_instances = {}
-            c_rate_holder = {}
-            temp_holder = {}
-            SOC_old_deg = {}
-            if evaluate_degradation == True:
-                for ess_name, ess_chem in zip(essname, ess_chemistry):
-                    if ess_chem not in ["LFP", "NMC", "NCA", "LMO"]:
-                        continue
-                    degradation_instances[ess_name] = BESS_Degradation(ess_chem)
-                    c_rate_holder[ess_name] = np.zeros(sim_hours)
-                    temp_holder[ess_name] = np.zeros(sim_hours)
-                    SOC_old_deg[ess_name] = 0.5
-
-            # add data center load to relevant buses
-            if config['DC_load']==True:
-                load_plus_DC = raut.data_center_load(load_all_regions, system_directory, network_model)
-
+            # Initialize ESS SOC and duration which will be updated after dispatch and degradation evaluation in each hour
+            SOC_old = 0.5*(np.multiply(np.multiply(ess_params["ess_pmax"], ess_params["ess_duration"]), ess_params["ess_socmax"]))/BMva
+            ess_duration_temp = ess_params["ess_duration"].astype(float).copy()
+            ESS_initial_capacities = ess_params["ess_pmax"].copy()
+            
             for n in range(sim_hours):
 
+                hourly_instance = MCS_hourly(sample_instance)
                 # get current states(up/down) and capacities of all system components
-                next_state, current_cap, var_s["t_min"] = raut.NextState(var_s["t_min"], ng, ness, nl, \
-                                                                        lambda_tot, mu_tot, current_state, cap_max, cap_min, ess_units)
+                next_state, current_cap, var_s["t_min"] = raut.NextState(var_s["t_min"], ng, ness, nl, mcs_params.lambda_tot, mcs_params.mu_tot, \
+                                                                        current_state, mcs_params.cap_max, mcs_params.cap_min, ess_params["ess_units"])
                 current_state = copy.deepcopy(next_state)
-                
-                # get wind power output for all zones/areas
-                if wind_dir_exists:
-                    w_zones, current_w_class = raut.WindPower(nz, w_sites, zone_no, \
-                    w_classes, r_cap, current_w_class, tr_mats, p_class, w_turbines, out_curve2, out_curve3)
-
-                # get solar power output for all zones/areas
-                if solar_dir_exists:
-                    s_zones = raut.SolarPower(n, nz, s_zone_no, solar_prob, s_profiles, s_sites, s_max)
-
-                # record wind and solar profiles for plotting (optional)
-                if wind_dir_exists:
-                    renewable_rec["wind_rec"][:, n] = w_zones
-
-                if solar_dir_exists:
-                    s_zones_t = np.transpose(s_zones)
-                    renewable_rec["solar_rec"][:, n] = s_zones_t[:, n%24]
-
-                # scale load with load factor (for distribution side resources, optional)
-                part_netload = config['load_factor']*load_plus_DC.values
-
-                # calculate net load by subtracting wind and solar power generation
-                if solar_dir_exists and wind_dir_exists:
-                    net_load =  part_netload[n] - w_zones - s_zones[n%24]
-                    tot_ren = w_zones + s_zones[n%24]
-                elif solar_dir_exists==False and wind_dir_exists:
-                    net_load = part_netload[n] - w_zones
-                    tot_ren = w_zones
-                elif solar_dir_exists and wind_dir_exists==False:
-                    net_load = part_netload[n] - s_zones[n%24]
-                    tot_ren = s_zones[n%24]
-                elif solar_dir_exists==False and wind_dir_exists==False:
-                    net_load = part_netload[n]
-                    tot_ren = np.zeros(nz)
+                net_load, tot_ren, w_zones, s_zones = hourly_instance.get_net_load(n)
             
                 # optimize dipatch and calculate load curtailment
-
                 if optimization_period == "single_period":
-                    # update SOC based on failures in ESS
-                    ess_smax, ess_smin, SOC_old = raut.updateSOC(ng, nl, current_cap, ess_pmax, ess_duration_temp, ess_socmax, ess_socmin, SOC_old)
-                    ess_smax_store[:, n] = ess_smax
+                    
                     # calculate upper and lower bounds of gens and tls
+                    ess_smax, ess_smin, SOC_old = raut.updateSOC(ng, nl, current_cap, ess_params["ess_pmax"], ess_duration_temp, ess_params["ess_socmax"], ess_params["ess_socmin"], SOC_old)
+                    sample_instance.ess_smax_store[:, n] = ess_smax
+
                     gt_limits = {"g_lb": np.concatenate((current_cap["min"][0:ng]/BMva, current_cap["min"][ng + nl::]/BMva)), \
                                 "g_ub": np.concatenate((current_cap["max"][0:ng]/BMva, current_cap["max"][ng + nl::]/BMva)), \
                                 "tl": current_cap["max"][ng:ng + nl]/BMva}
                     
                     def fb_Pg(model, i):
                         return (0, gt_limits["g_ub"][i])
-
                     def fb_flow(model,i):
                         return (-gt_limits["tl"][i], gt_limits["tl"][i])
-                    
                     def fb_ess(model, i):
                         return(-current_cap["max"][ng + nl::][i]/BMva, current_cap["min"][ng + nl::][i]/BMva)
-                    
                     def fb_soc(model, i):
                         return(ess_smin[i]/BMva, ess_smax[i]/BMva)
                 
                     if network_model in ['Zonal', 'Nodal']:
                         load_curt, SOC_old, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatch(ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
-                                                            gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost)
+                                                            gen_params["gencost"], net_load, SOC_old, ess_params["ess_pmax"], ess_params["ess_eff"], ess_params["disch_cost"], ess_params["ch_cost"], copper_sheet = False)
                     elif network_model == 'Copper Sheet':
-                        load_curt, SOC_old, P_dis, P_ch, Pg, curtbus = raut.OptDispatchLite(ng, nz, ness, fb_ess, fb_soc, BMva, fb_Pg, A_inc, \
-                                                                        gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost)
-                    
-                    # record values for visualization purposes
-                    SOC_rec[:, n] = SOC_old*BMva
-                    Pdis_rec[:, n] = P_dis*BMva
-                    Pch_rec[:, n] = P_ch*BMva
-                    curt_rec[n] = load_curt*BMva
-
-                    if load_curt > 0:
-                        out_hours.append((datetime(2001,1,1) + timedelta(hours=n)).strftime("%b %d %H:%M"))
-                        Pg_rec.append(Pg * BMva)
-
-                        if network_model in ['Zonal', 'Nodal']:
-                            flow_rec.append(flow*BMva/cap_trans*100)
-        
-                        curtbus_rec.append(curtbus*BMva)
-                        ESS_rec.append((P_dis + P_ch)*BMva)
-                        wind_rec.append(w_zones)
-                        solar_rec.append(s_zones_t[:, n%24])
-
+                        load_curt, SOC_old, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatch(ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
+                                                                        gen_params["gencost"], net_load, SOC_old, ess_params["ess_pmax"], ess_params["ess_eff"], ess_params["disch_cost"], ess_params["ch_cost"], copper_sheet = True)
+                    # Store hourly and outage-specific data
+                    hourly_instance.record_hourly_data(load_curt, SOC_old, P_dis, P_ch, Pg, curtbus, w_zones, s_zones, n, flow, None)
                     # track loss of load states
                     var_s, LOL_track = raut.TrackLOLStates(load_curt, BMva, var_s, LOL_track, s, n)
 
                     if (n+1)%1000 == 0:
                         print(f'Hour {n + 1}, Process No.: {self.rank}')
 
-                if optimization_period  == "multi_period":
+                if optimization_period  == "multi_period" and not mcs_params.enable_pcm:
                     
                     current_day,_ = divmod(n, 24)
                     normalized_hour = n%time_periods
 
-                    ess_smax, ess_smin, _ = raut.updateSOC(ng, nl, current_cap, ess_pmax, ess_duration_temp, ess_socmax, ess_socmin, SOC_old)
-                    ess_smax_store[:, n] = ess_smax
-                    
+                    ess_smax, ess_smin, _ = raut.updateSOC(ng, nl, current_cap, ess_params["ess_pmax"], ess_duration_temp, ess_params["ess_socmax"], ess_params["ess_socmin"], SOC_old)
+                    sample_instance.ess_smax_store[:, n] = ess_smax
+
                     holder_dict["g_limit"][normalized_hour] = {"g_lb": np.concatenate((current_cap["min"][0:ng]/BMva, current_cap["min"][ng + nl::]/BMva)), \
                                 "g_ub": np.concatenate((current_cap["max"][0:ng]/BMva, current_cap["max"][ng + nl::]/BMva)), \
                                 "tl": current_cap["max"][ng:ng + nl]/BMva}
@@ -301,161 +135,73 @@ class ProgressMultiProcess:
                     holder_dict["ess_min"][:, normalized_hour] = ess_smin
                     holder_dict["ess_max"][:, normalized_hour] = ess_smax
                     holder_dict["ren_limit"][:, normalized_hour] = tot_ren
-
+                    
                     if (n+1)%time_periods == 0:
-
+                        
                         def fb_Pg(model, i, t):
                             return (0, holder_dict["g_limit"][t]["g_ub"][i])
-
                         def fb_flow(model,i, t):
                             return (-holder_dict["g_limit"][t]["tl"][i], holder_dict["g_limit"][t]["tl"][i])
-
                         def fb_ess(model, i, t):
                             return(-holder_dict["capacity"][t]["max"][ng + nl::][i]/BMva, holder_dict["capacity"][t]["min"][ng + nl::][i]/BMva)
-
                         def fb_soc(model, i, t):
-                            return(0, holder_dict["ess_max"][i,t]/BMva)
-
+                            return(holder_dict["ess_min"][i,t]/BMva, holder_dict["ess_max"][i,t]/BMva)
                         def fb_ren(model, i, t):
                             return(0, holder_dict["ren_limit"][i,t]/BMva)
                         
                         if network_model in ['Zonal', 'Nodal']:
-                            load_curt, SOC_profile, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
-                                                            gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = False)
+                            
+                            load_curt, SOC_profile, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, \
+                                                                                                        A_inc, gen_mat, curt_mat, ch_mat, gen_params["gencost"], holder_dict["net_load"], \
+                                                                                                        SOC_old, ESS_initial_capacities, ess_params["ess_pmax"], ess_params["ess_eff"], \
+                                                                                                        ess_params["disch_cost"], ess_params["ch_cost"], time_periods, copper_sheet = False)
                         elif network_model == 'Copper Sheet':
-                            load_curt, SOC_profile, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
-                                                            gencost, holder_dict["net_load"], SOC_old, ESS_initial_capacities, ess_pmax, ess_eff, disch_cost, ch_cost, time_periods, copper_sheet = True)
-
-                        # record values for visualization purposes
-                        SOC_rec[:, n-time_periods+1:n+1] = SOC_profile*BMva
-                        Pch_rec[:, n-time_periods+1:n+1] = P_ch*BMva
-                        Pdis_rec[:, n-time_periods+1:n+1] = P_dis*BMva
-                        curt_rec[n-time_periods+1:n+1] = load_curt*BMva
+                            load_curt, SOC_profile, P_dis, P_ch, Pg, flow, curtbus = raut.OptDispatchMP(ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, 
+                                                                                                        gen_mat, curt_mat, ch_mat, gen_params["gencost"], holder_dict["net_load"], \
+                                                                                                        SOC_old, ESS_initial_capacities, ess_params["ess_pmax"], ess_params["ess_eff"], \
+                                                                                                        ess_params["disch_cost"], ess_params["ch_cost"], time_periods, copper_sheet = True)
+                        
+                        # record values for initilzing next optimiation period
                         SOC_old = SOC_profile[:,-1]
                         ESS_initial_capacities = current_cap["max"][ng + nl::]
-                        initialize_holder_vars(holder_dict)
-
-                        if np.any(load_curt):
-                            curt_hours = np.where(load_curt != 0)[0]
-                            curt_actual = current_day * 24 + curt_hours
-
-                            for i, h in enumerate(curt_actual):
-                                out_hours.append(
-                                    (datetime(2001,1,1) + timedelta(hours=int(h))).strftime("%b %d %H:%M")
-                                )
-
-                                ch = curt_hours[i]
-
-                                Pg_rec.append(Pg[:, ch] * BMva)
-
-                                if network_model in ['Zonal', 'Nodal']:
-                                    flow_rec.append(flow[:, ch] * BMva/cap_trans*100)
-
-                                curtbus_rec.append(curtbus[:, ch] * BMva)
-                                ESS_rec.append((P_dis[:, ch] + P_ch[:, ch]) * BMva)
-                                wind_rec.append(renewable_rec["wind_rec"][:, h])
-                                solar_rec.append(renewable_rec["solar_rec"][:, h])
-
+                        sample_instance.initialize_holder_vars(holder_dict)
+                        # Store hourly and outage-specific data
+                        hourly_instance.record_hourly_data(load_curt, SOC_profile, P_dis, P_ch, Pg, curtbus, w_zones, s_zones, n, flow, current_day)
+                        
                         # track loss of load states
                         for i in range(time_periods):
                             start_day = int(current_day+1-time_periods/24)
                             current_n = start_day * 24 + i
                             var_s, LOL_track = raut.TrackLOLStates(load_curt[i], BMva, var_s, LOL_track, s, current_n)
-                    if evaluate_degradation == True:
-                        if (n+1)%degradation_interval == 0:
 
-                            for ess_idx, ess_name in enumerate(essname):
-                                if ess_chemistry[ess_idx] not in ["LFP", "NMC", "NCA", "LMO"]:
-                                    continue
-                                current_window_start = n + 1 - degradation_interval
-                                current_deg_instance = degradation_instances[ess_name]
+                if mcs_params.enable_pcm:
+                    ess_smax, ess_smin, _ = raut.updateSOC(ng, nl, current_cap, ess_params["ess_pmax"], ess_duration_temp, ess_params["ess_socmax"], ess_params["ess_socmin"], SOC_old)
+                    hourly_instance.populate_pcm_data(n, ng, nl, ness, current_cap, ess_smax, ess_smin, holder_dict)
 
-                                current_dis_Crates, current_overall_Crates = current_deg_instance.evaluate_C_rates(Pch_rec[ess_idx,current_window_start:n+1], 
-                                                                                            Pdis_rec[ess_idx,current_window_start:n+1], 
-                                                                                            ess_sbase[ess_idx], 
-                                                                                            ess_eff[ess_idx]) 
-                                if detailed_thermal_model == False:
-                                    current_temp_profile = np.ones(len(current_overall_Crates))*25
-                                else:
-                                    current_temp_profile = current_deg_instance.evaluate_cell_temp(current_overall_Crates, SOC_old_deg[ess_name]) 
-                                c_rate_holder[ess_name][current_window_start:n+1] = current_dis_Crates
-                                temp_holder[ess_name][current_window_start:n+1] = current_temp_profile
-                                soc_profile_norm = SOC_rec[ess_idx,:n+1]/ess_sbase[ess_idx]  
-                                
-                                current_deg_instance.update_instance(soc_profile_norm, c_rate_holder[ess_name][:n+1], temp_holder[ess_name][:n+1])
-                                current_deg_instance.calculate_total_degradation()
-                                ess_duration_temp[ess_idx] = ess_duration[ess_idx] * (1-current_deg_instance.L)
-                                SOC_old[ess_idx] = SOC_old[ess_idx] * (1-current_deg_instance.L)
-                                SOC_old_deg[ess_name] = soc_profile_norm[-1]
+                if mcs_params.evaluate_degradation == True and not mcs_params.enable_pcm:
+                    if (n+1)%time_periods == 0:
+                        SOC_old, ess_duration_temp = hourly_instance.degradation_evaluation(n, ess_duration_temp, SOC_old)
 
                 if (n+1)%1000 == 0:
                     print(f'Hour {n + 1}, Process No.: {self.rank}')
 
             # collect indices for all samples
+            if mcs_params.enable_pcm:
+                sample_subdir = os.path.join(main_folder, f'Process_{self.rank}', f'Sample_{s+1}')
+                os.makedirs(sample_subdir, exist_ok=False)
+                var_s, LOL_track = sample_instance.run_pcm(sample_subdir, holder_dict, s, var_s, LOL_track)
+
             indices_rec = raut.UpdateIndexArrays(indices_rec, var_s, sim_hours, s)
 
             mLOLP_rec, COV_rec = raut.CheckConvergence(s, indices_rec["LOLP_rec"], self.comm, self.rank, self.size, \
                                   indices_rec["mLOLP_rec"], indices_rec["COV_rec"])
             
-            # plot and print results for samples for which there is load curtailment
-            if sum(curt_rec) > 0:
+            # plot results for samples for which there is load curtailment
+            if sum(sample_instance.curt_rec) > 0:
                 sample_subdir = os.path.join(main_folder, f'Process_{self.rank}', f'Sample_{s+1}')
                 os.makedirs(sample_subdir, exist_ok=False)
-                rapt = RAPlotTools(config["data"], sample_subdir, network_model)
-                rapt.PlotSOC(SOC_rec, essname, s)
-                if config['evaluate_degradation'] == 'Yes':
-                    rapt.PlotESCap(ess_smax_store, essname, s)
-                rapt.PlotLoadCurt(curt_rec, s)
+                sample_instance.export_sample_results(sample_subdir, s)
 
-                # print solar gen, wind gen, and ESS SOC in csv files
-                timestamps = pd.date_range(start="2026-01-01 00:00",
-                                            periods=renewable_rec["solar_rec"].T.shape[0],
-                                            freq="h")
-                row_names = " " + timestamps.strftime("%m/%d %H:%M")
-                df_solar_csv = pd.DataFrame(renewable_rec["solar_rec"].T, columns= bus_name, index=row_names)
-                df_solar_csv.to_csv(f"{sample_subdir}/solar_gen.csv", index=True)
-                df_wind_csv = pd.DataFrame(renewable_rec["wind_rec"].T, columns=bus_name, index=row_names)
-                df_wind_csv.to_csv(f"{sample_subdir}/wind_gen.csv", index=True)
-                df_SOC_csv = pd.DataFrame(SOC_rec.T, columns = essname, index=row_names)
-                df_SOC_csv.to_csv(f"{sample_subdir}/ESS_SOC.csv", index=True)                
-
-            # save outage hour data to excel file
-            if sum(curt_rec) > 0:
-                df_Pg = pd.DataFrame(np.transpose(np.vstack(Pg_rec)), index=list(genname))
-                df_Pg.columns = out_hours
-
-                if network_model in ['Zonal', 'Nodal']:
-                    df_flow = pd.DataFrame(np.transpose(np.vstack(flow_rec)), index=list(branchname))
-                    df_flow.columns = out_hours
-
-                df_curt= pd.DataFrame(np.transpose(np.vstack(curtbus_rec)), index=list(bus_name))
-                df_curt.columns = out_hours
-
-                df_ESS= pd.DataFrame(np.transpose(np.vstack(ESS_rec)), index=list(essname))
-                df_ESS.columns = out_hours
-
-                df_wind= pd.DataFrame(np.transpose(np.vstack(wind_rec)), index=list(bus_name))
-                df_wind = df_wind[(df_wind != 0).any(axis=1)]
-                df_wind.columns = out_hours
-
-                df_solar= pd.DataFrame(np.transpose(np.vstack(solar_rec)), index=list(bus_name))
-                df_solar = df_solar[(df_solar != 0).any(axis=1)]
-                df_solar.columns = out_hours
-
-                with pd.ExcelWriter(f"{sample_subdir}/Outage_Records_Sample_{s+1}.xlsx", engine="openpyxl") as writer:
-                    df_Pg.to_excel(writer, sheet_name="conv_gen_MW")
-                    if network_model in ['Zonal', 'Nodal']:
-                        df_flow.to_excel(writer, sheet_name="branch_loading_perc")
-                    df_curt.to_excel(writer, sheet_name="loadcurt_bus")
-                    df_ESS.to_excel(writer, sheet_name="ESS_net_exchange")
-                    df_wind.to_excel(writer, sheet_name="wind_gen_MW")
-                    df_solar.to_excel(writer, sheet_name="solar_gen")
-
-                    for ws in writer.book.worksheets:
-                        for col in ws.columns:
-                            max_len = max(len(str(cell.value)) if cell.value else 0 for cell in col)
-                            ws.column_dimensions[col[0].column_letter].width = max_len + 2
-            
         # calculate reliability indices for the MCS
         indices = raut.GetReliabilityIndices(indices_rec, sim_hours, samples)
         raut.ParallelProcessing(indices, LOL_track, self.comm, self.rank, self.size, samples, sim_hours,main_folder)
@@ -463,8 +209,7 @@ class ProgressMultiProcess:
         toc = perf_counter()
         print(f"Codes finished in {toc-tic} seconds")
 
-        return(self.rank, SOC_rec, curt_rec, renewable_rec, bus_name, essname, main_folder, \
-               sim_hours, mLOLP_rec, COV_rec, samples, self.size)
+        return(self.rank, main_folder, sim_hours, mLOLP_rec, COV_rec, samples, self.size)
 
 # =========================================================================================
 #                                      SIMULATION 
@@ -473,7 +218,7 @@ class ProgressMultiProcess:
 if __name__ == "__main__":
     # --- Parse CLI args ---
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", help="Path to YAML configuration file. Default: ./progress/input.yaml")
+    parser.add_argument("--config", help="Path to YAML configuration file. Default: input.yaml")
     parser.add_argument("--out", help="Optional: output directory. If not provided, a new Results_<timestamp> folder will be created.")
     args = parser.parse_args()
 
@@ -502,8 +247,7 @@ if __name__ == "__main__":
     pmp.comm.Barrier()  # wait for directory creation
 
     # run MCS
-    rank, SOC_rec, curt_rec, renewable_rec, bus_name, essname, main_folder, sim_hours, \
-          mLOLP_rec, COV_rec, samples, size = pmp.MCS(config_file, results_subdir)
+    rank, main_folder, sim_hours, mLOLP_rec, COV_rec, samples, size = pmp.MCS(config_file, results_subdir)
 
     # open configuration file
     with open(config_file, 'r') as f:

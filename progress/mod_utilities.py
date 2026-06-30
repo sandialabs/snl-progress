@@ -217,7 +217,20 @@ class RAUtilities:
 
         return(self.w_zones, current_w_class)
 
-    def SolarPower(self, n, nz, s_zone_no, solar_prob, s_profiles, s_sites, s_max):
+    def InitializeWindClasses(self, w_sites, w_classes):
+        """
+        Initializes the wind speed classes for each site.
+
+        Parameters:
+            w_sites (int): Number of wind sites.
+            w_classes (int): Number of wind speed classes.
+        Returns:
+            numpy.ndarray: Initial wind speed classes for each site.
+        """
+        current_w_class = np.floor(np.random.uniform(0, 1, w_sites)*w_classes).astype(int)
+        return current_w_class
+    
+    def SolarPower(self, n, nz, s_zone_no, solar_prob, s_profiles, s_sites, s_max, return_site_gen = False):
         """
         Calculates solar power generation for each hour at each site.
 
@@ -229,7 +242,7 @@ class RAUtilities:
             s_profiles (array): Solar profiles.
             s_sites (int): Number of solar sites.
             s_max (array): Maximum capacities of solar sites.
-
+            reutn_site_gen (bool): If True, return site-wise solar generation
         Returns:
             numpy.ndarray: Solar power generation at each zone.
         """
@@ -269,81 +282,13 @@ class RAUtilities:
                     if b == s_zone_no[z] - 1:
                         self.s_zones[b] += sgen_sites[z]
 
-
-        return(np.transpose(self.s_zones))
-    
-    def data_center_load(self, load_df, system_directory, network_model):
-
-        # input folder
-        if network_model == "Zonal":
-            DC_folder = system_directory + '/data_center_load/zone_profiles'
+        if return_site_gen == True:
+            return(np.transpose(self.s_zones), sgen_sites)
         else:
-            DC_folder = system_directory + '/data_center_load'
-
-        DC_profiles = glob.glob(os.path.join(DC_folder, "profile_*.csv"))
-
-        # choose a profile randomly
-        chosen_profile = random.choice(DC_profiles)
-        chosen_profile_df = pd.read_csv(chosen_profile)
-
-        # identify the load columns
-        datetime_cols = {"datetime", "date", "time", "timestamp", "hour", "month", "hour_of_day"}
-        profile_bus_cols = [c for c in chosen_profile_df.columns if c not in datetime_cols]
-        common_cols = [c for c in profile_bus_cols if c in load_df.columns]
-
-        load_updated = load_df.copy()
-        load_updated[common_cols] = (
-            load_updated[common_cols]
-            .add(chosen_profile_df[common_cols], fill_value=0)
-        )
-
-        return load_updated
-
-    def DC_zonal(self, system_directory):
-
-        profile_folder = system_directory + '/data_center_load'
-        output_folder = os.path.join(profile_folder, "zone_profiles")
-        if os.path.exists(output_folder):
-            print(f"{output_folder} already exists. Skipping zone profile generation.")
-        else:
-            os.makedirs(output_folder)
-
-        bus_df = pd.read_csv(f"{system_directory}/bus.csv")
-
-        bus_to_zone = {
-            str(bus).strip(): f"{zone}"
-            for bus, zone in zip(bus_df["Bus Name"], bus_df["Zone"])
-        }
-
-        datetime_cols = ["hour", "month", "hour_of_day"]
-
-        for profile_file in glob.glob(os.path.join(profile_folder, "profile_*.csv")):
-
-            df = pd.read_csv(profile_file)
-
-            # Separate datetime columns
-            time_df = df[[c for c in datetime_cols if c in df.columns]]
-
-            # Bus columns that have mappings
-            bus_cols = [c for c in df.columns if c in bus_to_zone]
-
-            # Rename buses to zones
-            zone_df = df[bus_cols].rename(columns=bus_to_zone)
-
-            # Sum buses belonging to the same zone
-            zone_df = zone_df.T.groupby(level=0).sum().T
-
-            result = pd.concat([time_df, zone_df], axis=1)
-
-            output_file = os.path.join(
-                output_folder,
-                os.path.basename(profile_file)
-            )
-
-            result.to_csv(output_file, index=False)
+            return(np.transpose(self.s_zones))
 
     def OptDispatch(self, ng, nz, nl, ness, fb_ess, fb_soc, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
-                    gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost):
+                    gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost, copper_sheet):
         """
         Achieves economic dispatch for a particular hour using optimization. Transportation model is used.
 
@@ -368,9 +313,9 @@ class RAUtilities:
             ess_eff (array): Efficiencies of energy storage systems.
             disch_cost (array): Discharge costs.
             ch_cost (array): Charge costs.
-
+            copper_sheet (bool): USe copper sheet model or not.
         Returns:
-            tuple: Load curtailment and updated state of charge.
+            tuple: Load curtailment, updated state of charge, flow statistics
         """
 
         model = ConcreteModel() # declaring the model
@@ -387,13 +332,23 @@ class RAUtilities:
         LOL_cost = 10000000 # cost of lost load (set to very high so that system always tries to minimize loss)
 
         # power balance constraint
-        def con_rule1(model,i):
-            return(sum(A_inc_t[i, j]*model.flow[j] for j in range(nl))\
-                    + sum(gen_mat[i,m]*model.Pg[m] for m in range(ng + ness)) \
-                    + sum(ch_mat[i,m]*model.Pc[m] for m in range(ness)) \
-                    + sum(curt_mat[i,c]*model.curt[c] for c in range(nz)) == model.renewable_curt[i] + net_load[i]/BMva)
+        if copper_sheet == False:
+            def con_rule1(model,i):
+                return(sum(A_inc_t[i, j]*model.flow[j] for j in range(nl))\
+                        + sum(gen_mat[i,m]*model.Pg[m] for m in range(ng + ness)) \
+                        + sum(ch_mat[i,m]*model.Pc[m] for m in range(ness)) \
+                        + sum(curt_mat[i,c]*model.curt[c] for c in range(nz)) == model.renewable_curt[i] + net_load[i]/BMva)
+            
+            model.equality = Constraint(range(nz), rule = con_rule1)
+        else:
+            def con_rule1(model):
+                return(sum(model.Pg[m] for m in range(ng + ness)) + sum(model.Pc[m] for m in range(ness)) \
+                    + sum(model.curt[c] for c in range(nz)) >= sum(net_load)/BMva)
+            
+            model.equality = Constraint(rule = con_rule1)
 
-        model.equality = Constraint(range(nz), rule = con_rule1)
+            for i in range(nl):
+                model.flow[i].fix(0.0)
 
         # soc update constraint
         def con_rule2(model, i):
@@ -435,8 +390,38 @@ class RAUtilities:
         return(load_curt, SOC_old, P_dis, P_ch, Pg, flow, curtbus)
 
     def OptDispatchMP(self, ng, nz, nl, ness, fb_ess, fb_soc, fb_ren, BMva, fb_Pg, fb_flow, A_inc, gen_mat, curt_mat, ch_mat, \
-                    gencost, net_load, SOC_old, ESS_initial_capacitites, ess_pmax, ess_eff, disch_cost, ch_cost, time_period, copper_sheet = False):
-       
+                    gencost, net_load, SOC_old, ESS_initial_capacitites, ess_pmax, ess_eff, disch_cost, ch_cost, time_period, copper_sheet):
+        """
+        Achieves economic dispatch for using multi-period optimization.
+
+        Parameters:
+            ng (int): Number of generators.
+            nz (int): Number of zones.
+            nl (int): Number of lines.
+            ness (int): Number of energy storage systems.
+            fb_ess (function): Function for bounds of ESS variables.
+            fb_soc (function): Function for bounds of SOC variables.
+            BMva (float): Base power in MVA.
+            fb_Pg (function): Function for bounds of generation variables.
+            fb_flow (function): Function for bounds of flow variables.
+            A_inc (array): Incidence matrix.
+            gen_mat (array): Generation matrix.
+            curt_mat (array): Curtailment matrix.
+            ch_mat (array): Charging matrix.
+            gencost (array): Generation costs.
+            net_load (array): Net load.
+            SOC_old (array): Previous state of charge.
+            ESS_initial_capacities (array): Maximum available power capacities at the start of optimizaiton.
+            ess_pmax (array): Maximum power outputs of energy storage systems.
+            ess_eff (array): Efficiencies of energy storage systems.
+            disch_cost (array): Discharge costs.
+            ch_cost (array): Charge costs.
+            time_period (int): Total optimization horizon (hours).
+            copper_sheet (bool): USe copper sheet model or not.
+        Returns:
+            tuple: Load curtailment, updated state of charge, flow statistics.
+        """
+
         model = ConcreteModel() # declaring the model
 
         # declaring the variables
@@ -530,92 +515,6 @@ class RAUtilities:
 
         
         return load_curt, soc_profile, p_discharge, p_charge, p_g, flow, curtbus
-
-    def OptDispatchLite(self, ng, nz, ness, fb_ess, fb_soc, BMva, fb_Pg, A_inc, \
-                    gencost, net_load, SOC_old, ess_pmax, ess_eff, disch_cost, ch_cost):
-        """
-        Achieves economic dispatch for a particular hour using optimization. Copper sheet model is used, i.e., flow constraints are ignored.
-
-        Parameters:
-            ng (int): Number of generators.
-            nz (int): Number of zones.
-            nl (int): Number of lines.
-            ness (int): Number of energy storage systems.
-            fb_ess (function): Function for bounds of ESS variables.
-            fb_soc (function): Function for bounds of SOC variables.
-            BMva (float): Base power in MVA.
-            fb_Pg (function): Function for bounds of generation variables.
-            fb_flow (function): Function for bounds of flow variables.
-            A_inc (array): Incidence matrix.
-            gen_mat (array): Generation matrix.
-            curt_mat (array): Curtailment matrix.
-            ch_mat (array): Charging matrix.
-            gencost (array): Generation costs.
-            net_load (array): Net load.
-            SOC_old (array): Previous state of charge.
-            ess_pmax (array): Maximum power outputs of energy storage systems.
-            ess_eff (array): Efficiencies of energy storage systems.
-            disch_cost (array): Discharge costs.
-            ch_cost (array): Charge costs.
-
-        Returns:
-            tuple: Load curtailment and updated state of charge.
-        """
-
-        model = ConcreteModel() # declaring the model
-
-        # declaring the variables
-        model.Pg = Var(range(ng + ness), bounds  = fb_Pg) # power output for conventional generators and ESS discharge
-        model.Pc = Var(range(ness), bounds = fb_ess) # discharge variables for ESS
-        model.SOC = Var(range(ness), bounds = fb_soc) # state-of-charge variables for ESS
-        model.curt = Var(range(nz), bounds = (0, None)) # load curtailment variables
-
-        A_inc_t = np.transpose(A_inc) # transposing incedence matrix
-
-        LOL_cost = 1000000 # cost of lost load (set to very high so that system always tries to minimize loss)
-
-        def con_rule1(model):
-            return(sum(model.Pg[m] for m in range(ng + ness)) + sum(model.Pc[m] for m in range(ness)) \
-                   + sum(model.curt[c] for c in range(nz)) >= sum(net_load)/BMva)
-
-        model.equality = Constraint(rule = con_rule1)
-
-        # soc update constraint
-        def con_rule2(model, i):
-            return(model.SOC[i] == SOC_old[i] - ess_eff[i]*model.Pc[i] - model.Pg[ng + i])
-
-        model.soc_constraint = Constraint(range(ness), rule = con_rule2)
-
-        # charge discharge constraint for the soc
-        def con_rule3(model, i):
-            return(-model.Pc[i] + model.Pg[ng + i] <= ess_pmax[i]/BMva)
-
-        model.chdis_constraint = Constraint(range(ness), rule = con_rule3)
-
-        # Objective ----> minimize total cost (cost of gen + cost of storage + cost of lost load)
-        '''Relative fuels costs are used here. Loss of load is penalized heavily to encourage ESS discharge
-        for supporting demand. ESS discharge is made more expensive than conv. gen so that ESS is only used
-        when no generators are available to meet additional load (reliability application). ESS charging is
-        incentivized so that ESS charges whenever it is not being used.'''
-        model.objective = Objective(expr = sum(model.curt[i] for i in range(nz))*LOL_cost + \
-                                    sum(gencost[i]*model.Pg[i] for i in range(ng)) + \
-                                    sum(disch_cost[i]*model.Pg[ng + i] for i in range(ness)) + \
-                                    sum(ch_cost[i]*model.Pc[i] for i in range(ness)))
-
-        opt = SolverFactory('glpk')
-        opt.solve(model)
-        load_curt = sum(np.array(list(model.curt.get_values().values())))
-        if load_curt > 0:
-            Pg = np.array(list(model.Pg.get_values().values()))[0:ng]
-            curtbus = np.array(list(model.curt.get_values().values()))
-        else:
-            Pg = 0
-            curtbus = 0
-
-        SOC_old = np.array(list(model.SOC.get_values().values()))
-        P_dis = np.array(list(model.Pg.get_values().values()))[ng::]
-        P_ch = np.array(list(model.Pc.get_values().values()))
-        return(load_curt, SOC_old, P_dis, P_ch, Pg, curtbus)
 
     def TrackLOLStates(self, load_curt, BMva, var_s, LOL_track, s, n):
         """

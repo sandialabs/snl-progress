@@ -90,8 +90,12 @@ class RASystemData:
             tuple: A tuple containing generator buses, number of generators, maximum and minimum capacities,
             forced outage rates, MTTF, MTTR, and generation costs.
         """
-
-        self.gen = pd.read_csv(data_gen) # all coventional generator data
+        temp_gen = pd.read_csv(data_gen)
+        # all coventional generator data
+        self.gen = temp_gen[
+            (temp_gen["Type"] == "Thermal") |
+            (temp_gen["Fuel"] == "Hydro")
+        ] 
         if self.model == "Zonal":
             self.genbus = self.gen['Zone']
         else:
