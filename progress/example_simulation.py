@@ -224,6 +224,9 @@ def MCS(input_file, results_subdir, stop_event=None) :
     toc = perf_counter()
     logger.info(f"Codes finished in {toc-tic} seconds")
 
+    # get outage statistics for affected buses
+    bus_statistics(results_subdir)
+
     return(indices, sim_hours, samples, indices_rec["mLOLP_rec"], indices_rec["COV_rec"])
 
 # =========================================================================================
@@ -279,4 +282,4 @@ if __name__ == "__main__":
         rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
 
     # get outage statistics for affected buses
-    bus_statistics(results_subdir)
+    # bus_statistics(results_subdir)
