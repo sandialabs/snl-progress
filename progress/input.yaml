@@ -25,20 +25,20 @@ model: 'Zonal' # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zona
 optimization_period: 24 # = 1 for reliability mode; = multiples of 24 for day ahead hourly optimization; Recommended: 24 
 
 # Battery degradation parameters
-evaluate_degradation: False # True/False based on whether user wants to consider battery degradation
+evaluate_degradation: false # True/False based on whether user wants to consider battery degradation
 degradation_interval: 168 # Interval between BESS degradation evaluation. Recommended: 168 hours (1 week) or more .
-detailed_thermal_model: False # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 
+detailed_thermal_model: false # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 
 
 # Data center load 
 DC_load: false # True/False based on whether data centers exist in the system
 
 #PCM settings
-use_pcm: False
+use_pcm: false
 #pcm parameters
 pcm_parameters:
   pcm_venv_path: "/path/to/pcm_virtual_env/Scripts/python.exe" # directory where PCM virtual environment is located
   start_date: 01/01/2020 # start date for PCM simulation in MM/DD/YYYY format. End date is determined based on sim_hours
   solver: 'cplex' # solver to be used for PCM optimization; options are 'gurobi', 'cplex', 'cbc', etc. 
   mipgap: 0.05 # MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time.
-  solve_pricing_problem: False # True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.
-  storage_AS_mode: True # True/False based on whether user wants to include BESS participating in ancillary services.
+  solve_pricing_problem: false # True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.
+  storage_AS_mode: true # True/False based on whether user wants to include BESS participating in ancillary services.

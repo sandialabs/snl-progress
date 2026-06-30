@@ -24,9 +24,9 @@ class Ui_SimulationPage(object):
     def setupUi(self, SimulationPage):
         if not SimulationPage.objectName():
             SimulationPage.setObjectName(u"SimulationPage")
-        SimulationPage.resize(1183, 928)
-        self.verticalLayout_main = QVBoxLayout(SimulationPage)
-        self.verticalLayout_main.setObjectName(u"verticalLayout_main")
+        SimulationPage.resize(852, 1145)
+        self.horizontalLayout_11 = QHBoxLayout(SimulationPage)
+        self.horizontalLayout_11.setObjectName(u"horizontalLayout_11")
         self.frame_main = QFrame(SimulationPage)
         self.frame_main.setObjectName(u"frame_main")
         self.frame_main.setFrameShape(QFrame.NoFrame)
@@ -67,6 +67,7 @@ class Ui_SimulationPage(object):
         self.frame_samples.setFrameShape(QFrame.NoFrame)
         self.horizontalLayout_samples = QHBoxLayout(self.frame_samples)
         self.horizontalLayout_samples.setObjectName(u"horizontalLayout_samples")
+        self.horizontalLayout_samples.setContentsMargins(-1, -1, -1, 0)
         self.label_samples = QLabel(self.frame_samples)
         self.label_samples.setObjectName(u"label_samples")
         self.label_samples.setMinimumSize(QSize(140, 0))
@@ -86,6 +87,7 @@ class Ui_SimulationPage(object):
         self.frame_hours.setFrameShape(QFrame.NoFrame)
         self.horizontalLayout_hours = QHBoxLayout(self.frame_hours)
         self.horizontalLayout_hours.setObjectName(u"horizontalLayout_hours")
+        self.horizontalLayout_hours.setContentsMargins(-1, -1, -1, 0)
         self.label_hours = QLabel(self.frame_hours)
         self.label_hours.setObjectName(u"label_hours")
         self.label_hours.setMinimumSize(QSize(140, 0))
@@ -124,6 +126,7 @@ class Ui_SimulationPage(object):
         self.frame_model_type.setFrameShape(QFrame.NoFrame)
         self.horizontalLayout_model_type = QHBoxLayout(self.frame_model_type)
         self.horizontalLayout_model_type.setObjectName(u"horizontalLayout_model_type")
+        self.horizontalLayout_model_type.setContentsMargins(-1, -1, -1, 0)
         self.label_model_type = QLabel(self.frame_model_type)
         self.label_model_type.setObjectName(u"label_model_type")
         self.label_model_type.setMinimumSize(QSize(140, 0))
@@ -147,6 +150,7 @@ class Ui_SimulationPage(object):
         self.frame_opt_period.setFrameShadow(QFrame.Plain)
         self.horizontalLayout_2 = QHBoxLayout(self.frame_opt_period)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(-1, -1, -1, 0)
         self.label_opt_period = QLabel(self.frame_opt_period)
         self.label_opt_period.setObjectName(u"label_opt_period")
         self.label_opt_period.setMinimumSize(QSize(140, 0))
@@ -168,6 +172,32 @@ class Ui_SimulationPage(object):
 
         self.verticalLayout_simulation.addWidget(self.frame_opt_period)
 
+        self.frame_dc_load = QFrame(self.groupBox_simulation)
+        self.frame_dc_load.setObjectName(u"frame_dc_load")
+        self.frame_dc_load.setFrameShape(QFrame.NoFrame)
+        self.frame_dc_load.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_6 = QHBoxLayout(self.frame_dc_load)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalLayout_6.setContentsMargins(-1, -1, -1, 0)
+        self.label_dc_load = QLabel(self.frame_dc_load)
+        self.label_dc_load.setObjectName(u"label_dc_load")
+
+        self.horizontalLayout_6.addWidget(self.label_dc_load)
+
+        self.radio_dc_load_true = QRadioButton(self.frame_dc_load)
+        self.radio_dc_load_true.setObjectName(u"radio_dc_load_true")
+
+        self.horizontalLayout_6.addWidget(self.radio_dc_load_true)
+
+        self.radio_dc_load_false = QRadioButton(self.frame_dc_load)
+        self.radio_dc_load_false.setObjectName(u"radio_dc_load_false")
+        self.radio_dc_load_false.setChecked(True)
+
+        self.horizontalLayout_6.addWidget(self.radio_dc_load_false)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_dc_load)
+
         self.frame_degradation_eval = QFrame(self.groupBox_simulation)
         self.frame_degradation_eval.setObjectName(u"frame_degradation_eval")
         self.frame_degradation_eval.setMinimumSize(QSize(140, 0))
@@ -175,6 +205,7 @@ class Ui_SimulationPage(object):
         self.frame_degradation_eval.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_3 = QHBoxLayout(self.frame_degradation_eval)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.horizontalLayout_3.setContentsMargins(-1, -1, -1, 0)
         self.label_degradation_eval = QLabel(self.frame_degradation_eval)
         self.label_degradation_eval.setObjectName(u"label_degradation_eval")
 
@@ -200,6 +231,7 @@ class Ui_SimulationPage(object):
         self.frame_degradation_int.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_4 = QHBoxLayout(self.frame_degradation_int)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalLayout_4.setContentsMargins(-1, 0, -1, 0)
         self.label_degradation_int = QLabel(self.frame_degradation_int)
         self.label_degradation_int.setObjectName(u"label_degradation_int")
         self.label_degradation_int.setMinimumSize(QSize(140, 0))
@@ -220,6 +252,7 @@ class Ui_SimulationPage(object):
         self.frame_thermal_model.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_5 = QHBoxLayout(self.frame_thermal_model)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalLayout_5.setContentsMargins(-1, 0, -1, 0)
         self.label_detailed_model = QLabel(self.frame_thermal_model)
         self.label_detailed_model.setObjectName(u"label_detailed_model")
         self.label_detailed_model.setMinimumSize(QSize(140, 0))
@@ -239,6 +272,45 @@ class Ui_SimulationPage(object):
 
 
         self.verticalLayout_simulation.addWidget(self.frame_thermal_model)
+
+        self.frame_pcm_check = QFrame(self.groupBox_simulation)
+        self.frame_pcm_check.setObjectName(u"frame_pcm_check")
+        self.frame_pcm_check.setFrameShape(QFrame.NoFrame)
+        self.frame_pcm_check.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_7 = QHBoxLayout(self.frame_pcm_check)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.label_use_pcm = QLabel(self.frame_pcm_check)
+        self.label_use_pcm.setObjectName(u"label_use_pcm")
+
+        self.horizontalLayout_7.addWidget(self.label_use_pcm)
+
+        self.radio_use_pcm_true = QRadioButton(self.frame_pcm_check)
+        self.radio_use_pcm_true.setObjectName(u"radio_use_pcm_true")
+
+        self.horizontalLayout_7.addWidget(self.radio_use_pcm_true)
+
+        self.radio_use_pcm_false = QRadioButton(self.frame_pcm_check)
+        self.radio_use_pcm_false.setObjectName(u"radio_use_pcm_false")
+        self.radio_use_pcm_false.setChecked(True)
+
+        self.horizontalLayout_7.addWidget(self.radio_use_pcm_false)
+
+        self.pushButton = QPushButton(self.frame_pcm_check)
+        self.pushButton.setObjectName(u"pushButton")
+
+        self.horizontalLayout_7.addWidget(self.pushButton)
+
+
+        self.verticalLayout_simulation.addWidget(self.frame_pcm_check)
+
+        self.frame_pcm_params = QFrame(self.groupBox_simulation)
+        self.frame_pcm_params.setObjectName(u"frame_pcm_params")
+        self.frame_pcm_params.setFrameShape(QFrame.NoFrame)
+        self.frame_pcm_params.setFrameShadow(QFrame.Raised)
+        self.verticalLayout = QVBoxLayout(self.frame_pcm_params)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+
+        self.verticalLayout_simulation.addWidget(self.frame_pcm_params)
 
         self.line_separator_2 = QFrame(self.groupBox_simulation)
         self.line_separator_2.setObjectName(u"line_separator_2")
@@ -289,7 +361,7 @@ class Ui_SimulationPage(object):
         self.verticalLayout_container.addItem(self.verticalSpacer_bottom)
 
 
-        self.verticalLayout_main.addWidget(self.frame_main)
+        self.horizontalLayout_11.addWidget(self.frame_main)
 
 
         self.retranslateUi(SimulationPage)
@@ -316,6 +388,9 @@ class Ui_SimulationPage(object):
 
         self.label_opt_period.setText(QCoreApplication.translate("SimulationPage", u"Optimization Period", None))
         self.lineEdit_opt_period.setPlaceholderText(QCoreApplication.translate("SimulationPage", u"e.g. 24", None))
+        self.label_dc_load.setText(QCoreApplication.translate("SimulationPage", u"DC Load", None))
+        self.radio_dc_load_true.setText(QCoreApplication.translate("SimulationPage", u"True", None))
+        self.radio_dc_load_false.setText(QCoreApplication.translate("SimulationPage", u"False", None))
         self.label_degradation_eval.setText(QCoreApplication.translate("SimulationPage", u"Evaluate Degradation", None))
         self.radio_degradation_eval_true.setText(QCoreApplication.translate("SimulationPage", u"True", None))
         self.radio_degradation_eval_false.setText(QCoreApplication.translate("SimulationPage", u"False", None))
@@ -324,6 +399,10 @@ class Ui_SimulationPage(object):
         self.label_detailed_model.setText(QCoreApplication.translate("SimulationPage", u"Detailed Thermal Model ", None))
         self.radio_detailed_model_true.setText(QCoreApplication.translate("SimulationPage", u"True", None))
         self.radio_detailed_model_false.setText(QCoreApplication.translate("SimulationPage", u"False", None))
+        self.label_use_pcm.setText(QCoreApplication.translate("SimulationPage", u"Use PCM", None))
+        self.radio_use_pcm_true.setText(QCoreApplication.translate("SimulationPage", u"True", None))
+        self.radio_use_pcm_false.setText(QCoreApplication.translate("SimulationPage", u"False", None))
+        self.pushButton.setText(QCoreApplication.translate("SimulationPage", u"Open PCM Config", None))
         self.btn_save_config.setText(QCoreApplication.translate("SimulationPage", u"Save Config", None))
         self.btn_run_simulation.setText(QCoreApplication.translate("SimulationPage", u"Run Simulation", None))
         self.btn_stop_simulation.setText(QCoreApplication.translate("SimulationPage", u"Stop Simulation", None))

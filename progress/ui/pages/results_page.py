@@ -3,10 +3,10 @@ from PySide6.QtWidgets import (QApplication, QMainWindow, QVBoxLayout, QWidget,
     QLabel, QScrollArea, QSizePolicy, QMenu, QTableWidget, QTableWidgetItem,
     QTreeView, QFileSystemModel, QVBoxLayout, QHeaderView, QSizePolicy,
     QPlainTextEdit)
-from PySide6.QtCore import Qt
+from PySide6.QtGui import QPixmap
 from PySide6.QtPdf import QPdfDocument
 from PySide6.QtPdfWidgets import QPdfView
-from PySide6.QtCore import QDir, Signal, QModelIndex
+from PySide6.QtCore import Qt, QDir, Signal, QModelIndex
 from progress.paths import RESULTS_DIR, HOME_DIR
 from pathlib import Path
 import pandas as pd
@@ -47,7 +47,7 @@ class ResultsPage(QWidget):
         self.ui.treeView_files.setDropIndicatorShown(True)
         self.ui.treeView_files.header().setSectionResizeMode(
             0,
-            QHeaderView.Stretch
+            QHeaderView.ResizeMode.Stretch
         )
         # self.ui.page_csv.setStyleSheet("background-color: white;")
 
@@ -178,7 +178,7 @@ class ResultsPage(QWidget):
             self.csv_table.setColumnCount(len(df.columns))
             self.csv_table.setHorizontalHeaderLabels([str(col) for col in df.columns])
 
-            for row_idx, row in df.iterrows():
+            for row_idx, (_, row) in enumerate(df.iterrows()):
                 for col_idx, value in enumerate(row):
                     item = QTableWidgetItem(str(value))
                     self.csv_table.setItem(row_idx, col_idx, item)

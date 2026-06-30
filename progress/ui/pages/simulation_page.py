@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QFileDialog
 from PySide6.QtCore import QTimer
 from progress.ui.forms.simulation.ui_simulation import Ui_SimulationPage
 from progress.ui.utils.worker import ProcessingThread

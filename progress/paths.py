@@ -28,7 +28,9 @@ def get_wind_data_path() -> Path:
     return get_data_path() / "Wind"
 
 def get_results_path() -> Path:
-    return get_path() / "Results"
+    results_dir = get_path() / "Results"
+    results_dir.mkdir(exist_ok=True, parents=True)
+    return results_dir
 
 BASE_DIR = get_path()
 HOME_DIR = get_home_dir()

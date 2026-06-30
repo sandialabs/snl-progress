@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1183</width>
-    <height>928</height>
+    <width>852</width>
+    <height>1145</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_main">
+  <layout class="QHBoxLayout" name="horizontalLayout_11">
    <item>
     <widget class="QFrame" name="frame_main">
      <property name="frameShape">
@@ -79,6 +79,9 @@
                <enum>QFrame::NoFrame</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_samples">
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_samples">
                  <property name="minimumSize">
@@ -108,6 +111,9 @@
                <enum>QFrame::NoFrame</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_hours">
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_hours">
                  <property name="minimumSize">
@@ -172,6 +178,9 @@
                <enum>QFrame::NoFrame</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_model_type">
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_model_type">
                  <property name="minimumSize">
@@ -216,6 +225,9 @@
                <enum>QFrame::Plain</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_opt_period">
                  <property name="minimumSize">
@@ -252,6 +264,45 @@
              </widget>
             </item>
             <item>
+             <widget class="QFrame" name="frame_dc_load">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_6">
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
+               <item>
+                <widget class="QLabel" name="label_dc_load">
+                 <property name="text">
+                  <string>DC Load</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radio_dc_load_true">
+                 <property name="text">
+                  <string>True</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radio_dc_load_false">
+                 <property name="text">
+                  <string>False</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
              <widget class="QFrame" name="frame_degradation_eval">
               <property name="minimumSize">
                <size>
@@ -266,6 +317,9 @@
                <enum>QFrame::Raised</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_degradation_eval">
                  <property name="text">
@@ -302,6 +356,12 @@
                <enum>QFrame::Raised</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_degradation_int">
                  <property name="minimumSize">
@@ -334,6 +394,12 @@
                <enum>QFrame::Raised</enum>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_5">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item>
                 <widget class="QLabel" name="label_detailed_model">
                  <property name="minimumSize">
@@ -365,6 +431,60 @@
                 </widget>
                </item>
               </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame_pcm_check">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Plain</enum>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout_7">
+               <item>
+                <widget class="QLabel" name="label_use_pcm">
+                 <property name="text">
+                  <string>Use PCM</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radio_use_pcm_true">
+                 <property name="text">
+                  <string>True</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QRadioButton" name="radio_use_pcm_false">
+                 <property name="text">
+                  <string>False</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton">
+                 <property name="text">
+                  <string>Open PCM Config</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QFrame" name="frame_pcm_params">
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout"/>
              </widget>
             </item>
             <item>
