@@ -188,8 +188,8 @@ class RASystemData:
             # Reorder columns to match load.csv style
             zone_cols = [str(z) for z in zones]
             out = out[["datetime", "system_wide"] + zone_cols]
-            self.load_all_regions = out[zone_cols]
+            self.load_all_regions = out[zone_cols].values
         else:
-            self.load_all_regions = self.load[bus_name]
+            self.load_all_regions = self.load[bus_name].values
 
         return(self.load_all_regions)

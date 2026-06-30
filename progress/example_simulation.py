@@ -4,6 +4,7 @@ from pyomo.environ import *
 import copy
 import pandas as pd
 import os
+import sys
 import shutil
 import yaml
 import argparse
@@ -229,6 +230,16 @@ def MCS(input_file, results_subdir, stop_event=None) :
 #                                      SIMULATION 
 # =========================================================================================
 if __name__ == "__main__":
+     # --- Force logging to stdout so terminal shows progress ---
+    root = logging.getLogger()
+    for h in list(root.handlers):
+        root.removeHandler(h)
+
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.INFO)
+    handler.setFormatter(logging.Formatter("%(asctime)s %(levelname)s %(message)s"))
+    root.addHandler(handler)
+    root.setLevel(logging.INFO)
     # --- Parse CLI args ---
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", help="Path to YAML configuration file. Default: input.yaml")
