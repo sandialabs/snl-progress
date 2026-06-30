@@ -1,23 +1,24 @@
 # ProGRESS Configuration File
 
 # Data file directory
-data: "./progress/Data/"
+data: "/Users/eecabre/projects/QuESt/quest-apps/snl-progress/progress/Data"
+# data: "./progress/Data/"
 
-# Inputs for Wind (check NREL wind toolkit for data availability)
-download_w: 'Yes' # Yes/No based on whether data needs to be downloaded
+# Inputs for Wind (check ERA5 for data availability)
+download_w: 'No' # Yes/No based on whether data needs to be downloaded
 year_start_w: 2000 # start year for wind data download
 year_end_w: 2025 # end year for wind data download
 
 # Inputs for Solar (check ERA5 for data availability)
 download_s: 'Yes' # Yes/No based on whether data needs to be downloaded
-year_start_s: 2000 # start year for solar data download
-year_end_s: 2025 # start year for solar data download
-n_clusters: 8 # number of K-means clusters for the solar data
+year_start_s: 2024 # start year for solar data download
+year_end_s: 2024 # start year for solar data download
+n_clusters: 2 # number of K-means clusters for the solar data
 
 # Monte Carlo simulation parameters
-samples: 1 # no. of Monte Carlo samples to run
-sim_hours: 8760 # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
-load_factor: 1.25 # tweak to increase/decrease load at all buses; default = 1
+samples: 5 # no. of Monte Carlo samples to run
+sim_hours: 100  # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
+load_factor: 1.15 # tweak to increase/decrease load at all buses; default = 1
 model: 'Zonal' # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zonal' (medium fidelity, nodes within a region/zone aggregated), 'Nodal' (highest fidelity)
 
 # Optimization horizon in hours
@@ -27,6 +28,9 @@ optimization_period: 24 # = 1 for reliability mode; = multiples of 24 for day ah
 evaluate_degradation: False # True/False based on whether user wants to consider battery degradation
 degradation_interval: 168 # Interval between BESS degradation evaluation. Recommended: 168 hours (1 week) or more .
 detailed_thermal_model: False # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 
+
+# Data center load 
+DC_load: false # True/False based on whether data centers exist in the system
 
 #PCM settings
 use_pcm: False

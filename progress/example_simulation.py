@@ -4,9 +4,11 @@ from pyomo.environ import *
 import copy
 import pandas as pd
 import os
+import shutil
 import yaml
 import argparse
-
+import logging
+from pathlib import Path
 from progress.mod_sysdata import RASystemData
 from progress.mod_utilities import RAUtilities
 from progress.mod_mcs_utils import MCS_utils, MCS_samples, MCS_hourly
@@ -14,7 +16,14 @@ from progress.mod_plot import RAPlotTools
 from datetime import datetime, timedelta
 from progress.mod_bus_statistics import bus_statistics
 
-def MCS(input_file, results_subdir) :   
+logger = logging.getLogger(__name__)
+
+
+class StopSimulation(Exception):
+    """Raised when the user requests the simulation to stop."""
+
+
+def MCS(input_file, results_subdir, stop_event=None) :   
     '''This function performs mixed time sequential MCS using methods from the different RA modules'''
  
     # open configuration file
@@ -169,7 +178,7 @@ def MCS(input_file, results_subdir) :
                     SOC_old, ess_duration_temp = hourly_instance.degradation_evaluation(n, ess_duration_temp, SOC_old)
 
             if (n+1)%100 == 0:
-                print(f'Hour {n + 1}')
+                logger.info(f'Hour {n + 1}')
         
         # setting up folder for saving results for each sample
         sample_subdir = os.path.join(results_subdir, f'Sample_{s + 1}')
@@ -199,8 +208,20 @@ def MCS(input_file, results_subdir) :
     if sim_hours == 8760:
         raut.OutageHeatMap(LOL_track, 1, samples, results_subdir)
 
+    # save config file alongside results for reproducibility
+    config_out = Path(results_subdir) / "config.txt"
+    with open(input_file) as f_in, open(config_out, "w") as f_out:
+        for line in f_in:
+            stripped = line.lstrip()
+            if stripped.startswith("#") or stripped.startswith("data:"):
+                continue
+            comment_pos = line.find(" #")
+            if comment_pos != -1:
+                line = line[:comment_pos] + "\n"
+            f_out.write(line)
+
     toc = perf_counter()
-    print(f"Codes finished in {toc-tic} seconds")
+    logger.info(f"Codes finished in {toc-tic} seconds")
 
     return(indices, sim_hours, samples, indices_rec["mLOLP_rec"], indices_rec["COV_rec"])
 
@@ -240,8 +261,9 @@ if __name__ == "__main__":
     
     # plot indices for all samples after MCS is complete
     rapt = RAPlotTools(config["data"], results_subdir, network_model)
-    rapt.PlotLOLP(mLOLP_rec, samples, 1)
-    rapt.PlotCOV(COV_rec, samples, 1)
+    if samples > 1 and sum(mLOLP_rec) > 0:
+        rapt.PlotLOLP(mLOLP_rec, samples, 1)
+        rapt.PlotCOV(COV_rec, samples, 1)
     if sim_hours == 8760:
         rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
 

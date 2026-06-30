@@ -86,6 +86,9 @@ class DataProcess:
         
 if __name__ == "__main__":
 
-    data = DataProcess('input.yaml')
+    from pathlib import Path
+
+    input_path = Path(__file__).resolve().parent / "input.yaml"
+    data = DataProcess(input_path)
     data.ProcessWindData()
     data.ProcessSolarData()

@@ -11,6 +11,19 @@ from pvlib.location import Location
 from pvlib.pvsystem import PVSystem
 import pvlib.modelchain as mc
 from timezonefinder import TimezoneFinder
+import logging
+
+from progress.utils.data_validator import validate_file_columns, SOLAR_SCHEMAS
+
+logger = logging.getLogger(__name__)
+
+def _validate_csv(filepath: str, fname: str, schemas: dict) -> None:
+    sc = schemas.get(fname)
+    if sc:
+        errors = validate_file_columns(Path(filepath), sc["columns"], sc["allow_extra"])
+        if errors:
+            raise ValueError(f"Invalid {fname}: " + "; ".join(errors))
+
 
 class Solar:
     """
@@ -30,6 +43,8 @@ class Solar:
         self.sites_df = pd.read_csv(self.solar_site_data)
         self.model = model
 
+        _validate_csv(self.solar_site_data, "solar_sites.csv", SOLAR_SCHEMAS)
+
         self.names = self.sites_df["Site Name"]
         self.n_sites = len(self.sites_df)
         if model in ['Nodal', 'Copper Sheet']:
@@ -48,11 +63,7 @@ class Solar:
 
         pass
 
-    def download_solar_data(self, start_year, end_year):
-
-        if not {"Latitude", "Longitude"}.issubset(self.sites_df.columns):
-            raise ValueError("CSV must contain 'Latitude and 'Longitude' columns")
-
+    def download_solar_data(self, start_year, end_year, progress_callback=None):
         # --- DATA DESCRIPTION FOR ERA5 ---
         dataset = "reanalysis-era5-single-levels-timeseries"
         base_request = {
@@ -66,7 +77,11 @@ class Solar:
             "data_format": "csv"
         }
 
-        client = cdsapi.Client()
+        client = cdsapi.Client(
+            timeout=60,
+            retry_max=2,
+            sleep_max=10
+        )
 
         # --- DOWNLOAD LOOP ---
         for idx, row in self.sites_df.iterrows():
@@ -78,7 +93,7 @@ class Solar:
             request = base_request.copy()
             request["location"] = {"longitude": lon, "latitude": lat}
 
-            print(f"Downloading {name} (lat={lat}, lon={lon})...")
+            logger.info(f"Downloading {name} (lat={lat}, lon={lon})...")
 
             result = client.retrieve(dataset, request)
             zip_path = Path(result.download())
@@ -102,24 +117,35 @@ class Solar:
             # --- CLEANUP ---
             zip_path.unlink()
 
+            if progress_callback:
+                progress_callback()
+
     def process_solar_data(self, file_path, site):
+        logger.info("  read_csv...")
         df_weather = pd.read_csv(file_path)
 
-        # change time zone
+        logger.info("  TimezoneFinder()...")
         tf = TimezoneFinder()
+
+        logger.info("  timezone_at...")
         tz = tf.timezone_at(lat=site.Latitude, lng=site.Longitude)
 
-        # parse time
+        logger.info("  parse time...")
         df_weather['valid_time'] = pd.to_datetime(df_weather['valid_time'], utc=True)
+
+        logger.info("  tz_convert...")
         df_weather['valid_time'] = df_weather['valid_time'].dt.tz_convert(tz)
+
+        logger.info("  set_index...")
         df_weather = df_weather.set_index('valid_time').rename_axis('time')
 
-        # convert variables
+        logger.info("  convert variables...")
         df_weather['temp_air'] = df_weather['t2m'] - 273.15
         df_weather['wind_speed'] = np.sqrt(df_weather['u10']**2 + df_weather['v10']**2)
         df_weather['ghi'] = df_weather['ssrd'] / 3600.0
         df_weather = df_weather[['temp_air', 'wind_speed', 'ghi']]
 
+        logger.info("  process_solar_data done")
         return df_weather, tz
 
     def add_irradiance_components(self, df_weather, lat, lon):
@@ -206,7 +232,7 @@ class Solar:
                 )
 
             # Parse time
-            df["time"] = pd.to_datetime(df["time"])
+            df["time"] = pd.to_datetime(df["time"], utc=True)
 
             # Create series named by site_id
             site_series = (
@@ -229,8 +255,10 @@ class Solar:
         output_file = self.solar_directory + "/gen_all_sites.csv"
         combined_df.to_csv(output_file)
 
-        print(f"Saved combined data to: {output_file}")
-        print(f"Shape: {combined_df.shape}")
+        logger.info(f"Saved combined data to: {output_file}")
+        logger.info(f"Shape: {combined_df.shape}")
+
+        _validate_csv(output_file, "gen_all_sites.csv", SOLAR_SCHEMAS)
 
         return combined_df
     
@@ -269,7 +297,7 @@ class Solar:
 
         for file in all_files:
 
-            print(f"Processing {file.name}")
+            logger.info(f"Processing {file.name}")
             
             # Extract site_id from filename
             site_id = file.stem
@@ -286,6 +314,23 @@ class Solar:
             self.run_pv_model(df, site, site_id, tz)
 
         # combine all generation data
+        self.combine_site_generation(file_pattern="*_gen.csv")
+
+    def run_pipeline_gui(self):
+        all_files = sorted(Path(self.weather_data_directory).glob('*.csv'))
+        for file in all_files:
+                logger.info(f"Processing {file.name}")
+                site_id = file.stem
+                site_row = self.sites_df[self.sites_df['Site Name'] == site_id]
+                site = site_row.iloc[0]
+                logger.info("  Reading weather data...")
+                df, tz = self.process_solar_data(file, site)
+                logger.info("  Computing irradiance...")
+                df = self.add_irradiance_components(df, site.Latitude, site.Longitude)
+                logger.info("  Running PV model...")
+                self.run_pv_model(df, site, site_id, tz)
+                logger.info("  Done")
+        logger.info("Combining site generation...")
         self.combine_site_generation(file_pattern="*_gen.csv")
 
 if __name__ == "__main__":

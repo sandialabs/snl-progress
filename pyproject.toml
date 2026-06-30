@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "progress"
+name = "snl-progress"
 version = "1.2.0"
 description = "Used to evaluate the reliability of a power system and size energy storage systems required for maintaining a certain reliability level"
 authors = ["Atri Bera <abera@sandia.gov>"]
 readme = "README.md"
 license = "BSD-3-Clause"
-homepage = "https://example.com"
-repository = "https://github.com/sandialabs/quest_reliability"
+homepage = "https://github.com/sandialabs/snl-progress"
+repository = "https://github.com/sandialabs/snl-progress"
 documentation = "https://sandialabs.github.io/snl-progress/"
 keywords = ["reliability", "power system", "energy storage"]
 
@@ -15,7 +15,7 @@ python = ">=3.7,<3.12"
 numpy = ">=1.21.0, <2.0.0"
 pyomo = "6.7.3"
 pandas = "2.2.2"
-mpi4py = "3.1.5"
+# mpi4py = "3.1.5"
 matplotlib = "3.9.0"
 openpyxl = "3.1.4"
 seaborn = "0.13.2"

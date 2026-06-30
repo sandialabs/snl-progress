@@ -178,10 +178,10 @@ class RAPlotTools:
 
         outage_data = pd.read_csv(outage_data, header=0, index_col=0).values
         y_label = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-        x_label = np.arange(1, 25, 1)
+        x_label = np.arange(24)
 
         heatmap = plt.imshow(outage_data, cmap='Reds', interpolation='nearest')
-        plt.xticks(range(len(x_label)), x_label, fontsize = 5)
+        plt.xticks(range(len(x_label)), x_label + 1, fontsize = 5)
         plt.yticks(range(len(y_label)), y_label, fontsize = 6)
         plt.xlabel('Hour', fontsize = 8)
         plt.title('Outage Heat Map')

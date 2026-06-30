@@ -1,0 +1,67 @@
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
+import numpy as np
+
+@dataclass
+class DataHandler:
+    genbus: Optional[np.ndarray] = None
+    ng: Optional[int] = None
+    pmax: Optional[np.ndarray] = None
+    pmin: Optional[np.ndarray] = None
+    FOR_gen: Optional[np.ndarray] = None
+    MTTF_gen: Optional[np.ndarray] = None
+    MTTR_gen: Optional[np.ndarray] = None
+    gencost: Optional[np.ndarray] = None
+    genname: Optional[object] = None
+    nl: Optional[int] = None
+    fb: Optional[np.ndarray] = None
+    tb: Optional[np.ndarray] = None
+    cap_trans: Optional[np.ndarray] = None
+    MTTF_trans: Optional[np.ndarray] = None
+    MTTR_trans: Optional[np.ndarray] = None
+    branchname: Optional[object] = None
+    bus_name: Optional[object] = None
+    bus_no: Optional[np.ndarray] = None
+    nz: Optional[int] = None
+    load_all_regions: Optional[object] = None
+    essname: Optional[object] = None
+    essbus: Optional[np.ndarray] = None
+    ness: Optional[int] = None
+    ess_pmax: Optional[np.ndarray] = None
+    ess_pmin: Optional[np.ndarray] = None
+    ess_duration: Optional[np.ndarray] = None
+    ess_socmax: Optional[np.ndarray] = None
+    ess_socmin: Optional[np.ndarray] = None
+    ess_eff: Optional[np.ndarray] = None
+    disch_cost: Optional[np.ndarray] = None
+    ch_cost: Optional[np.ndarray] = None
+    MTTF_ess: Optional[np.ndarray] = None
+    MTTR_ess: Optional[np.ndarray] = None
+    ess_units: Optional[np.ndarray] = None
+    ess_chemistry: Optional[object] = None
+    mu_tot: Optional[np.ndarray] = None
+    lambda_tot: Optional[np.ndarray] = None
+    cap_max: Optional[dict] = None
+    cap_min: Optional[dict] = None
+    raut: Optional[object] = None
+    # solar fields
+    solar_directory: Optional[Path] = None
+    s_sites: Optional[object] = None
+    s_zone_no: Optional[object] = None
+    s_max: Optional[np.ndarray] = None
+    s_profiles: Optional[object] = None
+    solar_prob: Optional[np.ndarray] = None
+    # wind fields
+    wind_directory: Optional[Path] = None
+    w_sites: Optional[int] = None
+    farm_name: Optional[object] = None
+    zone_no: Optional[object] = None
+    w_classes: Optional[int] = None
+    w_turbines: Optional[int] = None
+    r_cap: Optional[object] = None
+    p_class: Optional[object] = None
+    out_curve2: Optional[np.ndarray] = None
+    out_curve3: Optional[np.ndarray] = None
+    start_speed: Optional[np.ndarray] = None
+    tr_mats: Optional[np.ndarray] = None
