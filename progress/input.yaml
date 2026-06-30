@@ -1,7 +1,7 @@
 # ProGRESS Configuration File
 
 # Data file directory
-data: "path/to/Data/"
+data: "./progress/Data/"
 
 # Inputs for Wind (check NREL wind toolkit for data availability)
 download_w: 'Yes' # Yes/No based on whether data needs to be downloaded
@@ -25,5 +25,16 @@ optimization_period: 24 # = 1 for reliability mode; = multiples of 24 for day ah
 
 # Battery degradation parameters
 evaluate_degradation: False # True/False based on whether user wants to consider battery degradation
-degradation_interval: 1000 # Interval between BESS degradation evaluation. Recommended: 168 hours (1 week) or more .
+degradation_interval: 168 # Interval between BESS degradation evaluation. Recommended: 168 hours (1 week) or more .
 detailed_thermal_model: False # True: Detailed PyBAMM thermal model used for BESS degradation (significant increase in computation time). 'False': constant 25 C temp used. 
+
+#PCM settings
+use_pcm: False
+#pcm parameters
+pcm_parameters:
+  pcm_venv_path: "/path/to/pcm_virtual_env/Scripts/python.exe" # directory where PCM virtual environment is located
+  start_date: 01/01/2020 # start date for PCM simulation in MM/DD/YYYY format. End date is determined based on sim_hours
+  solver: 'cplex' # solver to be used for PCM optimization; options are 'gurobi', 'cplex', 'cbc', etc. 
+  mipgap: 0.05 # MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time.
+  solve_pricing_problem: False # True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.
+  storage_AS_mode: True # True/False based on whether user wants to include BESS participating in ancillary services.

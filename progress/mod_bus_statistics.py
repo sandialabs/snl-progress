@@ -44,7 +44,7 @@ def bus_statistics(directory):
             print(f"Skipping {file}: {e}")
 
     if not files:
-        print("No outages detected to print outage statistics.")
+        print("No outage files detected to print outage statistics.")
         return
     # ==========================================
     # BUILD SERIES

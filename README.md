@@ -427,6 +427,40 @@ Users can view the impacts of cell degradation and failures in the `ESS_cap.pdf`
 |:------------------------------:|:------------------------------:|:------------------------------:|
 | (a) Capacity failure only | (b) Capacity degradation only | (c) Combined failure and degradation |
 
+**c) High-Fidelity Production Cost Simulations within ProGRESS:**
+
+ProGRESS now supports Production Cost Modeling (PCM) simulations within its Monte Carlo reliability assessment framework. To use this capability, the [QuESt PCM](<https://github.com/sandialabs/quest_PCM>) tool must be downloaded and installed. During a ProGRESS simulation, stochastic scenarios are generated and automatically exported to QuESt PCM, where they are used to perform detailed nodal production cost simulations. QuESt PCM executes a series of day-ahead unit commitment while modeling conventional generators, renewable resources, energy storage systems, transmission constraints, and ancillary service markets in detail. This integrated workflow enables users to assess the operational and economic impacts of stochastic reliability events using a high-fidelity production cost model. The following steps describe how to configure and run the integrated framework.
+
+- **Clone the QuESt PCM tool into your machine:** The ``progress_integration`` branch of QuESt PCM needs to be used using the command below:
+```bash
+git clone -b progress_integration https://github.com/sandialabs/quest_PCM.git
+```
+
+- **Create a QuESt PCM vitrual environment:** Using python 3.12, create the virtual environment as follows:
+```bash
+py -3.12 -m venv pcm_venv
+```
+
+- **Install QuESt PCM:**  With the virtual environment activated, install QuESt PCM and it's dependencies as follows:
+```bash
+pip install -e .
+```
+
+- **Populate required parameters in the config file:** The config `input.yaml` file must contain the following parameters:
+
+| Parameter      | Comments                   |
+|--------------|-----------------------------------|
+|`pcm_venv_path`| Full path to the QuESt PCM virtual environment python executable. Note: ProGRESS modules must be present within site_packages of this environment. Example: "C:/John_Doe/snl-progress/progress_venv/Scripts/python.exe". 
+|`start_date`|  start date for PCM simulation in MM/DD/YYYY format. End date is determined based on user defined `sim_hours`.|
+|`solver`| Solver to be used for PCM optimization; Options are 'gurobi', 'cplex', 'cbc', etc. |
+|`mipgap`| MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time. |
+|`solve_pricing_problem`| True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.|
+|`storage_AS_mode`| True/False based on whether user wants to include BESS participating in ancillary services.|
+
+<img src = "progress/Images/workflow/pcm_integration.png" width="1200" alt="Results" /> 
+
+
+[Back to Top](#top)
 
 ## Citing ProGRESS
 <a id="cite"></a>
