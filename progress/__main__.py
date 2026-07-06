@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, QSizePolicy
 from PySide6.QtCore import QFile, QTextStream, Qt, QSize, QTimer
 from PySide6.QtGui import QPixmap
 from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
@@ -43,6 +43,11 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.frame_content.setMaximumHeight(16777215)
+        self.ui.stackedWidget.setSizePolicy(
+            self.ui.stackedWidget.sizePolicy().horizontalPolicy(),
+            QSizePolicy.Ignored,
+        )
         logger.info("Main window initialized")
         # Install app logger once the UI exists.
         # After this, logging and print output go to self.ui.log_window.
@@ -325,7 +330,6 @@ class AppController:
 
         self.main_window.show()
         self.log_window.show()
-
 
 def main():
     """

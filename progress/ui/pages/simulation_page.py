@@ -67,8 +67,10 @@ class SimulationPage(QWidget):
         super().__init__()
         self.ui = Ui_SimulationPage()
         self.ui.setupUi(self)
+        self.setMaximumHeight(16777215)
         self.config = MCSConfig.from_yaml()
         self._sim_stopped = False
+        self.setMinimumHeight(0)
 
         # ==== connections ====
         self.ui.radio_degradation_eval_true.clicked.connect(self._update_frame_visibility)

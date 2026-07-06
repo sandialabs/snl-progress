@@ -105,7 +105,7 @@ class Ui_MainWindow(object):
 
         self.frame_content = QFrame(self.centralwidget)
         self.frame_content.setObjectName(u"frame_content")
-        self.frame_content.setMaximumSize(QSize(16777215, 1000))
+        self.frame_content.setMaximumSize(QSize(16777215, 16777215))
         self.contentLayout = QVBoxLayout(self.frame_content)
         self.contentLayout.setObjectName(u"contentLayout")
         self.frame_info = QFrame(self.frame_content)
@@ -159,7 +159,7 @@ class Ui_MainWindow(object):
 
         self.frame_nav_btns = QFrame(self.frame_content)
         self.frame_nav_btns.setObjectName(u"frame_nav_btns")
-        self.frame_nav_btns.setMaximumSize(QSize(16777215, 60))
+        self.frame_nav_btns.setMaximumSize(QSize(16777215, 50))
         self.frame_nav_btns.setFrameShape(QFrame.NoFrame)
         self.frame_nav_btns.setFrameShadow(QFrame.Plain)
         self.horizontalLayout_2 = QHBoxLayout(self.frame_nav_btns)

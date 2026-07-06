@@ -1,7 +1,7 @@
 # ProGRESS Configuration File
 
 # Data file directory
-data: "./progress/Data"
+data: "/Users/eecabre/projects/QuESt/quest-apps/snl-progress/progress/Data"
 # data: "./progress/Data/"
 
 # Inputs for Wind (check ERA5 for data availability)
