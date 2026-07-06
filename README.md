@@ -522,7 +522,7 @@ pip install -e .
 
 | Parameter      | Comments                   |
 |--------------|-----------------------------------|
-|`pcm_venv_path`| Full path to the QuESt PCM virtual environment python executable. Note: ProGRESS modules must be present within site_packages of this environment. Example: "C:/John_Doe/snl-progress/progress_venv/Scripts/python.exe". 
+|`pcm_venv_path`| Full path to the QuESt PCM virtual environment python executable. Example: "C:/John_Doe/snl-progress/progress_venv/Scripts/python.exe". 
 |`start_date`|  start date for PCM simulation in MM/DD/YYYY format. End date is determined based on user defined `sim_hours`.|
 |`solver`| Solver to be used for PCM optimization; Options are 'gurobi', 'cplex', 'cbc', etc. |
 |`mipgap`| MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time. |
