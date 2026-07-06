@@ -186,8 +186,7 @@ def MCS(input_file, results_subdir, stop_event=None) :
         os.makedirs(sample_subdir, exist_ok=True)
 
         if mcs_params.enable_pcm:
-            # var_s, LOL_track = sample_instance.run_pcm(sample_subdir, holder_dict, s, var_s, LOL_track)
-            pass
+            var_s, LOL_track = sample_instance.run_pcm(sample_subdir, holder_dict, s, var_s, LOL_track)
 
         # collect indices for all samples
         indices_rec = raut.UpdateIndexArrays(indices_rec, var_s, sim_hours, s)

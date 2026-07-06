@@ -70,35 +70,6 @@ class Ui_PCMConfigPage(object):
 
         self.verticalLayout_2.addWidget(self.frame_pcm_venv)
 
-        self.frame_pcm_data_path = QFrame(self.groupBox_pcm_config)
-        self.frame_pcm_data_path.setObjectName(u"frame_pcm_data_path")
-        self.frame_pcm_data_path.setFrameShape(QFrame.NoFrame)
-        self.frame_pcm_data_path.setFrameShadow(QFrame.Plain)
-        self.horizontalLayout_2 = QHBoxLayout(self.frame_pcm_data_path)
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.horizontalLayout_2.setContentsMargins(-1, 0, -1, 0)
-        self.label_pcm_data_path = QLabel(self.frame_pcm_data_path)
-        self.label_pcm_data_path.setObjectName(u"label_pcm_data_path")
-
-        self.horizontalLayout_2.addWidget(self.label_pcm_data_path)
-
-        self.lineEdit_pcm_data_path = QLineEdit(self.frame_pcm_data_path)
-        self.lineEdit_pcm_data_path.setObjectName(u"lineEdit_pcm_data_path")
-
-        self.horizontalLayout_2.addWidget(self.lineEdit_pcm_data_path)
-
-        self.btn_pcm_data_path = QPushButton(self.frame_pcm_data_path)
-        self.btn_pcm_data_path.setObjectName(u"btn_pcm_data_path")
-        self.btn_pcm_data_path.setMaximumSize(QSize(40, 16777215))
-        self.btn_pcm_data_path.setIcon(icon)
-        self.btn_pcm_data_path.setIconSize(QSize(40, 40))
-        self.btn_pcm_data_path.setFlat(True)
-
-        self.horizontalLayout_2.addWidget(self.btn_pcm_data_path)
-
-
-        self.verticalLayout_2.addWidget(self.frame_pcm_data_path)
-
         self.frame_start_date = QFrame(self.groupBox_pcm_config)
         self.frame_start_date.setObjectName(u"frame_start_date")
         self.frame_start_date.setFrameShape(QFrame.NoFrame)
@@ -146,7 +117,6 @@ class Ui_PCMConfigPage(object):
         self.horizontalLayout_12.addWidget(self.label_solver)
 
         self.comboBox_solver = QComboBox(self.frame_solver)
-        self.comboBox_solver.addItem("")
         self.comboBox_solver.addItem("")
         self.comboBox_solver.addItem("")
         self.comboBox_solver.addItem("")
@@ -327,17 +297,13 @@ class Ui_PCMConfigPage(object):
         self.label_pcm_venv.setText(QCoreApplication.translate("PCMConfigPage", u"PCM Venv Path", None))
         self.lineEdit_pcm_venv.setPlaceholderText(QCoreApplication.translate("PCMConfigPage", u"/path/to/pcm_virtual_env/Scripts/python.exe", None))
         self.btn_info_venv.setText("")
-        self.label_pcm_data_path.setText(QCoreApplication.translate("PCMConfigPage", u"PCM Data Path", None))
-        self.lineEdit_pcm_data_path.setPlaceholderText(QCoreApplication.translate("PCMConfigPage", u"/path/to/quest_PCM/Data/5bus", None))
-        self.btn_pcm_data_path.setText("")
         self.label_start_date.setText(QCoreApplication.translate("PCMConfigPage", u"Start Date", None))
         self.dateEdit_start_date.setDisplayFormat(QCoreApplication.translate("PCMConfigPage", u"MM/dd/yyyy", None))
         self.btn_info_start_date.setText("")
         self.label_solver.setText(QCoreApplication.translate("PCMConfigPage", u"Solver", None))
-        self.comboBox_solver.setItemText(0, QCoreApplication.translate("PCMConfigPage", u"Gurobi", None))
-        self.comboBox_solver.setItemText(1, QCoreApplication.translate("PCMConfigPage", u"Cplex", None))
-        self.comboBox_solver.setItemText(2, QCoreApplication.translate("PCMConfigPage", u"Cbc", None))
-        self.comboBox_solver.setItemText(3, QCoreApplication.translate("PCMConfigPage", u"HiGHs", None))
+        self.comboBox_solver.setItemText(0, QCoreApplication.translate("PCMConfigPage", u"gurobi", None))
+        self.comboBox_solver.setItemText(1, QCoreApplication.translate("PCMConfigPage", u"cplex", None))
+        self.comboBox_solver.setItemText(2, QCoreApplication.translate("PCMConfigPage", u"cbc", None))
 
         self.btn_info_solver.setText("")
         self.label_mini_gap.setText(QCoreApplication.translate("PCMConfigPage", u"Mipgap", None))

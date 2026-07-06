@@ -323,7 +323,6 @@ QPushButton#btn_info_start_date,
 QPushButton#btn_info_storage_mode,
 QPushButton#btn_info_use_pcm,
 QPushButton#btn_info_venv,
-QPushButton#btn_pcm_data_path,
 QPushButton#btn_start_info,
 QPushButton#btn_end_info,
 QPushButton#btn_info_final_num_cluster,
@@ -356,7 +355,6 @@ QPushButton#btn_info_start_date:hover,
 QPushButton#btn_info_storage_mode:hover,
 QPushButton#btn_info_use_pcm:hover,
 QPushButton#btn_info_venv:hover,
-QPushButton#btn_pcm_data_path:hover,
 QPushButton#btn_start_info:hover,
 QPushButton#btn_end_info:hover,
 QPushButton#btn_info_final_num_cluster:hover,
@@ -383,7 +381,6 @@ QPushButton#btn_info_start_date:pressed,
 QPushButton#btn_info_storage_mode:pressed,
 QPushButton#btn_info_use_pcm:pressed,
 QPushButton#btn_info_venv:pressed,
-QPushButton#btn_pcm_data_path:pressed,
 QPushButton#btn_start_info:pressed,
 QPushButton#btn_end_info:pressed,
 QPushButton#btn_info_final_num_cluster:pressed,
@@ -1050,8 +1047,7 @@ QPushButton#btn_skip,
 QPushButton#btn_process_wind,
 QPushButton#btn_clear_search,
 QPushButton#btn_download_wind,
-QPushButton#btn_browse_venv,
-QPushButton#btn_browse_data_dir {
+QPushButton#btn_browse_venv {
     background-color: #387a3d;
     color: #387a3d;
     border: 1px solid #387a3d;
@@ -1076,8 +1072,7 @@ QPushButton#btn_skip:hover,
 QPushButton#btn_process_wind:hover,
 QPushButton#btn_clear_search:hover,
 QPushButton#btn_download_wind:hover,
-QPushButton#btn_browse_venv:hover,
-QPushButton#btn_browse_data_dir:hover {
+QPushButton#btn_browse_venv:hover {
     background-color: #2d6a30;
     border-color: #2d6a30;
 }
@@ -1096,8 +1091,7 @@ QPushButton#btn_skip:pressed,
 QPushButton#btn_process_wind:pressed,
 QPushButton#btn_clear_search:pressed,
 QPushButton#btn_download_wind:pressed,
-QPushButton#btn_browse_venv:pressed,
-QPushButton#btn_browse_data_dir:pressed {
+QPushButton#btn_browse_venv:pressed {
     background-color: #235827;
     border-color: #235827;
 }
@@ -1115,8 +1109,7 @@ QPushButton#btn_skip:disabled,
 QPushButton#btn_process_wind:disabled,
 QPushButton#btn_clear_search:disabled,
 QPushButton#btn_download_wind:disabled,
-QPushButton#btn_browse_venv:disabled,
-QPushButton#btn_browse_data_dir:disabled {
+QPushButton#btn_browse_venv:disabled {
     background-color: #cbd5e1;
     border-color: #cbd5e1;
     color: #94a3b8;

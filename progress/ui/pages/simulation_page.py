@@ -11,6 +11,7 @@ from pathlib import Path
 import datetime
 import logging
 from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import SingleQuotedScalarString
 import yaml
 
 logger = logging.getLogger(__name__)
@@ -32,11 +33,6 @@ class PCMConfigDialog(QDialog):
         self.ui.horizontalLayout_14.insertWidget(2, self.ui.btn_browse_venv)
         self.ui.btn_browse_venv.clicked.connect(self._browse_venv)
 
-        self.ui.btn_browse_data_dir = QPushButton("Browse...")
-        self.ui.btn_browse_data_dir.setObjectName("btn_browse_data_dir")
-        self.ui.horizontalLayout_2.insertWidget(2, self.ui.btn_browse_data_dir)
-        self.ui.btn_browse_data_dir.clicked.connect(self._browse_data_dir)
-
         self._load_from_yaml()
 
     def _browse_venv(self):
@@ -47,18 +43,10 @@ class PCMConfigDialog(QDialog):
         if path:
             self.ui.lineEdit_pcm_venv.setText(path)
 
-    def _browse_data_dir(self):
-        path = QFileDialog.getExistingDirectory(
-            self, "Select PCM Data Directory",
-            self.ui.lineEdit_pcm_data_path.text() or str(Path.home()))
-        if path:
-            self.ui.lineEdit_pcm_data_path.setText(path)
-
     def _load_from_yaml(self):
         config = load_config()
         pcm = config.get("pcm_parameters", {})
         self.ui.lineEdit_pcm_venv.setText(pcm.get("pcm_venv_path", ""))
-        self.ui.lineEdit_pcm_data_path.setText(pcm.get("pcm_data_dir", ""))
 
         try:
             date_parts = pcm.get("start_date", "01/01/2020").split("/")
@@ -85,9 +73,8 @@ class PCMConfigDialog(QDialog):
     def _save_config(self):
         pcm_params = {
             "pcm_venv_path": self.ui.lineEdit_pcm_venv.text().strip(),
-            "pcm_data_dir": self.ui.lineEdit_pcm_data_path.text().strip(),
             "start_date": self.ui.dateEdit_start_date.date().toString("MM/dd/yyyy"),
-            "solver": self.ui.comboBox_solver.currentText().strip(),
+            "solver": SingleQuotedScalarString(self.ui.comboBox_solver.currentText().strip()),
             "mipgap": self.ui.doubleSpin_mini_gap.value(),
             "solve_pricing_problem": self.ui.radio_solve_pricing_true.isChecked(),
             "storage_AS_mode": self.ui.label_storage_mode_true.isChecked(),

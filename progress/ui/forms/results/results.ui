@@ -170,7 +170,7 @@
          <item>
           <widget class="QStackedWidget" name="stackedWidget_preview">
            <property name="currentIndex">
-            <number>3</number>
+            <number>5</number>
            </property>
            <widget class="QWidget" name="page_empty">
             <layout class="QVBoxLayout" name="verticalLayout_empty">
@@ -333,6 +333,37 @@
                <column/>
                <column/>
                <column/>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="page_xlsx">
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <widget class="QLabel" name="label_xlsx_title">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>XLSX Preview</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QTableWidget" name="tableWidget_xslx"/>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="page_html">
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <item>
+              <widget class="QLabel" name="label_html_title">
+               <property name="text">
+                <string>HTML Preview</string>
+               </property>
               </widget>
              </item>
             </layout>
