@@ -27,7 +27,11 @@
    Base / Main Window
    ======================================================= */
 QMainWindow {
-    background-color: #0f172a;
+    background-color: #1e293b;
+}
+
+QDialog {
+    background-color: #1e293b;
 }
 
 QWidget {
@@ -1044,7 +1048,9 @@ QPushButton#btn_gen_cluster,
 QPushButton#btn_skip,
 QPushButton#btn_process_wind,
 QPushButton#btn_clear_search,
-QPushButton#btn_download_wind {
+QPushButton#btn_download_wind,
+QPushButton#btn_browse_venv,
+QPushButton#btn_browse_data_dir {
     background-color: #4ade80;
     color: #4ade80;
     border: 1px solid #4ade80;
@@ -1067,7 +1073,9 @@ QPushButton#btn_gen_cluster:hover,
 QPushButton#btn_skip:hover,
 QPushButton#btn_process_wind:hover,
 QPushButton#btn_clear_search:hover,
-QPushButton#btn_download_wind:hover {
+QPushButton#btn_download_wind:hover,
+QPushButton#btn_browse_venv:hover,
+QPushButton#btn_browse_data_dir:hover {
     background-color: #22c55e;
     border-color: #22c55e;
     color: #16a34a;
@@ -1085,7 +1093,9 @@ QPushButton#btn_gen_cluster:pressed,
 QPushButton#btn_skip:pressed,
 QPushButton#btn_process_wind:pressed,
 QPushButton#btn_clear_search:pressed,
-QPushButton#btn_download_wind:pressed {
+QPushButton#btn_download_wind:pressed,
+QPushButton#btn_browse_venv:pressed,
+QPushButton#btn_browse_data_dir:pressed {
     background-color: #16a34a;
     border-color: #16a34a;
     color: #16a34a;
@@ -1102,7 +1112,9 @@ QPushButton#btn_gen_cluster:disabled,
 QPushButton#btn_skip:disabled,
 QPushButton#btn_process_wind:disabled,
 QPushButton#btn_clear_search:disabled,
-QPushButton#btn_download_wind:disabled {
+QPushButton#btn_download_wind:disabled,
+QPushButton#btn_browse_venv:disabled,
+QPushButton#btn_browse_data_dir:disabled {
     background-color: #334155;
     border-color: #334155;
     color: #475569;

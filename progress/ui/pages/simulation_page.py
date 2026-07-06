@@ -28,10 +28,12 @@ class PCMConfigDialog(QDialog):
         self.ui.btn_exit_config.clicked.connect(self.close)
 
         self.ui.btn_browse_venv = QPushButton("Browse...")
+        self.ui.btn_browse_venv.setObjectName("btn_browse_venv")
         self.ui.horizontalLayout_14.insertWidget(2, self.ui.btn_browse_venv)
         self.ui.btn_browse_venv.clicked.connect(self._browse_venv)
 
         self.ui.btn_browse_data_dir = QPushButton("Browse...")
+        self.ui.btn_browse_data_dir.setObjectName("btn_browse_data_dir")
         self.ui.horizontalLayout_2.insertWidget(2, self.ui.btn_browse_data_dir)
         self.ui.btn_browse_data_dir.clicked.connect(self._browse_data_dir)
 
