@@ -170,7 +170,7 @@
          <item>
           <widget class="QStackedWidget" name="stackedWidget_preview">
            <property name="currentIndex">
-            <number>5</number>
+            <number>0</number>
            </property>
            <widget class="QWidget" name="page_empty">
             <layout class="QVBoxLayout" name="verticalLayout_empty">
@@ -267,8 +267,8 @@
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>663</width>
-                  <height>771</height>
+                  <width>424</width>
+                  <height>324</height>
                  </rect>
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_scroll_image">

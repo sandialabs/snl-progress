@@ -111,7 +111,7 @@ class ResultsPage(QWidget):
 
         self.txt_edit = QPlainTextEdit(self.page_txt)
         self.txt_edit.setReadOnly(True)
-        self.txt_edit.setStyleSheet("background-color: white; color: black; font-family: monospace;")
+        self.txt_edit.setStyleSheet("background-color: white; color: black; font-family: 'Courier New', monospace;")
 
         layout = QVBoxLayout(self.page_txt)
         layout.addWidget(self.txt_edit)

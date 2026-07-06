@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, QSizePolicy, QPushButton
 from PySide6.QtCore import QFile, QTextStream, Qt, QSize, QTimer
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QIcon
 from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
 from progress.ui.pages.landing_page import LandingPage
 from progress.ui.pages.solar_page import SolarPage
@@ -366,6 +366,7 @@ def main():
     Initializes the QApplication, creates and shows the main window, and starts the event loop.
     """
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(":/icons/Images/icons/progress_icon_down.png"))
     window = AppController()
     update_data_path()
     window.show_all()

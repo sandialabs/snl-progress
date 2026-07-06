@@ -172,7 +172,7 @@ class Ui_FilePreviewPage(object):
         self.scrollArea_image.setWidgetResizable(True)
         self.scrollAreaWidgetContents_image = QWidget()
         self.scrollAreaWidgetContents_image.setObjectName(u"scrollAreaWidgetContents_image")
-        self.scrollAreaWidgetContents_image.setGeometry(QRect(0, 0, 663, 771))
+        self.scrollAreaWidgetContents_image.setGeometry(QRect(0, 0, 424, 324))
         self.verticalLayout_scroll_image = QVBoxLayout(self.scrollAreaWidgetContents_image)
         self.verticalLayout_scroll_image.setObjectName(u"verticalLayout_scroll_image")
         self.label_image_preview = QLabel(self.scrollAreaWidgetContents_image)
@@ -251,7 +251,7 @@ class Ui_FilePreviewPage(object):
 
         self.retranslateUi(FilePreviewPage)
 
-        self.stackedWidget_preview.setCurrentIndex(5)
+        self.stackedWidget_preview.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(FilePreviewPage)
