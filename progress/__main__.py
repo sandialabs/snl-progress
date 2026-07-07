@@ -43,6 +43,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.label_version.setText("v2.0.0")
         self.ui.frame_content.setMaximumHeight(16777215)
         self.ui.stackedWidget.setSizePolicy(
             self.ui.stackedWidget.sizePolicy().horizontalPolicy(),
