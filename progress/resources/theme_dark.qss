@@ -1034,6 +1034,7 @@ QLabel#label_image_preview {
    Filled Action Buttons — Save / Run / Download
    ======================================================= */
 QPushButton#btn_save_config,
+QPushButton#btn_exit_config,
 QPushButton#btn_run_simulation,
 QPushButton#btn_stop_simulation,
 QPushButton#btn_download_solar,
@@ -1058,6 +1059,7 @@ QPushButton#btn_browse_venv {
 }
 
 QPushButton#btn_save_config:hover,
+QPushButton#btn_exit_config:hover,
 QPushButton#btn_run_simulation:hover,
 QPushButton#btn_stop_simulation,
 QPushButton#btn_download_solar:hover,
@@ -1077,6 +1079,7 @@ QPushButton#btn_browse_venv:hover {
 }
 
 QPushButton#btn_save_config:pressed,
+QPushButton#btn_exit_config:pressed,
 QPushButton#btn_run_simulation:pressed,
 QPushButton#btn_stop_simulation,
 QPushButton#btn_download_solar:pressed,
@@ -1096,6 +1099,7 @@ QPushButton#btn_browse_venv:pressed {
 }
 
 QPushButton#btn_save_config:disabled,
+QPushButton#btn_exit_config:disabled,
 QPushButton#btn_run_simulation:disabled,
 QPushButton#btn_download_solar:disabled,
 QPushButton#btn_clusters_page:disabled,
