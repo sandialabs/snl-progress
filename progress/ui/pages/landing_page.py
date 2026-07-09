@@ -18,6 +18,8 @@ class LandingPage(QWidget):
 
         self._progress_logo_icon = QSvgRenderer(":/logos/Images/logos/progress_bold_s.svg")
         self.ui.label_progress_logo.setAlignment(Qt.AlignCenter)
+        self.ui.label_progress_desc.setStyleSheet("font-size: 33pt;")
+        self.ui.frame_2.setMinimumHeight(150)
 
         self._update_logo()
         self._update_footer_logos()
@@ -33,16 +35,17 @@ class LandingPage(QWidget):
         label = self.ui.label_progress_logo
         label_size = label.size()
 
-        # Get the SVG's native aspect ratio
-        svg_size = self._progress_logo_icon.defaultSize()  # QSize
-        scaled = svg_size.scaled(label_size, Qt.KeepAspectRatio)
+        render_size = label_size
+        if render_size.height() < 150:
 
-        pixmap = QPixmap(label_size)
+        svg_size = self._progress_logo_icon.defaultSize()
+        scaled = svg_size.scaled(render_size, Qt.KeepAspectRatio)
+
+        pixmap = QPixmap(render_size)
         pixmap.fill(Qt.transparent)
 
-        # Center the SVG rect within the label
-        x = (label_size.width() - scaled.width()) // 2
-        y = (label_size.height() - scaled.height()) // 2
+        x = (render_size.width() - scaled.width()) // 2
+        y = (render_size.height() - scaled.height()) // 2
         target_rect = QRectF(x, y, scaled.width(), scaled.height())
 
         painter = QPainter(pixmap)
