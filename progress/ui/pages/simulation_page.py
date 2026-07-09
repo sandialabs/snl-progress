@@ -181,6 +181,8 @@ class SimulationPage(QWidget):
         self.ui.lineEdit_degradation_int.setText(str(self.config.degradation_interval))
         self.ui.radio_detailed_model_true.setChecked(self.config.detailed_thermal_model)
         self.ui.radio_detailed_model_false.setChecked(not self.config.detailed_thermal_model)
+        self.ui.radio_dc_load_true.setChecked(self.config.DC_load)
+        self.ui.radio_dc_load_false.setChecked(not self.config.DC_load)
 
         config_data = load_config()
         use_pcm = config_data.get("use_pcm", False)
@@ -258,7 +260,7 @@ class SimulationPage(QWidget):
             evaluate_degradation=self._check_eval_degradation_selection(),
             degradation_interval=degradation_interval,
             detailed_thermal_model=self._check_thermal_model_selection(),
-            DC_load=False,
+            DC_load=self.ui.radio_dc_load_true.isChecked(),
         )
         self.config = config
         config.save()
