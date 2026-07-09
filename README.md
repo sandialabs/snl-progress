@@ -508,10 +508,15 @@ ProGRESS now supports Production Cost Modeling (PCM) simulations within its Mont
 git clone -b progress_integration https://github.com/sandialabs/quest_PCM.git
 ```
 
-- **Create a QuESt PCM vitrual environment:** Using python 3.12, create the virtual environment as follows:
+- **Create a QuESt PCM virtual environment:** Using python 3.12, create the virtual environment as follows:
 ```bash
+# On Windows:
 py -3.12 -m venv pcm_venv
+# On macOS/Linux:
+python3.12 -m venv pcm_venv
 ```
+
+> **Note:** On macOS, `python3.12` is typically installed via Homebrew. If you don't have it, run `brew install python@3.12`. The resulting venv's python executable will be at `<path_to_quest_PCM>/pcm_venv/bin/python3.12`.
 
 - **Install QuESt PCM:**  With the virtual environment activated, install QuESt PCM and it's dependencies as follows:
 ```bash
@@ -526,7 +531,7 @@ pip install -e .
 |`start_date`|  start date for PCM simulation in MM/DD/YYYY format. End date is determined based on user defined `sim_hours`.|
 |`solver`| Solver to be used for PCM optimization; Options are 'gurobi', 'cplex', 'cbc', etc. |
 |`mipgap`| MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time. |
-|`solve_pricing_problem`| True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.|
+|`solve_pricing_problem`| True/False based on whether user wants to solve the pricing problem in PCM. Increases computation time but generates LMPs, revenues, etc.|
 |`storage_AS_mode`| True/False based on whether user wants to include BESS participating in ancillary services.|
 
 <img src = "progress/Images/workflow/pcm_integration.png" width="1200" alt="Results" /> 

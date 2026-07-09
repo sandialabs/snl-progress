@@ -1,6 +1,7 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox
-from PySide6.QtCore import QTimer
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QFileDialog, QDialog, QPushButton
+from PySide6.QtCore import QDate, QTimer, Qt
 from progress.ui.forms.simulation.ui_simulation import Ui_SimulationPage
+from progress.ui.forms.simulation.ui_pcm_config import Ui_PCMConfigPage
 from progress.ui.utils.worker import ProcessingThread
 from progress.paths import get_path, get_results_path, load_config
 from progress.example_simulation import MCS
@@ -10,9 +11,91 @@ from pathlib import Path
 import datetime
 import logging
 from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import SingleQuotedScalarString
 import yaml
 
 logger = logging.getLogger(__name__)
+
+
+class PCMConfigDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = Ui_PCMConfigPage()
+        self.ui.setupUi(self)
+        self.setWindowTitle("PCM Configuration")
+        self.setModal(True)
+
+        self.ui.btn_save_config.clicked.connect(self._save_config)
+        self.ui.btn_exit_config.clicked.connect(self.close)
+
+        self.ui.btn_browse_venv = QPushButton("Browse...")
+        self.ui.btn_browse_venv.setObjectName("btn_browse_venv")
+        self.ui.horizontalLayout_14.insertWidget(2, self.ui.btn_browse_venv)
+        self.ui.btn_browse_venv.clicked.connect(self._browse_venv)
+
+        self._load_from_yaml()
+
+    def _browse_venv(self):
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Select PCM Python Executable",
+            self.ui.lineEdit_pcm_venv.text() or str(Path.home()),
+            "Python (python*);;All Files (*)")
+        if path:
+            self.ui.lineEdit_pcm_venv.setText(path)
+
+    def _load_from_yaml(self):
+        config = load_config()
+        pcm = config.get("pcm_parameters", {})
+        self.ui.lineEdit_pcm_venv.setText(pcm.get("pcm_venv_path", ""))
+
+        try:
+            date_parts = pcm.get("start_date", "01/01/2020").split("/")
+            d = QDate(int(date_parts[2]), int(date_parts[0]), int(date_parts[1]))
+            self.ui.dateEdit_start_date.setDate(d)
+        except (ValueError, IndexError):
+            pass
+
+        solver = pcm.get("solver", "")
+        idx = self.ui.comboBox_solver.findText(solver, Qt.MatchFlag.MatchFixedString)
+        if idx >= 0:
+            self.ui.comboBox_solver.setCurrentIndex(idx)
+
+        self.ui.doubleSpin_mini_gap.setValue(float(pcm.get("mipgap", 0.05)))
+
+        solve_pricing = pcm.get("solve_pricing_problem", False)
+        self.ui.radio_solve_pricing_true.setChecked(bool(solve_pricing))
+        self.ui.radio_solve_pricing_false.setChecked(not bool(solve_pricing))
+
+        storage_as = pcm.get("storage_AS_mode", True)
+        self.ui.label_storage_mode_true.setChecked(bool(storage_as))
+        self.ui.label_storage_mode_false.setChecked(not bool(storage_as))
+
+    def _save_config(self):
+        pcm_params = {
+            "pcm_venv_path": self.ui.lineEdit_pcm_venv.text().strip(),
+            "start_date": self.ui.dateEdit_start_date.date().toString("MM/dd/yyyy"),
+            "solver": SingleQuotedScalarString(self.ui.comboBox_solver.currentText().strip()),
+            "mipgap": self.ui.doubleSpin_mini_gap.value(),
+            "solve_pricing_problem": self.ui.radio_solve_pricing_true.isChecked(),
+            "storage_AS_mode": self.ui.label_storage_mode_true.isChecked(),
+        }
+
+        yaml_path = get_path() / "input.yaml"
+        yaml = YAML()
+        yaml.preserve_quotes = True
+        with open(yaml_path) as f:
+            data = yaml.load(f)
+        pcm = data.get("pcm_parameters")
+        if isinstance(pcm, dict):
+            pcm.clear()
+            pcm.update(pcm_params)
+        else:
+            data["pcm_parameters"] = pcm_params
+        with open(yaml_path, "w") as f:
+            yaml.dump(data, f)
+
+        QMessageBox.information(self, "PCM Config", "PCM configuration saved!")
+
 
 @dataclass
 class MCSConfig:
@@ -67,8 +150,10 @@ class SimulationPage(QWidget):
         super().__init__()
         self.ui = Ui_SimulationPage()
         self.ui.setupUi(self)
+        self.setMaximumHeight(16777215)
         self.config = MCSConfig.from_yaml()
         self._sim_stopped = False
+        self.setMinimumHeight(0)
 
         # ==== connections ====
         self.ui.radio_degradation_eval_true.clicked.connect(self._update_frame_visibility)
@@ -77,7 +162,12 @@ class SimulationPage(QWidget):
         self.ui.btn_stop_simulation.clicked.connect(self._stop_simulation)
         self.ui.btn_save_config.clicked.connect(self._on_save_config)
 
+        self.ui.radio_use_pcm_true.clicked.connect(self._update_pcm_button_state)
+        self.ui.radio_use_pcm_false.clicked.connect(self._update_pcm_button_state)
+        self.ui.btn_pcm_config.clicked.connect(self._open_pcm_config_dialog)
+
         self.ui.btn_stop_simulation.setEnabled(False)
+        self.ui.btn_pcm_config.setEnabled(False)
         self._populate_gui()
         self._update_frame_visibility()
 
@@ -91,6 +181,14 @@ class SimulationPage(QWidget):
         self.ui.lineEdit_degradation_int.setText(str(self.config.degradation_interval))
         self.ui.radio_detailed_model_true.setChecked(self.config.detailed_thermal_model)
         self.ui.radio_detailed_model_false.setChecked(not self.config.detailed_thermal_model)
+        self.ui.radio_dc_load_true.setChecked(self.config.DC_load)
+        self.ui.radio_dc_load_false.setChecked(not self.config.DC_load)
+
+        config_data = load_config()
+        use_pcm = config_data.get("use_pcm", False)
+        self.ui.radio_use_pcm_true.setChecked(bool(use_pcm))
+        self.ui.radio_use_pcm_false.setChecked(not bool(use_pcm))
+        self._update_pcm_button_state()
 
     def _check_eval_degradation_selection(self) -> bool:
         return self.ui.radio_degradation_eval_true.isChecked()
@@ -102,6 +200,13 @@ class SimulationPage(QWidget):
         is_visible = self._check_eval_degradation_selection()
         self.ui.frame_degradation_int.setVisible(is_visible)
         self.ui.frame_thermal_model.setVisible(is_visible)
+
+    def _update_pcm_button_state(self):
+        self.ui.btn_pcm_config.setEnabled(self.ui.radio_use_pcm_true.isChecked())
+
+    def _open_pcm_config_dialog(self):
+        dialog = PCMConfigDialog(self)
+        dialog.exec()
 
     def _display_sim_results(self):
         if self._save_sim_configs() is None:
@@ -155,10 +260,17 @@ class SimulationPage(QWidget):
             evaluate_degradation=self._check_eval_degradation_selection(),
             degradation_interval=degradation_interval,
             detailed_thermal_model=self._check_thermal_model_selection(),
-            DC_load=False,
+            DC_load=self.ui.radio_dc_load_true.isChecked(),
         )
         self.config = config
         config.save()
+        yaml = YAML()
+        yaml.preserve_quotes = True
+        with open(get_path() / "input.yaml") as f:
+            data = yaml.load(f)
+        data["use_pcm"] = self.ui.radio_use_pcm_true.isChecked()
+        with open(get_path() / "input.yaml", "w") as f:
+            yaml.dump(data, f)
         return config
 
     def _on_save_config(self):

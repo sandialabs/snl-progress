@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget
+from PySide6.QtWidgets import QWidget, QApplication
 from PySide6.QtCore import Qt, Signal, QRectF
 from PySide6.QtGui import QPixmap, QPainter, QIcon
 from PySide6.QtSvg import QSvgRenderer
@@ -19,6 +19,7 @@ class LandingPage(QWidget):
         self.ui.label_progress_logo.setAlignment(Qt.AlignCenter)
 
         self._update_logo()
+        self._update_footer_logos()
 
         self.ui.btn_getting_started.clicked.connect(self._on_getting_started_clicked)
         self.ui.btn_documentation.clicked.connect(self._on_documentation_clicked)
@@ -45,6 +46,25 @@ class LandingPage(QWidget):
         painter.end()
 
         label.setPixmap(pixmap)
+
+    def _is_dark_mode(self) -> bool:
+        try:
+            scheme = QApplication.styleHints().colorScheme()
+            if scheme == Qt.ColorScheme.Dark:
+                return True
+        except AttributeError:
+            pass
+        bg = QApplication.palette().window().color()
+        return bg.lightness() < 128
+
+    def _update_footer_logos(self):
+        dark = self._is_dark_mode()
+        if dark:
+            self.ui.label_doe_logo.setPixmap(QPixmap(":/logos/Images/logos/DOE_inverted.png"))
+            self.ui.label_snl_logo.setPixmap(QPixmap(":/logos/Images/logos/SNL_logo_inverted.png"))
+        else:
+            self.ui.label_doe_logo.setPixmap(QPixmap(":/logos/Images/logos/DOE_transparent.png"))
+            self.ui.label_snl_logo.setPixmap(QPixmap(":/logos/Images/logos/SNL_logo.png"))
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

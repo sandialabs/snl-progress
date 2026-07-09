@@ -211,6 +211,34 @@ class Ui_FilePreviewPage(object):
         self.verticalLayout_csv.addWidget(self.tableWidget_csv)
 
         self.stackedWidget_preview.addWidget(self.page_csv)
+        self.page_xlsx = QWidget()
+        self.page_xlsx.setObjectName(u"page_xlsx")
+        self.verticalLayout = QVBoxLayout(self.page_xlsx)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.label_xlsx_title = QLabel(self.page_xlsx)
+        self.label_xlsx_title.setObjectName(u"label_xlsx_title")
+        font4 = QFont()
+        font4.setBold(True)
+        self.label_xlsx_title.setFont(font4)
+
+        self.verticalLayout.addWidget(self.label_xlsx_title)
+
+        self.tableWidget_xslx = QTableWidget(self.page_xlsx)
+        self.tableWidget_xslx.setObjectName(u"tableWidget_xslx")
+
+        self.verticalLayout.addWidget(self.tableWidget_xslx)
+
+        self.stackedWidget_preview.addWidget(self.page_xlsx)
+        self.page_html = QWidget()
+        self.page_html.setObjectName(u"page_html")
+        self.verticalLayout_2 = QVBoxLayout(self.page_html)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.label_html_title = QLabel(self.page_html)
+        self.label_html_title.setObjectName(u"label_html_title")
+
+        self.verticalLayout_2.addWidget(self.label_html_title)
+
+        self.stackedWidget_preview.addWidget(self.page_html)
 
         self.verticalLayout_preview.addWidget(self.stackedWidget_preview)
 
@@ -223,7 +251,7 @@ class Ui_FilePreviewPage(object):
 
         self.retranslateUi(FilePreviewPage)
 
-        self.stackedWidget_preview.setCurrentIndex(1)
+        self.stackedWidget_preview.setCurrentIndex(0)
 
 
         QMetaObject.connectSlotsByName(FilePreviewPage)
@@ -242,5 +270,7 @@ class Ui_FilePreviewPage(object):
         self.label_image_title.setText(QCoreApplication.translate("FilePreviewPage", u"PNG Preview", None))
         self.label_image_preview.setText(QCoreApplication.translate("FilePreviewPage", u"Image preview goes here", None))
         self.label_csv_title.setText(QCoreApplication.translate("FilePreviewPage", u"CSV Preview", None))
+        self.label_xlsx_title.setText(QCoreApplication.translate("FilePreviewPage", u"XLSX Preview", None))
+        self.label_html_title.setText(QCoreApplication.translate("FilePreviewPage", u"HTML Preview", None))
     # retranslateUi
 

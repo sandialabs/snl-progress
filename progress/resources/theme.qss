@@ -30,6 +30,10 @@ QMainWindow {
     background-color: #f8fafc;
 }
 
+QDialog {
+    background-color: #f8fafc;
+}
+
 QWidget {
     font-family: -apple-system, ".AppleSystemUIFont", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
@@ -48,6 +52,7 @@ QFrame#sidebar_frame {
    Sidebar Navigation Buttons
    ------------------------------------------------------- */
 QPushButton#btn_home,
+QPushButton#btn_log,
 QPushButton#btn_solar,
 QPushButton#btn_wind,
 QPushButton#btn_simulation,
@@ -66,6 +71,7 @@ QPushButton#btn_about {
 }
 
 QPushButton#btn_home:hover,
+QPushButton#btn_log:hover,
 QPushButton#btn_solar:hover,
 QPushButton#btn_wind:hover,
 QPushButton#btn_simulation:hover,
@@ -77,6 +83,7 @@ QPushButton#btn_about:hover {
 }
 
 QPushButton#btn_home:pressed,
+QPushButton#btn_log:pressed,
 QPushButton#btn_solar:pressed,
 QPushButton#btn_wind:pressed,
 QPushButton#btn_simulation:pressed,
@@ -87,6 +94,7 @@ QPushButton#btn_about:pressed {
 }
 
 QPushButton#btn_home:disabled,
+QPushButton#btn_log:disabled,
 QPushButton#btn_solar:disabled,
 QPushButton#btn_wind:disabled,
 QPushButton#btn_simulation:disabled,
@@ -253,6 +261,33 @@ QPushButton#btn_documentation:disabled {
 }
 
 /* -------------------------------------------------------
+   PCM Config button (outline style)
+   ------------------------------------------------------- */
+QPushButton#btn_pcm_config {
+    background-color: transparent;
+    color: #387a3d;
+    border: 1px solid #387a3d;
+}
+
+QPushButton#btn_pcm_config:hover {
+    background-color: #e8f5e9;
+    border-color: #2d6a30;
+    color: #2d6a30;
+}
+
+QPushButton#btn_pcm_config:pressed {
+    background-color: #c8e6c9;
+    border-color: #235827;
+    color: #235827;
+}
+
+QPushButton#btn_pcm_config:disabled {
+    background-color: transparent;
+    border-color: #e2e8f0;
+    color: #cbd5e1;
+}
+
+/* -------------------------------------------------------
    Danger button
    ------------------------------------------------------- */
 QPushButton#btn_validate_own_data {
@@ -270,11 +305,27 @@ QPushButton#btn_validate_own_data:hover {
 /* -------------------------------------------------------
    Flat / Icon buttons (info helpers)
    ------------------------------------------------------- */
+QPushButton#btn_info_dc_load,
+QPushButton#btn_info_degradation_eval,
+QPushButton#btn_info_degradation_int,
+QPushButton#btn_info_detailed_model,
+QPushButton#btn_info_hours,
+QPushButton#btn_info_load_factor,
+QPushButton#btn_info_mipgap,
+QPushButton#btn_info_model_type,
+QPushButton#btn_info_num_cluster,
+QPushButton#btn_info_opt_period,
+QPushButton#btn_info_pricing,
+QPushButton#btn_info_samples,
+QPushButton#btn_info_skip,
+QPushButton#btn_info_solver,
+QPushButton#btn_info_start_date,
+QPushButton#btn_info_storage_mode,
+QPushButton#btn_info_use_pcm,
+QPushButton#btn_info_venv,
 QPushButton#btn_start_info,
 QPushButton#btn_end_info,
-QPushButton#btn_info_num_cluster,
 QPushButton#btn_info_final_num_cluster,
-QPushButton#btn_info_skip,
 QPushButton#btn_process_info {
     background-color: transparent;
     border: none;
@@ -286,21 +337,53 @@ QPushButton#btn_process_info {
     max-height: 40px;
 }
 
+QPushButton#btn_info_dc_load:hover,
+QPushButton#btn_info_degradation_eval:hover,
+QPushButton#btn_info_degradation_int:hover,
+QPushButton#btn_info_detailed_model:hover,
+QPushButton#btn_info_hours:hover,
+QPushButton#btn_info_load_factor:hover,
+QPushButton#btn_info_mipgap:hover,
+QPushButton#btn_info_model_type:hover,
+QPushButton#btn_info_num_cluster:hover,
+QPushButton#btn_info_opt_period:hover,
+QPushButton#btn_info_pricing:hover,
+QPushButton#btn_info_samples:hover,
+QPushButton#btn_info_skip:hover,
+QPushButton#btn_info_solver:hover,
+QPushButton#btn_info_start_date:hover,
+QPushButton#btn_info_storage_mode:hover,
+QPushButton#btn_info_use_pcm:hover,
+QPushButton#btn_info_venv:hover,
 QPushButton#btn_start_info:hover,
 QPushButton#btn_end_info:hover,
-QPushButton#btn_info_num_cluster:hover,
 QPushButton#btn_info_final_num_cluster:hover,
-QPushButton#btn_info_skip:hover,
 QPushButton#btn_process_info:hover {
     background-color: #e2e8f0;
     border-radius: 4px;
 }
 
+QPushButton#btn_info_dc_load:pressed,
+QPushButton#btn_info_degradation_eval:pressed,
+QPushButton#btn_info_degradation_int:pressed,
+QPushButton#btn_info_detailed_model:pressed,
+QPushButton#btn_info_hours:pressed,
+QPushButton#btn_info_load_factor:pressed,
+QPushButton#btn_info_mipgap:pressed,
+QPushButton#btn_info_model_type:pressed,
+QPushButton#btn_info_num_cluster:pressed,
+QPushButton#btn_info_opt_period:pressed,
+QPushButton#btn_info_pricing:pressed,
+QPushButton#btn_info_samples:pressed,
+QPushButton#btn_info_skip:pressed,
+QPushButton#btn_info_solver:pressed,
+QPushButton#btn_info_start_date:pressed,
+QPushButton#btn_info_storage_mode:pressed,
+QPushButton#btn_info_use_pcm:pressed,
+QPushButton#btn_info_venv:pressed,
 QPushButton#btn_start_info:pressed,
 QPushButton#btn_end_info:pressed,
-QPushButton#btn_info_num_cluster:pressed,
 QPushButton#btn_info_final_num_cluster:pressed,
-QPushButton#btn_info_skip:pressed,
 QPushButton#btn_process_info:pressed {
     background-color: #cbd5e1;
 }
@@ -951,6 +1034,7 @@ QLabel#label_image_preview {
    Filled Action Buttons — Save / Run / Download
    ======================================================= */
 QPushButton#btn_save_config,
+QPushButton#btn_exit_config,
 QPushButton#btn_run_simulation,
 QPushButton#btn_stop_simulation,
 QPushButton#btn_download_solar,
@@ -962,7 +1046,8 @@ QPushButton#btn_gen_cluster,
 QPushButton#btn_skip,
 QPushButton#btn_process_wind,
 QPushButton#btn_clear_search,
-QPushButton#btn_download_wind {
+QPushButton#btn_download_wind,
+QPushButton#btn_browse_venv {
     background-color: #387a3d;
     color: #387a3d;
     border: 1px solid #387a3d;
@@ -974,6 +1059,7 @@ QPushButton#btn_download_wind {
 }
 
 QPushButton#btn_save_config:hover,
+QPushButton#btn_exit_config:hover,
 QPushButton#btn_run_simulation:hover,
 QPushButton#btn_stop_simulation,
 QPushButton#btn_download_solar:hover,
@@ -985,12 +1071,14 @@ QPushButton#btn_gen_cluster:hover,
 QPushButton#btn_skip:hover,
 QPushButton#btn_process_wind:hover,
 QPushButton#btn_clear_search:hover,
-QPushButton#btn_download_wind:hover {
+QPushButton#btn_download_wind:hover,
+QPushButton#btn_browse_venv:hover {
     background-color: #2d6a30;
     border-color: #2d6a30;
 }
 
 QPushButton#btn_save_config:pressed,
+QPushButton#btn_exit_config:pressed,
 QPushButton#btn_run_simulation:pressed,
 QPushButton#btn_stop_simulation,
 QPushButton#btn_download_solar:pressed,
@@ -1002,12 +1090,14 @@ QPushButton#btn_gen_cluster:pressed,
 QPushButton#btn_skip:pressed,
 QPushButton#btn_process_wind:pressed,
 QPushButton#btn_clear_search:pressed,
-QPushButton#btn_download_wind:pressed {
+QPushButton#btn_download_wind:pressed,
+QPushButton#btn_browse_venv:pressed {
     background-color: #235827;
     border-color: #235827;
 }
 
 QPushButton#btn_save_config:disabled,
+QPushButton#btn_exit_config:disabled,
 QPushButton#btn_run_simulation:disabled,
 QPushButton#btn_download_solar:disabled,
 QPushButton#btn_clusters_page:disabled,
@@ -1018,7 +1108,8 @@ QPushButton#btn_gen_cluster:disabled,
 QPushButton#btn_skip:disabled,
 QPushButton#btn_process_wind:disabled,
 QPushButton#btn_clear_search:disabled,
-QPushButton#btn_download_wind:disabled {
+QPushButton#btn_download_wind:disabled,
+QPushButton#btn_browse_venv:disabled {
     background-color: #cbd5e1;
     border-color: #cbd5e1;
     color: #94a3b8;

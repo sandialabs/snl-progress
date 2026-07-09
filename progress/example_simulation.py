@@ -209,6 +209,17 @@ def MCS(input_file, results_subdir, stop_event=None) :
     if sim_hours == 8760:
         raut.OutageHeatMap(LOL_track, 1, samples, results_subdir)
 
+    # plot convergence and outage heatmap
+    rapt = RAPlotTools(config["data"], results_subdir, network_model)
+    if samples > 1 and sum(indices_rec["mLOLP_rec"]) > 0:
+        rapt.PlotLOLP(indices_rec["mLOLP_rec"], samples, 1)
+        rapt.PlotCOV(indices_rec["COV_rec"], samples, 1)
+    if sim_hours == 8760:
+        rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
+
+    # get outage statistics for affected buses
+    bus_statistics(results_subdir)
+
     # save config file alongside results for reproducibility
     config_out = Path(results_subdir) / "config.txt"
     with open(input_file) as f_in, open(config_out, "w") as f_out:
@@ -267,19 +278,3 @@ if __name__ == "__main__":
         
     # run MCS
     indices, sim_hours, samples, mLOLP_rec, COV_rec = MCS(config_file, results_subdir)
-    
-    # open configuration file
-    with open(config_file, 'r') as f:
-        config = yaml.safe_load(f)
-    network_model = config['model']
-    
-    # plot indices for all samples after MCS is complete
-    rapt = RAPlotTools(config["data"], results_subdir, network_model)
-    if samples > 1 and sum(mLOLP_rec) > 0:
-        rapt.PlotLOLP(mLOLP_rec, samples, 1)
-        rapt.PlotCOV(COV_rec, samples, 1)
-    if sim_hours == 8760:
-        rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
-
-    # get outage statistics for affected buses
-    # bus_statistics(results_subdir)
