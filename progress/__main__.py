@@ -1,6 +1,6 @@
-from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox
+from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, QSizePolicy, QPushButton
 from PySide6.QtCore import QFile, QTextStream, Qt, QSize, QTimer
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, QIcon
 from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
 from progress.ui.pages.landing_page import LandingPage
 from progress.ui.pages.solar_page import SolarPage
@@ -43,6 +43,12 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.label_version.setText("v2.0.0")
+        self.ui.frame_content.setMaximumHeight(16777215)
+        self.ui.stackedWidget.setSizePolicy(
+            self.ui.stackedWidget.sizePolicy().horizontalPolicy(),
+            QSizePolicy.Ignored,
+        )
         logger.info("Main window initialized")
         # Install app logger once the UI exists.
         # After this, logging and print output go to self.ui.log_window.
@@ -125,8 +131,14 @@ class MainWindow(QMainWindow):
             lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_about)
         )
 
-        # load theme
-        self.load_stylesheet(str(BASE_DIR / "resources" / "theme.qss"))
+        # Add Log Viewer button to sidebar
+        self.ui.btn_log = QPushButton("Log Viewer", self.ui.frame_ribbon)
+        self.ui.btn_log.setObjectName("btn_log")
+        idx = self.ui.sidebarLayout.indexOf(self.ui.btn_about)
+        self.ui.sidebarLayout.insertWidget(idx, self.ui.btn_log)
+
+        # load theme (auto-detect system dark mode)
+        self.load_stylesheet(self._detect_theme())
 
     def _mount_page(self, container, page_widget) -> None:
         layout = container.layout()
@@ -271,6 +283,19 @@ class MainWindow(QMainWindow):
         except Exception:
             logger.exception("Error loading system CSV data")
 
+    @staticmethod
+    def _detect_theme() -> str:
+        try:
+            scheme = QApplication.styleHints().colorScheme()
+            if scheme == Qt.ColorScheme.Dark:
+                return str(BASE_DIR / "resources" / "theme_dark.qss")
+        except AttributeError:
+            pass
+        bg = QApplication.palette().window().color()
+        if bg.lightness() < 128:
+            return str(BASE_DIR / "resources" / "theme_dark.qss")
+        return str(BASE_DIR / "resources" / "theme.qss")
+
     def load_stylesheet(self, filename):
         """Load a QSS stylesheet from a file."""
         file = QFile(filename)
@@ -286,6 +311,16 @@ class AppController:
         # Storing them as attributes keeps them alive in memory
         self.log_window = LogWindow()
         self.main_window = MainWindow()
+        self.main_window.ui.btn_log.clicked.connect(self._toggle_log_window)
+
+    def _toggle_log_window(self):
+        if self.log_window.isVisible():
+            self.log_window.hide()
+        else:
+            self.log_window.show()
+            self.log_window.raise_()
+            self.log_window.activateWindow()
+
     def show_all(self):
         # Enable log window capture so all subsequent output goes to the GUI log.
         # Startup output (imports, init) still printed to terminal.
@@ -326,13 +361,13 @@ class AppController:
         self.main_window.show()
         self.log_window.show()
 
-
 def main():
     """
     The main entry point for the application.
     Initializes the QApplication, creates and shows the main window, and starts the event loop.
     """
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon(":/icons/Images/icons/progress_icon_down.png"))
     window = AppController()
     update_data_path()
     window.show_all()

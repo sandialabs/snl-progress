@@ -155,7 +155,7 @@
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>1000</height>
+        <height>16777215</height>
        </size>
       </property>
       <layout class="QVBoxLayout" name="contentLayout" stretch="0,1,0">
