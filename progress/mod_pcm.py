@@ -161,7 +161,9 @@ class PCM:
                                                         "values": branch_status_bool}
 
         for load_element_name, load_element_details in pcm_data["elements"]["load"].items():
-            load_element_details["p_load"]["values"] = [p * self.load_factor for p in load_element_details["p_load"]["values"]]
+            bus_name = pcm_data["elements"]["bus"][load_element_name]["bus_name"]
+            stored_load = self.progress_data["load"][bus_name]
+            load_element_details["p_load"]["values"] = [p * self.load_factor for p in stored_load]
 
         for storage_name, storage_details in pcm_data["elements"]["storage"].items():
             storage_details["ess_smax"]["values"] = self.progress_data["ess_smax_limit"][storage_name]

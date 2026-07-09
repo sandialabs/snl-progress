@@ -67,6 +67,13 @@ class MCS_utils:
             if self.time_periods % 24 != 0:
                 raise ValueError("For multi-period optimization, the optimization_period should be a multiple of 24.")
             self.optimization_period = "multi_period"
+
+        self.evaluate_degradation = config.get('evaluate_degradation', False)
+        self.detailed_thermal_model = config.get('detailed_thermal_model', False)
+        self.degradation_interval = config.get('degradation_interval', 168)
+
+        self.DC_load_present = config.get('DC_load', False)
+
         self.enable_pcm = config["use_pcm"]
         if self.enable_pcm and self.network_model != "Nodal":
             raise ValueError("Currently, PCM model only supports Nodal network model.")
@@ -77,12 +84,11 @@ class MCS_utils:
             self.sim_hours = config['sim_hours'] + int(np.ceil(config["pcm_parameters"]["lookahead_hours"] / 24) * 24 )
         else:
             self.sim_hours = config["sim_hours"]
-        self.evaluate_degradation = config.get('evaluate_degradation', False)
         if self.enable_pcm and self.evaluate_degradation == True:
             raise ValueError("Currently, PCM does not enforce degradation.")
-        self.detailed_thermal_model = config.get('detailed_thermal_model', False)
-        self.degradation_interval = config.get('degradation_interval', 168)
+        
         self.pcm_parameters =  config.get('pcm_parameters', {})
+
 
     def initialize_params(self) :   
         """Load system details and reliability data.
@@ -128,6 +134,8 @@ class MCS_utils:
         self.cap_max, self.cap_min = self.raut.capacities(self.line_params["nl"], self.gen_params["pmax"], self.gen_params["pmin"], self.ess_params["ess_pmax"], self.ess_params["ess_pmin"], self.line_params["cap_trans"]) # calling this function to get values of cap_max and cap_min
         self.mu_tot, self.lambda_tot = self.raut.reltrates(self.gen_params["MTTF_gen"], self.line_params["MTTF_trans"], self.gen_params["MTTR_gen"], self.line_params["MTTR_trans"], self.ess_params["MTTF_ess"], self.ess_params["MTTR_ess"])
         
+        if self.DC_load_present == True and self.network_model == "Zonal":
+            self.raut.DC_zonal(self.system_directory)
         return self.bus_params, self.gen_params, self.line_params, self.load_all_regions, self.ess_params
 
     def process_renewable_data(self):
@@ -243,6 +251,9 @@ class MCS_samples():
             holder_dict["ess_pmax_limit"][ess_name] = []
             holder_dict["ess_smax_limit"][ess_name] = []
             holder_dict["ess_smin_limit"][ess_name] = []
+        holder_dict["load"] = {}
+        for bus_name in self.bus_params["busname"].values:
+            holder_dict["load"][bus_name] = []
 
     def initialize_sample_data(self):
         """Initialize arrays and lists used to record sample-level hourly results."""
@@ -287,6 +298,11 @@ class MCS_samples():
                 self.c_rate_holder[ess_name] = np.zeros(self.sim_hours)
                 self.temp_holder[ess_name] = np.zeros(self.sim_hours)
                 self.SOC_old_deg[ess_name] = 0.5
+        # Read any data-center load
+        if self.DC_load_present:
+            self.load_plus_dc = self.raut.data_center_load(self.load_all_regions, self.system_directory, self.network_model)
+        else:
+            self.load_plus_dc = self.load_all_regions
 
     def run_pcm(self, sample_subdir, holder_dict, sample_no, var_s, LOL_track):
         """Execute PCM workflow and update curtailment tracking.
@@ -421,7 +437,7 @@ class MCS_hourly(MCS_samples):
             self.renewable_rec["solar_rec"][:, hour] = s_zones_t[:, hour%24]
 
         # recalculate net load (for distribution side resources, optional)
-        part_netload = self.load_factor*self.load_all_regions
+        part_netload = self.load_factor*self.load_plus_dc.values
 
         if self.solar_dir_exists and self.wind_dir_exists:
             net_load =  part_netload[hour] - w_zones - s_zones[hour%24]
@@ -539,7 +555,9 @@ class MCS_hourly(MCS_samples):
                 for i in range(self.solar_params["s_sites"]):
                     site_name = self.solar_params["farm_name"].loc[i]
                     holder_dict["solar_limit"][site_name].extend(list(s_gen_sites[i, :]))
-
+        for bus_name in self.bus_params["busname"].values:
+            holder_dict["load"][bus_name].append(self.load_plus_dc.loc[hour, bus_name])
+            
     def degradation_evaluation(self, n, ess_duration_temp, SOC_old):
         """Evaluate battery degradation at configured degradation intervals.
 
