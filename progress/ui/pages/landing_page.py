@@ -37,6 +37,7 @@ class LandingPage(QWidget):
 
         render_size = label_size
         if render_size.height() < 150:
+            render_size.setHeight(150)
 
         svg_size = self._progress_logo_icon.defaultSize()
         scaled = svg_size.scaled(render_size, Qt.KeepAspectRatio)

@@ -381,21 +381,12 @@ class AppController:
 
         main_w = int(screen_w * 0.65)
         log_w = screen_w - main_w - gap
-        height = int(screen_h * 0.9)
+        height = min(int(screen_h * 0.9), screen_h - 40)
 
-        self.main_window.setGeometry(
-            screen_x,
-            screen_y,
-            main_w,
-            height,
-        )
+        y = screen_y + screen_h - height
 
-        self.log_window.setGeometry(
-            screen_x + main_w + gap,
-            screen_y,
-            log_w,
-            height,
-        )
+        self.main_window.setGeometry(screen_x, y, main_w, height)
+        self.log_window.setGeometry(screen_x + main_w + gap, y, log_w, height)
 
         self.main_window.show()
         self.log_window.show()
