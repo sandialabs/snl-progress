@@ -7,13 +7,14 @@ from progress.ui.forms.landing.ui_landing import Ui_LandingPage
 
 class LandingPage(QWidget):
     getting_started_clicked = Signal()
-    documentation_clicked = Signal()          
+    documentation_clicked = Signal()
 
 
     def __init__(self):
         super().__init__()
         self.ui = Ui_LandingPage()
         self.ui.setupUi(self)
+        self._current_theme = "light"
 
         self._progress_logo_icon = QSvgRenderer(":/logos/Images/logos/progress_bold_s.svg")
         self.ui.label_progress_logo.setAlignment(Qt.AlignCenter)
@@ -23,6 +24,10 @@ class LandingPage(QWidget):
 
         self.ui.btn_getting_started.clicked.connect(self._on_getting_started_clicked)
         self.ui.btn_documentation.clicked.connect(self._on_documentation_clicked)
+
+    def set_theme(self, theme: str):
+        self._current_theme = theme
+        self._update_footer_logos()
 
     def _update_logo(self):
         label = self.ui.label_progress_logo
@@ -47,19 +52,11 @@ class LandingPage(QWidget):
 
         label.setPixmap(pixmap)
 
-    def _is_dark_mode(self) -> bool:
-        try:
-            scheme = QApplication.styleHints().colorScheme()
-            if scheme == Qt.ColorScheme.Dark:
-                return True
-        except AttributeError:
-            pass
-        bg = QApplication.palette().window().color()
-        return bg.lightness() < 128
+    def update_footer_logos(self):
+        self._update_footer_logos()
 
     def _update_footer_logos(self):
-        dark = self._is_dark_mode()
-        if dark:
+        if self._current_theme == "dark":
             self.ui.label_doe_logo.setPixmap(QPixmap(":/logos/Images/logos/DOE_inverted.png"))
             self.ui.label_snl_logo.setPixmap(QPixmap(":/logos/Images/logos/SNL_logo_inverted.png"))
         else:

@@ -34,8 +34,17 @@ QDialog {
     background-color: #1e293b;
 }
 
+QDialog#PCMConfigPage {
+    background-color: #1e293b;
+}
+
 QWidget {
     font-family: -apple-system, ".AppleSystemUIFont", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: #f1f5f9;
+}
+
+QLabel {
+    color: #f1f5f9;
 }
 
 /* =======================================================
@@ -563,7 +572,75 @@ QSpinBox::down-arrow {
 }
 
 /* =======================================================
-   QRadioButton
+    QDateEdit / QDoubleSpinBox
+   ======================================================= */
+QDateEdit,
+QDoubleSpinBox {
+    background-color: #1e293b;
+    border: 1px solid #475569;
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 13px;
+    color: #f1f5f9;
+    min-height: 24px;
+    min-width: 80px;
+}
+
+QDateEdit:hover,
+QDoubleSpinBox:hover {
+    border-color: #64748b;
+}
+
+QDateEdit:focus,
+QDoubleSpinBox:focus {
+    border-color: #4ade80;
+}
+
+QDateEdit::up-button,
+QDoubleSpinBox::up-button,
+QDateEdit::down-button,
+QDoubleSpinBox::down-button {
+    subcontrol-origin: border;
+    width: 24px;
+    border: none;
+    background-color: transparent;
+}
+
+QDateEdit::up-button,
+QDoubleSpinBox::up-button {
+    subcontrol-position: top right;
+    border-left: 1px solid #334155;
+    border-top-right-radius: 6px;
+}
+
+QDateEdit::down-button,
+QDoubleSpinBox::down-button {
+    subcontrol-position: bottom right;
+    border-left: 1px solid #334155;
+    border-bottom-right-radius: 6px;
+}
+
+QDateEdit::up-button:hover,
+QDoubleSpinBox::up-button:hover,
+QDateEdit::down-button:hover,
+QDoubleSpinBox::down-button:hover {
+    background-color: #1a2332;
+}
+
+QDateEdit::up-arrow,
+QDoubleSpinBox::up-arrow {
+    width: 8px;
+    height: 8px;
+}
+
+QDateEdit::down-arrow,
+QDoubleSpinBox::down-arrow {
+    width: 8px;
+    height: 8px;
+}
+
+/* =======================================================
+    QRadioButton
    ======================================================= */
 QRadioButton {
     spacing: 8px;
@@ -855,7 +932,25 @@ QMessageBox QLabel {
 }
 
 QMessageBox QPushButton {
+    background-color: #4ade80;
+    color: #0f172a;
+    border: 1px solid #4ade80;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 500;
     min-width: 80px;
+    min-height: 20px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #22c55e;
+    border-color: #22c55e;
+}
+
+QMessageBox QPushButton:pressed {
+    background-color: #16a34a;
+    border-color: #16a34a;
 }
 
 /* =======================================================

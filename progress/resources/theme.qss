@@ -34,6 +34,10 @@ QDialog {
     background-color: #f8fafc;
 }
 
+QDialog#PCMConfigPage {
+    background-color: #ffffff;
+}
+
 QWidget {
     font-family: -apple-system, ".AppleSystemUIFont", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
