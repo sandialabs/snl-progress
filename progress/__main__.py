@@ -3,6 +3,7 @@ from PySide6.QtCore import QFile, QSettings, QTextStream, Qt, QSize, QTimer
 from PySide6.QtGui import QPixmap, QIcon, QPalette, QColor
 from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
 from progress.ui.pages.landing_page import LandingPage
+from progress.ui import msgbox
 from progress.ui.pages.solar_page import SolarPage
 from progress.ui.pages.wind_page import WindPage
 from progress.ui.pages.simulation_page import SimulationPage
@@ -78,7 +79,7 @@ class MainWindow(QMainWindow):
         # ERA5 API KEY CHECK
         api_key_exists = check_era_api_key_existence()
         if not api_key_exists:
-            QMessageBox.critical(self, "ERA5 API KEY ISSUE", "Please check README instructions to get ERA5 API KEY")
+            msgbox.critical(self, "ERA5 API KEY ISSUE", "Please check README instructions to get ERA5 API KEY")
             logging.error(f"api key DOESNT EXIST: {api_key_exists}")
         else:
             logging.info(f"api key exists: {api_key_exists}")
@@ -179,13 +180,13 @@ class MainWindow(QMainWindow):
             index = self._page_sequence.index(current_page)
             if index < len(self._page_sequence) - 1:
                 if current_page is self.ui.page_solar and not self.solar_page.is_ready_for_simulation():
-                    QMessageBox.information(
+                    msgbox.information(
                         self, "Clusters Required",
                         "Please generate or skip clustering before proceeding to the next step."
                     )
                     return
                 if current_page is self.ui.page_wind and not self.wind_page.is_ready_for_simulation():
-                    QMessageBox.information(
+                    msgbox.information(
                         self, "Wind Data Required",
                         "Please process wind data to generate t_rate.xlsx before proceeding to simulation."
                     )

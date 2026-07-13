@@ -7,6 +7,7 @@ from progress.mod_wind import Wind
 from typing import Optional
 from progress.ui.utils.data_handler import DataHandler
 from progress.utils.data_validator import validate_domain
+from progress.ui import msgbox
 from pathlib import Path
 import datetime
 import pandas as pd
@@ -60,13 +61,13 @@ class WindPage(QWidget):
     # ========= DATA PAGE LOGIC =========
 
     def _display_start_year_info(self, checked: bool = False) -> None:
-         QMessageBox.information(self, "ERA5 Start Year", "Start year for Wind data download.")
+         msgbox.information(self, "ERA5 Start Year", "Start year for Wind data download.")
 
     def _display_end_year_info(self, checked: bool = False) -> None:
-         QMessageBox.information(self, "ERA5 End Year", "End year for Wind data download.")
+         msgbox.information(self, "ERA5 End Year", "End year for Wind data download.")
 
     def _display_wind_process_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Wind Process Help", "Wind speed data (downloaded or user-provided) is utilized to generate transition rate matrix in this step. You can skip this step if you already have the required matrix.")
+        msgbox.information(self, "Wind Process Help", "Wind speed data (downloaded or user-provided) is utilized to generate transition rate matrix in this step. You can skip this step if you already have the required matrix.")
 
     def _on_data_source_changed(self, _index: int) -> None:
         self._update_wind_page_options()
@@ -107,7 +108,7 @@ class WindPage(QWidget):
         except ValueError:
             self.start_year = current_year
             logger.warning("Start year was empty or invalid. Defaulting to current year.")
-            QMessageBox.critical(self, "Value Error", "End year was empty or invalid. Defaulting to current year, please enter a valid year.")
+            msgbox.critical(self, "Value Error", "End year was empty or invalid. Defaulting to current year, please enter a valid year.")
             return 
 
         try:
@@ -115,13 +116,13 @@ class WindPage(QWidget):
             if self.end_year < self.start_year:
                 logger.warning("End year was before start year. Defaulting to current year.")
                 self.end_year = current_year
-                QMessageBox.critical(self, "Value Error", "End year cannot be earlier than start year.")
+                msgbox.critical(self, "Value Error", "End year cannot be earlier than start year.")
                 self.ui.line_edit_end.clear()
                 return 
 
         except ValueError:
             self.end_year = current_year
-            QMessageBox.critical(self, "Value Error", "End year was empty or invalid. Defaulting to current year, please enter a valid year.")
+            msgbox.critical(self, "Value Error", "End year was empty or invalid. Defaulting to current year, please enter a valid year.")
             logger.warning("End year was empty or invalid. Defaulting to current year, please enter a valid year.")
             return
         
@@ -133,9 +134,12 @@ class WindPage(QWidget):
         msg.setWindowTitle("Downloading Wind Data")
         msg.setText(
             "The latest wind data must be downloaded before continuing.\n\n"
-            "We’re downloading the latest wind data. The app may pause briefly and will resume automatically when the download is complete.\n\n"
+            "We're downloading the latest wind data. The app may pause briefly and will resume automatically when the download is complete.\n\n"
         )
         msg.setStandardButtons(QMessageBox.Ok)
+        style = msgbox._current_style()
+        if style:
+            msg.setStyleSheet(style)
         result = msg.exec_()
 
         if result == QMessageBox.Ok:
@@ -166,13 +170,13 @@ class WindPage(QWidget):
         self.ui.btn_download_wind.setText("Download Wind Data")
         self.ui.frame_process_wind.setVisible(True)
         self.ui.frame_date_range.setVisible(True)
-        QMessageBox.critical(self, "Wind Data Download", f"Successfully downloaded data can proceed to process data")
+        msgbox.critical(self, "Wind Data Download", f"Successfully downloaded data can proceed to process data")
 
     def _on_wind_download_error(self, error_msg: str) -> None:
         self._processing = False
         self.ui.btn_download_wind.setEnabled(True)
         self.ui.btn_download_wind.setText("Download Wind Data")
-        QMessageBox.critical(self, "Download Error", f"Wind Data download failed:\n{error_msg}")
+        msgbox.critical(self, "Download Error", f"Wind Data download failed:\n{error_msg}")
 
     def _handle_process_wind(self, checked=False) -> None:
         self.ui.btn_process_wind.setEnabled(False)
@@ -185,6 +189,9 @@ class WindPage(QWidget):
             "The wind data must be processed before continuing.\n\n"
         )
         msg.setStandardButtons(QMessageBox.Ok)
+        style = msgbox._current_style()
+        if style:
+            msg.setStyleSheet(style)
         result = msg.exec_()
 
         if result == QMessageBox.Ok:
@@ -224,13 +231,13 @@ class WindPage(QWidget):
         self._t_rate_ready = True
         self.wind_ready.emit()
         logger.info("Successfully processed data can proceed to simulation")
-        QMessageBox.critical(self, "Wind Data Download", f"Successfully processed data can proceed to simulation")
+        msgbox.critical(self, "Wind Data Download", f"Successfully processed data can proceed to simulation")
 
     def _on_wind_process_error(self, error_msg: str) -> None:
         self._processing = False
         self.ui.btn_process_wind.setEnabled(True)
         self.ui.btn_process_wind.setText("Process Wind Data")
-        QMessageBox.critical(self, "Process Error", f"Wind Data process failed:\n{error_msg}")
+        msgbox.critical(self, "Process Error", f"Wind Data process failed:\n{error_msg}")
 
     def _validate_user_data(self, checked: bool = False) -> None:
         config = load_config()
@@ -241,14 +248,14 @@ class WindPage(QWidget):
             msg = "Wind data validation failed:\n\n" + "\n".join(f"• {e}" for e in errors)
             if warnings:
                 msg += "\n\nWarnings:\n" + "\n".join(f"• {w}" for w in warnings)
-            QMessageBox.critical(self, "Wind Data Validation", msg)
+            msgbox.critical(self, "Wind Data Validation", msg)
             return
 
         if warnings:
             msg = "Wind data is valid with warnings:\n\n" + "\n".join(f"• {w}" for w in warnings)
-            QMessageBox.warning(self, "Wind Data Validation", msg)
+            msgbox.warning(self, "Wind Data Validation", msg)
         else:
-            QMessageBox.information(self, "Wind Data Validation", "Wind data is valid.")
+            msgbox.information(self, "Wind Data Validation", "Wind data is valid.")
 
         self.ui.frame_process_wind.setVisible(True)
     
@@ -284,10 +291,10 @@ class WindPage(QWidget):
         self.data_handler.tr_mats = np.array([tr_mats[sheet].to_numpy() for sheet in tr_mats])
         self._t_rate_ready = True
         self.wind_ready.emit()
-        QMessageBox.critical(self, "Wind Data Download", f"Successfully processed data can proceed to simulation")
+        msgbox.critical(self, "Wind Data Download", f"Successfully processed data can proceed to simulation")
 
     def _on_wind_process_user_data_error(self, error_msg: str) -> None:
         self._processing = False
         self.ui.btn_process_wind.setEnabled(True)
         self.ui.btn_process_wind.setText("Process Wind Data")
-        QMessageBox.critical(self, "Process Error", f"Wind Data process failed:\n{error_msg}")
+        msgbox.critical(self, "Process Error", f"Wind Data process failed:\n{error_msg}")

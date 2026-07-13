@@ -859,25 +859,7 @@ QMessageBox QLabel {
 }
 
 QMessageBox QPushButton {
-    background-color: #387a3d;
-    color: #ffffff;
-    border: 1px solid #387a3d;
-    border-radius: 6px;
-    padding: 8px 20px;
-    font-size: 13px;
-    font-weight: 500;
     min-width: 80px;
-    min-height: 20px;
-}
-
-QMessageBox QPushButton:hover {
-    background-color: #2d6a30;
-    border-color: #2d6a30;
-}
-
-QMessageBox QPushButton:pressed {
-    background-color: #235827;
-    border-color: #235827;
 }
 
 /* =======================================================

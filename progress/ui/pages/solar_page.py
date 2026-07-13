@@ -10,6 +10,7 @@ from progress.mod_kmeans import KMeans_Pipeline
 from typing import Optional
 from progress.ui.utils.data_handler import DataHandler
 from progress.utils.data_validator import validate_domain
+from progress.ui import msgbox
 import yaml
 import os
 from pathlib import Path
@@ -97,17 +98,17 @@ class SolarPage(QWidget):
     def _evaluate_clusters(self, checked: bool = False) -> None:
         clust_eval = self.ui.spin_box_num_cluster.value()
         if clust_eval <= 0:
-            QMessageBox.critical(self, "Value Error", "Number of clusters to evaluate must be greater than 0.")
+            msgbox.critical(self, "Value Error", "Number of clusters to evaluate must be greater than 0.")
             return
 
         if not self.data_handler.solar_directory:
-            QMessageBox.critical(self, "No Solar Data", "Please download or provide solar data first.")
+            msgbox.critical(self, "No Solar Data", "Please download or provide solar data first.")
             return
 
         if self._kmeans_pipeline is None:
             site_csv = self.data_handler.solar_directory / 'solar_sites.csv'
             if not site_csv.exists():
-                QMessageBox.critical(self, "File Not Found", f"Cannot find solar site data at:\n{site_csv}")
+                msgbox.critical(self, "File Not Found", f"Cannot find solar site data at:\n{site_csv}")
                 return
             self._kmeans_pipeline = KMeans_Pipeline(self.data_handler.solar_directory, site_csv)
 
@@ -135,20 +136,20 @@ class SolarPage(QWidget):
 
     def _on_eval_error(self, error_msg: str) -> None:
         self._on_thread_finished("btn_eval_cluster", "Evaluate")
-        QMessageBox.critical(self, "Evaluation Error", f"Clustering evaluation failed:\n{error_msg}")
+        msgbox.critical(self, "Evaluation Error", f"Clustering evaluation failed:\n{error_msg}")
 
     def _generate_clusters(self, checked: bool = False) -> None:
         n_clusters = self.ui.spin_box_final_num_cluster.value()
         if n_clusters <= 0:
-            QMessageBox.critical(self, "Value Error", "Number of clusters to generate must be greater than 0.")
+            msgbox.critical(self, "Value Error", "Number of clusters to generate must be greater than 0.")
             return
 
         if self._kmeans_pipeline is None:
-            QMessageBox.critical(self, "No Pipeline", "Please run the evaluation step first.")
+            msgbox.critical(self, "No Pipeline", "Please run the evaluation step first.")
             return
 
         if self._solar is None:
-            QMessageBox.critical(self, "No Solar Instance", "Solar data has not been processed. Please download or provide solar data first.")
+            msgbox.critical(self, "No Solar Instance", "Solar data has not been processed. Please download or provide solar data first.")
             return
 
         self.ui.btn_gen_cluster.setEnabled(False)
@@ -171,11 +172,11 @@ class SolarPage(QWidget):
         self._on_thread_finished("btn_gen_cluster", "Generate")
         self._clusters_ready = True
         self.clusters_generated.emit()
-        QMessageBox.information(self, "Clustering Complete", "Clustering has been completed successfully.")
+        msgbox.information(self, "Clustering Complete", "Clustering has been completed successfully.")
 
     def _on_gen_error(self, error_msg: str) -> None:
         self._on_thread_finished("btn_gen_cluster", "Generate")
-        QMessageBox.critical(self, "Generation Error", f"Clustering generation failed:\n{error_msg}")
+        msgbox.critical(self, "Generation Error", f"Clustering generation failed:\n{error_msg}")
 
     def _on_thread_finished(self, btn_name: str, btn_text: str) -> None:
         btn = getattr(self.ui, btn_name, None)
@@ -196,14 +197,14 @@ class SolarPage(QWidget):
             return False
 
     def _skip_clustering(self, checked: bool = False) -> None:
-        reply = QMessageBox.question(
+        reply = msgbox.question(
             self, "Skip Clustering",
             "Are you sure you want to skip clustering?",
             QMessageBox.Yes | QMessageBox.No,
         )
         if reply == QMessageBox.Yes:
             if not self._check_clusters_exist():
-                QMessageBox.critical(
+                msgbox.critical(
                     self, "Clusters Not Found",
                     "Cannot skip clustering. No pre-existing cluster data was found.\n\n"
                     "Please generate clusters first, or place your existing cluster files "
@@ -240,7 +241,7 @@ class SolarPage(QWidget):
         except ValueError:
             self.start_year = current_year
             logger.warning("Start year was empty or invalid. Defaulting to current year.")
-            QMessageBox.critical(self, "Value Error", "End year was empty or invalid. Defaulting to current year, please enter a valid year.")
+            msgbox.critical(self, "Value Error", "End year was empty or invalid. Defaulting to current year, please enter a valid year.")
             return 
 
         try:
@@ -248,13 +249,13 @@ class SolarPage(QWidget):
             if self.end_year < self.start_year:
                 logger.warning("End year was before start year. Defaulting to current year.")
                 self.end_year = current_year
-                QMessageBox.critical(self, "Value Error", "End year cannot be earlier than start year.")
+                msgbox.critical(self, "Value Error", "End year cannot be earlier than start year.")
                 self.ui.line_edit_end.clear()
                 return 
 
         except ValueError:
             self.end_year = current_year
-            QMessageBox.critical(self, "Value Error", "End year was empty or invalid. Defaulting to current year, please enter a valid year.")
+            msgbox.critical(self, "Value Error", "End year was empty or invalid. Defaulting to current year, please enter a valid year.")
             logger.warning("End year was empty or invalid. Defaulting to current year, please enter a valid year.")
             return
 
@@ -267,9 +268,12 @@ class SolarPage(QWidget):
         msg.setWindowTitle("Downloading Solar Data")
         msg.setText(
             "The latest solar data must be downloaded before continuing.\n\n"
-            "We’re downloading the latest solar data. The app may pause briefly and will resume automatically when the download is complete.\n\n"
+            "We're downloading the latest solar data. The app may pause briefly and will resume automatically when the download is complete.\n\n"
         )
         msg.setStandardButtons(QMessageBox.Ok)
+        style = msgbox._current_style()
+        if style:
+            msg.setStyleSheet(style)
         result = msg.exec_()
 
         if result == QMessageBox.Ok:
@@ -297,13 +301,13 @@ class SolarPage(QWidget):
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self.ui.btn_download_solar.setEnabled(True)
         self.ui.btn_download_solar.setText("Download Solar Data")
-        QMessageBox.information(self, "Solar Data Download", "Successfully downloaded/processed data can proceed to clustering page if needed")
+        msgbox.information(self, "Solar Data Download", "Successfully downloaded/processed data can proceed to clustering page if needed")
 
     def _on_download_error(self, error_msg: str) -> None:
         self._processing = False
         self.ui.btn_download_solar.setEnabled(True)
         self.ui.btn_download_solar.setText("Download Solar Data")
-        QMessageBox.critical(self, "Download Error", f"Solar data download failed:\n{error_msg}")
+        msgbox.critical(self, "Download Error", f"Solar data download failed:\n{error_msg}")
 
     def _update_page_navigation_ui(self, _index: int) -> None:
         current_page = self.ui.solarStackedWidget.currentWidget()
@@ -334,14 +338,14 @@ class SolarPage(QWidget):
             msg = "Solar data validation failed:\n\n" + "\n".join(f"• {e}" for e in errors)
             if warnings:
                 msg += "\n\nWarnings:\n" + "\n".join(f"• {w}" for w in warnings)
-            QMessageBox.critical(self, "Solar Data Validation", msg)
+            msgbox.critical(self, "Solar Data Validation", msg)
             return
 
         if warnings:
             msg = "Solar data is valid with warnings:\n\n" + "\n".join(f"• {w}" for w in warnings)
-            QMessageBox.warning(self, "Solar Data Validation", msg)
+            msgbox.warning(self, "Solar Data Validation", msg)
         else:
-            QMessageBox.information(self, "Solar Data Validation", "Solar data is valid.")
+            msgbox.information(self, "Solar Data Validation", "Solar data is valid.")
 
         self._processing = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
@@ -364,26 +368,26 @@ class SolarPage(QWidget):
         self._processing = False
         self._cluster_page_unlocked = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
-        QMessageBox.information(self, "Solar Processing", "Solar data processing completed.")
+        msgbox.information(self, "Solar Processing", "Solar data processing completed.")
 
     def _on_processing_error(self, error_msg: str) -> None:
         self._processing = False
-        QMessageBox.critical(self, "Solar Processing Error", f"Solar data processing failed:\n{error_msg}")
+        msgbox.critical(self, "Solar Processing Error", f"Solar data processing failed:\n{error_msg}")
 
     def _display_start_year_info(self, checked: bool = False) -> None:
-         QMessageBox.information(self, "ERA5 Start Year", "Start year for Solar data download.")
+         msgbox.information(self, "ERA5 Start Year", "Start year for Solar data download.")
 
     def _display_end_year_info(self, checked: bool = False) -> None:
-         QMessageBox.information(self, "ERA5 End Year", "End year for Solar data download.")
+         msgbox.information(self, "ERA5 End Year", "End year for Solar data download.")
 
     def _display_cluster_help(self):
-        QMessageBox.information(self, "Clusters Help", "This step finds the optimum number of clusters to evaluate.")
+        msgbox.information(self, "Clusters Help", "This step finds the optimum number of clusters to evaluate.")
 
     def _display_cluster_final_help(self):
-        QMessageBox.information(self, "Clusters Final Help", "This step allows you to save the optimum number of clusters to evaluate you observe from the results.")
+        msgbox.information(self, "Clusters Final Help", "This step allows you to save the optimum number of clusters to evaluate you observe from the results.")
 
     def _display_skip_btn_info(self):
-        QMessageBox.information(self, "Solar Help", "You can skip this step if your solar power generation data has previously been clustered.")
+        msgbox.information(self, "Solar Help", "You can skip this step if your solar power generation data has previously been clustered.")
 
     def _update_solar_page_options(self) -> None:
         selection = self.ui.combo_data_source.currentText()

@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QFileDialog, QDialog, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QFileDialog, QDialog, QPushButton
 from PySide6.QtCore import QDate, QSettings, QTimer, Qt
 from progress.ui.forms.simulation.ui_simulation import Ui_SimulationPage
 from progress.ui.forms.simulation.ui_pcm_config import Ui_PCMConfigPage
@@ -6,6 +6,7 @@ from progress.ui.utils.worker import ProcessingThread
 from progress.paths import get_path, get_results_path, load_config
 from progress.example_simulation import MCS
 from progress.ui.utils.data_handler import DataHandler
+from progress.ui import msgbox
 from dataclasses import dataclass
 from pathlib import Path
 import datetime
@@ -57,22 +58,22 @@ class PCMConfigDialog(QDialog):
             self.ui.lineEdit_pcm_venv.setText(path)
 
     def _display_venv_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "PCM Venv Path", "Path to the Python executable of the virtual environment where PCM is installed.")
+        msgbox.information(self, "PCM Venv Path", "Path to the Python executable of the virtual environment where PCM is installed.")
 
     def _display_start_date_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Start Date", "Start date for the PCM simulation in MM/DD/YYYY format. The end date is determined based on the total simulation hours.")
+        msgbox.information(self, "Start Date", "Start date for the PCM simulation in MM/DD/YYYY format. The end date is determined based on the total simulation hours.")
 
     def _display_solver_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Solver", "Solver to use for PCM optimization. Options include 'gurobi', 'cplex', 'cbc', etc.")
+        msgbox.information(self, "Solver", "Solver to use for PCM optimization. Options include 'gurobi', 'cplex', 'cbc', etc.")
 
     def _display_mipgap_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "MIP Gap", "MIP gap tolerance for PCM optimization. Lower values yield more optimal solutions but increase computation time.")
+        msgbox.information(self, "MIP Gap", "MIP gap tolerance for PCM optimization. Lower values yield more optimal solutions but increase computation time.")
 
     def _display_pricing_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Solve Pricing Problem", "Enable or disable solving the pricing problem in PCM. When enabled, generates LMPs, revenues, etc., but increases computation time.")
+        msgbox.information(self, "Solve Pricing Problem", "Enable or disable solving the pricing problem in PCM. When enabled, generates LMPs, revenues, etc., but increases computation time.")
 
     def _display_storage_mode_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Storage AS Mode", "Enable or disable BESS participation in ancillary services within the PCM simulation.")
+        msgbox.information(self, "Storage AS Mode", "Enable or disable BESS participation in ancillary services within the PCM simulation.")
 
     def _load_from_yaml(self):
         config = load_config()
@@ -125,7 +126,7 @@ class PCMConfigDialog(QDialog):
         with open(yaml_path, "w") as f:
             yaml.dump(data, f)
 
-        QMessageBox.information(self, "PCM Config", "PCM configuration saved!")
+        msgbox.information(self, "PCM Config", "PCM configuration saved!")
 
 
 @dataclass
@@ -248,34 +249,34 @@ class SimulationPage(QWidget):
         self.ui.btn_pcm_config.setEnabled(self.ui.radio_use_pcm_true.isChecked())
 
     def _display_samples_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Samples", "Number of Monte Carlo samples to run. Each sample represents one year of simulated operation.")
+        msgbox.information(self, "Samples", "Number of Monte Carlo samples to run. Each sample represents one year of simulated operation.")
 
     def _display_hours_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Simulation Hours", "Total number of simulation hours for each sample. 1 non-leap year = 8760 hours.")
+        msgbox.information(self, "Simulation Hours", "Total number of simulation hours for each sample. 1 non-leap year = 8760 hours.")
 
     def _display_load_factor_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Load Factor", "Multiplier applied to the base load at all buses to increase or decrease overall system demand. Default = 1.")
+        msgbox.information(self, "Load Factor", "Multiplier applied to the base load at all buses to increase or decrease overall system demand. Default = 1.")
 
     def _display_model_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Network Model", "Select the network model fidelity: 'Copper Sheet' (no network constraints, lowest fidelity), 'Zonal' (nodes within a zone aggregated, medium fidelity), or 'Nodal' (full network representation, highest fidelity).")
+        msgbox.information(self, "Network Model", "Select the network model fidelity: 'Copper Sheet' (no network constraints, lowest fidelity), 'Zonal' (nodes within a zone aggregated, medium fidelity), or 'Nodal' (full network representation, highest fidelity).")
 
     def _display_opt_period_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Optimization Period", "Optimization horizon in hours. Use 1 for reliability mode. Use multiples of 24 (e.g., 24, 48) for day-ahead hourly optimization. Recommended: 24.")
+        msgbox.information(self, "Optimization Period", "Optimization horizon in hours. Use 1 for reliability mode. Use multiples of 24 (e.g., 24, 48) for day-ahead hourly optimization. Recommended: 24.")
 
     def _display_dc_load_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "DC Load", "Enable or disable data center load integration. When enabled, random data center load profiles are added to the system load.")
+        msgbox.information(self, "DC Load", "Enable or disable data center load integration. When enabled, random data center load profiles are added to the system load.")
 
     def _display_degradation_eval_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Degradation Evaluation", "Enable or disable battery degradation evaluation during the simulation. When enabled, BESS capacity fade is modeled over time.")
+        msgbox.information(self, "Degradation Evaluation", "Enable or disable battery degradation evaluation during the simulation. When enabled, BESS capacity fade is modeled over time.")
 
     def _display_degradation_int_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Degradation Interval", "Number of hours between successive BESS degradation evaluations. Recommended: 168 hours (1 week) or more.")
+        msgbox.information(self, "Degradation Interval", "Number of hours between successive BESS degradation evaluations. Recommended: 168 hours (1 week) or more.")
 
     def _display_detailed_model_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Detailed Thermal Model", "Use the detailed PyBAMM thermal model for BESS degradation. Enabled: higher accuracy but significantly longer computation. Disabled: constant 25°C temperature assumed.")
+        msgbox.information(self, "Detailed Thermal Model", "Use the detailed PyBAMM thermal model for BESS degradation. Enabled: higher accuracy but significantly longer computation. Disabled: constant 25°C temperature assumed.")
 
     def _display_use_pcm_info(self, checked: bool = False) -> None:
-        QMessageBox.information(self, "Use PCM", "Enable or disable the PCM (Production Cost Model) co-simulation. PCM provides detailed unit commitment and economic dispatch for the simulated hours.")
+        msgbox.information(self, "Use PCM", "Enable or disable the PCM (Production Cost Model) co-simulation. PCM provides detailed unit commitment and economic dispatch for the simulated hours.")
 
     def _open_pcm_config_dialog(self):
         dialog = PCMConfigDialog(self)
@@ -308,9 +309,9 @@ class SimulationPage(QWidget):
             self.ui.btn_run_simulation.setText("Run Simulation")
             self.ui.btn_run_simulation.setEnabled(True)
             if self._sim_stopped:
-                QMessageBox.information(self, "Simulation Stopped", "Simulation was cancelled by user.")
+                msgbox.information(self, "Simulation Stopped", "Simulation was cancelled by user.")
             else:
-                QMessageBox.information(self, "Simulation Complete", "Simulation ran successfully and results saved.")
+                msgbox.information(self, "Simulation Complete", "Simulation ran successfully and results saved.")
 
     def _save_sim_configs(self) -> MCSConfig | None:
         try:
@@ -321,7 +322,7 @@ class SimulationPage(QWidget):
             optimization_period = int(self.ui.lineEdit_opt_period.text().strip())
             degradation_interval = int(self.ui.lineEdit_degradation_int.text().strip())
         except (ValueError, KeyError) as e:
-            QMessageBox.critical(self, "Invalid Input", f"Invalid value: {e}")
+            msgbox.critical(self, "Invalid Input", f"Invalid value: {e}")
             return None
 
         config = MCSConfig(
@@ -348,7 +349,7 @@ class SimulationPage(QWidget):
 
     def _on_save_config(self):
         if self._save_sim_configs() is not None:
-            QMessageBox.information(self, "Simulation Input", "Input Saved!")
+            msgbox.information(self, "Simulation Input", "Input Saved!")
     
 
 
