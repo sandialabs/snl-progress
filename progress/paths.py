@@ -32,6 +32,9 @@ def get_results_path() -> Path:
     results_dir.mkdir(exist_ok=True, parents=True)
     return results_dir
 
+def get_theme_path() -> Path:
+    return get_path() / "resources" 
+
 BASE_DIR = get_path()
 HOME_DIR = get_home_dir()
 DATA_DIR = get_data_path()

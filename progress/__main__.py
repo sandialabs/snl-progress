@@ -1,13 +1,15 @@
 from PySide6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QMessageBox, QSizePolicy, QPushButton
-from PySide6.QtCore import QFile, QTextStream, Qt, QSize, QTimer
-from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtCore import QFile, QSettings, QTextStream, Qt, QSize, QTimer
+from PySide6.QtGui import QPixmap, QIcon, QPalette, QColor
 from progress.ui.forms.main_window.ui_main_window import Ui_MainWindow
 from progress.ui.pages.landing_page import LandingPage
+from progress.ui import msgbox
 from progress.ui.pages.solar_page import SolarPage
 from progress.ui.pages.wind_page import WindPage
 from progress.ui.pages.simulation_page import SimulationPage
 from progress.ui.pages.results_page import ResultsPage
 from progress.ui.pages.about_page import AboutPage
+from progress.ui.pages.settings_page import SettingsPage
 from progress.mod_sysdata import RASystemData
 from progress.ui.utils.data_handler import DataHandler
 from progress.mod_utilities import RAUtilities
@@ -15,6 +17,7 @@ from progress.ui.pages.log_window import LogWindow, get_log_window
 from progress.paths import get_path
 from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR, update_data_path, check_era_api_key_existence
 import progress.resources_rc
+from progress.dpi import is_windows, get_scale_factor
 import logging
 import sys
 import os
@@ -50,6 +53,7 @@ class MainWindow(QMainWindow):
             QSizePolicy.Ignored,
         )
         logger.info("Main window initialized")
+        self._current_theme = "light"
         # Install app logger once the UI exists.
         # After this, logging and print output go to self.ui.log_window.
         # logs from the other pages get captured.
@@ -63,7 +67,7 @@ class MainWindow(QMainWindow):
         self.simulation_page = SimulationPage()
         self.results_page = ResultsPage()
         self.about_page = AboutPage()
-        # self.settings_page = SettingsPage()
+        self.settings_page = SettingsPage(theme_switch_callback=self.switch_theme)
 
         self._page_sequence = [
             self.ui.page_solar,
@@ -75,7 +79,7 @@ class MainWindow(QMainWindow):
         # ERA5 API KEY CHECK
         api_key_exists = check_era_api_key_existence()
         if not api_key_exists:
-            QMessageBox.critical(self, "ERA5 API KEY ISSUE", "Please check README instructions to get ERA5 API KEY")
+            msgbox.critical(self, "ERA5 API KEY ISSUE", "Please check README instructions to get ERA5 API KEY")
             logging.error(f"api key DOESNT EXIST: {api_key_exists}")
         else:
             logging.info(f"api key exists: {api_key_exists}")
@@ -86,7 +90,7 @@ class MainWindow(QMainWindow):
         self._mount_page(self.ui.page_simulation, self.simulation_page)
         self._mount_page(self.ui.page_results, self.results_page)
         self._mount_page(self.ui.page_about, self.about_page)
-        # self._mount_page(self.ui.page_settings, self.settings_page)
+        self._mount_page(self.ui.page_settings, self.settings_page)
 
         # signals and connections
         self.landing_page.getting_started_clicked.connect(self._handle_landing_getting_started)
@@ -127,6 +131,10 @@ class MainWindow(QMainWindow):
             lambda checked=False: self._go_to_page(self.ui.page_results)
         )
 
+        self.ui.btn_settings.clicked.connect(
+            lambda checked=False: self._go_to_page(self.ui.page_settings)
+        )
+
         self.ui.btn_about.clicked.connect(
             lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.page_about)
         )
@@ -137,8 +145,15 @@ class MainWindow(QMainWindow):
         idx = self.ui.sidebarLayout.indexOf(self.ui.btn_about)
         self.ui.sidebarLayout.insertWidget(idx, self.ui.btn_log)
 
-        # load theme (auto-detect system dark mode)
-        self.load_stylesheet(self._detect_theme())
+        # load theme — saved preference takes priority over auto-detect
+        saved_settings = QSettings("QuESt", "snl-progress")
+        saved_theme = saved_settings.value("theme")
+        if saved_theme in ("light", "dark"):
+            self.switch_theme(saved_theme)
+            self.settings_page.sync_from_settings()
+        else:
+            detected = "dark" if "dark" in self._detect_theme() else "light"
+            self.switch_theme(detected)
 
     def _mount_page(self, container, page_widget) -> None:
         layout = container.layout()
@@ -165,13 +180,13 @@ class MainWindow(QMainWindow):
             index = self._page_sequence.index(current_page)
             if index < len(self._page_sequence) - 1:
                 if current_page is self.ui.page_solar and not self.solar_page.is_ready_for_simulation():
-                    QMessageBox.information(
+                    msgbox.information(
                         self, "Clusters Required",
                         "Please generate or skip clustering before proceeding to the next step."
                     )
                     return
                 if current_page is self.ui.page_wind and not self.wind_page.is_ready_for_simulation():
-                    QMessageBox.information(
+                    msgbox.information(
                         self, "Wind Data Required",
                         "Please process wind data to generate t_rate.xlsx before proceeding to simulation."
                     )
@@ -297,12 +312,38 @@ class MainWindow(QMainWindow):
         return str(BASE_DIR / "resources" / "theme.qss")
 
     def load_stylesheet(self, filename):
-        """Load a QSS stylesheet from a file."""
+        """Load a QSS stylesheet from a file onto the entire application."""
         file = QFile(filename)
         if file.open(QFile.ReadOnly):
             stylesheet = file.readAll().data().decode()
-            self.setStyleSheet(stylesheet)
+            QApplication.instance().setStyleSheet(stylesheet)
             file.close()
+
+    def switch_theme(self, theme: str):
+        """Switch between light and dark themes at runtime."""
+        self._current_theme = theme
+        app = QApplication.instance()
+        if theme == "dark":
+            path = str(BASE_DIR / "resources" / "theme_dark.qss")
+            palette = QPalette()
+            palette.setColor(QPalette.Window, QColor(30, 41, 59))
+            palette.setColor(QPalette.WindowText, QColor(241, 245, 249))
+            palette.setColor(QPalette.Base, QColor(15, 23, 42))
+            palette.setColor(QPalette.AlternateBase, QColor(30, 41, 59))
+            palette.setColor(QPalette.Text, QColor(241, 245, 249))
+            palette.setColor(QPalette.Button, QColor(30, 41, 59))
+            palette.setColor(QPalette.ButtonText, QColor(241, 245, 249))
+            palette.setColor(QPalette.BrightText, QColor(255, 0, 0))
+            palette.setColor(QPalette.Highlight, QColor(74, 222, 128))
+            palette.setColor(QPalette.HighlightedText, QColor(15, 23, 42))
+            palette.setColor(QPalette.ToolTipBase, QColor(15, 23, 42))
+            palette.setColor(QPalette.ToolTipText, QColor(241, 245, 249))
+            app.setPalette(palette)
+        else:
+            path = str(BASE_DIR / "resources" / "theme.qss")
+            app.setPalette(app.style().standardPalette())
+        self.load_stylesheet(path)
+        self.landing_page.set_theme(theme)
 
 
 class AppController:
@@ -342,21 +383,12 @@ class AppController:
 
         main_w = int(screen_w * 0.65)
         log_w = screen_w - main_w - gap
-        height = int(screen_h * 0.9)
+        height = min(int(screen_h * 0.9), screen_h - 40)
 
-        self.main_window.setGeometry(
-            screen_x,
-            screen_y,
-            main_w,
-            height,
-        )
+        y = screen_y + screen_h - height
 
-        self.log_window.setGeometry(
-            screen_x + main_w + gap,
-            screen_y,
-            log_w,
-            height,
-        )
+        self.main_window.setGeometry(screen_x, y, main_w, height)
+        self.log_window.setGeometry(screen_x + main_w + gap, y, log_w, height)
 
         self.main_window.show()
         self.log_window.show()
@@ -366,7 +398,20 @@ def main():
     The main entry point for the application.
     Initializes the QApplication, creates and shows the main window, and starts the event loop.
     """
+    if is_windows():
+        QApplication.setHighDpiScaleFactorRoundingPolicy(
+            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
+        )
+
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+
+    font = app.font()
+    if is_windows():
+        font.setFamily("Segoe UI")
+        font.setPointSize(10)
+    app.setFont(font)
+
     app.setWindowIcon(QIcon(":/icons/Images/icons/progress_icon_down.png"))
     window = AppController()
     update_data_path()
