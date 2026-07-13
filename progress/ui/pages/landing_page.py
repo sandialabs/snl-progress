@@ -19,7 +19,7 @@ class LandingPage(QWidget):
 
         self._progress_logo_icon = QSvgRenderer(":/logos/Images/logos/progress_bold_s.svg")
         self.ui.label_progress_logo.setAlignment(Qt.AlignCenter)
-        font_pt = 10 if is_windows() else 33
+        font_pt = 18 if is_windows() else 33
         self.ui.label_progress_desc.setStyleSheet(f"font-size: {font_pt}pt;")
         self.ui.frame_2.setMinimumHeight(150)
 
