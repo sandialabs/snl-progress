@@ -16,6 +16,7 @@ from progress.ui.pages.log_window import LogWindow, get_log_window
 from progress.paths import get_path
 from progress.paths import BASE_DIR, DATA_DIR, SOLAR_DIR, SYSTEM_DIR, WIND_DIR, update_data_path, check_era_api_key_existence
 import progress.resources_rc
+from progress.dpi import is_windows, get_scale_factor
 import logging
 import sys
 import os
@@ -396,8 +397,20 @@ def main():
     The main entry point for the application.
     Initializes the QApplication, creates and shows the main window, and starts the event loop.
     """
+    if is_windows():
+        QApplication.setHighDpiScaleFactorRoundingPolicy(
+            Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
+        )
+
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
+
+    font = app.font()
+    if is_windows():
+        font.setFamily("Segoe UI")
+        font.setPointSize(10)
+    app.setFont(font)
+
     app.setWindowIcon(QIcon(":/icons/Images/icons/progress_icon_down.png"))
     window = AppController()
     update_data_path()

@@ -9,6 +9,7 @@ from PySide6.QtPdfWidgets import QPdfView
 from PySide6.QtCore import Qt, QDir, Signal, QModelIndex, QUrl
 from PySide6.QtWebEngineWidgets import QWebEngineView
 from progress.paths import RESULTS_DIR, HOME_DIR
+from progress.dpi import is_windows
 from pathlib import Path
 import pandas as pd
 import logging
@@ -137,7 +138,8 @@ class ResultsPage(QWidget):
         self.ui.stackedWidget_preview.addWidget(self.page_html)
 
         self.label_html_title = QLabel("Plotly Preview")
-        self.label_html_title.setStyleSheet("font-size: 14px; font-weight: bold; padding: 8px;")
+        font_size = "10pt" if is_windows() else "14px"
+        self.label_html_title.setStyleSheet(f"font-size: {font_size}; font-weight: bold; padding: 8px;")
         self.label_html_title.setVisible(False)
 
         self.html_view = QWebEngineView(self.page_html)

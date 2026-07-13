@@ -4,6 +4,7 @@ from PySide6.QtGui import QPixmap, QPainter, QIcon
 from PySide6.QtSvg import QSvgRenderer
 from PySide6.QtCore import Signal
 from progress.ui.forms.landing.ui_landing import Ui_LandingPage
+from progress.dpi import is_windows
 
 class LandingPage(QWidget):
     getting_started_clicked = Signal()
@@ -18,7 +19,8 @@ class LandingPage(QWidget):
 
         self._progress_logo_icon = QSvgRenderer(":/logos/Images/logos/progress_bold_s.svg")
         self.ui.label_progress_logo.setAlignment(Qt.AlignCenter)
-        self.ui.label_progress_desc.setStyleSheet("font-size: 33pt;")
+        font_pt = 10 if is_windows() else 33
+        self.ui.label_progress_desc.setStyleSheet(f"font-size: {font_pt}pt;")
         self.ui.frame_2.setMinimumHeight(150)
 
         self._update_logo()
