@@ -4,9 +4,9 @@
 
 # <ins>Pro</ins>babilistic <ins>G</ins>rid <ins>R</ins>eliability Analysis with <ins>E</ins>nergy <ins>S</ins>torage <ins>S</ins>ystems (ProGRESS)
 
-Current release version: v1.2.0
+Current release version: v2.0.0
 
-Release date: 06/04/2025
+Release date: 07/15/2026
 
 ## Table of Contents
 
@@ -22,30 +22,49 @@ Release date: 06/04/2025
 
 <a id="intro"></a>
 
-The Probabilistic Grid Reliability Analysis with Energy Storage Systems (ProGRESS) software tool is a Python-based open-source tool for assessing the resource adequacy of the evolving electric power grid integrated with energy storage systems (ESS). This tool utilizes a Markov Chain Monte Carlo-based stochastic simulation engine to create diverse scenarios that test the limits of the modern power grid consisting of a high volume of ESSs and variable energy resources (VER). State-of-the-art ESS models are incorporated within the Monte Carlo simulation engine. The charge-discharge dynamics of ESSs, along with their evolving state-of-charge (SOC), are captured by the tool. In addition, ESS failures and repair models are also built into the tool, allowing users to analyze the availability of their ESS devices when they are needed most. ProGRESS also offers the capability of handling the uncertainty associated with VERs, enabling the user to simulate thousands of diverse generation scenarios depending on weather conditions. Users are able to build their own grid models, download and utilize historical VER data using APIs, and analyze magnitude, duration, and frequency of expected future outages. ProGRESS allows users to make informed decisions and plan effectively for a reliable future electric grid.
+**Probabilistic Grid Reliability Analysis with Energy Storage Systems (ProGRESS)** is an open-source, Python-based software tool for assessing the resource adequacy of modern electric power systems with high penetrations of energy storage systems (ESS), variable energy resources (VER), and emerging large loads such as AI data centers. ProGRESS employs a Markov Chain Monte Carlo (MCMC) stochastic simulation engine to generate thousands of diverse operating scenarios that capture the uncertainty and variability of future power systems.
+
+The tool includes detailed, state-of-the-art ESS models that represent charge-discharge behavior, state-of-charge (SOC) evolution, failures, repairs, and technology-specific degradation mechanisms, enabling realistic assessment of storage availability and performance over time. Multiple ESS operating modes are supported, including **reliability mode**, **economic dispatch mode**, and **market participation mode** through integration with the **QuESt PCM** tool, allowing users to evaluate storage performance under a variety of operational strategies.
+
+ProGRESS also models the uncertainty associated with VERs by incorporating historical weather-driven generation data, enabling users to simulate thousands of diverse generation scenarios that reflect realistic operating conditions. Users can build custom power system models, download and integrate historical VER datasets through supported APIs, and perform comprehensive probabilistic reliability analyses. The software quantifies expected outage frequency, duration, and magnitude using industry-standard reliability metrics while also providing detailed reliability assessments at the **individual bus level**, enabling users to identify localized reliability risks and evaluate the impact of storage and generation resources across the network.
+
+By combining advanced stochastic simulation, detailed component modeling, and flexible ESS operating strategies, ProGRESS enables planners, researchers, and system operators to evaluate reliability tradeoffs, assess the value of energy storage, and make informed decisions for the planning and operation of future electric grids.
+
 
 [Back to Top](#top)
 
+
 ## Key Features of ProGRESS
+<a id="key-features"></a>
 
-<a id="Key-features"></a>
-Key features of ProGRESS include:
+- **Probabilistic resource-adequacy assessment**: Uses sequential Monte Carlo simulation to model stochastic failures and repairs of generators, transmission lines, and energy-storage systems. It calculates reliability metrics including LOLP, LOLH, LOLE, LOLF, EUE, EPNS, and mean outage duration.
 
-- **Emphasis on Energy Storage Systems:** ProGRESS is developed for analyzing the resource adequacy of power systems with a special focus on ESS. This tool offers unique features such as integrating failure and repair models of ESS in resource adequacy evaluation while preserving its charge/discharge dynamics and SOC update characteristics. Future updates to the tool will include sizing of ESS for grid reliability applications, economic analysis of using ESS for these purposes, more detailed ESS reliability models, and other ESS-centric features.
+- **Comprehensive energy-storage modeling**: Represents ESS charge/discharge behavior, state of charge, efficiency, operating limits, duration,
+    component availability, failures, and repairs. It supports single-period reliability operation and multi-period economic dispatch, as well
+    as chemistry-specific degradation models for LMO, LFP, NMC, and NCA batteries. Degradation can account for depth of discharge, state of
+    charge, C-rate, cycling, and temperature using an optional [PyBaMM](https://pybamm.org/) thermal model.
 
-- **Stochastic Monte Carlo Simulation Engine:** At the core of ProGRESS is a Markov Chain Monte Carlo-based engine that allows users to simulate practically unlimited scenarios involving diverse component failures and weather conditions. Each scenario is considered to be a sample of the Monte Carlo simulation and spans 8760 hours (one year). The users can choose as many samples as they want, the choice typically depending on factors such as system size, convergence criteria, and computational resources of the user.
+- **Flexible power-system and optimization models**: Supports copper-sheet, zonal, and nodal network representations, enabling users to balance
+    computational speed and transmission detail. Configurable optimization horizons support both reliability-focused operation and multi-
+    period dispatch considering generation costs, renewable curtailment, storage scheduling, and load shedding.
 
-- **Historical VER Data:** ProGRESS allows users to conveniently download weather data using APIs. Data related to solar weather is downloaded by ProGRESS from [NSRDB](https://nsrdb.nrel.gov/) while wind-related weather data is downloaded from [Wind Integration National Dataset Toolkits](https://www.nrel.gov/grid/wind-toolkit.html). ProGRESS then seamlessly converts the weather data to solar and wind power generation data using built-in functions. Users may utilize their own timeseries VER generation datasets as well.
+- **Variable generation and uncertainty modeling**: Accepts user-provided variable generation data or downloads ERA5 meteorological data through the
+    [Copernicus Climate Data Store](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview). Solar generation is calculated using [pvlib](https://pvlib-python.readthedocs.io/en/stable/) and modeled stochastically with k-means clustering and month-specific probabilities. Wind generation uses configurable turbine power curves and transition-rate matrices.
 
-- **VER Uncertainty Handling:** Proper handling of the uncertainty associated with VERs is crucial to accurate resource adequacy assessment and ESS sizing for maintaining grid reliability. ProGRESS uses innovative techniques to quantify uncertainty associated with VERs and ensures that these resources are represented appropriately within the simulation. A k-means clustering technique is used to cluster solar power generation while a transition rate matrix method is used for wind power generation.
+- **Data-center load modeling**: Incorporates data-center demand into resource-adequacy studies using user-provided collections of load
+    profiles. ProGRESS randomly selects a profile for each Monte Carlo sample, adds it to matching system load buses, and can aggregate bus-
+    level data-center demand into zone-level profiles for zonal studies.
 
-- **Model Flexibility:** Users may perform a composite system reliability or generation adequacy analysis using transportation or copper-sheet models, respectively. The copper-sheet model runs significantly faster, especially for larger systems, while the transportation model generates more accurate results.
+- **Production-cost-model integration**: Integrates with [QuESt PCM](https://github.com/sandialabs/quest_PCM) for detailed nodal day-ahead unit commitment and economic dispatch, including
+    generator and transmission outages, renewable availability, storage constraints, ancillary services, and optional pricing calculations.
 
-- **Modular Structure:** The tool is constructed using an Object-Oriented Programming (OOP) structure and a modular design. This approach enables users to easily modify the backend programs to meet their specific requirements.
+- **Detailed results and visualization**: Generates per-sample records for load curtailment, generator dispatch, transmission
+    flows, ESS state of charge, and ESS capacity. Aggregate outputs include reliability indices, convergence plots, outage heat maps, and bus-
+    level outage frequency and magnitude rankings. A built-in results browser can be used to preview CSV, Excel, PDF, PNG, text, JSON, and HTML results.
 
-- **User-friendly Platform:** The interactive Graphical User Interface (GUI) offered by ProGRESS simplifies the process of input data upload, model building, and results interpretation. In addition, an executable file is also available for Windows users with the current release, thus allowing stakeholders to use the tool without needing to install Python or have any coding background.
+- **Accessible and scalable workflows**: Provides a desktop GUI for data preparation, validation, simulation configuration, execution, logging, and results review. Simulations can also run from the command line or across multiple MPI processes on high-performance computing systems.
 
-- **Parallel Programming Capabilities:** The backend includes scripts for parallel programming (using Python's [mpi4py](https://mpi4py.readthedocs.io/en/stable/index.html) library), allowing users with access to high-performance computing resources to run longer simulations with larger systems for more accurate results. This functionality is not available through the GUI.
+- **Customizable and reproducible open-source platform**: Uses documented CSV schemas for custom grid, load, storage, solar, and wind datasets, with an RTS-GMLC example included. Its modular Python architecture supports research extensions, while timestamped result directories and saved configuration snapshots make runs easier to reproduce.
 
 [Back to Top](#top)
 
