@@ -13,7 +13,6 @@ Release date: 07/15/2026
 - [Introduction](#intro)
 - [Key Features of ProGRESS](#key-features)
 - [Getting Started](#getting-started)
-- [Data Requirements](#data)
 - [Workflow Description](#workflow)
 - [Citing ProGRESS](#cite)
 - [Contact](#contact)
@@ -394,21 +393,20 @@ The calculated reliability indices include:
  | EPNS  | Expected power not supplied |
  | MDT   | Mean outage duration |
 
-Outage heat maps are generated for full-year simulations of 8,760 hours. LOLP and coefficient-of-variation
-convergence plots are generated when multiple samples and nonzero loss-of-load events are available.
+Outage heat maps are generated for full-year simulations of 8,760 hours. LOLP and coefficient-of-variation convergence plots are generated when multiple samples and nonzero loss-of-load events are available. Status of components such as generators, transmission lines, VERs, and ESS are recorded during the outage hours for in-depth analysis. Magnitude and duration of outages at all buses are also summarized for the simulation duration. 
 
 <table>
   <tr>
-    <td style="text-align: center;"><img src = "progress/Images/workflow/res_heatmap.png" width="500" height="300" alt="Results" /></td>
+    <td style="text-align: center;"><img src = "progress/Images/workflow/v2_heatmap.png" width="500" height="300" alt="Results" /></td>
     <td style="text-align: center;"><img src = "progress/Images/workflow/res_ess.png" width="500" height="300" alt="Results" /></td>
   </tr>
   <tr>
-    <td style="text-align: center;"><img src = "progress/Images/workflow/res_loadcurt.png" width="500" height="300" alt="Results" /></td>
-    <td style="text-align: center;"><img src = "progress/Images/workflow/res_wind.png" width="500" height="300" alt="Results" /></td>
+    <td style="text-align: center;"><img src = "progress/Images/workflow/v2_curtail.png" width="500" height="300" alt="Results" /></td>
+    <td style="text-align: center;"><img src = "progress/Images/workflow/v2_outage.png" width="500" height="300" alt="Results" /></td>
   </tr>
   <tr>
-    <td style="text-align: center;"><img src = "progress/Images/workflow/n_res_COV.png" width="500" height="300" alt="Results" /></td>
-    <td style="text-align: center;"><img src = "progress/Images/workflow/n_res_LOLP.png" width="500" height="300" alt="Results" /></td>
+    <td style="text-align: center;"><img src = "progress/Images/workflow/v2_COV.png" width="500" height="300" alt="Results" /></td>
+    <td style="text-align: center;"><img src = "progress/Images/workflow/v2_LOLP.png" width="500" height="300" alt="Results" /></td>
   </tr>
 </table>
 
