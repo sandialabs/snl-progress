@@ -344,6 +344,18 @@ class SolarPage(QWidget):
             msg = "Solar data is valid with warnings:\n\n" + "\n".join(f"• {w}" for w in warnings)
             msgbox.warning(self, "Solar Data Validation", msg)
 
+        solar_dir = data_dir / 'Solar'
+        gen_all_sites_path = solar_dir / 'gen_all_sites.csv'
+
+        if gen_all_sites_path.exists():
+            self._solar = Solar(str(solar_dir), config['model'])
+            self.data_handler.solar_directory = solar_dir
+            self._cluster_page_unlocked = True
+            self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
+            msgbox.information(self, "Solar Data Validation",
+                "User Solar data is valid \n\n Solar generation data (gen_all_sites.csv) already exists. No processing needed. Please proceed to the clustering page.")
+            return
+
         msgbox.information(self, "Solar Data Validation",
             "User Solar data is valid \n\n Will begin to process solar data into solar power generation. Please wait for the process to complete, then proceed to the clusters page.")
 
