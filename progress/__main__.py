@@ -79,10 +79,10 @@ class MainWindow(QMainWindow):
         # ERA5 API KEY CHECK
         api_key_exists = check_era_api_key_existence()
         if not api_key_exists:
-            msgbox.critical(self, "ERA5 API KEY ISSUE", "Please check README instructions to get ERA5 API KEY")
-            logging.error(f"api key DOESNT EXIST: {api_key_exists}")
+            msgbox.critical(self, "ERA5 API KEY ERROR", "You need an ERA5 API key to download solar and wind data. However, obtaining one is optional if you already have your own data to use with the ProGRESS tool.")
+            logging.error(f"ERA5 API Key DOESNT EXIST: {api_key_exists}")
         else:
-            logging.info(f"api key exists: {api_key_exists}")
+            logging.info(f"ERA5 API Key exists: {api_key_exists}")
 
         self._mount_page(self.ui.page_landing, self.landing_page)
         self._mount_page(self.ui.page_solar, self.solar_page)

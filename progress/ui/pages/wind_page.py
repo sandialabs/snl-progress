@@ -168,9 +168,25 @@ class WindPage(QWidget):
         self._processing = False
         self.ui.btn_download_wind.setEnabled(True)
         self.ui.btn_download_wind.setText("Download Wind Data")
-        self.ui.frame_process_wind.setVisible(True)
         self.ui.frame_date_range.setVisible(True)
-        msgbox.critical(self, "Wind Data Download", f"Successfully downloaded data can proceed to process data")
+
+        config = load_config()
+        wind_dir = Path(config['data']) / 'Wind'
+        t_rate_path = wind_dir / 't_rate.xlsx'
+
+        if t_rate_path.exists():
+            self.data_handler.wind_directory = wind_dir
+            self.wind_tr_rate = str(t_rate_path)
+            tr_mats = pd.read_excel(t_rate_path, sheet_name=None)
+            self.data_handler.tr_mats = np.array([tr_mats[sheet].to_numpy() for sheet in tr_mats])
+            self._t_rate_ready = True
+            self.wind_ready.emit()
+            msgbox.information(self, "Wind Data Download",
+                "Successfully downloaded data. Transition rate file (t_rate.xlsx) already exists. It is OK to continue to the simulation.")
+        else:
+            self.ui.frame_process_wind.setVisible(True)
+            msgbox.information(self, "Wind Data Download",
+                "Successfully downloaded data. You must process wind data to generate transition rate metrics (t_rate.xlsx) in order to proceed.")
 
     def _on_wind_download_error(self, error_msg: str) -> None:
         self._processing = False
@@ -186,7 +202,7 @@ class WindPage(QWidget):
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("Processing Wind Data")
         msg.setText(
-            "The wind data must be processed before continuing.\n\n"
+            "Will begin to process wind data to generate transition rate metrics.\n\n"
         )
         msg.setStandardButtons(QMessageBox.Ok)
         style = msgbox._current_style()
@@ -254,10 +270,23 @@ class WindPage(QWidget):
         if warnings:
             msg = "Wind data is valid with warnings:\n\n" + "\n".join(f"• {w}" for w in warnings)
             msgbox.warning(self, "Wind Data Validation", msg)
-        else:
-            msgbox.information(self, "Wind Data Validation", "Wind data is valid.")
 
-        self.ui.frame_process_wind.setVisible(True)
+        wind_dir = Path(config['data']) / 'Wind'
+        t_rate_path = wind_dir / 't_rate.xlsx'
+
+        if t_rate_path.exists():
+            self.data_handler.wind_directory = wind_dir
+            self.wind_tr_rate = str(t_rate_path)
+            tr_mats = pd.read_excel(t_rate_path, sheet_name=None)
+            self.data_handler.tr_mats = np.array([tr_mats[sheet].to_numpy() for sheet in tr_mats])
+            self._t_rate_ready = True
+            self.wind_ready.emit()
+            msgbox.information(self, "Wind Data Validation",
+                "User Wind data is valid and transition rate file (t_rate.xlsx) already exists. OK to continue to simulation.")
+        else:
+            self.ui.frame_process_wind.setVisible(True)
+            msgbox.information(self, "Wind Data Validation",
+                "Wind data is valid. You must process wind data to generate transition rate metrics (t_rate.xlsx) in order to proceed.")
     
     def _user_data_run_wind_process(self) -> None:
         config = load_config()

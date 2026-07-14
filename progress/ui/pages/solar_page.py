@@ -267,8 +267,7 @@ class SolarPage(QWidget):
         msg.setIcon(QMessageBox.Information)
         msg.setWindowTitle("Downloading Solar Data")
         msg.setText(
-            "The latest solar data must be downloaded before continuing.\n\n"
-            "We're downloading the latest solar data. The app may pause briefly and will resume automatically when the download is complete.\n\n"
+            "We're downloading the requested solar data. The app may pause briefly and will resume automatically when the download is complete.\n\n"
         )
         msg.setStandardButtons(QMessageBox.Ok)
         style = msgbox._current_style()
@@ -344,8 +343,9 @@ class SolarPage(QWidget):
         if warnings:
             msg = "Solar data is valid with warnings:\n\n" + "\n".join(f"• {w}" for w in warnings)
             msgbox.warning(self, "Solar Data Validation", msg)
-        else:
-            msgbox.information(self, "Solar Data Validation", "Solar data is valid.")
+
+        msgbox.information(self, "Solar Data Validation",
+            "User Solar data is valid \n\n Will begin to process solar data into solar power generation. Please wait for the process to complete, then proceed to the clusters page.")
 
         self._processing = True
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
