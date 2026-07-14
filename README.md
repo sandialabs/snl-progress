@@ -414,17 +414,15 @@ convergence plots are generated when multiple samples and nonzero loss-of-load e
 
 ### B. Command-Line Workflow
 
-  ProGRESS simulations can be prepared and executed without the GUI on a local computer or remote server.
+ProGRESS simulations can be prepared and executed without the GUI on a local computer or remote server.
 
-  Run all module commands from the repository root with the ProGRESS environment activated.
+Run all module commands from the repository root with the ProGRESS environment activated.
 
-  #### Step 1. Configure the input file
+#### Step 1. Configure the input file
 
-  Edit:
+Edit the [input.yaml](./progress/input.yaml) to change configuration. 
 
-  progress/input.yaml
-
-  The primary configuration options are:
+The primary configuration options are:
 
 | Parameter | Description                  |
 | -------- | ---------------------------- |
@@ -457,12 +455,12 @@ python -m progress.data_download_process
 
 This workflow can:
 
-- Download ERA5 solar and wind weather data
+- Download ERA5 meteorological data required for calculating VER generation.
 - Convert solar weather data to solar generation
 - Generate solar clusters and monthly probabilities
 - Generate wind transition-rate matrices
 
-This step can be skipped when all required processed renewable files already exist.
+This step can be skipped when all required processed VER files already exist.
 
 #### Step 3. Run the simulation
 
@@ -492,36 +490,32 @@ If --out is omitted, ProGRESS creates a timestamped directory under progress/Res
 
 ProGRESS includes an MPI-enabled simulation for running additional Monte Carlo samples across multiple processes. This workflow is intended for large systems, long simulations, or convergence studies requiring many samples.
 
-  An MPI runtime and the mpi4py Python package must be available on the computing system.
+An MPI runtime and the mpi4py Python package must be available on the computing system.
 
-  #### Interactive MPI execution
+#### Interactive MPI execution
 
-  From the repository root, run:
-  ```
-  mpiexec -n 4 python -m progress.example_simulation_mult_proc \
-      --config progress/input.yaml \
-      --out /path/to/results
-  ```
+From the repository root, run:
+```
+mpiexec -n x python -m progress.example_simulation_mult_proc \
+    --config progress/input.yaml \
+    --out /path/to/results
+```
 
-  Replace 4 with the desired number of MPI processes.
+Replace x with the desired number of MPI processes.
 
-  The samples setting is applied to each MPI process. Therefore, the total number of simulated samples is:
-  ```
-  total samples = samples × MPI processes
-  ```
+The samples setting is applied to each MPI process. Therefore, the total number of simulated samples is:
+```
+total samples = samples × MPI processes
+```
+Rank zero aggregates the reliability indices and generates the combined convergence and outage results.
 
-  Rank zero aggregates the reliability indices and generates the combined convergence and outage results.
+#### Scheduled HPC execution
 
-  #### Scheduled HPC execution
-
-  The exact scheduler command and resource directives depend on the computing facility. For a Slurm system, place the MPI command in an appropriate batch script and submit it with:
-
-  ```
-  sbatch your_job_script.bash
-  ```
-  Consult the documentation for the target HPC system when selecting the number of nodes, tasks, memory, wall time,
-  account, and partition.
-
+The exact scheduler command and resource directives depend on the computing facility. For a Slurm system, place the MPI command in an appropriate batch script and submit it with:
+```
+sbatch your_job_script.bash
+```
+Consult the documentation for the target HPC system when selecting the number of nodes, tasks, memory, wall time, account, and partition.
 
 [Back to Top](#top)
 
@@ -630,11 +624,13 @@ The ProGRESS tool is developed and maintained by the [Energy Storage Analytics G
 **Project team:**
 
 - Atri Bera
+- Dilip Pandit
+- Eriel Cabrera
 - Andres Lopez
 - Yung-Jai Pomeroy
 - Cody Newlun
 - Tu Nguyen
-- Dilip Pandit
+
 
 | <img src = "progress/Images/logos/SNL_logo.png" width="260" height="120" alt="SNL" /> | <img src = "progress/Images/logos/New_DOE_Logo_Color.png" width="300" height="100" alt="DOE" /> |
 | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
