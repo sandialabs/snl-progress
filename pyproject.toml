@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snl-progress"
-version = "1.2.0"
+version = "2.0.0"
 description = "Used to evaluate the reliability of a power system and size energy storage systems required for maintaining a certain reliability level"
 authors = ["Atri Bera <abera@sandia.gov>"]
 readme = "README.md"
@@ -11,7 +11,7 @@ documentation = "https://sandialabs.github.io/snl-progress/"
 keywords = ["reliability", "power system", "energy storage"]
 
 [tool.poetry.dependencies]
-python = ">=3.7,<3.12"
+python = ">=3.11"
 numpy = ">=1.21.0, <2.0.0"
 pyomo = "6.7.3"
 pandas = "2.2.2"
@@ -30,6 +30,8 @@ PySide6-Essentials = "6.5.2"
 plotly = "5.24.1"
 kaleido = "0.2.1"
 Markdown = "3.7"
+timezonefinder = ">=8.2.0"
+cdsapi = ">=0.7.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"

@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 # from quest import __version__
 
 DISTNAME = "snl-progress"
-VERSION = "1.2.0"
-PYTHON_REQUIRES = ">=3.9, <3.12"
+VERSION = "2.0.0"
+PYTHON_REQUIRES = ">=3.11"
 DESCRIPTION = "Probabilistic Grid Reliability Analysis with Energy Storage Systems"
 LONG_DESCRIPTION = open("README.md").read()
 AUTHOR = "Sandia National Laboratories"
@@ -21,8 +21,6 @@ setup(
     python_requires=PYTHON_REQUIRES,
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
     description=DESCRIPTION,
@@ -47,8 +45,10 @@ setup(
         "PySide6-Addons==6.5.2",
         "PySide6-Essentials==6.5.2",
         "Markdown==3.7",
-        "plotly==5.22.0",
+        "plotly==5.24.1",
         "kaleido==0.2.1",
+        "timezonefinder>=8.2.0",
+        "cdsapi>=0.7.7",
     ],
 
     package_data={

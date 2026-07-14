@@ -2,18 +2,28 @@ from pathlib import Path
 from ruamel.yaml import YAML
 from typing import Any
 import yaml
-import logging 
+import logging
+import sys
+import shutil
 
 logger = logging.getLogger(__name__)
 
-def get_path() -> Path:
+def _is_frozen() -> bool:
+    return getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS')
+
+def get_bundle_path() -> Path:
+    """Read-only path to bundled resources inside the PyInstaller bundle."""
+    if _is_frozen():
+        return Path(sys._MEIPASS) / "progress"
     return Path(__file__).resolve().parent
-# returns: /Users/...../projects/QuESt/quest-apps/forks/snl-progress/progress
+
+def get_path() -> Path:
+    if _is_frozen():
+        return Path.home() / ".progress"
+    return Path(__file__).resolve().parent
 
 def get_home_dir() -> Path:
     return Path.home()
-
-# returns: /Users/xxxx...
 
 def get_data_path() -> Path:
     return get_path() / "Data"
@@ -33,24 +43,38 @@ def get_results_path() -> Path:
     return results_dir
 
 def get_theme_path() -> Path:
-    return get_path() / "resources" 
+    return get_path() / "resources"
+
+def _setup_user_dir() -> None:
+    """Copy bundled resources to the writable user directory on first run."""
+    if not _is_frozen():
+        return
+    bundle = get_bundle_path()
+    user = get_path()
+    user.mkdir(parents=True, exist_ok=True)
+    for name in ["Data", "resources", "Images"]:
+        src = bundle / name
+        dst = user / name
+        if src.exists() and not dst.exists():
+            shutil.copytree(src, dst)
+    src_yaml = bundle / "input.yaml"
+    dst_yaml = user / "input.yaml"
+    if src_yaml.exists() and not dst_yaml.exists():
+        shutil.copy2(src_yaml, dst_yaml)
 
 BASE_DIR = get_path()
+if _is_frozen():
+    _setup_user_dir()
 HOME_DIR = get_home_dir()
 DATA_DIR = get_data_path()
 SOLAR_DIR = get_solar_data_path()
 SYSTEM_DIR = get_system_data_path()
 WIND_DIR = get_wind_data_path()
 RESULTS_DIR = get_results_path()
-# /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data
-# /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data/Solar
-# /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data/System
-# /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Data/Wind
-# /Users/eecabre/projects/QuESt/quest-apps/forks/snl-progress/progress/Results
 
 def update_data_path() -> None:
     data_path = get_data_path()
-    yaml_file_path = str(Path(__file__).resolve().parent / "input.yaml")
+    yaml_file_path = str(get_path() / "input.yaml")
 
     # initialize the round-trip YAML parser
     yaml = YAML()

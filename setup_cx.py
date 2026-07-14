@@ -1,24 +1,23 @@
+import sys
 import toml
 from cx_Freeze import setup, Executable
 
-# Load the .toml file
+sys.setrecursionlimit(sys.getrecursionlimit() * 5)
+
 with open('pyproject.toml', 'r') as f:
     config = toml.load(f)
 
-# Extract relevant information from the .toml file
 project_name = config['tool']['poetry']['name']
 version = config['tool']['poetry']['version']
 description = config['tool']['poetry']['description']
 
-# Define the executables
 executables = [
     Executable(
-        script="progress/__main__.py",  # Entry point for the module
+        script="progress/__main__.py",
         target_name=project_name
     )
 ]
 
-# Define the setup configuration
 setup(
     name=project_name,
     version=version,
@@ -27,9 +26,17 @@ setup(
     options={
         'build_exe': {
             'packages': [
-                'numpy', 'pyomo', 'pandas', 'mpi4py', 'matplotlib', 'openpyxl',
+                'numpy', 'pyomo', 'pandas', 'matplotlib', 'openpyxl',
                 'seaborn', 'sklearn', 'kneed', 'requests', 'pvlib', 'rex', 'PySide6',
-                'plotly', 'kaleido'
+                'shiboken6', 'plotly', 'kaleido', 'markdown', 'timezonefinder', 'cdsapi'
+            ],
+            'excludes': [
+                'tkinter', 'test', 'unittest', 'email', 'http',
+                'xml', 'pydoc', 'doctest', 'distutils',
+            ],
+            'bin_excludes': [
+                'libqsqlodbc.dylib',
+                'libiodbc.2.dylib',
             ],
             'include_files': [
                 'README.md', 'LICENSE'
