@@ -163,11 +163,11 @@ All test system data provided with the tool has been taken from the [RTS-GMLC Gi
 
 ## Learn More
 
-For detailed documentation on data preparation, simulation workflows, and advanced features, visit the **[ProGRESS Wiki](wiki/Home.md)**:
+For detailed documentation on data preparation, simulation workflows, and advanced features, visit the **[ProGRESS Wiki](https://github.com/sandialabs/snl-progress/wiki)**:
 
-- **[Data Requirements](wiki/Data-Requirements.md)** — Directory structure, CSV schemas, and file formats for system, solar, and wind data.
-- **[Workflow](wiki/Workflow.md)** — Step-by-step guides for the GUI, command-line, and HPC workflows.
-- **[Additional Features](wiki/Additional-Features.md)** — Battery degradation, PCM integration, and multi-period optimization.
+- **[Data Requirements](https://github.com/sandialabs/snl-progress/wiki/Data-Requirements)** — Directory structure, CSV schemas, and file formats for system, solar, and wind data.
+- **[Workflow](https://github.com/sandialabs/snl-progress/wiki/Workflow)** — Step-by-step guides for the GUI, command-line, and HPC workflows.
+- **[Additional Features](https://github.com/sandialabs/snl-progress/wiki/Additional-Features)** — Battery degradation, PCM integration, and multi-period optimization.
 
 ## Citing ProGRESS
 
