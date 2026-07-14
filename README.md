@@ -363,29 +363,32 @@ Replace `site_1`, `site_2`, ... with the actual site names for your system. This
 
 <a id="workflow"></a>
 
-Simulations in the ProGRESS tool can be executed in three different ways. Users may choose to A) utilize the Graphical User Interface to run simulations, B) use Python scripts to run simulations on their local computer or a remote server, or C) use Python and bash scripts to run simulations by utilizing parallel processing capabilities of a High Performance Computer. The following sections describe each approach in detail.
+ProGRESS can be run through three workflows:
 
-### A. Instructions for Running Simulations using the Graphical User Interface
+  1. The graphical user interface (GUI)
+  2. The command line on a local computer or remote server
+  3. Parallel processing with MPI on a high-performance computing system
 
-Navigate to the directory where ProGRESS is installed and ensure that the virtual environment is activated. Use the following command to launch the tool:
+  Before starting a simulation, ensure that the required system and renewable data follow the structure
+  described in the [Data Requirements](#data) section.
 
+### A. Graphical User Interface Workflow
+
+From the repository root, activate the ProGRESS Python environment and launch the application:
 ```bash
 python -m progress
 ```
+The application opens the ProGRESS home page and a separate log window. The log window displays information about data processing, simulation progress, warnings, and errors.
 
-When the application is first launched, users will see the home page:
+#### Step 1. Configure ERA5 access
 
-<p align="center">
-  <img src = "progress/Images/workflow/n_home_page.png" width="660" height="440" alt="Home" />
-</p>
+ProGRESS can download solar and wind weather data from the ERA5 dataset through the Copernicus Climate Data Store API. The instructions for setting up the API key can be found [here](https://cds.climate.copernicus.eu/how-to-api). A valid CDS API credential file then needs to be configured at:
+```
+~/.cdsapirc
+```
+The application checks for this file when it starts. ERA5 credentials are optional when user provides their own VER generation data.
 
-**Step 1.** After pressing the `Get Started` button, users will be prompted to enter API information. Ensure that you have signed up at the [NREL Developer Network](https://developer.nrel.gov/) beforehand using your details and obtained the required api key. You may skip this step if you plan on using your own data.
-
-<p align="center">
-  <img src = "progress/Images/workflow/n_API.png" width="660" height="440" alt="API" />
-</p>
-
-Once the API information is saved, users can move on to the `Solar` tab.
+Select `Get Started` to proceed to the Solar page.
 
 **Step 2a.** Users may upload their own solar power generation data using the format specified in this [file](./progress/Data/Solar/solar_data.xlsx) or download solar weather data from [NSRDB](https://nsrdb.nrel.gov/) and convert to solar power generation data using the tool. If downloading data, please check for the data availability at the website since the range of years for which data is available is updated periodically. ProGRESS uses [pvlib](https://pvlib-python.readthedocs.io/en/stable/) to convert the downloaded solar weather data to solar power generation data. In case the user does not have solar installation in their system, they can select the `No Solar` option from the drop down list.
 
