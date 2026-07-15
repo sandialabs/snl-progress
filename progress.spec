@@ -1,6 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-from PyInstaller.utils.hooks import collect_submodules, collect_data_files
+from PyInstaller.utils.hooks import collect_submodules, collect_data_files, collect_all
 
 _pyomo_top = [
     'pyomo.common', 'pyomo.core', 'pyomo.dae', 'pyomo.dataportal',
@@ -37,17 +37,21 @@ pvlib_data = collect_data_files('pvlib')
 timezonefinder_data = collect_data_files('timezonefinder')
 matplotlib_backends = collect_submodules('matplotlib.backends')
 
+casadi_datas, casadi_binaries, casadi_hiddenimports = collect_all('casadi')
+pybamm_datas, pybamm_binaries, pybamm_hiddenimports = collect_all('pybamm')
+pybammsolvers_datas, pybammsolvers_binaries, pybammsolvers_hiddenimports = collect_all('pybammsolvers')
+
 a = Analysis(
     ['progress/__main__.py'],
     pathex=[],
-    binaries=[],
+    binaries=casadi_binaries + pybamm_binaries + pybammsolvers_binaries,
     datas=[
         ('progress/resources', 'progress/resources'),
         ('progress/Images', 'progress/Images'),
         ('progress/Data', 'progress/Data'),
         ('progress/input.yaml', 'progress'),
         ('README.md', '.'),
-    ] + pvlib_data + timezonefinder_data,
+    ] + pvlib_data + timezonefinder_data + casadi_datas + pybamm_datas + pybammsolvers_datas,
     hiddenimports=[
         'progress.resources_rc',
         'progress.ui.forms.main_window.ui_main_window',
@@ -85,7 +89,7 @@ a = Analysis(
         'pvlib',
         'rex',
         'kneed',
-    ] + pyomo_imports + matplotlib_backends,
+    ] + pyomo_imports + matplotlib_backends + casadi_hiddenimports + pybamm_hiddenimports + pybammsolvers_hiddenimports,
     hookspath=[],   
     hooksconfig={},
     runtime_hooks=[],
@@ -117,7 +121,7 @@ coll = COLLECT(
     a.datas,
     strip=False,
     upx=True,
-    upx_exclude=[],
+    upx_exclude=[m for m in casadi_binaries + pybamm_binaries + pybammsolvers_binaries if m[1].endswith(('.dll', '.so', '.pyd'))],
     name='snl-progress',
 )
 
