@@ -300,7 +300,7 @@ class SolarPage(QWidget):
         self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
         self.ui.btn_download_solar.setEnabled(True)
         self.ui.btn_download_solar.setText("Download Solar Data")
-        msgbox.information(self, "Solar Data Download", "Successfully downloaded/processed data can proceed to clustering page if needed")
+        msgbox.information(self, "Solar Data Download", "Successfully downloaded and processed solar data. Ready to proceed to the clustering page.")
 
     def _on_download_error(self, error_msg: str) -> None:
         self._processing = False
@@ -353,15 +353,25 @@ class SolarPage(QWidget):
             self._cluster_page_unlocked = True
             self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
             msgbox.information(self, "Solar Data Validation",
-                "User Solar data is valid \n\n Solar generation data (gen_all_sites.csv) already exists. No processing needed. Please proceed to the clustering page.")
+                "Solar data is valid.\n\nSolar generation data (gen_all_sites.csv) already exists. Ready to proceed to clustering.")
             return
 
-        msgbox.information(self, "Solar Data Validation",
-            "User Solar data is valid \n\n Will begin to process solar data into solar power generation. Please wait for the process to complete, then proceed to the clusters page.")
+        weather_dir = solar_dir / 'solar_weather_data'
+        has_weather_data = weather_dir.exists() and any(weather_dir.glob('*.csv'))
 
-        self._processing = True
-        self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
-        self._run_solar_processing()
+        if has_weather_data:
+            msgbox.information(self, "Solar Data Validation",
+                "Solar data is valid.\n\nProcessing weather data into solar generation profiles. Please wait for the process to complete, then proceed to the clustering page.")
+            self._processing = True
+            self._update_page_navigation_ui(self.ui.solarStackedWidget.currentIndex())
+            self._run_solar_processing()
+        else:
+            msgbox.warning(self, "Solar Data Validation",
+                "Solar data is valid, but solar generation data (gen_all_sites.csv) was not found and "
+                "no weather data is available to generate it.\n\n"
+                "Please either:\n"
+                "• Download weather data using 'Download Solar Data', or\n"
+                "• Place gen_all_sites.csv directly in the Solar directory.")
 
     def _run_solar_processing(self) -> None:
         config = load_config()
@@ -384,7 +394,10 @@ class SolarPage(QWidget):
 
     def _on_processing_error(self, error_msg: str) -> None:
         self._processing = False
-        msgbox.critical(self, "Solar Processing Error", f"Solar data processing failed:\n{error_msg}")
+        msgbox.critical(self, "Solar Processing Error",
+            f"Solar data processing failed:\n{error_msg}\n\n"
+            "This typically means weather data files (solar_weather_data/*_gen.csv) are missing. "
+            "Please download weather data first using 'Download Solar Data'.")
 
     def _display_start_year_info(self, checked: bool = False) -> None:
          msgbox.information(self, "ERA5 Start Year", "Start year for Solar data download.")
