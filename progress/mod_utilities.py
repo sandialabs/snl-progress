@@ -1,4 +1,5 @@
 # import python modules
+import logging
 from pyomo.environ import *
 import numpy as np
 import pandas as pd
@@ -9,15 +10,19 @@ import glob
 import random
 
 #np.random.seed(42)  
+
+logger = logging.getLogger(__name__)
+
 class RAUtilities:
     '''
     This class contains the different methods required for performing mixed time sequential Monte Carlo simulation and evaluate the reliability indices of a power system.
     '''
-    def __init__(self):
+    def __init__(self, dispatch_solver='glpk'):
         """
         Initializes the RAUtilities class.
         """
-        pass
+        self.dispatch_solver = dispatch_solver
+        logger.info(f"Dispatch solver: {self.dispatch_solver}")
 
     def reltrates(self, MTTF_gen, MTTF_trans, MTTR_gen, MTTR_trans, MTTF_ess, MTTR_ess):
         """
@@ -441,7 +446,7 @@ class RAUtilities:
                                     sum(disch_cost[i]*model.Pg[ng + i] for i in range(ness)) + \
                                     sum(ch_cost[i]*model.Pc[i] for i in range(ness)))
 
-        opt = SolverFactory('glpk')
+        opt = SolverFactory(self.dispatch_solver)
         opt.solve(model)
         load_curt = sum(np.array(list(model.curt.get_values().values())))
         if load_curt > 0:
@@ -553,7 +558,7 @@ class RAUtilities:
                                     + sum(disch_cost[i] * model.Pg[ng + i, t] * BMva for i in range(ness) for t in T)
                                     + sum(ch_cost[i] * -model.Pc[i, t] * BMva for i in range(ness) for t in T))
         
-        opt = SolverFactory('glpk')
+        opt = SolverFactory(self.dispatch_solver)
         res = opt.solve(model, tee = False)
         
         load_curt = np.zeros(len(T))

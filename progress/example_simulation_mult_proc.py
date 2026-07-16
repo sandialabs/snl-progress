@@ -53,7 +53,7 @@ class ProgressMultiProcess:
         gen_mat, ch_mat, A_inc, curt_mat, indices_rec, LOL_track = mcs_params.process_matrices()
 
         # Instanciate commonly used classes
-        raut = RAUtilities()
+        raut = RAUtilities(dispatch_solver=config.get('dispatch_solver', 'glpk'))
 
         tic = perf_counter()
             

@@ -19,6 +19,7 @@ n_clusters: 2 # number of K-means clusters for the solar data
 samples: 1 # no. of Monte Carlo samples to run
 sim_hours: 24  # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
 load_factor: 1.25 # tweak to increase/decrease load at all buses; default = 1
+dispatch_solver: 'glpk'  # solver for Pyomo dispatch optimization; options: 'glpk', 'cbc', 'appsi_highs'
 model: 'Nodal'        # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zonal' (medium fidelity, nodes within a region/zone aggregated), 'Nodal' (highest fidelity)
 
 # Optimization horizon in hours

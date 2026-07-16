@@ -61,6 +61,7 @@ class MCS_utils:
         self.samples = config['samples']
         self.time_periods = config['optimization_period']
         self.load_factor = config['load_factor']
+        self.dispatch_solver = config.get('dispatch_solver', 'glpk')
         if self.time_periods == 1:
             self.optimization_period = "single_period"
         else:
@@ -130,7 +131,7 @@ class MCS_utils:
             self.ess_params["ess_units"], self.ess_params["ess_chemistry"] = rasd.storage(data_storage)
         self.ess_params["ess_sbase"] = self.ess_params["ess_pmax"]*self.ess_params["ess_duration"]
         
-        self.raut = RAUtilities()
+        self.raut = RAUtilities(dispatch_solver=self.dispatch_solver)
         self.cap_max, self.cap_min = self.raut.capacities(self.line_params["nl"], self.gen_params["pmax"], self.gen_params["pmin"], self.ess_params["ess_pmax"], self.ess_params["ess_pmin"], self.line_params["cap_trans"]) # calling this function to get values of cap_max and cap_min
         self.mu_tot, self.lambda_tot = self.raut.reltrates(self.gen_params["MTTF_gen"], self.line_params["MTTF_trans"], self.gen_params["MTTR_gen"], self.line_params["MTTR_trans"], self.ess_params["MTTF_ess"], self.ess_params["MTTR_ess"])
         
