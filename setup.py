@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 DISTNAME = "snl-progress"
 VERSION = "2.0.0"
-PYTHON_REQUIRES = ">=3.11"
+PYTHON_REQUIRES = "3.11"
 DESCRIPTION = "Probabilistic Grid Reliability Analysis with Energy Storage Systems"
 LONG_DESCRIPTION = open("README.md").read()
 AUTHOR = "Sandia National Laboratories"

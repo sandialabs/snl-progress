@@ -87,7 +87,7 @@ class PCMConfigDialog(QDialog):
         except (ValueError, IndexError):
             pass
 
-        solver = pcm.get("solver", "")
+        solver = pcm.get("solver", "appsi_highs")
         idx = self.ui.comboBox_solver.findText(solver, Qt.MatchFlag.MatchFixedString)
         if idx >= 0:
             self.ui.comboBox_solver.setCurrentIndex(idx)

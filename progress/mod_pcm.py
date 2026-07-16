@@ -233,7 +233,7 @@ class PCM:
             for line in result.stdout.strip().splitlines():
                 logger.info(line)
         if result.stderr.strip():
-            logger.debug("PCM simulation stderr: %s", result.stderr.strip())
+            logger.error("PCM simulation stderr: %s", result.stderr.strip())
         logger.info("PCM market simulation complete")
 
     def extract_load_curtailment(self):
