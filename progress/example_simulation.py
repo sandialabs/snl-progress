@@ -57,7 +57,7 @@ def MCS(input_file, results_subdir, stop_event=None) :
         
     for s in range(samples):
 
-        print(f'Sample: {s+1}')
+        logger.info(f'Sample: {s+1}/{samples}')
         
         sample_instance= MCS_samples(mcs_params)
         sample_instance.initialize_sample_data()
@@ -186,7 +186,9 @@ def MCS(input_file, results_subdir, stop_event=None) :
         os.makedirs(sample_subdir, exist_ok=True)
 
         if mcs_params.enable_pcm:
+            logger.info(f'Sample {s+1}: Running PCM simulation...')
             var_s, LOL_track = sample_instance.run_pcm(sample_subdir, holder_dict, s, var_s, LOL_track)
+            logger.info(f'Sample {s+1}: PCM simulation complete')
 
         # collect indices for all samples
         indices_rec = raut.UpdateIndexArrays(indices_rec, var_s, sim_hours, s)

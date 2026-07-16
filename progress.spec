@@ -50,6 +50,7 @@ a = Analysis(
         ('progress/Images', 'progress/Images'),
         ('progress/Data', 'progress/Data'),
         ('progress/input.yaml', 'progress'),
+        ('progress/certs/combined.pem', 'progress/certs'),
         ('README.md', '.'),
     ] + pvlib_data + timezonefinder_data + casadi_datas + pybamm_datas + pybammsolvers_datas,
     hiddenimports=[
@@ -94,7 +95,7 @@ a = Analysis(
     ] + pyomo_imports + matplotlib_backends + casadi_hiddenimports + pybamm_hiddenimports + pybammsolvers_hiddenimports,
     hookspath=['hooks'],
     hooksconfig={},
-    runtime_hooks=['hooks/runtime_hook_casadi.py'],
+    runtime_hooks=['hooks/runtime_hook_casadi.py', 'hooks/runtime_hook_ssl.py'],
     excludes=[
         'tkinter',
     ],

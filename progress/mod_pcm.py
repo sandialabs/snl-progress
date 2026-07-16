@@ -5,6 +5,7 @@ converting it to PCM JSON input, modifying that JSON with progress model
 results, running the PCM simulation, and extracting summary curtailment data.
 """
 
+import logging
 import os
 import subprocess
 import tempfile
@@ -12,6 +13,8 @@ import textwrap
 import pandas as pd
 import numpy as np
 import json
+
+logger = logging.getLogger(__name__)
 
 class PCM:
     """Wrapper for PCM model export, execution, and result extraction."""
@@ -43,6 +46,7 @@ class PCM:
         os.makedirs(self.pcm_directory, exist_ok=True)
         self.progress_data = progress_data
         self.load_factor = load_factor
+        logger.info("PCM initialized for %d simulation hours", sim_hours)
 
     def export_pcm_yaml(self):
         """Export a PCM YAML configuration file for the configured simulation.
@@ -91,6 +95,7 @@ class PCM:
         self.input_yaml_dir = os.path.join(self.pcm_directory, "input_pcm.yaml")
         with open(self.input_yaml_dir, "w") as f:
             json.dump(pcm_yaml, f, indent=4)
+        logger.info("PCM YAML exported to %s", self.input_yaml_dir)
 
     def export_PCM_json(self):
         """Generate PCM JSON input files from the exported YAML configuration.
@@ -117,8 +122,19 @@ class PCM:
             f.write(code.encode("utf-8"))
             temp_script = f.name
 
-        subprocess.run([self.pcm_venv_path, temp_script], check=True)
+        logger.info("Generating PCM JSON input files...")
+        result = subprocess.run([self.pcm_venv_path, temp_script], check=True,
+                                capture_output=True, text=True)
         os.remove(temp_script)
+        if result.stdout.strip():
+            for line in result.stdout.strip().splitlines():
+                if "DATA Warning" in line:
+                    logger.debug(line)
+                else:
+                    logger.info(line)
+        if result.stderr.strip():
+            logger.debug("PCM export JSON stderr: %s", result.stderr.strip())
+        logger.info("PCM JSON input files generated")
 
     def modify_pcm_json(self):
         """Modify the generated PCM JSON input file with progressive simulation data.
@@ -129,6 +145,7 @@ class PCM:
         """
         # Example of modifying the PCM input JSON file after it has been generated
         pcm_json_path = os.path.join(self.pcm_directory, "DA_data.json")
+        logger.info("Modifying PCM JSON with progress model data...")
         with open(pcm_json_path, "r") as f:
             pcm_data = json.load(f)
         
@@ -172,6 +189,7 @@ class PCM:
 
         with open(pcm_json_path, "w") as f:
             json.dump(pcm_data, f, indent=4)
+        logger.info("PCM JSON modification complete")
 
     def run_PCM(self):
         """Run the PCM market simulation and export results.
@@ -207,8 +225,16 @@ class PCM:
             f.write(code.encode("utf-8"))
             temp_script = f.name
 
-        subprocess.run([self.pcm_venv_path, temp_script], check=True)
+        logger.info("Running PCM market simulation...")
+        result = subprocess.run([self.pcm_venv_path, temp_script], check=True,
+                                capture_output=True, text=True)
         os.remove(temp_script)
+        if result.stdout.strip():
+            for line in result.stdout.strip().splitlines():
+                logger.info(line)
+        if result.stderr.strip():
+            logger.debug("PCM simulation stderr: %s", result.stderr.strip())
+        logger.info("PCM market simulation complete")
 
     def extract_load_curtailment(self):
         """Extract the PCM load curtailment time series from simulation results.
@@ -219,6 +245,7 @@ class PCM:
             Load curtailed values in MWh from the PCM simulation summary.
         """
         import glob
+        logger.info("Extracting load curtailment from PCM results...")
         pcm_results_path = glob.glob(os.path.join(self.pcm_directory, "**", "simulation_summary.xlsx"), recursive=True)[0]
         df_curtailment = pd.read_excel(
             pcm_results_path,

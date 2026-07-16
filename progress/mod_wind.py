@@ -70,7 +70,8 @@ class Wind:
             logger.info(f"Downloading {name} (lat={lat}, lon={lon})...")
 
             result = client.retrieve(dataset, request)
-            zip_path = Path(result.download())
+            zip_path = self.weather_data_directory / f"{name}.zip"
+            result.download(target=zip_path)
 
             final_csv_path = self.weather_data_directory / f"{name}.csv"
 
