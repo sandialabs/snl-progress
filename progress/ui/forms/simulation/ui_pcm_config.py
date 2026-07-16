@@ -120,6 +120,7 @@ class Ui_PCMConfigPage(object):
         self.comboBox_solver.addItem("")
         self.comboBox_solver.addItem("")
         self.comboBox_solver.addItem("")
+        self.comboBox_solver.addItem("")
         self.comboBox_solver.setObjectName(u"comboBox_solver")
 
         self.horizontalLayout_12.addWidget(self.comboBox_solver)
@@ -304,6 +305,7 @@ class Ui_PCMConfigPage(object):
         self.comboBox_solver.setItemText(0, QCoreApplication.translate("PCMConfigPage", u"gurobi", None))
         self.comboBox_solver.setItemText(1, QCoreApplication.translate("PCMConfigPage", u"cplex", None))
         self.comboBox_solver.setItemText(2, QCoreApplication.translate("PCMConfigPage", u"cbc", None))
+        self.comboBox_solver.setItemText(3, QCoreApplication.translate("PCMConfigPage", u"appsi_highs", None))
 
         self.btn_info_solver.setText("")
         self.label_mini_gap.setText(QCoreApplication.translate("PCMConfigPage", u"Mipgap", None))

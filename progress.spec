@@ -1,5 +1,10 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import os
+import sys
+import shutil
+import subprocess
+
 from PyInstaller.utils.hooks import collect_submodules, collect_data_files, collect_all
 
 _pyomo_top = [
@@ -41,10 +46,26 @@ casadi_datas, casadi_binaries, casadi_hiddenimports = collect_all('casadi')
 pybamm_datas, pybamm_binaries, pybamm_hiddenimports = collect_all('pybamm')
 pybammsolvers_datas, pybammsolvers_binaries, pybammsolvers_hiddenimports = collect_all('pybammsolvers')
 
+glpk_binaries = []
+glpsol_path = shutil.which("glpsol")
+if glpsol_path:
+    glpk_binaries.append((glpsol_path, "glpk"))
+    if sys.platform == "darwin":
+        output = subprocess.check_output(["otool", "-L", glpsol_path], text=True)
+        for line in output.splitlines()[1:]:
+            lib = line.split()[0]
+            if os.path.isfile(lib) and "/opt/homebrew" in lib:
+                glpk_binaries.append((lib, "glpk"))
+    elif sys.platform == "win32":
+        glpk_dir = os.path.dirname(glpsol_path)
+        for f in os.listdir(glpk_dir):
+            if f.lower().endswith(".dll"):
+                glpk_binaries.append((os.path.join(glpk_dir, f), "glpk"))
+
 a = Analysis(
     ['progress/__main__.py'],
     pathex=[],
-    binaries=casadi_binaries + pybamm_binaries + pybammsolvers_binaries,
+    binaries=casadi_binaries + pybamm_binaries + pybammsolvers_binaries + glpk_binaries,
     datas=[
         ('progress/resources', 'progress/resources'),
         ('progress/Images', 'progress/Images'),

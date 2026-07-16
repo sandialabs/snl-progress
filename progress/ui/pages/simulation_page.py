@@ -64,7 +64,7 @@ class PCMConfigDialog(QDialog):
         msgbox.information(self, "Start Date", "Start date for the PCM simulation in MM/DD/YYYY format. The end date is determined based on the total simulation hours.")
 
     def _display_solver_info(self, checked: bool = False) -> None:
-        msgbox.information(self, "Solver", "Solver to use for PCM optimization. Options include 'gurobi', 'cplex', 'cbc', etc.")
+        msgbox.information(self, "Solver", "Solver to use for PCM optimization. Options include 'gurobi', 'cplex', 'cbc', 'appsi_highs', etc.")
 
     def _display_mipgap_info(self, checked: bool = False) -> None:
         msgbox.information(self, "MIP Gap", "MIP gap tolerance for PCM optimization. Lower values yield more optimal solutions but increase computation time.")

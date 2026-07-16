@@ -39,7 +39,7 @@ pcm_parameters:
   pcm_venv_path: 
     /Users/eecabre/projects/QuESt/quest-apps/quest_PCM/pcm_venv/bin/python # directory where PCM virtual environment is located
   start_date: 01/01/2020 # start date for PCM simulation in MM/DD/YYYY format. End date is determined based on sim_hours
-  solver: 'cbc'    # solver to be used for PCM optimization; options are 'gurobi', 'cplex', 'cbc', etc. 
+  solver: 'cbc'    # solver to be used for PCM optimization; options are 'gurobi', 'cplex', 'cbc', 'appsi_highs', etc.
   mipgap: 0.5  # MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time.
   solve_pricing_problem: false # True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.
   storage_AS_mode: true  # True/False based on whether user wants to include BESS participating in ancillary services.

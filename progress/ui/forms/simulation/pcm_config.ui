@@ -216,6 +216,11 @@
              <string>cbc</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>appsi_highs</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item>
