@@ -130,17 +130,25 @@ class PCM:
             temp_script = f.name
 
         logger.info("Generating PCM JSON input files...")
-        result = subprocess.run([self.pcm_venv_path, temp_script], check=True,
-                                capture_output=True, text=True)
+        env = os.environ.copy()
+        env["PYTHONUNBUFFERED"] = "1"
+        proc = subprocess.Popen(
+            [self.pcm_venv_path, temp_script],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=env
+        )
+        for line in proc.stdout:
+            stripped = line.strip()
+            if stripped and "HiGHS" not in stripped:
+                logger.info(stripped)
+        for line in proc.stderr:
+            stripped = line.strip()
+            if stripped:
+                logger.error(stripped)
+        proc.wait()
         os.remove(temp_script)
-        if result.stdout.strip():
-            for line in result.stdout.strip().splitlines():
-                if "DATA Warning" in line:
-                    logger.debug(line)
-                else:
-                    logger.info(line)
-        if result.stderr.strip():
-            logger.debug("PCM export JSON stderr: %s", result.stderr.strip())
         logger.info("PCM JSON input files generated")
 
     def modify_pcm_json(self):
@@ -318,14 +326,25 @@ class PCM:
             temp_script = f.name
 
         logger.info("Running PCM market simulation...")
-        result = subprocess.run([self.pcm_venv_path, temp_script], check=True,
-                                capture_output=True, text=True)
+        env = os.environ.copy()
+        env["PYTHONUNBUFFERED"] = "1"
+        proc = subprocess.Popen(
+            [self.pcm_venv_path, temp_script],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            env=env
+        )
+        for line in proc.stdout:
+            stripped = line.strip()
+            if stripped and "HiGHS" not in stripped:
+                logger.info(stripped)
+        for line in proc.stderr:
+            stripped = line.strip()
+            if stripped:
+                logger.error(stripped)
+        proc.wait()
         os.remove(temp_script)
-        if result.stdout.strip():
-            for line in result.stdout.strip().splitlines():
-                logger.info(line)
-        if result.stderr.strip():
-            logger.error("PCM simulation stderr: %s", result.stderr.strip())
         logger.info("PCM market simulation complete")
 
     def extract_load_curtailment(self):
