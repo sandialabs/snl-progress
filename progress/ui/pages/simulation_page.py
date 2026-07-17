@@ -41,7 +41,7 @@ class PCMConfigDialog(QDialog):
 
         # info buttons
         self.ui.btn_info_venv.clicked.connect(self._display_venv_info)
-        self.ui.btn_info_start_date.clicked.connect(self._display_start_date_info)
+        self.ui.btn_info_output_freq.clicked.connect(self._display_output_freq_info)
         self.ui.btn_info_solver.clicked.connect(self._display_solver_info)
         self.ui.btn_info_mipgap.clicked.connect(self._display_mipgap_info)
         self.ui.btn_info_pricing.clicked.connect(self._display_pricing_info)
@@ -60,8 +60,8 @@ class PCMConfigDialog(QDialog):
     def _display_venv_info(self, checked: bool = False) -> None:
         msgbox.information(self, "PCM Venv Path", "Path to the Python executable of the virtual environment where PCM is installed.")
 
-    def _display_start_date_info(self, checked: bool = False) -> None:
-        msgbox.information(self, "Start Date", "Start date for the PCM simulation in MM/DD/YYYY format. The end date is determined based on the total simulation hours.")
+    def _display_output_freq_info(self, checked: bool = False) -> None:
+        msgbox.information(self, "PCM Output Frequency", "How often PCM results are written: 'at_once' (end of simulation), 'daily', 'weekly', or 'monthly'.")
 
     def _display_solver_info(self, checked: bool = False) -> None:
         msgbox.information(self, "Solver", "Solver to use for PCM optimization. Options include 'gurobi', 'cplex', 'cbc', 'appsi_highs', etc.")
@@ -80,12 +80,10 @@ class PCMConfigDialog(QDialog):
         pcm = config.get("pcm_parameters", {})
         self.ui.lineEdit_pcm_venv.setText(pcm.get("pcm_venv_path", ""))
 
-        try:
-            date_parts = pcm.get("start_date", "01/01/2020").split("/")
-            d = QDate(int(date_parts[2]), int(date_parts[0]), int(date_parts[1]))
-            self.ui.dateEdit_start_date.setDate(d)
-        except (ValueError, IndexError):
-            pass
+        output_freq = pcm.get("pcm_output_frequency", "at_once")
+        idx = self.ui.comboBox_output_freq.findText(output_freq, Qt.MatchFlag.MatchFixedString)
+        if idx >= 0:
+            self.ui.comboBox_output_freq.setCurrentIndex(idx)
 
         solver = pcm.get("solver", "appsi_highs")
         idx = self.ui.comboBox_solver.findText(solver, Qt.MatchFlag.MatchFixedString)
@@ -105,7 +103,7 @@ class PCMConfigDialog(QDialog):
     def _save_config(self):
         pcm_params = {
             "pcm_venv_path": self.ui.lineEdit_pcm_venv.text().strip(),
-            "start_date": self.ui.dateEdit_start_date.date().toString("MM/dd/yyyy"),
+            "pcm_output_frequency": self.ui.comboBox_output_freq.currentText().strip(),
             "solver": SingleQuotedScalarString(self.ui.comboBox_solver.currentText().strip()),
             "mipgap": self.ui.doubleSpin_mini_gap.value(),
             "solve_pricing_problem": self.ui.radio_solve_pricing_true.isChecked(),

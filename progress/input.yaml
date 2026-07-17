@@ -1,8 +1,7 @@
 # ProGRESS Configuration File
 
 # Data file directory
-data: "C:\\Dilip\\Quest_Reliability\\PRoGRESS_multiperiod\\cds_branch\\snl-progress_pcm_integration\\\
-  progress\\Data"
+data: "/Users/user/projects/QuESt/snl-progress/progress/Data"
 # data: "./progress/Data/"
 
 # Inputs for Wind (check ERA5 for data availability)
@@ -39,9 +38,9 @@ use_pcm: true
 #pcm parameters
 pcm_parameters:
   pcm_venv_path: 
-    C:/Dilip/PCM_MAIN/PCM_dpandit/test_quest_PCM/progress_integration/pcm_venv_prog/Scripts/python.exe # directory where PCM virtual environment is located
-  solver: 'cplex'    # solver to be used for PCM optimization; options are 'gurobi', 'cplex', 'cbc', etc. 
+    /Users/user/projects/QuESt/quest_PCM/pcm_venv/Scripts/python.exe                       # directory where PCM virtual environment is located
+  pcm_output_frequency: weekly   # Frequency for generating PCM output plots. Options: 'daily', 'weekly', 'monthly', 'at_once'. More frequent output creates finer-grained plots but increases the number of output subfolders and postprocessing time.
+  solver: 'appsi_highs' # solver to be used for PCM optimization; options are 'gurobi', 'cplex', 'cbc', etc. 
   mipgap: 0.05  # MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time.
-  pcm_output_frequency: 'weekly' # Frequency for generating PCM output plots. Options: 'daily', 'weekly', 'monthly', 'at_once'. More frequent output creates finer-grained plots but increases the number of output subfolders and postprocessing time.
   solve_pricing_problem: true # True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.
   storage_AS_mode: true  # True/False based on whether user wants to include BESS participating in ancillary services.

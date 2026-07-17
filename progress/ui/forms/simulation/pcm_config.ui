@@ -33,6 +33,75 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QFrame" name="frame_pcm_logo">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>400</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_pcm_logo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>300</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../../../resources.qrc">:/logos/Images/logos/pcm_logo_square.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
        <widget class="QFrame" name="frame_pcm_venv">
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
@@ -97,7 +166,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="frame_start_date">
+       <widget class="QFrame" name="frame_output_freq">
         <property name="frameShape">
          <enum>QFrame::NoFrame</enum>
         </property>
@@ -112,38 +181,38 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="label_start_date">
+          <widget class="QLabel" name="label_output_freq">
            <property name="text">
-            <string>Start Date</string>
+            <string>PCM Output Frequency</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QDateEdit" name="dateEdit_start_date">
-           <property name="maximumDate">
-            <date>
-             <year>7999</year>
-             <month>12</month>
-             <day>31</day>
-            </date>
-           </property>
-           <property name="currentSection">
-            <enum>QDateTimeEdit::MonthSection</enum>
-           </property>
-           <property name="displayFormat">
-            <string>MM/dd/yyyy</string>
-           </property>
-           <property name="date">
-            <date>
-             <year>2020</year>
-             <month>1</month>
-             <day>8</day>
-            </date>
-           </property>
+          <widget class="QComboBox" name="comboBox_output_freq">
+           <item>
+            <property name="text">
+             <string>at_once</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>daily</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>weekly</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>monthly</string>
+            </property>
+           </item>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btn_info_start_date">
+          <widget class="QPushButton" name="btn_info_output_freq">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>

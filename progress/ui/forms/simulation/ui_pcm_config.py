@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QDateEdit, QDateTimeEdit,
-    QDoubleSpinBox, QFrame, QGroupBox, QHBoxLayout,
-    QLabel, QLineEdit, QPushButton, QRadioButton,
-    QSizePolicy, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QFrame,
+    QGroupBox, QHBoxLayout, QLabel, QLineEdit,
+    QPushButton, QRadioButton, QSizePolicy, QSpacerItem,
+    QVBoxLayout, QWidget)
 import resources_rc
 
 class Ui_PCMConfigPage(object):
@@ -34,6 +34,37 @@ class Ui_PCMConfigPage(object):
         self.groupBox_pcm_config.setObjectName(u"groupBox_pcm_config")
         self.verticalLayout_2 = QVBoxLayout(self.groupBox_pcm_config)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.frame_pcm_logo = QFrame(self.groupBox_pcm_config)
+        self.frame_pcm_logo.setObjectName(u"frame_pcm_logo")
+        self.frame_pcm_logo.setMaximumSize(QSize(16777215, 400))
+        self.frame_pcm_logo.setFrameShape(QFrame.NoFrame)
+        self.frame_pcm_logo.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_2 = QHBoxLayout(self.frame_pcm_logo)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer)
+
+        self.label_pcm_logo = QLabel(self.frame_pcm_logo)
+        self.label_pcm_logo.setObjectName(u"label_pcm_logo")
+        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_pcm_logo.sizePolicy().hasHeightForWidth())
+        self.label_pcm_logo.setSizePolicy(sizePolicy)
+        self.label_pcm_logo.setMaximumSize(QSize(300, 300))
+        self.label_pcm_logo.setPixmap(QPixmap(u":/logos/Images/logos/pcm_logo_square.png"))
+        self.label_pcm_logo.setScaledContents(False)
+
+        self.horizontalLayout_2.addWidget(self.label_pcm_logo)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
+
+
+        self.verticalLayout_2.addWidget(self.frame_pcm_logo)
+
         self.frame_pcm_venv = QFrame(self.groupBox_pcm_config)
         self.frame_pcm_venv.setObjectName(u"frame_pcm_venv")
         self.frame_pcm_venv.setFrameShape(QFrame.NoFrame)
@@ -53,9 +84,6 @@ class Ui_PCMConfigPage(object):
 
         self.btn_info_venv = QPushButton(self.frame_pcm_venv)
         self.btn_info_venv.setObjectName(u"btn_info_venv")
-        sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.btn_info_venv.sizePolicy().hasHeightForWidth())
         self.btn_info_venv.setSizePolicy(sizePolicy)
         self.btn_info_venv.setMaximumSize(QSize(40, 16777215))
@@ -70,39 +98,40 @@ class Ui_PCMConfigPage(object):
 
         self.verticalLayout_2.addWidget(self.frame_pcm_venv)
 
-        self.frame_start_date = QFrame(self.groupBox_pcm_config)
-        self.frame_start_date.setObjectName(u"frame_start_date")
-        self.frame_start_date.setFrameShape(QFrame.NoFrame)
-        self.frame_start_date.setFrameShadow(QFrame.Plain)
-        self.horizontalLayout_13 = QHBoxLayout(self.frame_start_date)
+        self.frame_output_freq = QFrame(self.groupBox_pcm_config)
+        self.frame_output_freq.setObjectName(u"frame_output_freq")
+        self.frame_output_freq.setFrameShape(QFrame.NoFrame)
+        self.frame_output_freq.setFrameShadow(QFrame.Plain)
+        self.horizontalLayout_13 = QHBoxLayout(self.frame_output_freq)
         self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
         self.horizontalLayout_13.setContentsMargins(-1, 0, -1, 0)
-        self.label_start_date = QLabel(self.frame_start_date)
-        self.label_start_date.setObjectName(u"label_start_date")
+        self.label_output_freq = QLabel(self.frame_output_freq)
+        self.label_output_freq.setObjectName(u"label_output_freq")
 
-        self.horizontalLayout_13.addWidget(self.label_start_date)
+        self.horizontalLayout_13.addWidget(self.label_output_freq)
 
-        self.dateEdit_start_date = QDateEdit(self.frame_start_date)
-        self.dateEdit_start_date.setObjectName(u"dateEdit_start_date")
-        self.dateEdit_start_date.setMaximumDate(QDate(7999, 12, 31))
-        self.dateEdit_start_date.setCurrentSection(QDateTimeEdit.MonthSection)
-        self.dateEdit_start_date.setDate(QDate(2020, 1, 8))
+        self.comboBox_output_freq = QComboBox(self.frame_output_freq)
+        self.comboBox_output_freq.addItem("")
+        self.comboBox_output_freq.addItem("")
+        self.comboBox_output_freq.addItem("")
+        self.comboBox_output_freq.addItem("")
+        self.comboBox_output_freq.setObjectName(u"comboBox_output_freq")
 
-        self.horizontalLayout_13.addWidget(self.dateEdit_start_date)
+        self.horizontalLayout_13.addWidget(self.comboBox_output_freq)
 
-        self.btn_info_start_date = QPushButton(self.frame_start_date)
-        self.btn_info_start_date.setObjectName(u"btn_info_start_date")
-        sizePolicy.setHeightForWidth(self.btn_info_start_date.sizePolicy().hasHeightForWidth())
-        self.btn_info_start_date.setSizePolicy(sizePolicy)
-        self.btn_info_start_date.setMaximumSize(QSize(40, 16777215))
-        self.btn_info_start_date.setIcon(icon)
-        self.btn_info_start_date.setIconSize(QSize(40, 40))
-        self.btn_info_start_date.setFlat(True)
+        self.btn_info_output_freq = QPushButton(self.frame_output_freq)
+        self.btn_info_output_freq.setObjectName(u"btn_info_output_freq")
+        sizePolicy.setHeightForWidth(self.btn_info_output_freq.sizePolicy().hasHeightForWidth())
+        self.btn_info_output_freq.setSizePolicy(sizePolicy)
+        self.btn_info_output_freq.setMaximumSize(QSize(40, 16777215))
+        self.btn_info_output_freq.setIcon(icon)
+        self.btn_info_output_freq.setIconSize(QSize(40, 40))
+        self.btn_info_output_freq.setFlat(True)
 
-        self.horizontalLayout_13.addWidget(self.btn_info_start_date)
+        self.horizontalLayout_13.addWidget(self.btn_info_output_freq)
 
 
-        self.verticalLayout_2.addWidget(self.frame_start_date)
+        self.verticalLayout_2.addWidget(self.frame_output_freq)
 
         self.frame_solver = QFrame(self.groupBox_pcm_config)
         self.frame_solver.setObjectName(u"frame_solver")
@@ -295,12 +324,17 @@ class Ui_PCMConfigPage(object):
     def retranslateUi(self, PCMConfigPage):
         PCMConfigPage.setWindowTitle(QCoreApplication.translate("PCMConfigPage", u"Form", None))
         self.groupBox_pcm_config.setTitle(QCoreApplication.translate("PCMConfigPage", u"PCM Parameters", None))
+        self.label_pcm_logo.setText("")
         self.label_pcm_venv.setText(QCoreApplication.translate("PCMConfigPage", u"PCM Venv Path", None))
         self.lineEdit_pcm_venv.setPlaceholderText(QCoreApplication.translate("PCMConfigPage", u"/path/to/pcm_virtual_env/Scripts/python.exe", None))
         self.btn_info_venv.setText("")
-        self.label_start_date.setText(QCoreApplication.translate("PCMConfigPage", u"Start Date", None))
-        self.dateEdit_start_date.setDisplayFormat(QCoreApplication.translate("PCMConfigPage", u"MM/dd/yyyy", None))
-        self.btn_info_start_date.setText("")
+        self.label_output_freq.setText(QCoreApplication.translate("PCMConfigPage", u"PCM Output Frequency", None))
+        self.comboBox_output_freq.setItemText(0, QCoreApplication.translate("PCMConfigPage", u"at_once", None))
+        self.comboBox_output_freq.setItemText(1, QCoreApplication.translate("PCMConfigPage", u"daily", None))
+        self.comboBox_output_freq.setItemText(2, QCoreApplication.translate("PCMConfigPage", u"weekly", None))
+        self.comboBox_output_freq.setItemText(3, QCoreApplication.translate("PCMConfigPage", u"monthly", None))
+
+        self.btn_info_output_freq.setText("")
         self.label_solver.setText(QCoreApplication.translate("PCMConfigPage", u"Solver", None))
         self.comboBox_solver.setItemText(0, QCoreApplication.translate("PCMConfigPage", u"gurobi", None))
         self.comboBox_solver.setItemText(1, QCoreApplication.translate("PCMConfigPage", u"cplex", None))

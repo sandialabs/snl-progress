@@ -17,8 +17,9 @@
     <file>Images/logos/progress_bold_s.svg</file>
     <file>Images/logos/SNL_logo_inverted.png</file>
     <file>Images/logos/DOE_inverted.png</file>
+    <file>Images/logos/pcm_logo_square.png</file>
   </qresource>
-  <qresource prefix="icons">
+  <qresource prefix="icons">  
     <file>Images/icons/qmark.png</file>
     <file>Images/icons/about.png</file>
     <file>Images/icons/progress_icon_up.png</file>
