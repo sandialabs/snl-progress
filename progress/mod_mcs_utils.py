@@ -76,8 +76,6 @@ class MCS_utils:
         self.DC_load_present = config.get('DC_load', False)
 
         self.enable_pcm = config["use_pcm"]
-        if self.enable_pcm and self.network_model != "Nodal":
-            raise ValueError("Currently, PCM model only supports Nodal network model.")
         if self.enable_pcm and self.time_periods != 24:
             raise ValueError("Currently, PCM only supports 24-hr multi-period model.")
         if self.enable_pcm:
@@ -253,8 +251,11 @@ class MCS_samples():
             holder_dict["ess_smax_limit"][ess_name] = []
             holder_dict["ess_smin_limit"][ess_name] = []
         holder_dict["load"] = {}
-        for bus_name in self.bus_params["busname"].values:
-            holder_dict["load"][bus_name] = []
+        if self.network_model == "Copper Sheet":
+            holder_dict["load"]["1"] = []
+        else:
+            for bus_name in self.load_all_regions.columns:
+                holder_dict["load"][bus_name] = []
 
     def initialize_sample_data(self):
         """Initialize arrays and lists used to record sample-level hourly results."""
@@ -319,7 +320,7 @@ class MCS_samples():
             tuple: updated var_s, updated LOL_track
         """
         
-        pcm_obj = PCM(self.sim_hours, self.pcm_parameters, self.data, sample_subdir, holder_dict, self.load_factor)
+        pcm_obj = PCM(self.sim_hours, self.pcm_parameters, self.data, sample_subdir, holder_dict, self.load_factor, self.network_model)
         pcm_obj.export_pcm_yaml()
         pcm_obj.export_PCM_json()
         pcm_obj.modify_pcm_json()
@@ -556,8 +557,12 @@ class MCS_hourly(MCS_samples):
                 for i in range(self.solar_params["s_sites"]):
                     site_name = self.solar_params["farm_name"].loc[i]
                     holder_dict["solar_limit"][site_name].extend(list(s_gen_sites[i, :]))
-        for bus_name in self.bus_params["busname"].values:
-            holder_dict["load"][bus_name].append(self.load_plus_dc.loc[hour, bus_name])
+        if self.network_model == "Copper Sheet":
+            current_hour_load = self.load_plus_dc.loc[hour, :].sum()
+            holder_dict["load"]["1"].append(current_hour_load)
+        else:
+            for bus_name in self.load_plus_dc.columns:
+                holder_dict["load"][bus_name].append(self.load_plus_dc.loc[hour, bus_name])
             
     def degradation_evaluation(self, n, ess_duration_temp, SOC_old):
         """Evaluate battery degradation at configured degradation intervals.

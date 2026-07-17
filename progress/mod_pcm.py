@@ -6,6 +6,7 @@ results, running the PCM simulation, and extracting summary curtailment data.
 """
 
 import logging
+from datetime import datetime
 import os
 import subprocess
 import tempfile
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 class PCM:
     """Wrapper for PCM model export, execution, and result extraction."""
 
-    def __init__(self, sim_hours, pcm_config, input_directory, output_directory, progress_data, load_factor):
+    def __init__(self, sim_hours, pcm_config, input_directory, output_directory, progress_data, load_factor, network_model):
         """Initialize the PCM helper with configuration and simulation data.
 
         Parameters
@@ -36,6 +37,8 @@ class PCM:
             Progress model data used to modify PCM JSON inputs.
         load_factor : float
             Load scaling factor to apply to PCM load profiles.
+        network_model : str
+            Network model type ('Copper Sheet', 'Zonal', or 'Nodal').
         """
 
         self.sim_hours = sim_hours
@@ -46,6 +49,7 @@ class PCM:
         os.makedirs(self.pcm_directory, exist_ok=True)
         self.progress_data = progress_data
         self.load_factor = load_factor
+        self.network_model = network_model
         logger.info("PCM initialized for %d simulation hours", sim_hours)
 
     def export_pcm_yaml(self):
@@ -58,7 +62,10 @@ class PCM:
         pcm_yaml["solver"] = self.pcm_config["solver"]
         pcm_yaml["mipgap"] = self.pcm_config["mipgap"]
         pcm_yaml["baseMVA"] = 100.0
-        pcm_yaml["start_date"] = self.pcm_config["start_date"]
+        load_data = pd.read_csv(os.path.join(self.pcm_data_dir, "System", "load.csv"), index_col=0)
+        
+        dt =  datetime.strptime(load_data.index[0], '%Y-%m-%d %H:%M:%S')
+        pcm_yaml["start_date"] = dt.strftime('%m/%d/%Y')
         pcm_yaml["DA_lookahead_periods"] = self.pcm_config.get("lookahead_hours")
         start_dt = pd.to_datetime(pcm_yaml["start_date"], dayfirst=True)
         lookahead_pad_hours = int(np.ceil(self.pcm_config["lookahead_hours"] / 24) * 24)
@@ -75,7 +82,7 @@ class PCM:
         pcm_yaml["solve_pricing_problem"] = self.pcm_config["solve_pricing_problem"] 
         pcm_yaml["load_timeseries_aggregation_level"] = "node"
         
-        pcm_yaml["System Reserve"] = "percentage"
+        pcm_yaml["System Reserve"] = "None"
         pcm_yaml["Regulation Up"] = "timeseries"
         pcm_yaml["Regulation Down"] = "timeseries"
         pcm_yaml["Spinning Reserve"] = "timeseries"
@@ -87,7 +94,7 @@ class PCM:
         pcm_yaml["storage_AS_participation_level"] = 4 if self.pcm_config["storage_AS_mode"] else 0 
         pcm_yaml["evaluate_degradation"] = True 
 
-        pcm_yaml["output_interval"] = "weekly" 
+        pcm_yaml["output_interval"] = self.pcm_config["pcm_output_frequency"]
         pcm_yaml["plotly_plots"] = False 
         pcm_yaml["plot_ancillary_services"] = False
         pcm_yaml["plot_storage_details"] = True 
@@ -149,7 +156,34 @@ class PCM:
         with open(pcm_json_path, "r") as f:
             pcm_data = json.load(f)
         
+       
+        if self.network_model in {"Copper Sheet", "Zonal"}:
+            new_buses = {}
+            bus_to_zone_mapper = {}
+            for bus_name, bus_details in pcm_data["elements"]["bus"].items():
+
+                if self.network_model == "Copper Sheet":
+                    new_bus_name = "1"
+                else:  # Zonal
+                    new_bus_name = bus_details["zone"]
+
+                # Map every original bus to its new bus
+                bus_to_zone_mapper[bus_name] = new_bus_name
+
+                # Keep only one representative for each new bus
+                if new_bus_name not in new_buses:
+                    bus_details["bus_name"] = f"Zone_{new_bus_name}"
+                    new_buses[new_bus_name] = bus_details
+
+            pcm_data["elements"]["bus"] = new_buses
+                
         for current_gen_name, current_gen_details in pcm_data["elements"]["generator"].items():
+
+            if self.network_model in {"Copper Sheet", "Zonal"}:
+                original_bus_name = current_gen_details["bus"]
+                new_bus_name = bus_to_zone_mapper[original_bus_name]
+                current_gen_details["bus"] = new_bus_name
+
             if current_gen_details["generator_type"] == "thermal":
                 gen_status = self.progress_data["tg_status"][current_gen_name]
                 gen_status = [None if x == 1 else x for x in gen_status]
@@ -171,21 +205,79 @@ class PCM:
                 gen_limit = self.progress_data["wind_limit"][current_gen_name]
                 current_gen_details["p_max"]["values"] = gen_limit
         
-        for current_branch_name, current_branch_details in pcm_data["elements"]["branch"].items():
-            branch_status = self.progress_data["line_status"][current_branch_name]
-            branch_status_bool =  [int(1-x) for x in branch_status]
-            current_branch_details["planned_outage"] = {"data_type": "time_series",
-                                                        "values": branch_status_bool}
+        if self.network_model == "Nodal":
+            # Keep all branches
+            for branch_name, branch_details in pcm_data["elements"]["branch"].items():
+                branch_status = self.progress_data["line_status"][branch_name]
+                branch_details["planned_outage"] = {
+                    "data_type": "time_series",
+                    "values": [1 - x for x in branch_status],
+                }
 
-        for load_element_name, load_element_details in pcm_data["elements"]["load"].items():
-            bus_name = pcm_data["elements"]["bus"][load_element_name]["bus_name"]
-            stored_load = self.progress_data["load"][bus_name]
-            load_element_details["p_load"]["values"] = [p * self.load_factor for p in stored_load]
+        elif self.network_model == "Zonal":
+            # Keep only interzonal branches
+            new_branches = {}
+
+            for branch_name, branch_details in pcm_data["elements"]["branch"].items():
+                from_bus = bus_to_zone_mapper[branch_details["from_bus"]]
+                to_bus = bus_to_zone_mapper[branch_details["to_bus"]]
+
+                if from_bus == to_bus:
+                    continue
+
+                branch_status = self.progress_data["line_status"][branch_name]
+                branch_details["planned_outage"] = {
+                    "data_type": "time_series",
+                    "values": [1 - x for x in branch_status],
+                }
+                branch_details["from_bus"] = from_bus
+                branch_details["to_bus"] = to_bus
+
+                new_branches[branch_name] = branch_details
+
+            pcm_data["elements"]["branch"] = new_branches
+
+        elif self.network_model == "Copper Sheet":
+            # No transmission network
+            pcm_data["elements"]["branch"] = {}
+
+        if self.network_model == "Nodal":
+            for load_element_name, load_element_details in pcm_data["elements"]["load"].items():
+                bus_name = pcm_data["elements"]["bus"][load_element_name]["bus_name"]
+                stored_load = self.progress_data["load"][bus_name]
+                load_element_details["p_load"]["values"] = [p * self.load_factor for p in stored_load]
+        elif self.network_model == "Zonal":
+            pcm_data["elements"]["load"] = {}
+            new_load_dict = {}
+            for load_region, load_array in self.progress_data["load"].items():
+                new_load_dict[load_region] = {
+                    "bus": load_region,
+                    "area"  : load_region,
+                    "p_load": {"data_type": "time_series", "values": [p * self.load_factor for p in load_array]},
+                }
+            pcm_data["elements"]["load"] = new_load_dict
+        elif self.network_model == "Copper Sheet":
+            pcm_data["elements"]["load"] = {}
+            new_load_dict = {}
+            system_wide_load = np.sum([np.array(load_array) for load_array in self.progress_data["load"].values()], axis=0)
+            new_load_dict["1"] = {
+                "bus": "1",
+                "area"  : "1",
+                "p_load": {"data_type": "time_series", "values": [p * self.load_factor for p in system_wide_load]},
+            }
+            pcm_data["elements"]["load"] = new_load_dict
 
         for storage_name, storage_details in pcm_data["elements"]["storage"].items():
+            if self.network_model in {"Copper Sheet", "Zonal"}:
+                original_bus_name = storage_details["bus"]
+                new_bus_name = bus_to_zone_mapper[original_bus_name]
+                storage_details["bus"] = new_bus_name
             storage_details["ess_smax"]["values"] = self.progress_data["ess_smax_limit"][storage_name]
             storage_details["ess_smin"]["values"] = self.progress_data["ess_smin_limit"][storage_name]
             storage_details["ess_pmax"]["values"] = self.progress_data["ess_pmax_limit"][storage_name]
+
+        if self.network_model == "Copper Sheet":
+            pcm_data["elements"]["area"] = {}
 
         with open(pcm_json_path, "w") as f:
             json.dump(pcm_data, f, indent=4)

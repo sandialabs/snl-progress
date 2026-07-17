@@ -1,7 +1,8 @@
 # ProGRESS Configuration File
 
 # Data file directory
-data: "/Users/eecabre/projects/QuESt/quest-apps/snl-progress/progress/Data"
+data: "C:\\Dilip\\Quest_Reliability\\PRoGRESS_multiperiod\\cds_branch\\snl-progress_pcm_integration\\\
+  progress\\Data"
 # data: "./progress/Data/"
 
 # Inputs for Wind (check ERA5 for data availability)
@@ -17,10 +18,10 @@ n_clusters: 2 # number of K-means clusters for the solar data
 
 # Monte Carlo simulation parameters
 samples: 1 # no. of Monte Carlo samples to run
-sim_hours: 24  # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
+sim_hours: 48  # total no. of simulation hours for each sample; 1 non-leap year = 8760 hours
 load_factor: 1.25 # tweak to increase/decrease load at all buses; default = 1
 dispatch_solver: 'glpk'  # solver for Pyomo dispatch optimization; options: 'glpk', 'cbc', 'appsi_highs'
-model: 'Nodal'        # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zonal' (medium fidelity, nodes within a region/zone aggregated), 'Nodal' (highest fidelity)
+model: 'Copper Sheet'        # 'Copper Sheet' (lowest fidelity, no network constraints), 'Zonal' (medium fidelity, nodes within a region/zone aggregated), 'Nodal' (highest fidelity)
 
 # Optimization horizon in hours
 optimization_period: 24 # = 1 for reliability mode; = multiples of 24 for day ahead hourly optimization; Recommended: 24 
@@ -38,9 +39,9 @@ use_pcm: true
 #pcm parameters
 pcm_parameters:
   pcm_venv_path: 
-    /Users/eecabre/projects/QuESt/quest-apps/quest_PCM/pcm_venv/bin/python # directory where PCM virtual environment is located
-  start_date: 01/01/2020 # start date for PCM simulation in MM/DD/YYYY format. End date is determined based on sim_hours
-  solver: 'cbc'    # solver to be used for PCM optimization; options are 'gurobi', 'cplex', 'cbc', 'appsi_highs', etc.
-  mipgap: 0.5  # MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time.
-  solve_pricing_problem: false # True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.
+    C:/Dilip/PCM_MAIN/PCM_dpandit/test_quest_PCM/progress_integration/pcm_venv_prog/Scripts/python.exe # directory where PCM virtual environment is located
+  solver: 'cplex'    # solver to be used for PCM optimization; options are 'gurobi', 'cplex', 'cbc', etc. 
+  mipgap: 0.05  # MIP gap for PCM optimization; lower values lead to more optimal solutions but increase computation time.
+  pcm_output_frequency: 'weekly' # Frequency for generating PCM output plots. Options: 'daily', 'weekly', 'monthly', 'at_once'. More frequent output creates finer-grained plots but increases the number of output subfolders and postprocessing time.
+  solve_pricing_problem: true # True/False based on whether user wants to solve the pricing problem in PCM. Increses computation time but generates LMPs, revenues, etc.
   storage_AS_mode: true  # True/False based on whether user wants to include BESS participating in ancillary services.
