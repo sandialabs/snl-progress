@@ -58,8 +58,16 @@ if glpsol_path:
                 glpk_binaries.append((lib, "glpk"))
     elif sys.platform == "win32":
         glpk_dir = os.path.dirname(glpsol_path)
-        for f in os.listdir(glpk_dir):
-            if f.lower().endswith(".dll"):
+        glpk_dlls = [f for f in os.listdir(glpk_dir) if f.lower().endswith(".dll")]
+        if not glpk_dlls:
+            candidate = os.path.normpath(os.path.join(glpk_dir, "..", "lib", "glpk"))
+            if os.path.isdir(candidate):
+                for root, _, files in os.walk(candidate):
+                    for f in files:
+                        if f.lower().endswith(".dll"):
+                            glpk_binaries.append((os.path.join(root, f), "glpk"))
+        else:
+            for f in glpk_dlls:
                 glpk_binaries.append((os.path.join(glpk_dir, f), "glpk"))
 
 a = Analysis(
