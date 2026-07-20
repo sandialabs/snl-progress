@@ -4,19 +4,25 @@ on:
   push:
     tags:
       - "v*"
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and publish (e.g. v2.0.0)'
+        required: true
+        type: string
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    environment: release   # manual approval gate
     permissions:
       id-token: write
-
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref_name }}
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 
@@ -27,5 +33,4 @@ jobs:
         run: poetry build
 
       - name: Publish to PyPI
-        if: startsWith(github.ref, 'refs/tags/')
         uses: pypa/gh-action-pypi-publish@release/v1
