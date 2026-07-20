@@ -71,7 +71,7 @@ A detailed description of the `.csv` files along with the column names is provid
 | MTTF     | Mean Time to Failure         |
 | Cost     | Cost of generation           |
 
-Additional data will be required for PCM runs. Please check additional features documentation. 
+Additional data will be required for PCM runs. Instructions for preparing the required supplemental data are provided [here](https://github.com/sandialabs/quest_PCM/blob/progress_integration/Data/data_readme.md).  
 
 #### `load.csv`
 
