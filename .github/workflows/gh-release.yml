@@ -1,4 +1,5 @@
 name: Github Build and Release
+
 on:
   push:
     tags:
@@ -15,6 +16,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -48,22 +50,31 @@ jobs:
         run: Compress-Archive -Path dist/snl-progress -DestinationPath snl-progress-windows.zip
         shell: pwsh
 
-      - uses: actions/upload-artifact@v4
+      - name: Upload macOS artifact
+        if: runner.os == 'macOS'
+        uses: actions/upload-artifact@v4
         with:
-          name: build-${{ runner.os }}
-          path: |
-            snl-progress-macos.zip
-            snl-progress-windows.zip
-          if-no-files-found: warn
+          name: build-macOS
+          path: dist/snl-progress-macos.zip
+          if-no-files-found: error
+
+      - name: Upload Windows artifact
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-Windows
+          path: snl-progress-windows.zip
+          if-no-files-found: error
 
   release:
     needs: build
     runs-on: ubuntu-latest
-    environment: release   # reuse existing manual approval gate
+    environment: release
+
     steps:
       - uses: actions/checkout@v4
         with:
-            ref: ${{ github.event.inputs.tag || github.ref_name }}
+          ref: ${{ github.event.inputs.tag || github.ref_name }}
 
       - name: Zip source code
         run: zip -r snl-progress-source.zip . -x ".git/*" "build/*" "dist/*"
@@ -76,8 +87,8 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           draft: true
-          tag_name: ${{ github.ref_name }}
-          name: snl-progress.app/.exe ${{ github.ref_name }}
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: snl-progress.app/.exe ${{ github.event.inputs.tag || github.ref_name }}
           body_path: .github/release-notes.md
           files: |
             artifacts/build-Windows/snl-progress-windows.zip
