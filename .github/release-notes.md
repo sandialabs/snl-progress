@@ -117,6 +117,7 @@ The release also introduces a redesigned desktop application, richer result visu
 
 ## Known Limitations
 
+- The standalone desktop executable (`snl-progress`) bundles only the GLPK solver for dispatch optimization and uses HiGHS for PCM. To use CBC, CPLEX, Gurobi, or other solvers, run ProGRESS as a Python module (`python -m progress`) or command-line workflow (`python -m progress.example_simulation`) and configure the desired solver in `input.yaml`. See the [Workflow](https://github.com/sandialabs/snl-progress/wiki/Workflow) page for the full solver compatibility matrix.
 - PCM co-simulation currently requires the nodal network model and a 24-hour optimization period. (Dilip check this)
 - PCM and battery degradation cannot currently be enabled in the same simulation. (Dilip check this)
 - PCM co-simulation is not supported by the MPI workflow. (Dilip check this)
@@ -124,7 +125,7 @@ The release also introduces a redesigned desktop application, richer result visu
 
 ## Assets
 
-- Windows release archives include the packaged ProGRESS application and supporting data files.
+- Standalone ProGRESS executables are available for macOS and Windows. The executables bundle GLPK for dispatch optimization and HiGHS for PCM. CBC, CPLEX, Gurobi, and other solvers require a source installation or a custom rebuild. See [Building the Executable](https://github.com/sandialabs/snl-progress/wiki/Building-the-Executable) for rebuild instructions.
 - Source installations can launch the GUI with:
 
   ```bash

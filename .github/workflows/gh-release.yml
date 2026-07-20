@@ -1,33 +1,80 @@
-name: GitHub Release
-
+name: Github Build and Release
 on:
   push:
     tags:
-      - "v*"
-    branches:
-      - main
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build and release (e.g. v2.0.0)'
+        required: true
+        type: string
 
 jobs:
-  release:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - name: Install GLPK (Windows)
+        if: runner.os == 'Windows'
+        run: choco install glpk -y
+
+      - name: Install GLPK (macOS)
+        if: runner.os == 'macOS'
+        run: brew install glpk
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.11"
+          python-version: '3.x'
 
-      - name: Install Poetry
-        run: pip install poetry
+      - name: Install dependencies
+        run: pip install -r requirements.txt pyinstaller
 
-      - name: Build package
-        run: poetry build
+      - name: Build
+        run: pyinstaller progress.spec
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
+      - name: Zip artifact (macOS .app)
+        if: runner.os == 'macOS'
+        run: cd dist && zip -r snl-progress-macos.zip snl-progress.app
+
+      - name: Zip artifact (Windows)
+        if: runner.os == 'Windows'
+        run: Compress-Archive -Path dist/snl-progress -DestinationPath snl-progress-windows.zip
+        shell: pwsh
+
+      - uses: actions/upload-artifact@v8
         with:
-          generate_release_notes: true
-          files: dist/*
+          name: build-${{ runner.os }}
+          path: |
+            snl-progress-macos.zip
+            snl-progress-windows.zip
+          if-no-files-found: ignore
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: release   # reuse existing manual approval gate
+    steps:
+      - uses: actions/checkout@v7
+        with:
+            ref: ${{ github.event.inputs.tag || github.ref_name }}
+      - uses: actions/download-artifact@v8
+        with:
+          path: artifacts
+
+      - name: Create/update draft release
+        uses: softprops/action-gh-release@v3
+        with:
+          draft: true
+          tag_name: ${{ github.ref_name }}
+          name: snl-progress.app/.exe ${{ github.ref_name }}
+          body_path: .github/release-notes.md
+          files: |
+            artifacts/build-Windows/snl-progress-windows.zip
+            artifacts/build-macOS/snl-progress-macos.zip
