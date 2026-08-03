@@ -14,6 +14,7 @@ import textwrap
 import pandas as pd
 import numpy as np
 import json
+from progress.paths import get_path
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +43,9 @@ class PCM:
         """
 
         self.sim_hours = sim_hours
-        self.pcm_venv_path = pcm_config["pcm_venv_path"]
+        root_dir = get_path()
+        venv_path = root_dir / "env_pcm" / "Scripts" / "python.exe"
+        self.pcm_venv_path = venv_path
         self.pcm_data_dir = input_directory
         self.pcm_config = pcm_config
         self.pcm_directory = output_directory

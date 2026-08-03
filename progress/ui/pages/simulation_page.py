@@ -1,5 +1,5 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QFileDialog, QDialog, QPushButton
-from PySide6.QtCore import QDate, QSettings, QTimer, Qt
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QFileDialog, QDialog, QPushButton, QHBoxLayout, QMessageBox, QLabel
+from PySide6.QtCore import QDate, QSettings, QTimer, Qt, QProcess
 from progress.ui.forms.simulation.ui_simulation import Ui_SimulationPage
 from progress.ui.forms.simulation.ui_pcm_config import Ui_PCMConfigPage
 from progress.ui.utils.worker import ProcessingThread
@@ -8,39 +8,40 @@ from progress.example_simulation import MCS
 from progress.ui.utils.data_handler import DataHandler
 from progress.ui import msgbox
 from dataclasses import dataclass
-from pathlib import Path
 import datetime
 import logging
+import sys
+import shutil
+from progress import pcm_installer
 from ruamel.yaml import YAML
 from ruamel.yaml.scalarstring import SingleQuotedScalarString
 import yaml
 
 logger = logging.getLogger(__name__)
 
-
 class PCMConfigDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAttribute(Qt.WA_StyledBackground)
+
         settings = QSettings("QuESt", "snl-progress")
         theme = settings.value("theme", "light")
         bg = "#1e293b" if theme == "dark" else "#ffffff"
         self.setStyleSheet(f"background-color: {bg};")
+
         self.ui = Ui_PCMConfigPage()
         self.ui.setupUi(self)
         self.setWindowTitle("PCM Configuration")
         self.setModal(True)
 
+        self._install_process = None
+
+        self._replace_pcm_venv_row_with_install_buttons()
+
         self.ui.btn_save_config.clicked.connect(self._save_config)
         self.ui.btn_exit_config.clicked.connect(self.close)
 
-        self.ui.btn_browse_venv = QPushButton("Browse...")
-        self.ui.btn_browse_venv.setObjectName("btn_browse_venv")
-        self.ui.horizontalLayout_14.insertWidget(2, self.ui.btn_browse_venv)
-        self.ui.btn_browse_venv.clicked.connect(self._browse_venv)
-
-        # info buttons
-        self.ui.btn_info_venv.clicked.connect(self._display_venv_info)
+        # Info buttons
         self.ui.btn_info_output_freq.clicked.connect(self._display_output_freq_info)
         self.ui.btn_info_solver.clicked.connect(self._display_solver_info)
         self.ui.btn_info_mipgap.clicked.connect(self._display_mipgap_info)
@@ -48,45 +49,319 @@ class PCMConfigDialog(QDialog):
         self.ui.btn_info_storage_mode.clicked.connect(self._display_storage_mode_info)
 
         self._load_from_yaml()
+        self._refresh_install_buttons()
 
-    def _browse_venv(self):
-        path, _ = QFileDialog.getOpenFileName(
-            self, "Select PCM Python Executable",
-            self.ui.lineEdit_pcm_venv.text() or str(Path.home()),
-            "Python (python*);;All Files (*)")
-        if path:
-            self.ui.lineEdit_pcm_venv.setText(path)
+    def _replace_pcm_venv_row_with_install_buttons(self):
+        """
+        Replace the old pcm_venv_path row with Install, Uninstall, and Status buttons.
 
-    def _display_venv_info(self, checked: bool = False) -> None:
-        msgbox.information(self, "PCM Venv Path", "Path to the Python executable of the virtual environment where PCM is installed.")
+        Assumes horizontalLayout_14 is the layout where pcm_venv_path used to be.
+        """
+        if not hasattr(self.ui, "horizontalLayout_14"):
+            return
+
+        layout = self.ui.horizontalLayout_14
+
+        # Clear old widgets from the pcm_venv_path row
+        self._clear_layout(layout)
+
+        # Add Install / Uninstall / Status buttons in the same row
+        self.ui.btn_install_pcm = QPushButton("Install")
+        self.ui.btn_install_pcm.setObjectName("btn_install_pcm")
+
+        self.ui.btn_uninstall_pcm = QPushButton("Uninstall")
+        self.ui.btn_uninstall_pcm.setObjectName("btn_uninstall_pcm")
+
+        self.ui.btn_pcm_install_status = QPushButton("Status")
+        self.ui.btn_pcm_install_status.setObjectName("btn_pcm_install_status")
+
+        self.ui.btn_install_pcm.clicked.connect(self._install_pcm)
+        self.ui.btn_uninstall_pcm.clicked.connect(self._uninstall_pcm)
+        self.ui.btn_pcm_install_status.clicked.connect(self._show_pcm_install_status)
+
+        self.ui.label_pcm_install_status = QLabel("")
+        self.ui.label_pcm_install_status.setObjectName("label_pcm_install_status")
+
+        layout.addWidget(self.ui.btn_install_pcm)
+        layout.addWidget(self.ui.btn_uninstall_pcm)
+        layout.addWidget(self.ui.btn_pcm_install_status)
+        layout.addWidget(self.ui.label_pcm_install_status)
+        layout.addStretch()
+
+    def _clear_layout(self, layout):
+        while layout.count():
+            item = layout.takeAt(0)
+
+            widget = item.widget()
+            if widget is not None:
+                widget.setParent(None)
+                widget.deleteLater()
+
+            child_layout = item.layout()
+            if child_layout is not None:
+                self._clear_layout(child_layout)
+
+    def _refresh_install_buttons(self):
+        """
+        Disable Install if PCM is already installed.
+        Enable Uninstall only when PCM is installed.
+        """
+        installed = pcm_installer.is_pcm_installed()
+
+        self.ui.btn_install_pcm.setEnabled(not installed)
+        self.ui.btn_uninstall_pcm.setEnabled(installed)
+
+    def _set_pcm_install_busy(self, busy: bool, status_text: str = ""):
+        """
+        Show or hide the PCM install progress bar and update button state.
+        """
+        self._install_busy = busy
+
+        if hasattr(self.ui, "progress_pcm_install"):
+            self.ui.progress_pcm_install.setVisible(busy)
+
+            if busy:
+                self.ui.progress_pcm_install.setRange(0, 0)
+                self.ui.progress_pcm_install.setFormat("Installing PCM...")
+
+        if hasattr(self.ui, "label_pcm_install_status"):
+            self.ui.label_pcm_install_status.setText(status_text)
+
+        self._refresh_install_buttons()
+
+    def _show_pcm_install_status(self, checked: bool = False) -> None:
+        """
+        Show current PCM installation status in a message box.
+        """
+        try:
+            installed = pcm_installer.is_pcm_installed()
+            env_dir = pcm_installer.get_pcm_env_dir()
+
+            if installed:
+                message = ("PCM is currently installed.\n\n" f"Installation location:\n{env_dir}")
+            else:
+                message = ("PCM is not currently installed.\n\n" f"Expected installation location:\n{env_dir}")
+
+            msgbox.information(self, "PCM Installation Status", message,)
+
+        except Exception as exc:
+            msgbox.warning(self, "PCM Installation Status", f"Unable to determine PCM installation status.\n\n{exc}",)
+            
+    def _install_pcm(self):
+        """
+        Runs pcm.bat or pcm.sh through the shared pcm_installer module.
+        Uses QProcess so the GUI does not freeze.
+        """
+        if pcm_installer.is_pcm_installed():
+            msgbox.information(self, "PCM Install", ("PCM is already installed at:\n" f"{pcm_installer.get_pcm_env_dir()}"),)
+            self._refresh_install_buttons()
+            return
+
+        try:
+            logger.info("QuEST PCM tool is being installed")
+            command = pcm_installer.get_install_command()
+
+            if not command.script_path.exists():
+                msgbox.warning(self, "PCM Install", f"Install script not found:\n{command.script_path}",)
+                return
+
+        except Exception as exc:
+            msgbox.warning(self, "PCM Install", f"Unable to prepare PCM install command.\n\n{exc}",)
+            return
+
+        self._install_process = QProcess(self)
+        self._install_process.setWorkingDirectory(str(command.working_directory))
+
+        self._install_process.finished.connect(self._install_pcm_finished)
+        self._install_process.errorOccurred.connect(self._install_pcm_error)
+
+        # Show ongoing progress bar
+        self._set_pcm_install_busy(True, "PCM installation is running. Please wait...")
+
+        self._install_process.start(command.program, command.arguments)
+
+    def _install_pcm_finished(self, exit_code, exit_status):
+        """
+        Called after pcm.bat or pcm.sh finishes.
+        """
+        if self._install_process is None:
+            return
+
+        stdout = bytes(
+            self._install_process.readAllStandardOutput()
+        ).decode(errors="replace")
+
+        stderr = bytes(
+            self._install_process.readAllStandardError()
+        ).decode(errors="replace")
+
+        self._install_process.deleteLater()
+        self._install_process = None
+
+        if exit_code == 0 and pcm_installer.is_pcm_installed():
+            self._set_pcm_install_busy(False, "PCM installed successfully.")
+
+            msgbox.information(self, "PCM Install", (
+                    "PCM installed successfully at:\n"
+                    f"{pcm_installer.get_pcm_env_dir()}"
+                ),
+            )
+        else:
+            self._set_pcm_install_busy(False, "PCM installation failed.")
+
+            msgbox.warning(
+                self, "PCM Install Failed", (
+                    "PCM installation did not complete successfully.\n\n"
+                    f"Exit code: {exit_code}\n\n"
+                    f"STDOUT:\n{stdout}\n\n"
+                    f"STDERR:\n{stderr}"
+                ),
+            )
+
+        self._refresh_install_buttons()
+
+    def _install_pcm_error(self, error):
+        """
+        Called if QProcess cannot start or fails unexpectedly.
+        """
+        self._refresh_install_buttons()
+
+        msgbox.warning(
+            self,
+            "PCM Install Error",
+            f"Failed to run the PCM install script.\n\nError: {error}",
+        )
+
+    def _uninstall_pcm(self):
+        """
+        Deletes root_dir/progress/pcm through the shared pcm_installer module.
+        """
+        if not pcm_installer.is_pcm_installed():
+            msgbox.information(
+                self,
+                "PCM Uninstall",
+                "PCM is not currently installed.",
+            )
+            self._refresh_install_buttons()
+            return
+
+        env_dir = pcm_installer.get_pcm_env_dir()
+
+        yes_button, no_button = self._message_box_yes_no_buttons()
+
+        reply = msgbox.question(
+            self,
+            "Uninstall PCM",
+            f"Delete PCM environment?\n\n{env_dir}",
+            yes_button | no_button
+        )
+
+        if reply != yes_button:
+            return
+
+        try:
+            msgbox.information(self, "pcm_venv_uninstall", "Please wait while the tool is uninstalled")
+            pcm_installer.uninstall_pcm()
+
+            msgbox.information(
+                self,
+                "PCM Uninstall",
+                "PCM was uninstalled successfully.",
+            )
+
+        except Exception as exc:
+            msgbox.warning(
+                self,
+                "PCM Uninstall Failed",
+                f"Failed to uninstall PCM.\n\n{exc}",
+            )
+
+        self._refresh_install_buttons()
+
+    def _message_box_yes_no_buttons(self):
+        """
+        Compatibility helper for PyQt5/PySide2 and PyQt6/PySide6.
+        """
+        if hasattr(QMessageBox, "StandardButton"):
+            return (
+                QMessageBox.StandardButton.Yes,
+                QMessageBox.StandardButton.No,
+            )
+
+        return QMessageBox.Yes, QMessageBox.No
 
     def _display_output_freq_info(self, checked: bool = False) -> None:
-        msgbox.information(self, "PCM Output Frequency", "How often PCM results are written: 'at_once' (end of simulation), 'daily', 'weekly', or 'monthly'.")
+        msgbox.information(
+            self,
+            "PCM Output Frequency",
+            (
+                "How often PCM results are written: 'at_once' end of simulation, "
+                "'daily', 'weekly', or 'monthly'."
+            ),
+        )
 
     def _display_solver_info(self, checked: bool = False) -> None:
-        msgbox.information(self, "Solver", "Solver to use for PCM optimization. Options include 'gurobi', 'cplex', 'cbc', 'appsi_highs', etc.")
+        msgbox.information(
+            self,
+            "Solver",
+            (
+                "Solver to use for PCM optimization. Options include "
+                "'gurobi', 'cplex', 'cbc', 'appsi_highs', etc."
+            ),
+        )
 
     def _display_mipgap_info(self, checked: bool = False) -> None:
-        msgbox.information(self, "MIP Gap", "MIP gap tolerance for PCM optimization. Lower values yield more optimal solutions but increase computation time.")
+        msgbox.information(
+            self,
+            "MIP Gap",
+            (
+                "MIP gap tolerance for PCM optimization. Lower values yield more "
+                "optimal solutions but increase computation time."
+            ),
+        )
 
     def _display_pricing_info(self, checked: bool = False) -> None:
-        msgbox.information(self, "Solve Pricing Problem", "Enable or disable solving the pricing problem in PCM. When enabled, generates LMPs, revenues, etc., but increases computation time.")
+        msgbox.information(
+            self,
+            "Solve Pricing Problem",
+            (
+                "Enable or disable solving the pricing problem in PCM. When enabled, "
+                "generates LMPs, revenues, etc., but increases computation time."
+            ),
+        )
 
     def _display_storage_mode_info(self, checked: bool = False) -> None:
-        msgbox.information(self, "Storage AS Mode", "Enable or disable BESS participation in ancillary services within the PCM simulation.")
+        msgbox.information(
+            self,
+            "Storage AS Mode",
+            (
+                "Enable or disable BESS participation in ancillary services within "
+                "the PCM simulation."
+            ),
+        )
 
     def _load_from_yaml(self):
+        """
+        Loads PCM settings from input.yaml.
+
+        pcm_venv_path is intentionally not loaded.
+        """
         config = load_config()
         pcm = config.get("pcm_parameters", {})
-        self.ui.lineEdit_pcm_venv.setText(pcm.get("pcm_venv_path", ""))
 
         output_freq = pcm.get("pcm_output_frequency", "at_once")
-        idx = self.ui.comboBox_output_freq.findText(output_freq, Qt.MatchFlag.MatchFixedString)
+        idx = self.ui.comboBox_output_freq.findText(
+            output_freq,
+            Qt.MatchFlag.MatchFixedString,
+        )
         if idx >= 0:
             self.ui.comboBox_output_freq.setCurrentIndex(idx)
 
         solver = pcm.get("solver", "appsi_highs")
-        idx = self.ui.comboBox_solver.findText(solver, Qt.MatchFlag.MatchFixedString)
+        idx = self.ui.comboBox_solver.findText(
+            solver,
+            Qt.MatchFlag.MatchFixedString,
+        )
         if idx >= 0:
             self.ui.comboBox_solver.setCurrentIndex(idx)
 
@@ -101,10 +376,18 @@ class PCMConfigDialog(QDialog):
         self.ui.label_storage_mode_false.setChecked(not bool(storage_as))
 
     def _save_config(self):
+        """
+        Saves PCM settings to input.yaml.
+
+        pcm_venv_path is intentionally not saved.
+        If pcm_venv_path already exists in input.yaml, it is removed because the
+        pcm_parameters block is cleared and rewritten.
+        """
         pcm_params = {
-            "pcm_venv_path": self.ui.lineEdit_pcm_venv.text().strip(),
             "pcm_output_frequency": self.ui.comboBox_output_freq.currentText().strip(),
-            "solver": SingleQuotedScalarString(self.ui.comboBox_solver.currentText().strip()),
+            "solver": SingleQuotedScalarString(
+                self.ui.comboBox_solver.currentText().strip()
+            ),
             "mipgap": self.ui.doubleSpin_mini_gap.value(),
             "solve_pricing_problem": self.ui.radio_solve_pricing_true.isChecked(),
             "storage_AS_mode": self.ui.label_storage_mode_true.isChecked(),
@@ -113,19 +396,29 @@ class PCMConfigDialog(QDialog):
         yaml_path = get_path() / "input.yaml"
         yaml = YAML()
         yaml.preserve_quotes = True
+
         with open(yaml_path) as f:
             data = yaml.load(f)
+
+        if data is None:
+            data = {}
+
         pcm = data.get("pcm_parameters")
+
         if isinstance(pcm, dict):
             pcm.clear()
             pcm.update(pcm_params)
         else:
             data["pcm_parameters"] = pcm_params
+
         with open(yaml_path, "w") as f:
             yaml.dump(data, f)
 
-        msgbox.information(self, "PCM Config", "PCM configuration saved!")
-
+        msgbox.information(
+            self,
+            "PCM Config",
+            "PCM configuration saved!",
+        )
 
 @dataclass
 class MCSConfig:
