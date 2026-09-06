@@ -1,26 +1,20 @@
-name: Publish to PyPI
+name: Publish to TestPyPI
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag to build and publish (e.g. v2.0.0)'
-        required: true
-        type: string
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: release   # manual approval gate
+    environment: testpypi
+
     permissions:
       id-token: write
+
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.inputs.tag || github.ref_name }}
+          ref: main
 
       - uses: actions/setup-python@v5
         with:
@@ -32,5 +26,7 @@ jobs:
       - name: Build package
         run: poetry build
 
-      - name: Publish to PyPI
+      - name: Publish to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
