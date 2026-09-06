@@ -2,11 +2,6 @@ name: Publish to TestPyPI
 
 on:
   workflow_dispatch:
-    inputs:
-      tag:
-        description: "Tag to build and publish (e.g. v2.0.1)"
-        required: true
-        type: string
 
 jobs:
   publish:
@@ -19,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.inputs.tag }}
+          ref: develop
 
       - uses: actions/setup-python@v5
         with:
