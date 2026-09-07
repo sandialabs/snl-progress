@@ -1,11 +1,9 @@
 from setuptools import setup, find_packages
 
-# from quest import __version__
-
 DISTNAME = "snl-progress"
 VERSION = "2.0.0"
-PYTHON_REQUIRES = "3.11"
-DESCRIPTION = "Probabilistic Grid Reliability Analysis with Energy Storage Systems"
+PYTHON_REQUIRES = ">=3.11"
+DESCRIPTION = "Used to evaluate the reliability of a power system and size energy storage systems required for maintaining a certain reliability level"
 LONG_DESCRIPTION = open("README.md").read()
 AUTHOR = "Sandia National Laboratories"
 MAINTAINER_EMAIL = "abera@sandia.gov"
@@ -25,6 +23,7 @@ setup(
     ],
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     author=AUTHOR,
     maintainer_email=MAINTAINER_EMAIL,
     license=LICENSE,
@@ -49,15 +48,17 @@ setup(
         "kaleido==0.2.1",
         "timezonefinder>=8.2.0",
         "cdsapi>=0.7.7",
+        "rainflow==3.2.0",
+        "pybamm==26.6.2.0",
+        "ruamel.yaml==0.19.1",
+        "PyYAML==6.0.3",
     ],
-
     package_data={
-        '': ['*.txt', '*.rst', '*.json', '*.jpg', '*.qss', '*.sh', '*.svg', '*.png', '*.kv', '*.bat', '*.csv', '*.md', '*.yml', '*.dll', '*.idf', '*.doctree', '.*info', '*.html', '*.js', '*.inv', '*.gif', '*.css', '*.eps', '*.pickle', '*.xlsx', '*.ttf', '*.pdf', '**/license*', '*.yml', '*.ui', '*.eot', '*.woff', '*.woff2', 'LICENSE', '*.mplstyle', '*.ini' ],
+        "": ["*.txt", "*.rst", "*.json", "*.jpg", "*.qss", "*.sh", "*.svg", "*.png", "*.kv", "*.bat", "*.csv", "*.md", "*.yml", "*.dll", "*.idf", "*.doctree", ".*info", "*.html", "*.js", "*.inv", "*.gif", "*.css", "*.eps", "*.pickle", "*.xlsx", "*.ttf", "*.pdf", "**/license*", "*.ui", "*.eot", "*.woff", "*.woff2", "LICENSE", "*.mplstyle", "*.ini"],
     },
-
     entry_points={
-        'console_scripts': [
-            'progress = progress.__main__:main'
-        ]
-    }
+        "console_scripts": [
+            "progress = progress.__main__:main",
+        ],
+    },
 )

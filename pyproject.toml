@@ -10,8 +10,28 @@ repository = "https://github.com/sandialabs/snl-progress"
 documentation = "https://sandialabs.github.io/snl-progress/"
 keywords = ["reliability", "power system", "energy storage"]
 
+include = [
+    { path = "README.md", format = ["sdist", "wheel"] },
+]
+
+packages = [
+    { include = "progress" },
+]
+exclude = [
+    "main_app.py",
+    "Results/*",
+    "start/*",
+    "__pycache__/*",
+    "docs/*",
+    ".readthedocs.yaml",
+    "licenses/*"
+]
+
+[tool.poetry.scripts]
+progress = "progress.__main__:main"
+
 [tool.poetry.dependencies]
-python = "3.11"
+python = ">=3.11"
 numpy = ">=1.21.0, <2.0.0"
 pyomo = "6.7.3"
 pandas = "2.2.2"
@@ -32,29 +52,14 @@ kaleido = "0.2.1"
 Markdown = "3.7"
 timezonefinder = ">=8.2.0"
 cdsapi = ">=0.7.7"
+rainflow = "3.2.0"
+pybamm = "26.6.2.0"
+"ruamel.yaml" = "0.19.1"
+PyYAML = "6.0.3"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-exclude = [
-    "main_app.py",
-    "resources.qrc",
-    "resources_rc.py",
-    "Results/*",
-    "start/*",
-    "Images/*",
-    "__pycache__/*",
-    "docs/*",
-    ".readthedocs.yaml",
-    "licenses/*"
-]
-
-[[tool.poetry.source]]
-name = "testpypi"
-url = "https://test.pypi.org/legacy/"
-priority = "primary"
-
