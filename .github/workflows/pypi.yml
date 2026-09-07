@@ -8,7 +8,7 @@ on:
     inputs:
       tag:
         description: 'Tag to build and publish (e.g. v2.0.0)'
-        required: true
+        required: false
         type: string
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          ref: ${{ github.event.inputs.tag || github.ref_name }}
+          ref: ${{ github.event.inputs.tag || 'main' }}
 
       - uses: actions/setup-python@v5
         with:
