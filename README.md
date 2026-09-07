@@ -115,6 +115,14 @@ By combining advanced stochastic simulation, detailed component modeling, and fl
 
 ### Installing ProGRESS
 
+**Install from PyPI:**
+
+```bash
+pip install snl-progress
+```
+
+**Install from source (for developers/contributors):**
+
 1. Clone the Repository:
 
    ```bash
