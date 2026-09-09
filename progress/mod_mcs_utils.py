@@ -421,10 +421,10 @@ class MCS_hourly(MCS_samples):
         """
         # get wind power output for all zones/areas
         if self.wind_dir_exists:
-            w_zones, self.current_w_class = self.raut.WindPower(self.bus_params["nz"], self.wind_params["w_sites"], self.wind_params["zone_no"], 
-                                            self.wind_params["w_classes"], self.wind_params["r_cap"], self.current_w_class, self.wind_params["tr_mats"], self.wind_params["p_class"], 
+            w_zones, current_w_class = self.raut.WindPower(self.bus_params["nz"], self.wind_params["w_sites"], self.wind_params["zone_no"], 
+                                            self.wind_params["w_classes"], self.wind_params["r_cap"], self._mcs.current_w_class, self.wind_params["tr_mats"], self.wind_params["p_class"], 
                                             self.wind_params["w_turbines"], self.wind_params["out_curve2"], self.wind_params["out_curve3"])
-
+            self._mcs.current_w_class = current_w_class
         # get solar power output for all zones/areas
         if self.solar_dir_exists:
             s_zones = self.raut.SolarPower(hour, self.bus_params["nz"], self.solar_params["s_zone_no"], self.solar_params["solar_prob"], self.solar_params["s_profiles"], 
@@ -454,7 +454,7 @@ class MCS_hourly(MCS_samples):
             net_load = part_netload[hour]
             tot_ren = np.zeros(self.bus_params["nz"])
 
-        return net_load, tot_ren, w_zones, s_zones
+        return net_load, tot_ren, w_zones, s_zones_t
     
     def record_hourly_data(self, load_curt, SOC_profile, P_dis, P_ch, Pg, curtbus, w_zones, s_zones_t, hour, flow, current_day):
         """Record hourly state and outage information for the current simulation step.
@@ -545,8 +545,10 @@ class MCS_hourly(MCS_samples):
                 holder_dict["ess_smin_limit"][ess_name].append(ess_smin[i-ng-nl])
         if self.wind_dir_exists:
             w_zones, current_w_class = self.raut.WindPower(self.bus_params["nz"], self.wind_params["w_sites"], self.wind_params["zone_no"], 
-                                            self.wind_params["w_classes"], self.wind_params["r_cap"], self.current_w_class, self.wind_params["tr_mats"], self.wind_params["p_class"], 
+                                            self.wind_params["w_classes"], self.wind_params["r_cap"], self._mcs.current_w_class, self.wind_params["tr_mats"], self.wind_params["p_class"], 
                                             self.wind_params["w_turbines"], self.wind_params["out_curve2"], self.wind_params["out_curve3"])
+            self._mcs.current_w_class = current_w_class
+            
             for i in range(self.wind_params["w_sites"]):
                 site_name = self.wind_params["farm_name"].loc[i]
                 holder_dict["wind_limit"][site_name].append(self.raut.w_power[i])

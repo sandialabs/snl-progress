@@ -82,7 +82,8 @@ def MCS(input_file, results_subdir, stop_event=None) :
             next_state, current_cap, var_s["t_min"] = raut.NextState(var_s["t_min"], ng, ness, nl, mcs_params.lambda_tot, mcs_params.mu_tot, \
                                                                      current_state, mcs_params.cap_max, mcs_params.cap_min, ess_params["ess_units"])
             current_state = copy.deepcopy(next_state)
-            net_load, tot_ren, w_zones, s_zones = hourly_instance.get_net_load(n)
+            if not mcs_params.enable_pcm:
+                net_load, tot_ren, w_zones, s_zones = hourly_instance.get_net_load(n)
             
             # optimize dipatch and calculate load curtailment
             if optimization_period == "single_period":
@@ -218,9 +219,6 @@ def MCS(input_file, results_subdir, stop_event=None) :
         rapt.PlotCOV(indices_rec["COV_rec"], samples, 1)
     if sim_hours == 8760:
         rapt.OutageMap(f"{results_subdir}/LOL_perc_prob.csv")
-
-    # get outage statistics for affected buses
-    bus_statistics(results_subdir)
 
     # save config file alongside results for reproducibility
     config_out = Path(results_subdir) / "config.txt"

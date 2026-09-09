@@ -83,7 +83,9 @@ class ProgressMultiProcess:
                 next_state, current_cap, var_s["t_min"] = raut.NextState(var_s["t_min"], ng, ness, nl, mcs_params.lambda_tot, mcs_params.mu_tot, \
                                                                         current_state, mcs_params.cap_max, mcs_params.cap_min, ess_params["ess_units"])
                 current_state = copy.deepcopy(next_state)
-                net_load, tot_ren, w_zones, s_zones = hourly_instance.get_net_load(n)
+
+                if not mcs_params.enable_pcm:
+                    net_load, tot_ren, w_zones, s_zones = hourly_instance.get_net_load(n)
             
                 # optimize dipatch and calculate load curtailment
                 if optimization_period == "single_period":
@@ -115,9 +117,6 @@ class ProgressMultiProcess:
                     hourly_instance.record_hourly_data(load_curt, SOC_old, P_dis, P_ch, Pg, curtbus, w_zones, s_zones, n, flow, None)
                     # track loss of load states
                     var_s, LOL_track = raut.TrackLOLStates(load_curt, BMva, var_s, LOL_track, s, n)
-
-                    if (n+1)%1000 == 0:
-                        print(f'Hour {n + 1}, Process No.: {self.rank}')
 
                 if optimization_period  == "multi_period" and not mcs_params.enable_pcm:
                     

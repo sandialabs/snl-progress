@@ -2,7 +2,7 @@
 
 # Data file directory
 data: "/Users/user/projects/QuESt/snl-progress/progress/Data"
-# data: "./progress/Data/"
+#data: "./progress/Data/"
 
 # Inputs for Wind (check ERA5 for data availability)
 download_w: 'No' # Yes/No based on whether data needs to be downloaded
@@ -34,7 +34,7 @@ detailed_thermal_model: true  # True: Detailed PyBAMM thermal model used for BES
 DC_load: false # True/False based on whether data centers exist in the system
 
 #PCM settings
-use_pcm: true
+use_pcm: false
 #pcm parameters
 pcm_parameters:
   pcm_venv_path: 
