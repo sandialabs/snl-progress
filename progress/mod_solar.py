@@ -233,7 +233,7 @@ class Solar:
                 )
 
             # Parse time
-            df["time"] = pd.to_datetime(df["time"], utc=True)
+            df["time"] = pd.to_datetime(df["time"])
 
             # Create series named by site_id
             site_series = (
@@ -304,7 +304,7 @@ class Solar:
             site_id = file.stem
             site_row = self.sites_df[self.sites_df['Site Name'] == site_id]
             site = site_row.iloc[0]
-
+            
             # convert observations into required indices
             df, tz = self.process_solar_data(file, site)
 
