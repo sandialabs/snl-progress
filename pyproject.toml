@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "snl-progress"
-version = "2.0.0"
+version = "2.0.1"
 description = "Used to evaluate the reliability of a power system and size energy storage systems required for maintaining a certain reliability level"
 authors = ["Atri Bera <abera@sandia.gov>"]
 readme = "README.md"

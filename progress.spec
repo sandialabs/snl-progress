@@ -162,7 +162,7 @@ app = BUNDLE(
     icon=None,
     bundle_identifier='gov.snl.progress',
     info_plist={
-        'CFBundleShortVersionString': '2.0.0',
+        'CFBundleShortVersionString': '2.0.1',
         'NSHighResolutionCapable': True,
         'NSRequiresAquaSystemAppearance': False,
     },

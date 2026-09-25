@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 DISTNAME = "snl-progress"
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 PYTHON_REQUIRES = ">=3.11"
 DESCRIPTION = "Used to evaluate the reliability of a power system and size energy storage systems required for maintaining a certain reliability level"
 LONG_DESCRIPTION = open("README.md").read()
